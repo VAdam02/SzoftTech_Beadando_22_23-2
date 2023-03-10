@@ -45,7 +45,7 @@ public class MainCameraMovement : MonoBehaviour
 
         //LOCK/UNLOCK CURSOR
         if (Cursor.lockState != CursorLockMode.Locked && (Input.GetMouseButton(0) ^ Input.GetMouseButton(1))) { Cursor.lockState = CursorLockMode.Locked; }     //LOCK CURSOR (if panning)
-        else if (Cursor.lockState != CursorLockMode.None || !(Input.GetMouseButton(0) ^ Input.GetMouseButton(1))) { Cursor.lockState = CursorLockMode.None; }   //UNLOCK CURSOR (if not panning)
+        else if (Cursor.lockState != CursorLockMode.None && !(Input.GetMouseButton(0) || Input.GetMouseButton(1))) { Cursor.lockState = CursorLockMode.None; }  //UNLOCK CURSOR (if not panning)
 
         //TRANSLATION
         if (Input.GetMouseButton(0) && !Input.GetMouseButton(1)) { translation += new Vector3(Input.GetAxis("Mouse X") * -1, 0, Input.GetAxis("Mouse Y") * -1) * MouseTransMultiplier; }    //PAN TRANSLATION
