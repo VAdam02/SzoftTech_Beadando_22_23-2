@@ -26,8 +26,8 @@ public class VirtualMouse : MonoBehaviour
         }
     }
 
-    public float _clickMaxHoldTime = 0.2f;
-    public int _mouseSensitivity = 650;
+    public float ClickMaxHoldTime = 0.2f;
+    public int MouseSensitivity = 650;
 
     /*
      * true && 0 => just clicked
@@ -40,11 +40,11 @@ public class VirtualMouse : MonoBehaviour
     private bool _rightClick = false;
     private float _rightClickTime = 0;
     
-    public bool IsLeftClick() { return (!_leftClick && 0 < _leftClickTime && _leftClickTime <= _clickMaxHoldTime ? true : false); }
-    public bool IsLeftHold() { return (_leftClick && _leftClickTime > _clickMaxHoldTime ? true : false); }
+    public bool IsLeftClick() { return (!_leftClick && 0 < _leftClickTime && _leftClickTime <= ClickMaxHoldTime ? true : false); }
+    public bool IsLeftHold() { return (_leftClick && _leftClickTime > ClickMaxHoldTime ? true : false); }
 
-    public bool IsRightClick() { return (!_rightClick && 0 < _rightClickTime && _rightClickTime <= _clickMaxHoldTime ? true : false); }
-    public bool IsRightHold() { return (_rightClick && _rightClickTime > _clickMaxHoldTime ? true : false); }
+    public bool IsRightClick() { return (!_rightClick && 0 < _rightClickTime && _rightClickTime <= ClickMaxHoldTime ? true : false); }
+    public bool IsRightHold() { return (_rightClick && _rightClickTime > ClickMaxHoldTime ? true : false); }
 
     void VerifyMousePos()
     {
@@ -80,7 +80,7 @@ public class VirtualMouse : MonoBehaviour
         //MOUSE POSITION
         if (_visible)
         {
-            _mousePosition += new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * Time.deltaTime * _mouseSensitivity;
+            _mousePosition += new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * Time.deltaTime * MouseSensitivity;
             VerifyMousePos();
             _mouseRectTransform.transform.position = _mousePosition;
             _mouseRawImage.enabled = true;
