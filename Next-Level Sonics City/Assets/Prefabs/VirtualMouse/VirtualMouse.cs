@@ -65,8 +65,6 @@ public class VirtualMouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Visible = IsRightHold();
-
         //LEFT CLICK
         if (Input.GetMouseButtonDown(0) && !Input.GetMouseButton(1)) { _leftClick = true; }
         else if (Input.GetMouseButton(0) && !Input.GetMouseButton(1)) { _leftClickTime += Time.deltaTime; }
