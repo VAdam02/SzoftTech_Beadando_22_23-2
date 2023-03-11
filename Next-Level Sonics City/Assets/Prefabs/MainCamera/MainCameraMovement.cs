@@ -14,16 +14,18 @@ public class MainCameraMovement : MonoBehaviour
     public float ZoomMultiplier          = 20f;
     public float RotationMultiplier      = 40f;
 
+    public GameObject VirtualMouse;
+    private VirtualMouse _virtualMouse;
+
     private Transform _rotate;
     private Transform _cameraobj;
 
     // Start is called before the first frame update
     void Start()
     {
+        _virtualMouse = VirtualMouse.GetComponent<VirtualMouse>();
         _rotate = transform.GetChild(0);
-        _cameraobj = _rotate.GetChild(0);
-
-        
+        _cameraobj = _rotate.GetChild(0); 
     }
 
     // Update is called once per frame
@@ -43,12 +45,12 @@ public class MainCameraMovement : MonoBehaviour
         Vector3 translation = Vector3.zero;
         Vector3 rotation = Vector3.zero;
 
-        //LOCK/UNLOCK CURSOR
-        if (Cursor.lockState != CursorLockMode.Locked && (Input.GetMouseButton(0) ^ Input.GetMouseButton(1))) { Cursor.lockState = CursorLockMode.Locked; }     //LOCK CURSOR (if panning)
-        else if (Cursor.lockState != CursorLockMode.None && !(Input.GetMouseButton(0) || Input.GetMouseButton(1))) { Cursor.lockState = CursorLockMode.None; }  //UNLOCK CURSOR (if not panning)
+        //HIDE/SHOW CURSOR
+        if (_virtualMouse.Visible && (_virtualMouse.IsLeftHold() || _virtualMouse.IsRightHold())) { _virtualMouse.Visible = false; }        //HIDE CURSOR (if panning)
+        else if (!_virtualMouse.Visible && !(_virtualMouse.IsLeftHold() || _virtualMouse.IsRightHold())) { _virtualMouse.Visible = true; }  //SHOW CURSOR (if not panning)
 
         //TRANSLATION
-        if (Input.GetMouseButton(0) && !Input.GetMouseButton(1)) { translation += new Vector3(Input.GetAxis("Mouse X") * -1, 0, Input.GetAxis("Mouse Y") * -1) * MouseTransMultiplier; }    //PAN TRANSLATION
+        if (_virtualMouse.IsLeftHold()) { translation += new Vector3(Input.GetAxis("Mouse X") * -1, 0, Input.GetAxis("Mouse Y") * -1) * MouseTransMultiplier; }    //PAN TRANSLATION
         else    //WASD
         {
             //X
@@ -61,7 +63,7 @@ public class MainCameraMovement : MonoBehaviour
         }
 
         //Zoom
-        if (Input.GetAxis("Mouse ScrollWheel") != 0) { translation += new Vector3(0, Input.GetAxis("Mouse ScrollWheel") * -1 * MouseZoomMultiplier, 0); } //WHEEL
+        if (Input.GetAxis("Mouse ScrollWheel") != 0) { translation += new Vector3(0, Input.GetAxis("Mouse ScrollWheel") * -1 * MouseZoomMultiplier, 0); }   //WHEEL
         else    //NUMPAD +-
         {
             if (Input.GetKey(KeyCode.KeypadPlus)) { translation += new Vector3(0, -1, 0) * ZoomMultiplier; }
@@ -69,16 +71,16 @@ public class MainCameraMovement : MonoBehaviour
         }
 
         //ROTATION
-        if (Input.GetMouseButton(1) && !Input.GetMouseButton(0)) { rotation += new Vector3(Input.GetAxis("Mouse Y") * -1, Input.GetAxis("Mouse X"), 0) * MouseRotationMultiplier; } //PAN ROTATION
+        if (_virtualMouse.IsRightHold()) { rotation += new Vector3(Input.GetAxis("Mouse Y") * -1, Input.GetAxis("Mouse X"), 0) * MouseRotationMultiplier; } //PAN ROTATION
         else    //ARROWS
         {
             //Vertical
-            if (Input.GetKey(KeyCode.UpArrow)) { rotation += new Vector3(-1, 0, 0) * RotationMultiplier; }
-            if (Input.GetKey(KeyCode.DownArrow)) { rotation += new Vector3(1, 0, 0) * RotationMultiplier; }
+            if (Input.GetKey(KeyCode.UpArrow)) { rotation += new Vector3(1, 0, 0) * RotationMultiplier; }
+            if (Input.GetKey(KeyCode.DownArrow)) { rotation += new Vector3(-1, 0, 0) * RotationMultiplier; }
 
             //Horizontal
-            if (Input.GetKey(KeyCode.LeftArrow)) { rotation += new Vector3(0, 1, 0) * RotationMultiplier; }
-            if (Input.GetKey(KeyCode.RightArrow)) { rotation += new Vector3(0, -1, 0) * RotationMultiplier; }
+            if (Input.GetKey(KeyCode.LeftArrow)) { rotation += new Vector3(0, -1, 0) * RotationMultiplier; }
+            if (Input.GetKey(KeyCode.RightArrow)) { rotation += new Vector3(0, 1, 0) * RotationMultiplier; }
 
         }
 
