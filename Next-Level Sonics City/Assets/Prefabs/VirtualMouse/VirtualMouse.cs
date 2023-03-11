@@ -46,7 +46,7 @@ public class VirtualMouse : MonoBehaviour
     public bool IsRightClick() { return (!_rightClick && 0 < _rightClickTime && _rightClickTime <= ClickMaxHoldTime ? true : false); }
     public bool IsRightHold() { return (_rightClick && _rightClickTime > ClickMaxHoldTime ? true : false); }
 
-    void VerifyMousePos()
+    private void VerifyMousePos()
     {
         _mousePosition = new Vector3((_mousePosition.x < 0 ? 0 : _mousePosition.x), (_mousePosition.y < 0 ? 0 : _mousePosition.y), 0); //Bottom left wall
         _mousePosition = new Vector3((_mousePosition.x > Screen.width ? Screen.width : _mousePosition.x), (_mousePosition.y > Screen.height ? Screen.height : _mousePosition.y), 0); //Top right wall
