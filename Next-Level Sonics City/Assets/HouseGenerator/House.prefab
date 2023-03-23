@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6940669001247272618}
   - component: {fileID: 6940669001247272619}
+  - component: {fileID: 505406869}
   m_Layer: 0
   m_Name: House
   m_TagString: Untagged
@@ -44,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bcc113cec240244f8fe081742c31007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  None: {fileID: 919132149155446097, guid: 78f1be455d66b9d44ba98ca85122f81d, type: 3}
   Base:
   - Prefab: {fileID: 919132149155446097, guid: ac3e808b91b501346884a46ca01d3260, type: 3}
     FrontTerraceAttachPoint: {x: 0, y: 0, z: 16}
@@ -101,22 +103,13 @@ MonoBehaviour:
     BackBigBase: 0
     OnlyFloor: 0
     OnlyStorey: 1
-  TerraceNone:
-    Prefab: {fileID: 919132149155446097, guid: 78f1be455d66b9d44ba98ca85122f81d, type: 3}
-    NeedSmallNextLevel: 0
-    NeedBigNextLevel: 0
-    OnlyFloor: 0
-    OnlyStorey: 0
-    WindowAttachPoints:
-    - {x: -5, y: 1.6, z: 0}
-    - {x: 5, y: 1.6, z: 0}
-    DoorAttachPoint: {x: 0, y: 0.6, z: 0}
   Terrace:
   - Prefab: {fileID: 919132149155446097, guid: 46e81d3ce13b52445bb8f98b5171a5dc, type: 3}
     NeedSmallNextLevel: 1
     NeedBigNextLevel: 0
     OnlyFloor: 1
     OnlyStorey: 0
+    SameWindow: 0
     WindowAttachPoints:
     - {x: -5, y: 1.6, z: 0}
     - {x: 5, y: 1.6, z: 0}
@@ -126,6 +119,7 @@ MonoBehaviour:
     NeedBigNextLevel: 1
     OnlyFloor: 1
     OnlyStorey: 0
+    SameWindow: 0
     WindowAttachPoints:
     - {x: -5, y: 1.6, z: 0}
     - {x: 5, y: 1.6, z: 0}
@@ -135,6 +129,7 @@ MonoBehaviour:
     NeedBigNextLevel: 0
     OnlyFloor: 0
     OnlyStorey: 1
+    SameWindow: 0
     WindowAttachPoints:
     - {x: -5, y: 1, z: 0}
     - {x: 5, y: 1, z: 0}
@@ -144,9 +139,29 @@ MonoBehaviour:
     NeedBigNextLevel: 1
     OnlyFloor: 0
     OnlyStorey: 1
+    SameWindow: 0
     WindowAttachPoints:
     - {x: -5, y: 1, z: 0}
     - {x: 5, y: 1, z: 0}
+    DoorAttachPoint: {x: 0, y: 0, z: 0}
+  JustWindowTerrace:
+  - Prefab: {fileID: 919132149155446097, guid: 78f1be455d66b9d44ba98ca85122f81d, type: 3}
+    OnlyFloor: 1
+    OnlyStorey: 0
+    SameWindow: 0
+    WindowAttachPoints:
+    - {x: -5, y: 1.6, z: 0}
+    - {x: 5, y: 1.6, z: 0}
+    hasDoor: 1
+    DoorAttachPoint: {x: 0, y: 0.6, z: 0}
+  - Prefab: {fileID: 919132149155446097, guid: 78f1be455d66b9d44ba98ca85122f81d, type: 3}
+    OnlyFloor: 0
+    OnlyStorey: 1
+    SameWindow: 0
+    WindowAttachPoints:
+    - {x: -5, y: 1, z: 0}
+    - {x: 5, y: 1, z: 0}
+    hasDoor: 0
     DoorAttachPoint: {x: 0, y: 0, z: 0}
   Roof:
   - Prefab: {fileID: 919132149155446097, guid: 44728a75babada5439affac433da3dcf, type: 3}
@@ -181,7 +196,7 @@ MonoBehaviour:
   - {fileID: 919132149155446097, guid: d72f81ac0ce414e4d984baf07452ac0c, type: 3}
   - {fileID: 919132149155446097, guid: 42726a81e204e0646a575f41ac3a5249, type: 3}
   TerraceRoof:
-  - Prefab: {fileID: 919132149155446097, guid: 7e527b75b5e4bf24bab878b1fef553c0, type: 3}
+  - Prefab: {fileID: 919132149155446097, guid: 78f1be455d66b9d44ba98ca85122f81d, type: 3}
     WindowAttachPoint: {x: 0, y: 0, z: 0}
   RoofFrontWindow:
   - {fileID: 919132149155446097, guid: 92c2a9b76cfb6c3449d600999b86c33d, type: 3}
@@ -340,3 +355,19 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   WindowMaterial: {fileID: 2100000, guid: 30c0b3bc30cba2745a41214d5fcb158a, type: 2}
   WindowFrameMaterial: {fileID: 2100000, guid: 5337b3bcd0a997a40a33f50a3fbff32f, type: 2}
+--- !u!54 &505406869
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6940669001247272616}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

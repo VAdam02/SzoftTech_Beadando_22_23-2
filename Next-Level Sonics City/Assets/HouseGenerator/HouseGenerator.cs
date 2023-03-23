@@ -28,7 +28,22 @@ public struct HouseTerrace
     public bool OnlyFloor;
     public bool OnlyStorey;
 
+    public bool SameWindow;
     public List<Vector3> WindowAttachPoints;
+    public Vector3 DoorAttachPoint;
+}
+
+[System.Serializable]
+public struct HouseJustWindowTerrace
+{
+    public GameObject Prefab;
+
+    public bool OnlyFloor;
+    public bool OnlyStorey;
+
+    public bool SameWindow;
+    public List<Vector3> WindowAttachPoints;
+    public bool hasDoor;
     public Vector3 DoorAttachPoint;
 }
 
@@ -54,9 +69,11 @@ public struct HouseTerraceRoof
 
 public class HouseGenerator : MonoBehaviour
 {
+    public GameObject None;
+
     public List<HouseBase> Base;
-    public HouseTerrace TerraceNone;
     public List<HouseTerrace> Terrace;
+    public List<HouseJustWindowTerrace> JustWindowTerrace;
     public List<HouseRoof> Roof;
     public List<GameObject> Door;
     public List<GameObject> Window;
@@ -84,7 +101,6 @@ public class HouseGenerator : MonoBehaviour
     private Material _windowMaterial;
     private Material _windowFrameMaterial;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -100,28 +116,26 @@ public class HouseGenerator : MonoBehaviour
         _windowMaterial = new Material(WindowMaterial);
         _windowMaterial.color = WindowColor.Evaluate(Random.Range(0f, 1f));
         _windowFrameMaterial = new Material(WindowFrameMaterial);
-
-
-
-        GenerateHouse(7, gameObject);
+        
+        GenerateHouse(2, gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void SetMaterials(Renderer renderer)
     {
         for (int i = 0; i < renderer.materials.Length; i++)
         {
-            if (renderer.materials[i].name.Split(' ')[0] == "HouseBottom") { renderer.materials[i].CopyPropertiesFromMaterial(_houseBottomMaterial); }
-            else if (renderer.materials[i].name.Split(' ')[0] == "HouseColor") { renderer.materials[i].CopyPropertiesFromMaterial(_houseColorMaterial); }
-            else if (renderer.materials[i].name.Split(' ')[0] == "WoodPillar") { renderer.materials[i].CopyPropertiesFromMaterial(_woodPillarMaterial); }
-            else if (renderer.materials[i].name.Split(' ')[0] == "Roof") { renderer.materials[i].CopyPropertiesFromMaterial(_roofMaterial); }
-            else if (renderer.materials[i].name.Split(' ')[0] == "Door") { renderer.materials[i].CopyPropertiesFromMaterial(_doorMaterial); }
-            else if (renderer.materials[i].name.Split(' ')[0] == "Window") { renderer.materials[i].CopyPropertiesFromMaterial(_windowMaterial); }
+            if      (renderer.materials[i].name.Split(' ')[0] == "HouseBottom") { renderer.materials[i].CopyPropertiesFromMaterial(_houseBottomMaterial); }
+            else if (renderer.materials[i].name.Split(' ')[0] == "HouseColor")  { renderer.materials[i].CopyPropertiesFromMaterial(_houseColorMaterial); }
+            else if (renderer.materials[i].name.Split(' ')[0] == "WoodPillar")  { renderer.materials[i].CopyPropertiesFromMaterial(_woodPillarMaterial); }
+            else if (renderer.materials[i].name.Split(' ')[0] == "Roof")        { renderer.materials[i].CopyPropertiesFromMaterial(_roofMaterial); }
+            else if (renderer.materials[i].name.Split(' ')[0] == "Door")        { renderer.materials[i].CopyPropertiesFromMaterial(_doorMaterial); }
+            else if (renderer.materials[i].name.Split(' ')[0] == "Window")      { renderer.materials[i].CopyPropertiesFromMaterial(_windowMaterial); }
             else if (renderer.materials[i].name.Split(' ')[0] == "WindowFrame") { renderer.materials[i].CopyPropertiesFromMaterial(_windowFrameMaterial); }
             else
             {
@@ -184,15 +198,14 @@ public class HouseGenerator : MonoBehaviour
 
     private void GenerateTerrace(bool bigBase, bool bottomNeedSmallNextLevel, int levelIndex, Vector3 attachPoint, bool fore, GameObject parentElement, ref bool needSmallNextLevel, ref bool needBigNextLevel)
     {
-        HouseTerrace selectedTerrace = TerraceNone;
-
-        if (!(bigBase || bottomNeedSmallNextLevel))
+        if (bigBase || bottomNeedSmallNextLevel)
         {
-            List<HouseTerrace> availableTerrace = Terrace.FindAll(x => (x.OnlyFloor ? levelIndex == 0 : true) && (x.OnlyStorey ? levelIndex > 0 : true));
-            selectedTerrace = availableTerrace[Random.Range(0, availableTerrace.Count)];
+            GenerateJustWindowTerrace(levelIndex, attachPoint, fore, parentElement);
+            return;
         }
 
-        if (selectedTerrace.Equals(TerraceNone) && levelIndex > 0) { return; }
+        List<HouseTerrace> availableTerrace = Terrace.FindAll(x => (x.OnlyFloor ? levelIndex == 0 : true) && (x.OnlyStorey ? levelIndex > 0 : true));
+        HouseTerrace selectedTerrace = availableTerrace[Random.Range(0, availableTerrace.Count)];
 
         GameObject terrace = Instantiate(selectedTerrace.Prefab, attachPoint, parentElement.transform.rotation);
         terrace.transform.parent = parentElement.transform;
@@ -201,16 +214,38 @@ public class HouseGenerator : MonoBehaviour
         needSmallNextLevel = (needSmallNextLevel ? true : selectedTerrace.NeedSmallNextLevel);
         needBigNextLevel = (needBigNextLevel ? true : selectedTerrace.NeedBigNextLevel);
 
-        if (!selectedTerrace.Equals(TerraceNone))
-        {
-            SetMaterials(terrace.GetComponent<Renderer>());
-        }
+        SetMaterials(terrace.GetComponent<Renderer>());
 
         GenerateDoor(attachPoint + selectedTerrace.DoorAttachPoint, terrace);
 
+        GameObject usedWindow = null;
         for (int i = 0; i < selectedTerrace.WindowAttachPoints.Count; i++)
         {
-            GenerateWindow(attachPoint + selectedTerrace.WindowAttachPoints[i], false, terrace);
+            usedWindow = GenerateWindow(attachPoint + selectedTerrace.WindowAttachPoints[i], false, terrace, usedWindow);
+        }
+    }
+
+    private void GenerateJustWindowTerrace(int levelIndex, Vector3 attachPoint, bool fore, GameObject parentElement)
+    {
+        List<HouseJustWindowTerrace> availableTerrace = JustWindowTerrace.FindAll(x => (x.OnlyFloor ? levelIndex == 0 : true) && (x.OnlyStorey ? levelIndex > 0 : true));
+        HouseJustWindowTerrace selectedTerrace = availableTerrace[Random.Range(0, availableTerrace.Count)];
+
+        GameObject justWindowTerrace = Instantiate(selectedTerrace.Prefab, attachPoint, parentElement.transform.rotation);
+        justWindowTerrace.transform.parent = parentElement.transform;
+        justWindowTerrace.transform.localRotation = Quaternion.Euler(0, 0, (fore ? 180 : 0));
+
+        if (!selectedTerrace.Prefab.name.Equals(None.name))
+        {
+            SetMaterials(justWindowTerrace.GetComponent<Renderer>());
+        }
+
+        if (selectedTerrace.hasDoor) GenerateDoor(attachPoint + selectedTerrace.DoorAttachPoint, justWindowTerrace);
+
+
+        GameObject usedWindow = null;
+        for (int i = 0; i < selectedTerrace.WindowAttachPoints.Count; i++)
+        {
+            usedWindow = GenerateWindow(attachPoint + selectedTerrace.WindowAttachPoints[i], false, justWindowTerrace, usedWindow);
         }
     }
 
@@ -224,14 +259,16 @@ public class HouseGenerator : MonoBehaviour
         SetMaterials(door.GetComponent<Renderer>());
     }
 
-    private void GenerateWindow(Vector3 attachPoint, bool rotate, GameObject parentElement)
+    private GameObject GenerateWindow(Vector3 attachPoint, bool rotate, GameObject parentElement, GameObject preSelectedWindow = null)
     {
-        GameObject selectedWindow = Window[Random.Range(0, Window.Count)];
+        GameObject selectedWindow = (preSelectedWindow != null ? preSelectedWindow : Window[Random.Range(0, Window.Count)]);
 
         GameObject window = Instantiate(selectedWindow, attachPoint, parentElement.transform.rotation);
         window.transform.parent = parentElement.transform;
 
         SetMaterials(window.GetComponent<Renderer>());
+
+        return selectedWindow;
     }
 
     private void GenerateRoof(bool bottomNeedForeSmallNextLevel, bool bottomNeedBackSmallNextLevel, bool bottomNeedForeBigNextLevel, bool bottomNeedBackBigNextLevel, Vector3 attachPoint, GameObject parentElement)
