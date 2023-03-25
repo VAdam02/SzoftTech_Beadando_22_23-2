@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class MainCameraMovement : MonoBehaviour
 {
+    //LIMIT
+    public float MinZoom = 0;
+    public float MaxZoom = 10;
+    public float MinDeg = 0;
+    public float MaxDeg = 90;
+
     //MOUSE
     public float MouseTransMultiplier    = 5f;
     public float MouseZoomMultiplier     = 500f;
@@ -31,6 +37,7 @@ public class MainCameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Manage input
         Vector3 translation = GetTranslationByInput().trans;
         Vector3 rotation = GetTranslationByInput().rot;
         
@@ -38,6 +45,18 @@ public class MainCameraMovement : MonoBehaviour
         _cameraobj.Translate(new Vector3(0, 0, translation.y * -1)       * Time.deltaTime); //Zoom
         _rotate.Rotate(new Vector3(rotation.x, 0, 0)                     * Time.deltaTime); //Vertical
         transform.Rotate(new Vector3(0, rotation.y, 0)                   * Time.deltaTime); //Horizontal
+
+        Vector3 pos;
+		Quaternion rot;
+        //Limit zoom
+		_cameraobj.transform.GetLocalPositionAndRotation(out pos, out rot);
+        pos.y = Mathf.Clamp(pos.y, MinZoom, MaxZoom);
+        _cameraobj.transform.SetLocalPositionAndRotation(pos, rot);
+
+        //Limit rotation
+        _rotate.transform.GetLocalPositionAndRotation(out pos, out rot);
+        rot.x = Mathf.Clamp(rot.x, MinDeg, MaxDeg);
+        _rotate.transform.SetLocalPositionAndRotation(pos, rot);
     }
 
     private (Vector3 trans, Vector3 rot) GetTranslationByInput()
