@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2896971607014579896}
-  - component: {fileID: 6729963289741939777}
+  - component: {fileID: 5706894625181597044}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: Untagged
@@ -65,7 +65,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6729963289741939777
+--- !u!114 &5706894625181597044
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,13 +74,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2896971607014579897}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 926faf5b035b2f748bd65a9155669648, type: 3}
+  m_Script: {fileID: 11500000, guid: 806ebde3b4ec8bc42a26d88bbcc3f9d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transSpeed: 10
-  horizontalSpeed: 40
-  verticalSpeed: 40
-  zoomSpeed: 20
+  MouseTransMultiplier: 5
+  MouseZoomMultiplier: 500
+  MouseRotationMultiplier: 50
+  TransMultiplier: 10
+  ZoomMultiplier: 20
+  RotationMultiplier: 40
 --- !u!1 &2896971607221050437
 GameObject:
   m_ObjectHideFlags: 0
