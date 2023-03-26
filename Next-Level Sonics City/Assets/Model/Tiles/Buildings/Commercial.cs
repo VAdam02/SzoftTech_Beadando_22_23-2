@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Tiles;
 
-namespace Buildingsgs
+namespace Buildings
 {
     public class Commercial : Building
     {

@@ -22,6 +22,7 @@ namespace Statistics
             Quarter = 0;
         }
 
+        /*
         public float CalculateTax(Person person)
         {
             //TODO
@@ -33,6 +34,7 @@ namespace Statistics
             //TODO
             return 0;
         }
+        */
 
         public float CalculateBuildingHappiness(Building building)
         {
@@ -115,12 +117,13 @@ namespace Statistics
         public void nextQuarter()
         {
             throw new NotImplementedException();
-
+            /*
             StatReport statReport = new StatReport();
 
             //TODO
             
             _statReports.Add(statReport);
+            */
         }
     }
 }
