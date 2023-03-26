@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IWorkplace : MonoBehaviour
+namespace Model
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface IWorkplace
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

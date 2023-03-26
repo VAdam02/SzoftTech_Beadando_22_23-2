@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class City : MonoBehaviour
+namespace Model
 {
-    // Start is called before the first frame update
-    void Start()
+    public class City : MonoBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

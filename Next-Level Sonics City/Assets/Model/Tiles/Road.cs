@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Model;
 
-namespace Service
+
+namespace Tiles
 {
-    public class Electricity : MonoBehaviour
+    public class NewBehaviourScript : Tile
     {
 
     }

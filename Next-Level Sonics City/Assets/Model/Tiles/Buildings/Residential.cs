@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Tiles;
 
-namespace Service
+namespace Buildings
 {
-    public class Electricity : MonoBehaviour
+    public class Residential : Building
     {
 
     }

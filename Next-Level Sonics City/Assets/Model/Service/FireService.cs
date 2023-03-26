@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireService : MonoBehaviour
+namespace Service
 {
-    // Start is called before the first frame update
-    void Start()
+    public class FireService : MonoBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
