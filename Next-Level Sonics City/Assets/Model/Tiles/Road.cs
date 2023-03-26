@@ -6,7 +6,7 @@ using Model;
 
 namespace Tiles
 {
-    public class NewBehaviourScript : Tile
+    public class Road : Tile
     {
 
     }
