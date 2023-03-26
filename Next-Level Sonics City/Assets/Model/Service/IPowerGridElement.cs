@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IPowerGridElement : MonoBehaviour
+namespace Service
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface IPowerGridElement
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

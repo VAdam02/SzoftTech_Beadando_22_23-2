@@ -2,24 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Tiles;
+using Model;
 
 namespace Statistics
 {
     public class StatEngine : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-            StatReport a = new StatReport();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-        private List<StatReport> _reports;
+        private List<StatReport> _statReports;
         public int Year { get; }
         public int Quarter { get; }
 
@@ -27,40 +17,42 @@ namespace Statistics
 
         public StatEngine()
         {
-            _reports = new List<StatReport>();
+            _statReports = new List<StatReport>();
             Year = STARTYEAR;
             Quarter = 0;
         }
 
-        //public float CalculateTax(Person person)
-        //{
-        //    //TODO
-        //    return 0;
-        //}
+        /*
+        public float CalculateTax(Person person)
+        {
+            //TODO
+            return 0;
+        }
 
-        //public float CalculatePersonHappiness(Person person)
-        //{
-        //    //TODO
-        //    return 0;
-        //}
+        public float CalculatePersonHappiness(Person person)
+        {
+            //TODO
+            return 0;
+        }
+        */
 
-        //public float CalculateBuildingHappiness(IBuilding building)
-        //{
-        //    //TODO
-        //    return 0;
-        //}
+        public float CalculateBuildingHappiness(Building building)
+        {
+            //TODO
+            return 0;
+        }
 
-        //public float CalculateCityHappiness(List<IBuilding> buildings)
-        //{
-        //    //TODO
-        //    return 0;
-        //}
+        public float CalculateCityHappiness(List<Building> buildings)
+        {
+            //TODO
+            return 0;
+        }
 
-        //public int sumMaintainance(List<IBuilding> buildings)
-        //{
-        //    //TODO
-        //    return 0;
-        //}
+        public int sumMaintainance(List<Building> buildings)
+        {
+            //TODO
+            return 0;
+        }
 
         public int GetElectricityProduced()
         {
@@ -76,18 +68,18 @@ namespace Statistics
 
         public StatReport GetStatisticsReport()
         {
-            return _reports[_reports.Count - 1];
+            return _statReports[_statReports.Count - 1];
         }
 
         public List<StatReport> GetLastGivenStatisticsReport(int index)
         {
             List<StatReport> reports = new List<StatReport>(index);
 
-            int length = _reports.Count - 1;
+            int length = _statReports.Count - 1;
 
             for (int i = 0; i < index; ++i)
             {
-                reports[i] = _reports[length - i];
+                reports[i] = _statReports[length - i];
             }
 
             return reports;
@@ -124,8 +116,14 @@ namespace Statistics
 
         public void nextQuarter()
         {
-            //TODO
             throw new NotImplementedException();
+            /*
+            StatReport statReport = new StatReport();
+
+            //TODO
+            
+            _statReports.Add(statReport);
+            */
         }
     }
 }

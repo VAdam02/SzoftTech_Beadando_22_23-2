@@ -1,23 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Statistics
 {
     public class StatReport : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         public int Year { get; set; }
         public int Quarter { get; private set; }
         public float Happiness { get; private set; }
