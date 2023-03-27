@@ -10,9 +10,8 @@ namespace Model
     public abstract class Person : MonoBehaviour
     {
         private static ulong s_id;
-        public int Born { get; protected set; }
+        public int Age { get; protected set; }
         public Residential LiveAt { get; protected set; }
-        public Qualification Qualification { get; protected set; }
 
         public float GetHappiness()
         {
@@ -20,22 +19,9 @@ namespace Model
             throw new NotImplementedException();
         }
 
-        public float GetTax()
+        public void IncreaseAge()
         {
-            //TODO
-            throw new NotImplementedException();
-        }
-
-        public int GetAge()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
-
-        public void MakeItSilly()
-        {
-            //TODO
-            throw new NotImplementedException();
+            ++Age;
         }
     }
 }

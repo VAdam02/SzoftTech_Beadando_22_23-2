@@ -4,9 +4,9 @@ namespace Persons
 {
     public class Pensioner : Person
     {
-        public int Pension { get; private set; }
+        public float Pension { get; private set; }
 
-        public Pensioner(int pension)
+        public Pensioner(float pension)
         {
             Pension = pension;
         }
