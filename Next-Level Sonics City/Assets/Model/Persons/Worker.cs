@@ -13,11 +13,11 @@ namespace Persons
 
         private const int TAXED_YEARS_FOR_PENSION = 20;
 
-        public Worker(IWorkplace workPlace, int baseSalary)
+        public Worker(IWorkplace workPlace, Qualification qualification, int baseSalary)
         {
             WorkPlace = workPlace;
             _baseSalary = baseSalary;
-            Qualification = Qualification.LOW;
+            Qualification = qualification;
         }
 
         public Pensioner Retire()
@@ -26,12 +26,12 @@ namespace Persons
             return new Pensioner(pension);
         }
 
-        public void IncreaseQualification()
+        public void IncreaseQualification()//if
         {
             ++Qualification;
         }
 
-        public void DecreaseQualificaiton()
+        public void DecreaseQualificaiton()//if
         {
             --Qualification;
         }
@@ -56,6 +56,7 @@ namespace Persons
 
         private float CalculateSalary()
         {
+            float multiplier = 1.0f;
             if (Qualification is Qualification.HIGH)
             {
                 return _baseSalary * 1.5f;
@@ -65,6 +66,7 @@ namespace Persons
                 return _baseSalary * 1.2f;
             }
             else { return _baseSalary; }
+            //TODO
         }
     }
 }
