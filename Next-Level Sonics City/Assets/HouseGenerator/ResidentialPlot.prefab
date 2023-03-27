@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1924924233420062990}
   - component: {fileID: 1924924233420062986}
   m_Layer: 0
-  m_Name: Plot
+  m_Name: ResidentialPlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

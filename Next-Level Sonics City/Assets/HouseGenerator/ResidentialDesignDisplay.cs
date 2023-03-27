@@ -6,8 +6,10 @@ using UnityEngine;
 
 public class ResidentialDesignDisplay : MonoBehaviour
 {
+    //DEMO CODE
     public uint designID = 0;
     public bool generate = false;
+    //DEMO CODE
 
     void Update()
     {
