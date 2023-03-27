@@ -607,7 +607,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1924924233420062989, guid: 802fe9f5bcdf49b41b4135be29157031, type: 3}
       propertyPath: m_Name
-      value: Plot
+      value: ResidentialPlot
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 802fe9f5bcdf49b41b4135be29157031, type: 3}
