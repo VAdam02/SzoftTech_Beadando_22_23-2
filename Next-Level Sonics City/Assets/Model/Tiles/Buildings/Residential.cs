@@ -1,35 +1,33 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Tiles;
 using Model;
 
 namespace Buildings
 {
-    public class Residential : Building
+    public class Residential : Building, IZoneBuilding
     {
         public BuildingLevel Level{ get; private set; }
-        public List<Person> Population { get; private set; }
-        public int PopulationLimit { get; private set; }
+        public int ResidentLimit { get; private set; }
+        public List<Person> Residents { get; private set; }
 
         public Residential()
         {
-            Population= new List<Person>();
             Level = 0;
-            PopulationLimit = 5;
+            ResidentLimit = 5;
+            Residents= new List<Person>();
         }
 
         public void LevelUp()
         {
             ++Level;
-            PopulationLimit += 5; //?
+            ResidentLimit += 5;
         }
 
         public bool MoveIn(Person person)
         {
-            if (Population.Count < PopulationLimit)
+            if (Residents.Count < ResidentLimit)
             {
-                Population.Add(person);
+                Residents.Add(person);
                 return true;
             }
             
