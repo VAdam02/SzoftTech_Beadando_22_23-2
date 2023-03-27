@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Tiles;
@@ -23,50 +22,74 @@ namespace Statistics
             Quarter = 0;
         }
 
-        
+        public float CalculateHouseTax(Residential residential)
+        {
+            float houseTax = 0;
+            List<Person> persons = residential.GetPeople();
+
+            foreach (Person person in persons)
+            {
+                houseTax += person.GetTax();
+            }
+
+            houseTax /= persons.Count;
+
+            return houseTax;
+        }
+
         public float CalculateTax(List<Residential> residentials)
         {
-            int totalTax = 0;
+            float totalTax = 0;
 
             foreach (Residential residential in residentials)
             {
-                
+                totalTax += CalculateHouseTax(residential);
             }
 
+            totalTax /= residentials.Count;
 
-            return 0;
+            return totalTax;
+        }     
+
+        public float CalculateBuildingHappiness(IZoneBuilding zoneBuilding)
+        {
+            float totalBuildingHappiness = 0;
+            List<Person> persons = zoneBuilding.GetPeople();
+
+            foreach (Person person in persons)
+            {
+                totalBuildingHappiness += person.GetHappiness();
+            }
+
+            totalBuildingHappiness /= persons.Count;
+
+            return totalBuildingHappiness;
         }
 
-        public float CalculatePersonHappiness(Person person)
+        public float CalculateCityHappiness(List<IZoneBuilding> buildings)
         {
-            //TODO
-            return 0;
-        }
-        
+            float totalCityHappiness = 0;
 
-        public float CalculateBuildingHappiness(Building building)
-        {
-            //TODO
-            return 0;
-        }
+            foreach (IZoneBuilding building in buildings)
+            {
+                totalCityHappiness += CalculateBuildingHappiness(building);
+            }
 
-        public float CalculateCityHappiness(List<Building> buildings)
-        {
-            //TODO
-            return 0;
+            totalCityHappiness /= buildings.Count;
+
+            return totalCityHappiness;
         }
 
         public int sumMaintainance(List<Building> buildings)
         {
-            int totalMaintainance = 0;
+            int totalMaintainanceCost = 0;
 
             foreach (Building building in buildings)
             {
-                
+                totalMaintainanceCost += building.GetMaintainanceCost();
             }
 
-
-            return 0;
+            return totalMaintainanceCost;
         }
 
         public int GetElectricityProduced()
@@ -81,12 +104,17 @@ namespace Statistics
             throw new NotImplementedException();
         }
 
-        public StatReport GetStatisticsReport()
+        public StatReport GetLastStatisticsReport()
         {
-            return _statReports[_statReports.Count - 1];
+            return _statReports[^1];
         }
 
-        public List<StatReport> GetLastGivenStatisticsReport(int index)
+        public List<StatReport> GetEveryStatisticsReport()
+        {
+            return _statReports;
+        }
+
+        public List<StatReport> GetLastGivenStatisticsReports(int index)
         {
             List<StatReport> reports = new List<StatReport>(index);
 
@@ -100,10 +128,28 @@ namespace Statistics
             return reports;
         }
 
-        public float GetCommercialToIndustrialRate()
+        public float GetCommercialToIndustrialRate(List<IZoneBuilding> zoneBuildings)
         {
-            //TODO
-            throw new NotImplementedException();
+            float commercialCount = 0;
+            float IndustrialCount = 0;
+
+            foreach (IZoneBuilding zoneBuilding in zoneBuildings)
+            {
+                if (zoneBuilding is Industrial)
+                {
+                    ++IndustrialCount;
+                }
+                else if (zoneBuilding is Commercial)
+                {
+                    ++commercialCount;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return commercialCount / IndustrialCount;
         }
 
         /// <summary>
