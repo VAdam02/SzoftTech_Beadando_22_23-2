@@ -37,7 +37,7 @@ namespace Statistics
             return houseTax;
         }
 
-        public float CalculateTax(List<Residential> residentials)
+        public float CalculateCityTax(List<Residential> residentials)
         {
             float totalTax = 0;
 
@@ -80,7 +80,7 @@ namespace Statistics
             return totalCityHappiness;
         }
 
-        public int sumMaintainance(List<Building> buildings)
+        public int SumMaintainance(List<Building> buildings)
         {
             int totalMaintainanceCost = 0;
 
@@ -175,13 +175,13 @@ namespace Statistics
             throw new NotImplementedException();
         }
 
-        public void nextQuarter()
+        public void NextQuarter()
         {            
             StatReport statReport = new StatReport();
 
-            statReport.Quarter = Quarter;
-
             Quarter = ++Quarter % 4;
+
+            statReport.Quarter = Quarter;
 
             if (Quarter == 0) { ++Year; }
 
@@ -190,7 +190,6 @@ namespace Statistics
             
             
             _statReports.Add(statReport);
-            
         }
     }
 }
