@@ -6,16 +6,28 @@ using UnityEngine;
 
 public class ResidentialDesignDisplay : MonoBehaviour
 {
-    private bool _needRedisplay = true;
+    public uint designID = 0;
+    public bool generate = false;
 
     void Update()
     {
+        //DEMO CODE
+        if (generate)
+        {
+            DesignID = designID;
+            generate = false;
+            ReloadMaterialsAndGradients();
+        }
+        //DEMO CODE
+
         if (_needRedisplay)
         {
             Display();
             _needRedisplay = false;
         }
     }
+
+    private bool _needRedisplay = true;
 
     //2^32-1        / MAXELEMENTID / MAXLEVELCOUNT = MAXELEMENTCOUNT
     //4 294 967 295 / 211           / 8            = 2 544 411
