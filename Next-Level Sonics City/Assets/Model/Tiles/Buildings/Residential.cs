@@ -8,13 +8,13 @@ namespace Buildings
     {
         public BuildingLevel Level{ get; private set; }
         public int ResidentLimit { get; private set; }
-        public List<Person> Residents { get; private set; }
+        private List<Person> _residents;
 
         public Residential()
         {
             Level = 0;
             ResidentLimit = 5;
-            Residents= new List<Person>();
+            _residents= new List<Person>();
         }
 
         public void LevelUp()
@@ -25,13 +25,18 @@ namespace Buildings
 
         public bool MoveIn(Person person)
         {
-            if (Residents.Count < ResidentLimit)
+            if (_residents.Count < ResidentLimit)
             {
-                Residents.Add(person);
+                _residents.Add(person);
                 return true;
             }
             
             return false;
+        }
+
+        public List<Person> GetPeople()
+        {
+            return _residents;
         }
     }
 }

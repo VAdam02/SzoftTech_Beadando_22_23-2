@@ -9,13 +9,13 @@ namespace Buildings
     {
         public BuildingLevel Level { get; private set; }
         public int WorkerLimit { get; private set; }
-        public List<Person> Workers { get; private set; }
+        public List<Person> _workers;
 
         public Industrial()
         {
             Level = 0;
             WorkerLimit = 10;
-            Workers = new List<Person>();
+            _workers = new List<Person>();
         }
 
         public void LevelUp()
@@ -26,9 +26,9 @@ namespace Buildings
 
         public bool Employ(Person person)
         {
-            if (Workers.Count < WorkerLimit)
+            if (_workers.Count < WorkerLimit)
             {
-                Workers.Add(person);
+                _workers.Add(person);
                 return true;
             }
 
@@ -38,6 +38,11 @@ namespace Buildings
         public void Fire(Person person)
         {
             throw new NotImplementedException();
+        }
+
+        public List<Person> GetPeople()
+        {
+            return _workers;
         }
     }
 }
