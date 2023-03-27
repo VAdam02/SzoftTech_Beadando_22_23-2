@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Tiles;
 using Model;
+using Buildings;
 
 namespace Statistics
 {
     public class StatEngine : MonoBehaviour
     {
         private List<StatReport> _statReports;
-        public int Year { get; }
-        public int Quarter { get; }
+        public int Year { get; private set; }
+        public int Quarter { get; private set; }
 
         private const int STARTYEAR = 2020;
 
@@ -22,10 +23,17 @@ namespace Statistics
             Quarter = 0;
         }
 
-        /*
-        public float CalculateTax(Person person)
+        
+        public float CalculateTax(List<Residential> residentials)
         {
-            //TODO
+            int totalTax = 0;
+
+            foreach (Residential residential in residentials)
+            {
+                
+            }
+
+
             return 0;
         }
 
@@ -34,7 +42,7 @@ namespace Statistics
             //TODO
             return 0;
         }
-        */
+        
 
         public float CalculateBuildingHappiness(Building building)
         {
@@ -50,7 +58,14 @@ namespace Statistics
 
         public int sumMaintainance(List<Building> buildings)
         {
-            //TODO
+            int totalMaintainance = 0;
+
+            foreach (Building building in buildings)
+            {
+                
+            }
+
+
             return 0;
         }
 
@@ -115,15 +130,21 @@ namespace Statistics
         }
 
         public void nextQuarter()
-        {
-            throw new NotImplementedException();
-            /*
+        {            
             StatReport statReport = new StatReport();
 
-            //TODO
+            statReport.Quarter = Quarter;
+
+            Quarter = ++Quarter % 4;
+
+            if (Quarter == 0) { ++Year; }
+
+            statReport.Year = Year;
+            
+            
             
             _statReports.Add(statReport);
-            */
+            
         }
     }
 }

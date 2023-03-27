@@ -4,24 +4,24 @@ namespace Statistics
 {
     public class StatReport : MonoBehaviour
     {
-        public int Year { get; set; }
-        public int Quarter { get; private set; }
-        public float Happiness { get; private set; }
+        public int Year { get; internal set; }
+        public int Quarter { get; internal set; }
+        public float Happiness { get; internal set; }
 
-        public int Tax { get; private set; }
-        public int DestroyIncomes { get; private set; }
-        public int BuildExpenses { get; private set; }
-        public int MaintainanceCosts { get; private set; }
+        public int Tax { get; internal set; }
+        public int DestroyIncomes { get; internal set; }
+        public int BuildExpenses { get; internal set; }
+        public int MaintainanceCosts { get; internal set; }
 
-        public int Incomes { get; private set; }
-        public int Expenses { get; private set; }
-        public int Total { get; private set; }
+        public int Incomes { get; internal set; }
+        public int Expenses { get; internal set; }
+        public int Total { get; internal set; }
 
-        public int Population { get; private set; }
-        public int PopulationChange { get; private set; }
+        public int Population { get; internal set; }
+        public int PopulationChange { get; internal set; }
 
-        public int ElectricityProduced { get; private set; }
-        public int ElectricityConsumed { get; private set; }
+        public int ElectricityProduced { get; internal set; }
+        public int ElectricityConsumed { get; internal set; }
 
         public StatReport()
         {
