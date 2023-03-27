@@ -6,8 +6,8 @@ namespace Persons
     {
         public IWorkplace WorkPlace { get; private set; }
         public Qualification Qualification { get; private set; }
-        public int BaseSalary { get; private set; }
 
+        private int _baseSalary;
         private float _taxSum = 0f;
         private int _taxCount = 0;
 
@@ -16,7 +16,7 @@ namespace Persons
         public Worker(IWorkplace workPlace, int baseSalary)
         {
             WorkPlace = workPlace;
-            BaseSalary = baseSalary;
+            _baseSalary = baseSalary;
             Qualification = Qualification.LOW;
         }
 
@@ -56,24 +56,15 @@ namespace Persons
 
         private float CalculateSalary()
         {
-            float salary = 0;
-
-            switch (Qualification)
+            if (Qualification is Qualification.HIGH)
             {
-                case Qualification.MID:
-                    salary = BaseSalary * 1.2f;
-                    break;
-
-                case Qualification.HIGH:
-                    salary = BaseSalary * 1.5f;
-                    break;
-
-                default:
-                    salary = BaseSalary;
-                    break;
+                return _baseSalary * 1.5f;
             }
-
-            return salary;
+            else if (Qualification is Qualification.MID)
+            {
+                return _baseSalary * 1.2f;
+            }
+            else { return _baseSalary; }
         }
     }
 }
