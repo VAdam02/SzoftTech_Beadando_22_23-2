@@ -6,7 +6,7 @@ namespace Buildings
 {
     public class Residential : Building, IZoneBuilding
     {
-        public BuildingLevel Level{ get; private set; }
+        public ZoneBuildingLevel Level{ get; private set; }
         public int ResidentLimit { get; private set; }
         private List<Person> _residents;
 
@@ -19,6 +19,7 @@ namespace Buildings
 
         public void LevelUp()
         {
+            //TODO level up design ID too
             ++Level;
             ResidentLimit += 5;
         }

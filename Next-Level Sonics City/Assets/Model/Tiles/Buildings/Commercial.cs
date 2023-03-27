@@ -7,7 +7,7 @@ namespace Buildings
 {
     public class Commercial : Building, IWorkplace, IZoneBuilding
     {
-        public BuildingLevel Level { get; private set; }
+        public ZoneBuildingLevel Level { get; private set; }
         public int WorkerLimit { get; private set; }
         public List<Person> _workers;
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using Tiles;
 using Model;
 using Buildings;
+using System.Threading.Tasks;
 
 namespace Statistics
 {
@@ -51,7 +52,7 @@ namespace Statistics
             return totalTax;
         }     
 
-        public float CalculateBuildingHappiness(IZoneBuilding zoneBuilding)
+        public async Task<float> CalculateBuildingHappiness(IZoneBuilding zoneBuilding)// Izone -> Building
         {
             float totalBuildingHappiness = 0;
             List<Person> persons = zoneBuilding.GetPeople();
@@ -66,13 +67,13 @@ namespace Statistics
             return totalBuildingHappiness;
         }
 
-        public float CalculateCityHappiness(List<IZoneBuilding> buildings)
+        public async Task<float> CalculateCityHappiness(List<IZoneBuilding> buildings)// Izone -> Building
         {
             float totalCityHappiness = 0;
 
             foreach (IZoneBuilding building in buildings)
             {
-                totalCityHappiness += CalculateBuildingHappiness(building);
+                totalCityHappiness += await CalculateBuildingHappiness(building);
             }
 
             totalCityHappiness /= buildings.Count;
