@@ -18,7 +18,7 @@ namespace Buildings
             _workers= new List<Person>();
         }
 
-        public void LevelUp()
+        public void LevelUp()//TODO limit upgrading logic
         {
             ++Level;
             _workersLimit += 5;
@@ -35,10 +35,17 @@ namespace Buildings
             return false;
         }
 
-        public void Fire(Person person)
+        public bool Unemploy(Person person)
         {
-            throw new NotImplementedException();
+            if (_workers.Count > 0)
+            {
+                _workers.Remove(person);
+                return true;
+            }
+
+            return false;
         }
+
         public List<Person> GetWorkers()
         {
             return _workers;
@@ -48,6 +55,7 @@ namespace Buildings
         {
             return _workers.Count;
         }
+
         public int GetWorkersLimit()
         {
             return _workersLimit;
