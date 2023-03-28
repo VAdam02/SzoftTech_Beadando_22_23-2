@@ -22,6 +22,7 @@ namespace Persons
 
         public Pensioner Retire()
         {
+            _taxCount /= 2;
             float pension = (TAXED_YEARS_FOR_PENSION * _taxSum / _taxCount) / 2.0f;
             return new Pensioner(pension);
         }
