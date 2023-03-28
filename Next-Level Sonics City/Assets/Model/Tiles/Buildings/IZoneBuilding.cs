@@ -8,6 +8,9 @@ namespace Buildings
     public interface IZoneBuilding
     {
         public abstract void LevelUp();
+<<<<<<< Updated upstream
         public abstract List<Person> GetPeople(); 
+=======
+>>>>>>> Stashed changes
     }
 }
