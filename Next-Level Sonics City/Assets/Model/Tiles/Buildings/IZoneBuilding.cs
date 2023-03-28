@@ -8,6 +8,5 @@ namespace Buildings
     public interface IZoneBuilding
     {
         public abstract void LevelUp();
-        public abstract List<Person> GetPeople(); 
     }
 }

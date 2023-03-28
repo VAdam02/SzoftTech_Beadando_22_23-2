@@ -17,7 +17,7 @@ namespace Buildings
             _residents= new List<Person>();
         }
 
-        public void LevelUp()
+        public void LevelUp()//TODO limit upgrading logic
         {
             //TODO level up design ID too
             ++Level;
@@ -35,7 +35,18 @@ namespace Buildings
             return false;
         }
 
-        public List<Person> GetPeople()
+        public bool MoveOut(Person person)
+        {
+            if (_residents.Count > 0)
+            {
+                _residents.Remove(person);
+                return true;
+            }
+
+            return false;
+        }
+
+        public List<Person> GetResidents()
         {
             return _residents;
         }

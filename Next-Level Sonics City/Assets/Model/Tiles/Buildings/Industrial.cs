@@ -5,28 +5,28 @@ using System;
 
 namespace Buildings
 {
-    public class Industrial : Building
+    public class Industrial : Building, IWorkplace, IZoneBuilding
     {
-        public ZoneBuildingLevel Level { get; private set; }
-        public int WorkerLimit { get; private set; }
-        public List<Person> _workers;
+        public BuildingLevel Level { get; private set; }
+        private List<Person> _workers;
+        private int _workersLimit;
 
         public Industrial()
         {
             Level = 0;
-            WorkerLimit = 10;
+            _workersLimit = 10;
             _workers = new List<Person>();
         }
 
-        public void LevelUp()
+        public void LevelUp()//TODO limit upgrading logic
         {
             ++Level;
-            WorkerLimit += 5;
+            _workersLimit += 5;
         }
 
         public bool Employ(Person person)
         {
-            if (_workers.Count < WorkerLimit)
+            if (_workers.Count < _workersLimit)
             {
                 _workers.Add(person);
                 return true;
@@ -35,14 +35,30 @@ namespace Buildings
             return false;
         }
 
-        public void Fire(Person person)
+        public bool Unemploy(Person person)
         {
-            throw new NotImplementedException();
+            if (_workers.Count > 0)
+            {
+                _workers.Remove(person);
+                return true;
+            }
+
+            return false;
         }
 
-        public List<Person> GetPeople()
+        public List<Person> GetWorkers()
         {
             return _workers;
+        }
+
+        public int GetWorkersCount()
+        {
+            return _workers.Count;
+        }
+
+        public int GetWorkersLimit()
+        {
+            return _workersLimit;
         }
     }
 }
