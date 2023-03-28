@@ -5,6 +5,7 @@ using Tiles;
 using Model;
 using Buildings;
 using System.Threading.Tasks;
+using Persons;
 
 namespace Statistics
 {
@@ -23,14 +24,17 @@ namespace Statistics
             Quarter = 0;
         }
 
-        public float CalculateHouseTax(Residential residential)
+        public float CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
         {
             float houseTax = 0;
-            List<Person> persons = residential.GetPeople();
+            List<Person> persons = residential.GetResidents();
 
             foreach (Person person in persons)
             {
-                houseTax += person.GetTax();
+                if (person is Worker)
+                {
+                    houseTax += person.PayTax(taxRate);
+                }
             }
 
             houseTax /= persons.Count;
@@ -38,13 +42,13 @@ namespace Statistics
             return houseTax;
         }
 
-        public float CalculateCityTax(List<Residential> residentials)
+        public float CalculateResidenceTax(List<Residential> residentials, float taxRate)
         {
             float totalTax = 0;
 
             foreach (Residential residential in residentials)
             {
-                totalTax += CalculateHouseTax(residential);
+                totalTax += CalculateResidenceTaxPerHouse(residential, taxRate);
             }
 
             totalTax /= residentials.Count;
