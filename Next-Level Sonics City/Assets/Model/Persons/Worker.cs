@@ -36,8 +36,8 @@ namespace Persons
         {
             --Qualification;
         }
-
-        public float PayTax(float taxRate)
+        
+        public override float PayTax(float taxRate)
         {
             float currentTax = CalculateSalary() * taxRate;
             

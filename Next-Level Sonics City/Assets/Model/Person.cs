@@ -23,5 +23,7 @@ namespace Model
         {
             ++Age;
         }
+
+        public abstract float PayTax(float taxRate);
     }
 }

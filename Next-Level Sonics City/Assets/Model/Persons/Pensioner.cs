@@ -10,5 +10,10 @@ namespace Persons
         {
             Pension = pension;
         }
+
+        public override float PayTax(float taxRate)
+        {
+            return 0f;
+        }
     }
 }
