@@ -28,9 +28,15 @@ namespace Buildings
             return false;
         }
 
-        public void Fire(Person person)
+        public bool Unemploy(Person person)
         {
-            throw new NotImplementedException();
+            if (_workers.Count > 0)
+            {
+                _workers.Remove(person);
+                return true;
+            }
+
+            return false;
         }
 
         public List<Person> GetWorkers()
