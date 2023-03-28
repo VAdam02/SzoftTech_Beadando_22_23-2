@@ -10,11 +10,6 @@ namespace Buildings
         public int ResidentLimit { get; private set; }
         private List<Person> _residents;
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
         public Residential()
         {
             Level = 0;
@@ -39,17 +34,9 @@ namespace Buildings
             return false;
         }
 
-<<<<<<< Updated upstream
-        public List<Person> GetPeople()
-        {
-            return _residents;
-        }
-=======
         public List<Person> GetResidents()
         {
             return _residents;
         }
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     }
 }
