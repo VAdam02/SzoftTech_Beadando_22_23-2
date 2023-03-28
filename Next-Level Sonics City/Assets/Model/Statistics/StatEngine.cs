@@ -24,63 +24,77 @@ namespace Statistics
             Quarter = 0;
         }
 
-        public float CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
+        public async Task<float> CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
         {
             float houseTax = 0;
             List<Person> persons = residential.GetResidents();
 
             foreach (Person person in persons)
             {
-                if (person is Worker)
-                {
-                    houseTax += person.PayTax(taxRate);
-                }
+                houseTax += person.PayTax(taxRate);
             }
-
-            houseTax /= persons.Count;
 
             return houseTax;
         }
 
-        public float CalculateResidenceTax(List<Residential> residentials, float taxRate)
+        public async Task<float> CalculateResidenceTax(List<Residential> residentials, float taxRate)
         {
             float totalTax = 0;
 
             foreach (Residential residential in residentials)
             {
-                totalTax += CalculateResidenceTaxPerHouse(residential, taxRate);
+                totalTax += await CalculateResidenceTaxPerHouse(residential, taxRate);
             }
 
-            totalTax /= residentials.Count;
-
             return totalTax;
-        }     
+        }
 
-        public async Task<float> CalculateBuildingHappiness(IZoneBuilding zoneBuilding)// Izone -> Building
+        public async Task<float> CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
         {
-            float totalBuildingHappiness = 0;
-            List<Person> persons = zoneBuilding.GetPeople();
+            float workplaceTax = 0;
+            List<Person> persons = workplace.GetWorkers();
 
             foreach (Person person in persons)
             {
-                totalBuildingHappiness += person.GetHappiness();
+                workplaceTax += person.PayTax(taxRate);
             }
 
-            totalBuildingHappiness /= persons.Count;
-
-            return totalBuildingHappiness;
+            return workplaceTax;
         }
 
-        public async Task<float> CalculateCityHappiness(List<IZoneBuilding> buildings)// Izone -> Building
+        public async Task<float> CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
+        {
+            float totalTax = 0;
+
+            foreach (IWorkplace workplace in workplaces)
+            {
+                totalTax += await CalculateIncomeTaxPerWorkplace(workplace, taxRate);
+            }
+
+            return totalTax;
+        }
+
+        public async Task<float> CalculateHappinessPerResident(Residential residential)
+        {
+            float totalResidentialHappiness = 0;
+            List<Person> persons = residential.GetResidents();
+
+            foreach (Person person in persons)
+            {
+                totalResidentialHappiness += person.GetHappiness();
+            }
+
+            return totalResidentialHappiness;
+        }
+
+        public async Task<float> CalculateHappiness(List<Residential> residentials)
         {
             float totalCityHappiness = 0;
 
-            foreach (IZoneBuilding building in buildings)
+            foreach (Residential residential in residentials)
             {
-                totalCityHappiness += await CalculateBuildingHappiness(building);
+                totalCityHappiness += await CalculateHappinessPerResident(residential);
             }
-
-            totalCityHappiness /= buildings.Count;
 
             return totalCityHappiness;
         }
@@ -181,20 +195,9 @@ namespace Statistics
         }
 
         public void NextQuarter()
-        {            
-            StatReport statReport = new StatReport();
-
-            Quarter = ++Quarter % 4;
-
-            statReport.Quarter = Quarter;
-
-            if (Quarter == 0) { ++Year; }
-
-            statReport.Year = Year;
-            
-            
-            
-            _statReports.Add(statReport);
+        {
+            //TODO
+            throw new NotImplementedException();
         }
     }
 }
