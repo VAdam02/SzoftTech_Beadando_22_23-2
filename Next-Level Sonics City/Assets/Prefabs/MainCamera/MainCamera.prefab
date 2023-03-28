@@ -87,6 +87,7 @@ MonoBehaviour:
   TransMultiplier: 10
   ZoomMultiplier: 20
   RotationMultiplier: 40
+  VirtualMouse: {fileID: 0}
 --- !u!1 &2896971607221050437
 GameObject:
   m_ObjectHideFlags: 0
