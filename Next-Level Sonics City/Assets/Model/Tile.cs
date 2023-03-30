@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace Model
 {
-    public abstract class Tile : MonoBehaviour
+    public abstract class Tile
     {
         public uint DesignID { get; protected set; }
-        public Vector2 Coordinates { get; protected set; }
+        public Vector3 Coordinates { get; protected set; }
 
 
         public void Build()
