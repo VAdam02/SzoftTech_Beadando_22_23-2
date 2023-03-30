@@ -6,6 +6,9 @@ namespace Simulation
 {
     public class SimEngine : MonoBehaviour
     {
+        private Tile[,] _tiles;
+        public Tile[,] Tiles { get { return _tiles; } }
+
         // Start is called before the first frame update
         void Start()
         {
