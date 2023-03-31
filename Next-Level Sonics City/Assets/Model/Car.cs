@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Tiles;
+using Model.Tiles;
 using Model;
 
 

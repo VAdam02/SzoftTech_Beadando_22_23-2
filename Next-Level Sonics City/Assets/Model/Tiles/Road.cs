@@ -4,7 +4,7 @@ using UnityEngine;
 using Model;
 
 
-namespace Tiles
+namespace Model.Tiles
 {
     public class Road : Tile
     {
