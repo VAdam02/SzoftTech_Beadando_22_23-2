@@ -12,7 +12,7 @@ namespace Model
     {
         private static ulong s_id;
         public int Born { get; protected set; }
-        public Residential LiveAt { get; protected set; }
+        public ResidentialBuildingTile LiveAt { get; protected set; }
         public Qualification Qualification { get; protected set; }
 
         public float GetHappiness()

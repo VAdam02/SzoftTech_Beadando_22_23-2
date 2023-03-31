@@ -68,7 +68,7 @@ public class ResidentialDesignGenerator
     public  static ResidentialDesignGenerator Instance { get { if (_instance == null) _instance = new ResidentialDesignGenerator(); return _instance; } }
 
     private JObject _residentalGenerationRules;
-    public  JObject ResidentialDesignRules { get { if (_residentalGenerationRules == null) _residentalGenerationRules = JObject.Parse(Resources.Load<TextAsset>("HouseGenerator/ResidentialDesignRules").text); return _residentalGenerationRules; } }
+    public  JObject ResidentialDesignRules { get { if (_residentalGenerationRules == null) _residentalGenerationRules = JObject.Parse(Resources.Load<TextAsset>("Tiles/ResidentialBuildingTile/ResidentialBuildingTileGenerationRule").text); return _residentalGenerationRules; } }
 
     private List<ResidentialDesignBase> _residentialDesignBases;
     public  List<ResidentialDesignBase> ResidentialDesignBases { get { if (_residentialDesignBases == null) LoadResidentialDesignBases(); return _residentialDesignBases; } }
@@ -91,7 +91,7 @@ public class ResidentialDesignGenerator
 
     public const uint RESIDENTIAL_LEVEL_COUNT_MASK = 0x00000007; // 3 bits
 
-    public uint GenerateResidential(uint levelCount)
+    public static uint GenerateResidential(uint levelCount)
     {
         System.Random rnd = new System.Random();
         uint thirtyBits = (uint) rnd.Next(1 << 30);

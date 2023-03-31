@@ -6,6 +6,8 @@ namespace View
 {
 	public class Tile : MonoBehaviour
 	{
+		internal const float MODELSCALE = 1.0f/1.0f;
+
 		private Model.Tile _tileModel;
 		public Model.Tile TileModel { get { return _tileModel; } private set { _tileModel = value; } }
 

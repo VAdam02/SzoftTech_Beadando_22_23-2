@@ -1,0 +1,320 @@
+{
+    "Colors":
+    {
+        "HouseBottom":
+        [
+            [0, 64, 64, 64],
+            [1, 128, 128, 128]
+        ],
+        "HouseColor":
+        [
+            [0, 255, 102, 102],
+            [0.25, 255, 179, 102],
+            [0.5, 255, 255, 102],
+            [0.75, 102, 255, 102],
+            [1, 102, 255, 255]
+        ],
+        "Roof":
+        [
+            [0, 16, 16, 16],
+            [1, 96, 96, 96]
+        ],
+        "Door":
+        [
+            [0, 51, 36, 32],
+            [0.33, 97, 55, 35],
+            [0.66, 181, 116, 70],
+            [1, 225, 195, 171]
+        ],
+        "Window":
+        [
+            [0, 128, 224, 255],
+            [1, 128, 191, 255]
+        ]
+    },
+    "Models":
+    {
+        "ModelRoot":                "Tiles/ResidentialBuildingTile/Model/",
+        "BaseModelRoot":            "Tiles/ResidentialBuildingTile/Model/Base/",
+        "TerraceModelRoot":         "Tiles/ResidentialBuildingTile/Model/Terrace/",
+        "RoofModelRoot":            "Tiles/ResidentialBuildingTile/Model/Roof/",
+        "DoorModelRoot":            "Tiles/ResidentialBuildingTile/Model/Door/",
+        "WindowModelRoot":          "Tiles/ResidentialBuildingTile/Model/Window/",
+        "RoofFrontWindowModelRoot": "Tiles/ResidentialBuildingTile/Model/RoofFrontWindow/",
+
+        "Base":
+        [
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "BigFloor",
+                "ForeTerraceAttachPoint": [0, 0, 16],
+                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeBigBase": true,
+                "BackBigBase": true,
+                "OnlyFloor": true,
+                "OnlyStorey": false
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "ForeFloor",
+                "ForeTerraceAttachPoint": [0, 0, 16],
+                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeBigBase": true,
+                "BackBigBase": false,
+                "OnlyFloor": true,
+                "OnlyStorey": false
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "BackFloor",
+                "ForeTerraceAttachPoint": [0, 0, 12],
+                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeBigBase": false,
+                "BackBigBase": true,
+                "OnlyFloor": true,
+                "OnlyStorey": false
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "SmallFloor",
+                "ForeTerraceAttachPoint": [0, 0, 12],
+                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeBigBase": false,
+                "BackBigBase": false,
+                "OnlyFloor": true,
+                "OnlyStorey": false
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "BigStorey",
+                "ForeTerraceAttachPoint": [0, 0, 16],
+                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeBigBase": true,
+                "BackBigBase": true,
+                "OnlyFloor": false,
+                "OnlyStorey": true
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "ForeStorey",
+                "ForeTerraceAttachPoint": [0, 0, 16],
+                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeBigBase": true,
+                "BackBigBase": false,
+                "OnlyFloor": false,
+                "OnlyStorey": true
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "BackStorey",
+                "ForeTerraceAttachPoint": [0, 0, 12],
+                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeBigBase": false,
+                "BackBigBase": true,
+                "OnlyFloor": false,
+                "OnlyStorey": true
+            },
+            {
+                "PrefabFolder": "BaseModelRoot",
+                "Prefab": "SmallStorey",
+                "ForeTerraceAttachPoint": [0, 0, 12],
+                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeBigBase": false,
+                "BackBigBase": false,
+                "OnlyFloor": false,
+                "OnlyStorey": true
+            }
+        ],
+        "Terrace":
+        [
+            {
+                "PrefabFolder": "TerraceModelRoot",
+                "Prefab": "TerraceFloor",
+                "NeedSmallNextLevel": true,
+                "NeedBigNextLevel": false,
+                "OnlyFloor": true,
+                "OnlyStorey": false,
+                "WindowAttachPoints": 
+                [
+                    [-5, 1.6, 0],
+                    [5, 1.6, 0]
+                ],
+                "DoorAttachPoint": [0, 0.6, 0]
+            },
+            {
+                "PrefabFolder": "TerraceModelRoot",
+                "Prefab": "TerraceWithNextLevelFloor",
+                "NeedSmallNextLevel": false,
+                "NeedBigNextLevel": true,
+                "OnlyFloor": true,
+                "OnlyStorey": false,
+                "WindowAttachPoints": 
+                [
+                    [-5, 1.6, 0],
+                    [5, 1.6, 0]
+                ],
+                "DoorAttachPoint": [0, 0.6, 0]
+            },
+            {
+                "PrefabFolder": "TerraceModelRoot",
+                "Prefab": "TerraceStorey",
+                "NeedSmallNextLevel": true,
+                "NeedBigNextLevel": false,
+                "OnlyFloor": false,
+                "OnlyStorey": true,
+                "WindowAttachPoints": 
+                [
+                    [-5, 1, 0],
+                    [5, 1, 0]
+                ],
+                "DoorAttachPoint": [0, 0, 0]
+            },
+            {
+                "PrefabFolder": "TerraceModelRoot",
+                "Prefab": "TerraceWithNextLevelStorey",
+                "NeedSmallNextLevel": false,
+                "NeedBigNextLevel": true,
+                "OnlyFloor": false,
+                "OnlyStorey": true,
+                "WindowAttachPoints": 
+                [
+                    [-5, 1, 0],
+                    [5, 1, 0]
+                ],
+                "DoorAttachPoint": [0, 0, 0]
+            }
+        ],
+        "JustWindowTerrace":
+        [
+            {
+                "PrefabFolder": "ModelRoot",
+                "Prefab": "EmptyObject",
+                "OnlyFloor": true,
+                "OnlyStorey": false,
+                "WindowAttachPoints": 
+                [
+                    [-5, 1.6, 0],
+                    [5, 1.6, 0]
+                ],
+                "HasDoor": true,
+                "DoorAttachPoint": [0, 0.6, 0]
+            },
+            {
+                "PrefabFolder": "ModelRoot",
+                "Prefab": "EmptyObject",
+                "OnlyFloor": false,
+                "OnlyStorey": true,
+                "WindowAttachPoints": 
+                [
+                    [-5, 1, 0],
+                    [5, 1, 0]
+                ],
+                "HasDoor": false
+            }
+        ],
+        "Roof":
+        [
+            {
+                "PrefabFolder": "RoofModelRoot",
+                "Prefab": "BigRoof",
+                "ForeTerraceAttachPoint": [0, 0, 16],
+                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeBigBase": true,
+                "BackBigBase": true
+            },
+            {
+                "PrefabFolder": "RoofModelRoot",
+                "Prefab": "ForeRoof",
+                "ForeTerraceAttachPoint": [0, 0, 16],
+                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeBigBase": true,
+                "BackBigBase": false
+            },
+            {
+                "PrefabFolder": "RoofModelRoot",
+                "Prefab": "BackRoof",
+                "ForeTerraceAttachPoint": [0, 0, 12],
+                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeBigBase": false,
+                "BackBigBase": true
+            },
+            {
+                "PrefabFolder": "RoofModelRoot",
+                "Prefab": "SmallRoof",
+                "ForeTerraceAttachPoint": [0, 0, 12],
+                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeBigBase": false,
+                "BackBigBase": false
+            }
+        ],
+        "Door":
+        [
+            {
+                "PrefabFolder": "DoorModelRoot",
+                "Prefab": "BigWindowDoor"
+            },
+            {
+                "PrefabFolder": "DoorModelRoot",
+                "Prefab": "PlainDoor"
+            },
+            {
+                "PrefabFolder": "DoorModelRoot",
+                "Prefab": "SlimWindowDoor"
+            },
+            {
+                "PrefabFolder": "DoorModelRoot",
+                "Prefab": "ThreeWindowDoor"
+            },
+            {
+                "PrefabFolder": "DoorModelRoot",
+                "Prefab": "TopWindowDoor"
+            },
+            {
+                "PrefabFolder": "DoorModelRoot",
+                "Prefab": "TwoThreeWindowDoor"
+            }
+        ],
+        "Window":
+        [
+            {
+                "PrefabFolder": "WindowModelRoot",
+                "Prefab": "OneBigWindow"
+            },
+            {
+                "PrefabFolder": "WindowModelRoot",
+                "Prefab": "TwoBigWindow"
+            },
+            {
+                "PrefabFolder": "WindowModelRoot",
+                "Prefab": "ThreeBigWindow"
+            }
+        ],
+        "TerraceRoof":
+        [
+            {
+                "PrefabFolder": "ModelRoot",
+                "Prefab": "EmptyObject",
+                "WindowAttachPoint": [0, 0, 0]
+            }
+        ],
+        "RoofFrontWindow":
+        [
+            {
+                "PrefabFolder": "RoofFrontWindowModelRoot",
+                "Prefab": "OneRoofFrontWindow"
+            },
+            {
+                "PrefabFolder": "RoofFrontWindowModelRoot",
+                "Prefab": "TwoRoofFrontWindow"
+            },
+            {
+                "PrefabFolder": "RoofFrontWindowModelRoot",
+                "Prefab": "ThreeRoofFrontWindow"
+            },
+            {
+                "PrefabFolder": "RoofFrontWindowModelRoot",
+                "Prefab": "FourRoofFrontWindow"
+            }
+        ]
+    }
+}

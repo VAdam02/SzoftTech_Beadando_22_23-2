@@ -7,6 +7,9 @@ namespace Buildings
 {
     public class Stadion : Building
     {
+        public Stadion(int x, int y, uint designID) : base(x, y, designID)
+		{
 
+		}
     }
 }

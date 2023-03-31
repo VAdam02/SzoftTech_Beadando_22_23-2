@@ -10,7 +10,7 @@ namespace View.Tiles
         // Start is called before the first frame update
         void Start()
         {
-            transform.position = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 50;
+            transform.position = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 25;
         }
 
         // Update is called once per frame

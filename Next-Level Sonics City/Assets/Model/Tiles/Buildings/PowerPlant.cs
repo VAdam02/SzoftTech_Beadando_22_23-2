@@ -7,6 +7,9 @@ namespace Buildings
 {
     public class PowerPlant : Building
     {
+        public PowerPlant(int x, int y, uint designID) : base(x, y, designID)
+		{
 
+		}
     }
 }

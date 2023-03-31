@@ -5,8 +5,11 @@ using Model.Tiles;
 
 namespace Buildings
 {
-    public class Commercial : Building
-    {
+	public class Commercial : Building
+	{
+		public Commercial(int x, int y, uint designID) : base(x, y, designID)
+		{
 
-    }
+		}
+	}
 }

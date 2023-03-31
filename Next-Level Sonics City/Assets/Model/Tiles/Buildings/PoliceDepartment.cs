@@ -7,6 +7,9 @@ namespace Buildings
 {
     public class PoliceDepartment : Building
     {
+        public PoliceDepartment(int x, int y, uint designID) : base(x, y, designID)
+		{
 
+		}
     }
 }

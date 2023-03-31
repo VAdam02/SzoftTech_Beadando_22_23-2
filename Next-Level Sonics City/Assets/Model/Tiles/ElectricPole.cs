@@ -6,8 +6,11 @@ using UnityEngine;
 
 namespace Tiles
 {
-    public class ElectricPole : Tile, IPowerGridElement
-    {
+	public class ElectricPole : Tile, IPowerGridElement
+	{
+		public ElectricPole(int x, int y, uint designID) : base(x, y, designID)
+		{
 
-    }
+		}
+	}
 }

@@ -8,7 +8,7 @@ namespace Model.Tiles
 {
 	public abstract class Building : Tile
 	{
-		public Building(int x, int y) : base(x, y)
+		public Building(int x, int y, uint designID) : base(x, y, designID)
 		{
 
 		}
