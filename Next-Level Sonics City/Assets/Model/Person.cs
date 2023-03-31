@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Buildings;
 using Persons;
+using Model.Tiles.Buildings;
 
 namespace Model
 {

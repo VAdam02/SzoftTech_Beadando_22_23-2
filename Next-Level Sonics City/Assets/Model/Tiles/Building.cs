@@ -4,10 +4,13 @@ using UnityEngine;
 using Model;
 
 
-namespace Tiles
+namespace Model.Tiles
 {
-    public abstract class Building : Tile
-    {
+	public abstract class Building : Tile
+	{
+		public Building(int x, int y) : base(x, y)
+		{
 
-    }
+		}
+	}
 }

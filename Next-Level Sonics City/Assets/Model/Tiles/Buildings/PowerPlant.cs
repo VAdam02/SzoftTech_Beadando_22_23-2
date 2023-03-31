@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Tiles;
+using Model.Tiles;
 using UnityEngine;
 
 namespace Buildings
