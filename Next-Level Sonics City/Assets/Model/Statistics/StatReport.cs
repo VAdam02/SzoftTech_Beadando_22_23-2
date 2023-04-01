@@ -1,8 +1,6 @@
-using UnityEngine;
-
-namespace Statistics
+namespace Model.Statistics
 {
-    public class StatReport : MonoBehaviour
+    public class StatReport
     {
         public int Year { get; internal set; }
         public int Quarter { get; internal set; }
@@ -23,9 +21,9 @@ namespace Statistics
         public int ElectricityProduced { get; internal set; }
         public int ElectricityConsumed { get; internal set; }
 
-        public StatReport()
-        {
+		public StatReport()
+		{
 
-        }
-    }
+		}
+	}
 }

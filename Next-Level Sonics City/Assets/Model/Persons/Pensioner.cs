@@ -1,19 +1,19 @@
-using Model;
+using Model.Tiles.Buildings;
 
-namespace Persons
+namespace Model.Persons
 {
-    public class Pensioner : Person
-    {
-        public float Pension { get; private set; }
+	public class Pensioner : Person
+	{
+		public float Pension { get; private set; }
 
-        public Pensioner(float pension)
-        {
-            Pension = pension;
-        }
+		public Pensioner(Residential home, int age, float pension) : base(home, age)
+		{
+			Pension = pension;
+		}
 
-        public override float PayTax(float taxRate)
-        {
-            return 0f;
-        }
-    }
+		public override float PayTax(float taxRate)
+		{
+			return 0f;
+		}
+	}
 }

@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Model;
 
-
-namespace Tiles
+namespace Model.Tiles
 {
-    public class Road : Tile
-    {
+	public class Road : Tile
+	{
 
-    }
+	}
 }

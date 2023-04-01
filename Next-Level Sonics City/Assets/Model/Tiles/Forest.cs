@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Model;
 
-namespace Tiles
+namespace Model.Tiles
 {
-    public class Forest : Tile
-    {
+	public class Forest : Tile
+	{
 
-    }
+	}
 }

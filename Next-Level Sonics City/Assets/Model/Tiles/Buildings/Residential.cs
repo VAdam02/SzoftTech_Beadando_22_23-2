@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Tiles;
-using Model;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
     public class Residential : Building, IZoneBuilding
     {
@@ -10,45 +8,40 @@ namespace Buildings
         public int ResidentLimit { get; private set; }
         private List<Person> _residents;
 
-        public Residential()
-        {
-            Level = 0;
-            ResidentLimit = 5;
-            _residents= new List<Person>();
-        }
+		public Residential()
+		{
+			Level = 0;
+			ResidentLimit = 5;
+			_residents= new List<Person>();
+		}
 
-        public void LevelUp()//TODO limit upgrading logic
-        {
-            //TODO level up design ID too
-            ++Level;
-            ResidentLimit += 5;
-        }
+		public void LevelUp()
+		{
+			if (Level == ZoneBuildingLevel.THREE) { return; }
+			//TODO level up design ID too
+			++Level;
+			ResidentLimit += 5;
+		}
 
-        public bool MoveIn(Person person)
-        {
-            if (_residents.Count < ResidentLimit)
-            {
-                _residents.Add(person);
-                return true;
-            }
-            
-            return false;
-        }
+		public bool MoveIn(Person person)
+		{
+			if (_residents.Count < ResidentLimit)
+			{
+				_residents.Add(person);
+				return true;
+			}
+			
+			return false;
+		}
 
-        public bool MoveOut(Person person)
-        {
-            if (_residents.Count > 0)
-            {
-                _residents.Remove(person);
-                return true;
-            }
+		public bool MoveOut(Person person)
+		{
+			return _residents.Remove(person);
+		}
 
-            return false;
-        }
-
-        public List<Person> GetResidents()
-        {
-            return _residents;
-        }
-    }
+		public List<Person> GetResidents()
+		{
+			return _residents;
+		}
+	}
 }

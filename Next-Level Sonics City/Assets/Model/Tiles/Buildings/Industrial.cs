@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Tiles;
-using Model;
-using System;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
     public class Industrial : Building, IWorkplace, IZoneBuilding
     {
@@ -11,54 +8,49 @@ namespace Buildings
         private List<Person> _workers;
         private int _workersLimit;
 
-        public Industrial()
-        {
-            Level = 0;
-            _workersLimit = 10;
-            _workers = new List<Person>();
-        }
+		public Industrial()
+		{
+			Level = 0;
+			_workersLimit = 10;
+			_workers = new List<Person>();
+		}
 
-        public void LevelUp()//TODO limit upgrading logic
-        {
-            ++Level;
-            _workersLimit += 5;
-        }
+		public void LevelUp()
+		{
+			if (Level == ZoneBuildingLevel.THREE) { return; }
+			++Level;
+			_workersLimit += 5;
+		}
 
-        public bool Employ(Person person)
-        {
-            if (_workers.Count < _workersLimit)
-            {
-                _workers.Add(person);
-                return true;
-            }
+		public bool Employ(Person person)
+		{
+			if (_workers.Count < _workersLimit)
+			{
+				_workers.Add(person);
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        public bool Unemploy(Person person)
-        {
-            if (_workers.Count > 0)
-            {
-                _workers.Remove(person);
-                return true;
-            }
+		public bool Unemploy(Person person)
+		{
+			return _workers.Remove(person);
+		}
 
-            return false;
-        }
+		public List<Person> GetWorkers()
+		{
+			return _workers;
+		}
 
-        public List<Person> GetWorkers()
-        {
-            return _workers;
-        }
+		public int GetWorkersCount()
+		{
+			return _workers.Count;
+		}
 
-        public int GetWorkersCount()
-        {
-            return _workers.Count;
-        }
-
-        public int GetWorkersLimit()
-        {
-            return _workersLimit;
-        }
-    }
+		public int GetWorkersLimit()
+		{
+			return _workersLimit;
+		}
+	}
 }

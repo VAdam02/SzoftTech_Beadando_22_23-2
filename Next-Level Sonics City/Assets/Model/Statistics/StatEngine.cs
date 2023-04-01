@@ -1,28 +1,25 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Tiles;
-using Model;
-using Buildings;
 using System.Threading.Tasks;
-using Persons;
+using Model.Tiles;
+using Model.Tiles.Buildings;
 
-namespace Statistics
+namespace Model.Statistics
 {
-    public class StatEngine : MonoBehaviour
-    {
-        private List<StatReport> _statReports;
-        public int Year { get; private set; }
-        public int Quarter { get; private set; }
+	public class StatEngine
+	{
+		private List<StatReport> _statReports;
+		public int Year { get; private set; }
+		public int Quarter { get; private set; }
 
-        private const int STARTYEAR = 2020;
+		private const int STARTYEAR = 2020;
 
-        public StatEngine()
-        {
-            _statReports = new List<StatReport>();
-            Year = STARTYEAR;
-            Quarter = 0;
-        }
+		public StatEngine()
+		{
+			_statReports = new List<StatReport>();
+			Year = STARTYEAR;
+			Quarter = 0;
+		}
 
         public async Task<float> CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
         {
@@ -111,17 +108,17 @@ namespace Statistics
             return totalMaintainanceCost;
         }
 
-        public int GetElectricityProduced()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		public int GetElectricityProduced()
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
-        public int GetElectricityConsumed()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		public int GetElectricityConsumed()
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
         public StatReport GetLastStatisticsReport()
         {
@@ -137,15 +134,15 @@ namespace Statistics
         {
             List<StatReport> reports = new List<StatReport>(index);
 
-            int length = _statReports.Count - 1;
+			int length = _statReports.Count - 1;
 
-            for (int i = 0; i < index; ++i)
-            {
-                reports[i] = _statReports[length - i];
-            }
+			for (int i = 0; i < index; ++i)
+			{
+				reports[i] = _statReports[length - i];
+			}
 
-            return reports;
-        }
+			return reports;
+		}
 
         public float GetCommercialToIndustrialRate(List<IZoneBuilding> zoneBuildings)
         {
@@ -171,28 +168,28 @@ namespace Statistics
             return commercialCount / IndustrialCount;
         }
 
-        /// <summary>
-        /// Records the expense of the building
-        /// </summary>
-        /// <param name="price">positive if expense and negative if income</param>
-        /// <exception cref="NotImplementedException"></exception>
+		/// <summary>
+		/// Records the expense of the building
+		/// </summary>
+		/// <param name="price">positive if expense and negative if income</param>
+		/// <exception cref="NotImplementedException"></exception>
 
-        public void SumBuildingPrice(int price)
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		public void SumBuildingPrice(int price)
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
-        /// <summary>
-        /// Records the income of destruction
-        /// </summary>
-        /// <param name="price">positive if income and negative if expense</param>
-        /// <exception cref="NotImplementedException"></exception>
-        public void SumDestroyPrice(int price)
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// Records the income of destruction
+		/// </summary>
+		/// <param name="price">positive if income and negative if expense</param>
+		/// <exception cref="NotImplementedException"></exception>
+		public void SumDestroyPrice(int price)
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
         public void NextQuarter()
         {
