@@ -1,11 +1,10 @@
-using Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Tiles;
 using UnityEngine;
+using Model;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
     public class PowerPlant : Building, IWorkplace
     {

@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Tiles;
-using Model;
-using System;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
     public class PoliceDepartment : Building, IWorkplace
     {
