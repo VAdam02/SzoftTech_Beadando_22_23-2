@@ -1,13 +1,12 @@
-using Model;
-using Service;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Model.Service;
 
-namespace Tiles
+namespace Model.Tiles
 {
-    public class ElectricPole : Tile, IPowerGridElement
-    {
+	public class ElectricPole : Tile, IPowerGridElement
+	{
 
-    }
+	}
 }

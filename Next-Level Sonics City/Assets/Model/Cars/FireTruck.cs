@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Model;
 
-namespace Cars
+namespace Model.Cars
 {
-    public class FireTruck : Car
-    {
-    }
+	public class FireTruck : Car
+	{
+	}
 }
 

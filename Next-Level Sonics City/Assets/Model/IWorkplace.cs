@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Model
 {
-    public interface IWorkplace
-    {
+	public interface IWorkplace
+	{
 
-    }
+	}
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Model
 {
-    public class City : MonoBehaviour
-    {
+	public class City : MonoBehaviour
+	{
 
-    }
+	}
 }

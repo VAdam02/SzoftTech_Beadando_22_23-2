@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Tiles;
 using UnityEngine;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
-    public class PowerPlant : Building
-    {
+	public class PowerPlant : Building
+	{
 
-    }
+	}
 }
