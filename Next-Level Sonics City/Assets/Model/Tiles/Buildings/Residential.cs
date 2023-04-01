@@ -15,8 +15,9 @@ namespace Model.Tiles.Buildings
 			_residents= new List<Person>();
 		}
 
-		public void LevelUp()//TODO limit upgrading logic
+		public void LevelUp()
 		{
+			if (Level == BuildingLevel.THREE) { return; }
 			++Level;
 			ResidentLimit += 5;
 		}
@@ -34,13 +35,7 @@ namespace Model.Tiles.Buildings
 
 		public bool MoveOut(Person person)
 		{
-			if (_residents.Count > 0)
-			{
-				_residents.Remove(person);
-				return true;
-			}
-
-			return false;
+			return _residents.Remove(person);
 		}
 
 		public List<Person> GetResidents()

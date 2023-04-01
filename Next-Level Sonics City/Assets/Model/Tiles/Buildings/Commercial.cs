@@ -16,8 +16,9 @@ namespace Model.Tiles.Buildings
 			_workers= new List<Person>();
 		}
 
-		public void LevelUp()//TODO limit upgrading logic
+		public void LevelUp()
 		{
+			if (Level == BuildingLevel.THREE) { return; }
 			++Level;
 			_workersLimit += 5;
 		}
@@ -35,13 +36,7 @@ namespace Model.Tiles.Buildings
 
 		public bool Unemploy(Person person)
 		{
-			if (_workers.Count > 0)
-			{
-				_workers.Remove(person);
-				return true;
-			}
-
-			return false;
+			return _workers.Remove(person);
 		}
 
 		public List<Person> GetWorkers()
