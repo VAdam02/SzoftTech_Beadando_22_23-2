@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 using Model.Tiles;
 
 namespace Model
 {
-	public class Car : MonoBehaviour
+	public class Car
 	{
 		private int _design;
 		private bool _isDuty;

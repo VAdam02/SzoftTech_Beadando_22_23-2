@@ -1,12 +1,11 @@
 using Model;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
-    public interface IZoneBuilding
-    {
-        public abstract void LevelUp();
-    }
+	public interface IZoneBuilding
+	{
+		public abstract void LevelUp();
+	}
 }

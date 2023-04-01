@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Model.Tiles.Buildings;
 
 namespace Model
 {
-	public abstract class Person : MonoBehaviour
+	public abstract class Person
 	{
 		private static ulong s_id = 0;
 

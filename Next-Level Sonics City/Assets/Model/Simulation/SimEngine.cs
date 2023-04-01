@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Model.Simulation
 {
-	public class SimEngine : MonoBehaviour
+	public class SimEngine
 	{
 		// Start is called before the first frame update
 		void Start()

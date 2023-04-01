@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Model.Tiles;
 
 namespace Model.Statistics
 {
-	public class StatEngine : MonoBehaviour
+	public class StatEngine
 	{
 		private List<StatReport> _statReports;
 		public int Year { get; }
