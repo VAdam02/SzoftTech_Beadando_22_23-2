@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Tiles;
-using Model;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
     public class Commercial : Building, IWorkplace, IZoneBuilding
     {

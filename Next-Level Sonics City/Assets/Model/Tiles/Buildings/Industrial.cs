@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Tiles;
-using Model;
-using System;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
     public class Industrial : Building, IWorkplace, IZoneBuilding
     {
