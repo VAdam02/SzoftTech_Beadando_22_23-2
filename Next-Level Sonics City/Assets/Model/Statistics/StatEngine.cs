@@ -21,92 +21,95 @@ namespace Model.Statistics
 			Quarter = 0;
 		}
 
-        public async Task<float> CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
-        {
-            float houseTax = 0;
-            List<Person> persons = residential.GetResidents();
+		public async Task<float> CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
+		{
+			float houseTax = 0;
+			List<Person> persons = residential.GetResidents();
 
-            foreach (Person person in persons)
-            {
-                houseTax += person.PayTax(taxRate);
-            }
+			foreach (Person person in persons)
+			{
+				houseTax += person.PayTax(taxRate);
+			}
 
-            return houseTax;
-        }
+			return houseTax;
+		}
 
-        public async Task<float> CalculateResidenceTax(List<Residential> residentials, float taxRate)
-        {
-            float totalTax = 0;
+		public async Task<float> CalculateResidenceTax(List<Residential> residentials, float taxRate)
+		{
+			float totalTax = 0;
 
-            foreach (Residential residential in residentials)
-            {
-                totalTax += await CalculateResidenceTaxPerHouse(residential, taxRate);
-            }
+			foreach (Residential residential in residentials)
+			{
+				totalTax += await CalculateResidenceTaxPerHouse(residential, taxRate);
+			}
 
-            return totalTax;
-        }
+			return totalTax;
+		}
 
-        public async Task<float> CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
-        {
-            float workplaceTax = 0;
-            List<Person> persons = workplace.GetWorkers();
+		public async Task<float> CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
+		{
+			float workplaceTax = 0;
+			List<Person> persons = workplace.GetWorkers();
 
-            foreach (Person person in persons)
-            {
-                workplaceTax += person.PayTax(taxRate);
-            }
+			foreach (Person person in persons)
+			{
+				workplaceTax += person.PayTax(taxRate);
+			}
 
-            return workplaceTax;
-        }
+			return workplaceTax;
+		}
 
-        public async Task<float> CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
-        {
-            float totalTax = 0;
+		public async Task<float> CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
+		{
+			float totalTax = 0;
 
-            foreach (IWorkplace workplace in workplaces)
-            {
-                totalTax += await CalculateIncomeTaxPerWorkplace(workplace, taxRate);
-            }
+			foreach (IWorkplace workplace in workplaces)
+			{
+				totalTax += await CalculateIncomeTaxPerWorkplace(workplace, taxRate);
+			}
 
-            return totalTax;
-        }
+			return totalTax;
+		}
 
-        public async Task<float> CalculateHappinessPerResident(Residential residential)
-        {
-            float totalResidentialHappiness = 0;
-            List<Person> persons = residential.GetResidents();
+		public (float avg, int weight) CalculateHappinessPerResident(Residential residential)
+		{
+			float totalResidentialHappiness = 0;
+			List<Person> persons = residential.GetResidents();
 
-            foreach (Person person in persons)
-            {
-                totalResidentialHappiness += person.GetHappiness();
-            }
+			foreach (Person person in persons)
+			{
+				totalResidentialHappiness += person.GetHappiness();
+			}
 
-            return totalResidentialHappiness;
-        }
+			return (totalResidentialHappiness / persons.Count, persons.Count);
+		}
 
-        public async Task<float> CalculateHappiness(List<Residential> residentials)
-        {
-            float totalCityHappiness = 0;
+		public (float avg, int weight) CalculateHappiness(List<Residential> residentials)
+		{
+			float totalCityHappiness = 0;
+			int count = 0;
 
-            foreach (Residential residential in residentials)
-            {
-                totalCityHappiness += await CalculateHappinessPerResident(residential);
-            }
+			foreach (Residential residential in residentials)
+			{
+				(float avg, int weight) = CalculateHappinessPerResident(residential);
+				count += weight;
+				totalCityHappiness += avg * weight;
+			}
+			
+			return (totalCityHappiness / count, count);
+		}
 
-            return totalCityHappiness;
-        }
+		public int SumMaintainance(List<Building> buildings)
+		{
+			int totalMaintainanceCost = 0;
 
-        public int SumMaintainance(List<Building> buildings)
-        {
-            int totalMaintainanceCost = 0;
+			foreach (Building building in buildings)
+			{
+				totalMaintainanceCost += building.GetMaintainanceCost();
+			}
 
-            foreach (Building building in buildings)
-            {
-                totalMaintainanceCost += building.GetMaintainanceCost();
-            }
-
-            return totalMaintainanceCost;
-        }
+			return totalMaintainanceCost;
+		}
 
 		public int GetElectricityProduced()
 		{
@@ -120,19 +123,19 @@ namespace Model.Statistics
 			throw new NotImplementedException();
 		}
 
-        public StatReport GetLastStatisticsReport()
-        {
-            return _statReports[^1];
-        }
+		public StatReport GetLastStatisticsReport()
+		{
+			return _statReports[^1];
+		}
 
-        public List<StatReport> GetEveryStatisticsReport()
-        {
-            return _statReports;
-        }
+		public List<StatReport> GetEveryStatisticsReport()
+		{
+			return _statReports;
+		}
 
-        public List<StatReport> GetLastGivenStatisticsReports(int index)
-        {
-            List<StatReport> reports = new List<StatReport>(index);
+		public List<StatReport> GetLastGivenStatisticsReports(int index)
+		{
+			List<StatReport> reports = new List<StatReport>(index);
 
 			int length = _statReports.Count - 1;
 
@@ -144,29 +147,29 @@ namespace Model.Statistics
 			return reports;
 		}
 
-        public float GetCommercialToIndustrialRate(List<IZoneBuilding> zoneBuildings)
-        {
-            float commercialCount = 0;
-            float IndustrialCount = 0;
+		public float GetCommercialToIndustrialRate(List<IZoneBuilding> zoneBuildings)
+		{
+			float commercialCount = 0;
+			float IndustrialCount = 0;
 
-            foreach (IZoneBuilding zoneBuilding in zoneBuildings)
-            {
-                if (zoneBuilding is Industrial)
-                {
-                    ++IndustrialCount;
-                }
-                else if (zoneBuilding is Commercial)
-                {
-                    ++commercialCount;
-                }
-                else
-                {
-                    continue;
-                }
-            }
+			foreach (IZoneBuilding zoneBuilding in zoneBuildings)
+			{
+				if (zoneBuilding is Industrial)
+				{
+					++IndustrialCount;
+				}
+				else if (zoneBuilding is Commercial)
+				{
+					++commercialCount;
+				}
+				else
+				{
+					continue;
+				}
+			}
 
-            return commercialCount / IndustrialCount;
-        }
+			return commercialCount / IndustrialCount;
+		}
 
 		/// <summary>
 		/// Records the expense of the building
@@ -191,10 +194,10 @@ namespace Model.Statistics
 			throw new NotImplementedException();
 		}
 
-        public void NextQuarter()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
-    }
+		public void NextQuarter()
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
+	}
 }
