@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Model.Tiles.Buildings
 {
-    public class Residential : Building, IZoneBuilding
-    {
-        public ZoneBuildingLevel Level{ get; private set; }
-        public int ResidentLimit { get; private set; }
-        private List<Person> _residents;
+	public class Residential : Building, IZoneBuilding
+	{
+		public ZoneBuildingLevel Level{ get; private set; }
+		public int ResidentLimit { get; private set; }
+		private List<Person> _residents;
 
 		public Residential()
 		{

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Model.Tiles.Buildings
 {
-    public class Commercial : Building, IWorkplace, IZoneBuilding
-    {
-        public ZoneBuildingLevel Level { get; private set; }
-        private List<Person> _workers;
-        private int _workersLimit;
+	public class Commercial : Building, IWorkplace, IZoneBuilding
+	{
+		public ZoneBuildingLevel Level { get; private set; }
+		private List<Person> _workers;
+		private int _workersLimit;
 
 		public Commercial()
 		{
