@@ -6,7 +6,7 @@ namespace Model.Persons
 	{
 		public float Pension { get; private set; }
 
-		public Pensioner(Residential home, int age, float pension) : base(home, age)
+		public Pensioner(ResidentialBuildingTile home, int age, float pension) : base(home, age)
 		{
 			Pension = pension;
 		}
