@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace View.Tiles.Buildings
 {
@@ -11,7 +12,8 @@ namespace View.Tiles.Buildings
 		// Start is called before the first frame update
 		void Start()
 		{
-			transform.position = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 50 * MODELSCALE;
+			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 10;
+			transform.localScale = Vector3.one;
 
 			TileModel.DesignIDChangeEvent.AddListener(Display);
 			gradientAndMaterialReloadEvent.AddListener(Display);
@@ -25,7 +27,7 @@ namespace View.Tiles.Buildings
 			
 		}
 
-		private static UnityEvent gradientAndMaterialReloadEvent = new UnityEvent();
+		private static readonly UnityEvent gradientAndMaterialReloadEvent = new();
 
 		//2^32-1        / MAXELEMENTID / MAXLEVELCOUNT = MAXELEMENTCOUNT
 		//4 294 967 295 / 211           / 8            = 2 544 411
@@ -51,8 +53,23 @@ namespace View.Tiles.Buildings
 		}
 
 		#region Gradients and materials
+		private static Material _grassMaterial;
+		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
+		private Material _sharedGrassMaterial;
+		private Material SharedGrassMaterial
+		{
+			get
+			{
+				if (_sharedGrassMaterial == null)
+				{
+					_sharedGrassMaterial = new Material(GrassMaterial);
+				}
+				return _sharedGrassMaterial;
+			}
+		}
+
 		private static Gradient _houseBottom;
-		public static Gradient HouseBottom { get { if (_houseBottom == null) _houseBottom = LoadGradientByName("HouseBottom"); return _houseBottom; } }
+		public static Gradient HouseBottom { get { _houseBottom ??= LoadGradientByName("HouseBottom"); return _houseBottom; } }
 		private static Material _houseBottomMaterial;
 		public static Material HouseBottomMaterial { get { if (_houseBottomMaterial == null) _houseBottomMaterial = LoadMaterialByName("HouseBottomMaterial"); return _houseBottomMaterial; } }
 		private Material _sharedHouseBottomMaterial;
@@ -62,15 +79,17 @@ namespace View.Tiles.Buildings
 			{
 				if (_sharedHouseBottomMaterial == null)
 				{
-					_sharedHouseBottomMaterial = new Material(HouseBottomMaterial);
-					_sharedHouseBottomMaterial.color = HouseBottom.Evaluate(GetColor(0));
+					_sharedHouseBottomMaterial = new Material(HouseBottomMaterial)
+					{
+						color = HouseBottom.Evaluate(GetColor(0))
+					};
 				}
 				return _sharedHouseBottomMaterial;
 			}
 		}
 
 		private static Gradient _houseColor;
-		public static Gradient HouseColor { get { if (_houseColor == null) _houseColor = LoadGradientByName("HouseColor"); return _houseColor; } }
+		public static Gradient HouseColor { get { _houseColor ??= LoadGradientByName("HouseColor"); return _houseColor; } }
 		private static Material _houseColorMaterial;
 		public static Material HouseColorMaterial { get { if (_houseColorMaterial == null) _houseColorMaterial = LoadMaterialByName("HouseColorMaterial"); return _houseColorMaterial; } }
 		private Material _sharedHouseColorMaterial;
@@ -80,8 +99,10 @@ namespace View.Tiles.Buildings
 			{
 				if (_sharedHouseColorMaterial == null)
 				{
-					_sharedHouseColorMaterial = new Material(HouseColorMaterial);
-					_sharedHouseColorMaterial.color = HouseColor.Evaluate(GetColor(1));
+					_sharedHouseColorMaterial = new Material(HouseColorMaterial)
+					{
+						color = HouseColor.Evaluate(GetColor(1))
+					};
 				}
 				return _sharedHouseColorMaterial;
 			}
@@ -103,7 +124,7 @@ namespace View.Tiles.Buildings
 		}
 
 		private static Gradient _roof;
-		public static Gradient Roof { get { if (_roof == null) _roof = LoadGradientByName("Roof"); return _roof; } }
+		public static Gradient Roof { get { _roof ??= LoadGradientByName("Roof"); return _roof; } }
 		private static Material _roofMaterial;
 		public static Material RoofMaterial { get { if (_roofMaterial == null) _roofMaterial = LoadMaterialByName("RoofMaterial"); return _roofMaterial; } }
 		private Material _sharedRoofMaterial;
@@ -113,15 +134,17 @@ namespace View.Tiles.Buildings
 			{
 				if (_sharedRoofMaterial == null)
 				{
-					_sharedRoofMaterial = new Material(RoofMaterial);
-					_sharedRoofMaterial.color = Roof.Evaluate(GetColor(2));
+					_sharedRoofMaterial = new Material(RoofMaterial)
+					{
+						color = Roof.Evaluate(GetColor(2))
+					};
 				}
 				return _sharedRoofMaterial;
 			}
 		}
 
 		private static Gradient _door;
-		public static Gradient Door { get { if (_door == null) _door = LoadGradientByName("Door"); return _door; } }
+		public static Gradient Door { get { _door ??= LoadGradientByName("Door"); return _door; } }
 		private static Material _doorMaterial;
 		public static Material DoorMaterial { get { if (_doorMaterial == null) _doorMaterial = LoadMaterialByName("DoorMaterial"); return _doorMaterial; } }
 		private Material _sharedDoorMaterial;
@@ -131,15 +154,17 @@ namespace View.Tiles.Buildings
 			{
 				if (_sharedDoorMaterial == null)
 				{
-					_sharedDoorMaterial = new Material(DoorMaterial);
-					_sharedDoorMaterial.color = Door.Evaluate(GetColor(3));
+					_sharedDoorMaterial = new Material(DoorMaterial)
+					{
+						color = Door.Evaluate(GetColor(3))
+					};
 				}
 				return _sharedDoorMaterial;
 			}
 		}
 
 		private static Gradient _window;
-		public static Gradient Window { get { if (_window == null) _window = LoadGradientByName("Window"); return _window; } }
+		public static Gradient Window { get { _window ??= LoadGradientByName("Window"); return _window; } }
 		private static Material _windowMaterial;
 		public static Material WindowMaterial { get { if (_windowMaterial == null) _windowMaterial = LoadMaterialByName("WindowMaterial"); return _windowMaterial; } }
 		private Material _sharedWindowMaterial;
@@ -149,8 +174,10 @@ namespace View.Tiles.Buildings
 			{
 				if (_sharedWindowMaterial == null)
 				{
-					_sharedWindowMaterial = new Material(WindowMaterial);
-					_sharedWindowMaterial.color = Window.Evaluate(GetColor(4));
+					_sharedWindowMaterial = new Material(WindowMaterial)
+					{
+						color = Window.Evaluate(GetColor(4))
+					};
 				}
 				return _sharedWindowMaterial;
 			}
@@ -181,15 +208,17 @@ namespace View.Tiles.Buildings
 
 			for (int i = 0; i < materials.Length; i++)
 			{
-					 if (materials[i].name.Split(' ')[0] == "HouseBottom")	{ materials[i] = SharedHouseBottomMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "HouseColor")	{ materials[i] = SharedHouseColorMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "WoodPillar")	{ materials[i] = SharedWoodPillarMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "Roof")			{ materials[i] = SharedRoofMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "Door")			{ materials[i] = SharedDoorMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "Window")		{ materials[i] = SharedWindowMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "WindowFrame")	{ materials[i] = SharedWindowFrameMaterial; }
+					 if (materials[i].name.Split(' ')[0] == "GrassMaterial") 	{ materials[i] = SharedGrassMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "HouseBottom") 		{ materials[i] = SharedHouseBottomMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "HouseColor") 		{ materials[i] = SharedHouseColorMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "WoodPillar") 		{ materials[i] = SharedWoodPillarMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "Roof") 			{ materials[i] = SharedRoofMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "Door") 			{ materials[i] = SharedDoorMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "Window") 			{ materials[i] = SharedWindowMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "WindowFrame") 		{ materials[i] = SharedWindowFrameMaterial; }
 				else
 				{
+					Debug.LogWarning(renderer);
 					Debug.LogError("Unknown material found: " + renderer.materials[i].name);
 				}
 			}
@@ -214,8 +243,8 @@ namespace View.Tiles.Buildings
 			bool bottomNeedBackSmallNextLevel = false;
 			bool bottomNeedBackBigNextLevel = false;
 
-			Vector3 attachPoint = new Vector3(0, 0, 0);
-
+			Vector3 attachPoint = new(0, 0, 0);
+			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 			for (uint i = 0; i < LevelCount; i++)
 			{
 				DisplayLevelElement(bottomNeedForeSmallNextLevel, bottomNeedBackSmallNextLevel, i, attachPoint, gameObject, ref needForeSmallNextLevel, ref needForeBigNextLevel, ref needBackSmallNextLevel, ref needBackBigNextLevel);
@@ -236,28 +265,29 @@ namespace View.Tiles.Buildings
 
 		private void DisplayLevelElement(bool bottomNeedForeSmallNextLevel, bool bottomNeedBackSmallNextLevel, uint levelIndex, Vector3 attachPoint, GameObject core, ref bool needForeSmallNextLevel, ref bool needForeBigNextLevel, ref bool needBackSmallNextLevel, ref bool needBackBigNextLevel)
 		{
-			List<ResidentialDesignBase> availableBase = ResidentialDesignGenerator.Instance.ResidentialDesignBases.FindAll(x => (x.OnlyFloor ? levelIndex == 0 : true) && (x.OnlyStorey ? levelIndex > 0 : true) &&
-																																(bottomNeedForeSmallNextLevel ? !x.ForeBigBase : true) &&
-																																(bottomNeedBackSmallNextLevel ? !x.BackBigBase : true));
+			List<ResidentialDesignBase> availableBase = ResidentialDesignGenerator.Instance.ResidentialDesignBases.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0) &&
+																																(!bottomNeedForeSmallNextLevel || !x.ForeBigBase) &&
+																																(!bottomNeedBackSmallNextLevel || !x.BackBigBase));
 			ResidentialDesignBase selectedBase = availableBase[GetElement(BASEELEMENTID, levelIndex, availableBase.Count)];
 
-			attachPoint *= MODELSCALE;
-			GameObject baseElement = Instantiate(selectedBase.Prefab, core.transform.position + attachPoint, core.transform.rotation);
+			int divider = 5;
+			GameObject baseElement = Instantiate(selectedBase.Prefab);
 			baseElement.transform.parent = core.transform;
-			baseElement.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-			baseElement.transform.localScale *= MODELSCALE;
+			baseElement.transform.localScale = Vector3.one / divider;
+			baseElement.transform.SetLocalPositionAndRotation(attachPoint/divider, Quaternion.Euler(0, 0, 0));
 
-			needForeBigNextLevel = (needForeBigNextLevel ? true : selectedBase.ForeBigBase);
-			needBackBigNextLevel = (needBackBigNextLevel ? true : selectedBase.BackBigBase);
+
+			needForeBigNextLevel = needForeBigNextLevel || selectedBase.ForeBigBase;
+			needBackBigNextLevel = needBackBigNextLevel || selectedBase.BackBigBase;
 
 			if (baseElement.GetComponent<Renderer>() != null) SetSharedMaterials(baseElement.GetComponent<Renderer>());
 			if (baseElement.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in baseElement.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 
 			DisplayTerraceElement(selectedBase.ForeBigBase, bottomNeedForeSmallNextLevel, levelIndex, selectedBase.ForeTerraceAttachPoint, true, baseElement, ref needForeSmallNextLevel, ref needForeBigNextLevel);
@@ -272,26 +302,26 @@ namespace View.Tiles.Buildings
 				return;
 			}
 
-			List<ResidentialDesignTerrace> availableTerrace = ResidentialDesignGenerator.Instance.ResidentialDesignTerraces.FindAll(x => (x.OnlyFloor ? levelIndex == 0 : true) && (x.OnlyStorey ? levelIndex > 0 : true));
+			List<ResidentialDesignTerrace> availableTerrace = ResidentialDesignGenerator.Instance.ResidentialDesignTerraces.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0));
 			ResidentialDesignTerrace selectedTerrace = availableTerrace[GetElement(TERRACEELEMENTID, levelIndex, availableTerrace.Count)];
 
-			attachPoint *= MODELSCALE;
-			GameObject terrace = Instantiate(selectedTerrace.Prefab, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
+			GameObject terrace = Instantiate(selectedTerrace.Prefab);
 			terrace.transform.parent = parentElement.transform;
-			terrace.transform.localRotation = Quaternion.Euler(0, 0, (fore ? 180 : 0));
-			terrace.transform.localScale *= MODELSCALE;
+			terrace.transform.localScale = Vector3.one;
+			terrace.transform.SetLocalPositionAndRotation(attachPoint, Quaternion.Euler(0, 0, 0));
+			terrace.transform.Rotate(new Vector3(0, fore ? 180 : 0, 0));
 
-			needSmallNextLevel = (needSmallNextLevel ? true : selectedTerrace.NeedSmallNextLevel);
-			needBigNextLevel = (needBigNextLevel ? true : selectedTerrace.NeedBigNextLevel);
+			needSmallNextLevel = needSmallNextLevel || selectedTerrace.NeedSmallNextLevel;
+			needBigNextLevel = needBigNextLevel || selectedTerrace.NeedBigNextLevel;
 
 			if (terrace.GetComponent<Renderer>() != null) SetSharedMaterials(terrace.GetComponent<Renderer>());
 			if (terrace.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in terrace.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 
 			DisplayDoor(levelIndex, selectedTerrace.DoorAttachPoint, terrace);
@@ -305,27 +335,26 @@ namespace View.Tiles.Buildings
 
 		private void DisplayJustWindowTerrace(uint levelIndex, Vector3 attachPoint, bool fore, GameObject parentElement)
 		{
-			List<ResidentialDesignJustWindowTerrace> availableTerrace = ResidentialDesignGenerator.Instance.ResidentialDesignJustWindowTerraces.FindAll(x => (x.OnlyFloor ? levelIndex == 0 : true) && (x.OnlyStorey ? levelIndex > 0 : true));
+			List<ResidentialDesignJustWindowTerrace> availableTerrace = ResidentialDesignGenerator.Instance.ResidentialDesignJustWindowTerraces.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0));
 			ResidentialDesignJustWindowTerrace selectedTerrace = availableTerrace[GetElement(JUSTWINDOWTERRACEELEMENTID, levelIndex, availableTerrace.Count)];
 
-			attachPoint *= MODELSCALE;
 			GameObject justWindowTerrace = Instantiate(selectedTerrace.Prefab, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
 			justWindowTerrace.transform.parent = parentElement.transform;
-			justWindowTerrace.transform.localRotation = Quaternion.Euler(0, 0, (fore ? 180 : 0));
-			justWindowTerrace.transform.localScale *= MODELSCALE;
+			justWindowTerrace.transform.localScale = Vector3.one;
+			justWindowTerrace.transform.SetLocalPositionAndRotation(attachPoint, Quaternion.Euler(0, 0, 0));
+			justWindowTerrace.transform.Rotate(new Vector3(0, fore ? 180 : 0, 0));
 
 			if (justWindowTerrace.GetComponent<Renderer>() != null) SetSharedMaterials(justWindowTerrace.GetComponent<Renderer>());
 			if (justWindowTerrace.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in justWindowTerrace.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 
 			if (selectedTerrace.HasDoor) DisplayDoor(levelIndex, selectedTerrace.DoorAttachPoint, justWindowTerrace);
-
 
 			GameObject usedWindow = null;
 			for (int i = 0; i < selectedTerrace.WindowAttachPoints.Count; i++)
@@ -338,11 +367,10 @@ namespace View.Tiles.Buildings
 		{
 			GameObject selectedDoor = ResidentialDesignGenerator.Instance.ResidentialDesignDoors[GetElement(DOORELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignDoors.Count)];
 
-			attachPoint *= MODELSCALE;
-			GameObject door = Instantiate(selectedDoor, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
-			door.transform.Rotate(90, 0, 0);
+			GameObject door = Instantiate(selectedDoor);
 			door.transform.parent = parentElement.transform;
-			door.transform.localScale *= MODELSCALE;
+			door.transform.localScale = Vector3.one;
+			door.transform.SetLocalPositionAndRotation(attachPoint, Quaternion.Euler(0, 0, 0));
 
 			if (door.GetComponent<Renderer>() != null) SetSharedMaterials(door.GetComponent<Renderer>());
 			if (door.GetComponent<LODGroup>() != null)
@@ -359,20 +387,19 @@ namespace View.Tiles.Buildings
 		{
 			GameObject selectedWindow = (preSelectedWindow != null ? preSelectedWindow : ResidentialDesignGenerator.Instance.ResidentialDesignWindows[GetElement(WINDOWELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignWindows.Count)]);
 
-			attachPoint *= MODELSCALE;
-			GameObject window = Instantiate(selectedWindow, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
-			window.transform.Rotate(90, 0, 0);
+			GameObject window = Instantiate(selectedWindow);
 			window.transform.parent = parentElement.transform;
-			window.transform.localScale *= MODELSCALE;
+			window.transform.localScale = Vector3.one;
+			window.transform.SetLocalPositionAndRotation(attachPoint, Quaternion.Euler(0, 0, 0));
 
 			if (window.GetComponent<Renderer>() != null) SetSharedMaterials(window.GetComponent<Renderer>());
 			if (window.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in window.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 
 			return selectedWindow;
@@ -380,24 +407,24 @@ namespace View.Tiles.Buildings
 
 		private void DisplayRoof(uint levelIndex, Vector3 attachPoint, GameObject parentElement, bool bottomNeedForeSmallNextLevel, bool bottomNeedBackSmallNextLevel, bool bottomNeedForeBigNextLevel, bool bottomNeedBackBigNextLevel)
 		{
-			List<ResidentialDesignRoof> availableRoof = ResidentialDesignGenerator.Instance.ResidentialDesignRoofs.FindAll(x => (bottomNeedForeSmallNextLevel ? !x.ForeBigBase : true) && (bottomNeedBackSmallNextLevel ? !x.BackBigBase : true) &&
-																																(bottomNeedForeBigNextLevel ? x.ForeBigBase : true) && (bottomNeedBackBigNextLevel ? x.BackBigBase : true));
+			List<ResidentialDesignRoof> availableRoof = ResidentialDesignGenerator.Instance.ResidentialDesignRoofs.FindAll(x => (!bottomNeedForeSmallNextLevel || !x.ForeBigBase) && (!bottomNeedBackSmallNextLevel || !x.BackBigBase) &&
+																																(!bottomNeedForeBigNextLevel || x.ForeBigBase) && (!bottomNeedBackBigNextLevel || x.BackBigBase));
 			ResidentialDesignRoof selectedRoof = availableRoof[GetElement(ROOFELEMENTID, levelIndex, availableRoof.Count)];
 
-			attachPoint *= MODELSCALE;
-			GameObject roof = Instantiate(selectedRoof.Prefab, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
+			int divider = 5;
+			GameObject roof = Instantiate(selectedRoof.Prefab);
 			roof.transform.parent = parentElement.transform;
-			roof.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-			roof.transform.localScale *= MODELSCALE;
+			roof.transform.localScale = Vector3.one * 100 / divider;
+			roof.transform.SetLocalPositionAndRotation(attachPoint / divider, Quaternion.Euler(-90, 0, 0));
 
 			if (roof.GetComponent<Renderer>() != null) SetSharedMaterials(roof.GetComponent<Renderer>());
 			if (roof.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in roof.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 
 			DisplayTerraceRoof(levelIndex, selectedRoof.ForeTerraceAttachPoint, true, roof);
@@ -408,20 +435,22 @@ namespace View.Tiles.Buildings
 		{
 			ResidentialDesignTerraceRoof selectedTerraceRoof = ResidentialDesignGenerator.Instance.ResidentialDesignTerraceRoofs[GetElement(TERRACEROOFELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignTerraceRoofs.Count)];
 
-			attachPoint *= MODELSCALE;
-			GameObject terraceRoof = Instantiate(selectedTerraceRoof.Prefab, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
+			GameObject terraceRoof = Instantiate(selectedTerraceRoof.Prefab);
 			terraceRoof.transform.parent = parentElement.transform;
-			terraceRoof.transform.localRotation = Quaternion.Euler(0, 0, (fore ? 180 : 0));
-			terraceRoof.transform.localScale *= MODELSCALE;
+			terraceRoof.transform.localScale = Vector3.one;
+			terraceRoof.transform.SetLocalPositionAndRotation(attachPoint / -100, Quaternion.Euler(90, 0, 0));
+			terraceRoof.transform.Rotate(new Vector3(0, fore ? 0 : 180, 0));
+			//90 0 0
+			//-90 90 90
 
 			if (terraceRoof.GetComponent<Renderer>() != null) SetSharedMaterials(terraceRoof.GetComponent<Renderer>());
 			if (terraceRoof.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in terraceRoof.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 
 			DisplayRoofFrontWindow(levelIndex, selectedTerraceRoof.WindowAttachPoint, terraceRoof);
@@ -431,10 +460,10 @@ namespace View.Tiles.Buildings
 		{
 			GameObject selectedWindow = ResidentialDesignGenerator.Instance.ResidentialDesignRoofFrontWindows[GetElement(ROOFFRONTWINDOWELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignRoofFrontWindows.Count)];
 
-			attachPoint *= MODELSCALE;
-			GameObject window = Instantiate(selectedWindow, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
+			GameObject window = Instantiate(selectedWindow);
 			window.transform.parent = parentElement.transform;
-			window.transform.localScale *= MODELSCALE;
+			window.transform.localScale = Vector3.one / 100;
+			window.transform.SetLocalPositionAndRotation(attachPoint, Quaternion.Euler(180, 0, 180));
 
 			if (window.GetComponent<Renderer>() != null) SetSharedMaterials(window.GetComponent<Renderer>());
 			if (window.GetComponent<LODGroup>() != null)
@@ -463,6 +492,9 @@ namespace View.Tiles.Buildings
 		#region Load and reload materials and gradients
 		public void ReloadMaterialsAndGradients()
 		{
+			_grassMaterial = null;
+			_sharedGrassMaterial = null;
+
 			_houseBottom = null;
 			_houseBottomMaterial = null;
 			_sharedHouseBottomMaterial = null;
@@ -499,7 +531,7 @@ namespace View.Tiles.Buildings
 
 		private static Gradient LoadGradientByName(string name)
 		{
-			Gradient gradient = new Gradient();
+			Gradient gradient = new();
 			GradientColorKey[] colorKeys = new GradientColorKey[((JArray)ResidentialDesignGenerator.Instance.ResidentialDesignRules["Colors"][name]).Count];
 			for (int i = 0; i < colorKeys.Length; i++)
 			{

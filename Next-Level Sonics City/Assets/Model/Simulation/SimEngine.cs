@@ -17,20 +17,24 @@ namespace Model.Simulation
 		public Tile[,] Tiles { get { return _tiles; } private set { _tiles = value; } }
 
 		// Start is called before the first frame update
-		async void Start()
+		void Start()
 		{
 			_instance = this;
 
 			//DEMO CODE
 			int n = 100;
-			System.Random rnd = new System.Random();
+			System.Random rnd = new ();
 			Instance.Tiles = new Tile[n, n];
 
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
 			{
+				if (rnd.Next(0, 2) == 0)
+					Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialDesignGenerator.GenerateResidential(0));
+				else
+					Instance.Tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialDesignGenerator.GenerateResidential((uint)rnd.Next(1, 6)));
+
 				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialDesignGenerator.GenerateResidential((uint)rnd.Next(1,6)));
-				Instance.Tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialDesignGenerator.GenerateResidential((uint)rnd.Next(1, 6)));
 			}
 			//DEMO CODE
 		}

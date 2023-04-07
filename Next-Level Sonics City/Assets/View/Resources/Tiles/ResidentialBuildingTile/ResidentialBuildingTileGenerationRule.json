@@ -217,32 +217,32 @@
             {
                 "PrefabFolder": "RoofModelRoot",
                 "Prefab": "BigRoof",
-                "ForeTerraceAttachPoint": [0, 0, 16],
-                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeTerraceAttachPoint": [0, 16, 0],
+                "BackTerraceAttachPoint": [0, -16, 0],
                 "ForeBigBase": true,
                 "BackBigBase": true
             },
             {
                 "PrefabFolder": "RoofModelRoot",
                 "Prefab": "ForeRoof",
-                "ForeTerraceAttachPoint": [0, 0, 16],
-                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeTerraceAttachPoint": [0, 16, 0],
+                "BackTerraceAttachPoint": [0, -12, 0],
                 "ForeBigBase": true,
                 "BackBigBase": false
             },
             {
                 "PrefabFolder": "RoofModelRoot",
                 "Prefab": "BackRoof",
-                "ForeTerraceAttachPoint": [0, 0, 12],
-                "BackTerraceAttachPoint": [0, 0, -16],
+                "ForeTerraceAttachPoint": [0, 12, 0],
+                "BackTerraceAttachPoint": [0, -16, 0],
                 "ForeBigBase": false,
                 "BackBigBase": true
             },
             {
                 "PrefabFolder": "RoofModelRoot",
                 "Prefab": "SmallRoof",
-                "ForeTerraceAttachPoint": [0, 0, 12],
-                "BackTerraceAttachPoint": [0, 0, -12],
+                "ForeTerraceAttachPoint": [0, 12, 0],
+                "BackTerraceAttachPoint": [0, -12, 0],
                 "ForeBigBase": false,
                 "BackBigBase": false
             }
