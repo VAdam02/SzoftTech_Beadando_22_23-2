@@ -1,13 +1,12 @@
-using Service;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using Model.Service;
 
 namespace Model.Tiles
 {
-    public class ElectricPole : Tile, IPowerGridElement
-    {
-        public ElectricPole(int x, int y) : base(x, y)
+	public class ElectricPole : Tile, IPowerGridElement
+	{
+		public ElectricPole(int x, int y, uint designID) : base(x, y, designID)
 		{
 
 		}

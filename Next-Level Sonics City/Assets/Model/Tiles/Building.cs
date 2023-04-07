@@ -1,14 +1,29 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Model.Tiles
 {
 	public abstract class Building : Tile
 	{
-		public Building(int x, int y) : base(x, y)
+		public int ID { get; private set; }
+		public int Helath { get; private set; }
+		public bool IsOnFire { get; private set; }
+		public List<Road> ConnectedTo { get; private set; }
+
+		public Building(int x, int y, uint designID) : base(x, y, designID)
 		{
 
 		}
+
+		public bool StartFire()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void GetFirePercentage()
+		{
+			throw new NotImplementedException();
+		}
+
 	}
 }

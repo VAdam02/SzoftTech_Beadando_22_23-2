@@ -2,16 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Model
 {
 	public abstract class Tile
 	{
-		public uint DesignID { get; protected set; }
+		private uint _designID;
+		public uint DesignID { get { return _designID; } protected set { _designID = value; DesignIDChangeEvent.Invoke(); } }
+		public UnityEvent DesignIDChangeEvent = new UnityEvent();
 		public Vector3 Coordinates { get; protected set; }
 
-		public Tile(int x, int y)
+		public Tile(int x, int y, uint designID)
 		{
+			DesignID = designID;
 			Coordinates = new Vector3(x, y, 0);
 		}
 
