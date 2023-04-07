@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Buildings;
 using Persons;
 using Model.Tiles.Buildings;
 

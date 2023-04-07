@@ -8,6 +8,9 @@ namespace Model.Tiles
 {
     public class Road : Tile
     {
+        public Road(int x, int y) : base(x, y)
+        {
 
+        }
     }
 }
