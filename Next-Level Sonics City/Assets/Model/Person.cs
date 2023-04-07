@@ -1,42 +1,38 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Buildings;
-using Persons;
+using Model.Persons;
 using Model.Tiles.Buildings;
 
 namespace Model
 {
-    public abstract class Person : MonoBehaviour
-    {
-        private static ulong s_id;
-        public int Born { get; protected set; }
+	public abstract class Person
+	{
+		private static ulong s_id;
+
+		private ulong _id;
         public ResidentialBuildingTile LiveAt { get; protected set; }
+		public int Age { get; protected set; }
         public Qualification Qualification { get; protected set; }
 
-        public float GetHappiness()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		public Person(ResidentialBuildingTile home, int age)
+		{
+			_id = s_id++;
+			LiveAt = home;
+			Age = age;
+		}
 
-        public float GetTax()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		public float GetHappiness()
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
 
-        public int GetAge()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+		public void IncreaseAge()
+		{
+			++Age;
+		}
 
-        public void MakeItSilly()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
-    }
+		public abstract float PayTax(float taxRate);
+	}
 }

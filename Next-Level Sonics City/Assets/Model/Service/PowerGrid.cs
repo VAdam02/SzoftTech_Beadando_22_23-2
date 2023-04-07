@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace Service
+namespace Model.Service
 {
-    public class PowerGrid : MonoBehaviour
-    {
+	public class PowerGrid
+	{
 
-    }
+	}
 }

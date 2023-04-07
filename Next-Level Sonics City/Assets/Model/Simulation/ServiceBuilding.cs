@@ -1,12 +1,15 @@
-public enum ServiceBuilding
+namespace Model.Simulation
 {
-    POLICEDEPARTMENT,
-    FIREDEPART,
-    MIDSCHOOL,
-    HIGHSCHOOL,
-    STADION,
-    POWERPLANT,
-    FOREST,
-    ROAD,
-    ELECTRICPOLE
+	public enum ServiceBuilding
+	{
+		POLICEDEPARTMENT,
+		FIREDEPART,
+		MIDSCHOOL,
+		HIGHSCHOOL,
+		STADION,
+		POWERPLANT,
+		FOREST,
+		ROAD,
+		ELECTRICPOLE
+	}
 }

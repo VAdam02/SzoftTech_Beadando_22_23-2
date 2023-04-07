@@ -11,7 +11,6 @@ namespace Model
 		private uint _designID;
 		public uint DesignID { get { return _designID; } protected set { _designID = value; DesignIDChangeEvent.Invoke(); } }
 		public UnityEvent DesignIDChangeEvent = new UnityEvent();
-
 		public Vector3 Coordinates { get; protected set; }
 
 		public Tile(int x, int y, uint designID)
