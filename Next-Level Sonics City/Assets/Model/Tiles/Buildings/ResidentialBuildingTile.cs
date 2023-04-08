@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
-	public class ResidentialBuildingTile : Building
+	public class ResidentialBuildingTile : Building, IZoneBuilding
 	{
 		#region ResidentialElementsStructs
 		public struct ResidentialDesignBase
@@ -277,14 +277,44 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
+		public ZoneBuildingLevel Level { get; private set; }
+		public int ResidentLimit { get; private set; }
+		private List<Person> _residents;
+
 		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID)
 		{
-
+			Level = 0;
+			ResidentLimit = 5;
+			_residents = new List<Person>();
 		}
 
-		internal List<Person> GetResidents()
+		public void LevelUp()
 		{
-			throw new NotImplementedException();
+			if (Level == ZoneBuildingLevel.THREE) { return; }
+			//TODO level up design ID too
+			++Level;
+			ResidentLimit += 5;
+		}
+
+		public bool MoveIn(Person person)
+		{
+			if (_residents.Count < ResidentLimit)
+			{
+				_residents.Add(person);
+				return true;
+			}
+
+			return false;
+		}
+
+		public bool MoveOut(Person person)
+		{
+			return _residents.Remove(person);
+		}
+
+		public List<Person> GetResidents()
+		{
+			return _residents;
 		}
 	}
 }
