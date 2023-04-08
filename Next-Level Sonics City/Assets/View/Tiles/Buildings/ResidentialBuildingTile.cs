@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SocialPlatforms.Impl;
 
 namespace View.Tiles.Buildings
 {
@@ -45,11 +44,11 @@ namespace View.Tiles.Buildings
 
 		public uint Seed
 		{
-			get { return (TileModel.DesignID & ~(ResidentialDesignGenerator.RESIDENTIAL_LEVEL_COUNT_MASK)) / (ResidentialDesignGenerator.RESIDENTIAL_LEVEL_COUNT_MASK + 1); }
+			get { return (TileModel.DesignID & ~(Model.Tiles.Buildings.ResidentialBuildingTile.RESIDENTIAL_LEVEL_COUNT_MASK)) / (Model.Tiles.Buildings.ResidentialBuildingTile.RESIDENTIAL_LEVEL_COUNT_MASK + 1); }
 		}
 		public uint LevelCount
 		{
-			get { return TileModel.DesignID & ResidentialDesignGenerator.RESIDENTIAL_LEVEL_COUNT_MASK; }
+			get { return TileModel.DesignID & Model.Tiles.Buildings.ResidentialBuildingTile.RESIDENTIAL_LEVEL_COUNT_MASK; }
 		}
 
 		#region Gradients and materials
@@ -265,10 +264,10 @@ namespace View.Tiles.Buildings
 
 		private void DisplayLevelElement(bool bottomNeedForeSmallNextLevel, bool bottomNeedBackSmallNextLevel, uint levelIndex, Vector3 attachPoint, GameObject core, ref bool needForeSmallNextLevel, ref bool needForeBigNextLevel, ref bool needBackSmallNextLevel, ref bool needBackBigNextLevel)
 		{
-			List<ResidentialDesignBase> availableBase = ResidentialDesignGenerator.Instance.ResidentialDesignBases.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0) &&
-																																(!bottomNeedForeSmallNextLevel || !x.ForeBigBase) &&
-																																(!bottomNeedBackSmallNextLevel || !x.BackBigBase));
-			ResidentialDesignBase selectedBase = availableBase[GetElement(BASEELEMENTID, levelIndex, availableBase.Count)];
+			List<Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignBase> availableBase = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignBases.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0) &&
+																																												  (!bottomNeedForeSmallNextLevel || !x.ForeBigBase) &&
+																																												  (!bottomNeedBackSmallNextLevel || !x.BackBigBase));
+			Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignBase selectedBase = availableBase[GetElement(BASEELEMENTID, levelIndex, availableBase.Count)];
 
 			int divider = 5;
 			GameObject baseElement = Instantiate(selectedBase.Prefab);
@@ -302,8 +301,8 @@ namespace View.Tiles.Buildings
 				return;
 			}
 
-			List<ResidentialDesignTerrace> availableTerrace = ResidentialDesignGenerator.Instance.ResidentialDesignTerraces.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0));
-			ResidentialDesignTerrace selectedTerrace = availableTerrace[GetElement(TERRACEELEMENTID, levelIndex, availableTerrace.Count)];
+			List<Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignTerrace> availableTerrace = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignTerraces.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0));
+			Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignTerrace selectedTerrace = availableTerrace[GetElement(TERRACEELEMENTID, levelIndex, availableTerrace.Count)];
 
 			GameObject terrace = Instantiate(selectedTerrace.Prefab);
 			terrace.transform.parent = parentElement.transform;
@@ -335,8 +334,8 @@ namespace View.Tiles.Buildings
 
 		private void DisplayJustWindowTerrace(uint levelIndex, Vector3 attachPoint, bool fore, GameObject parentElement)
 		{
-			List<ResidentialDesignJustWindowTerrace> availableTerrace = ResidentialDesignGenerator.Instance.ResidentialDesignJustWindowTerraces.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0));
-			ResidentialDesignJustWindowTerrace selectedTerrace = availableTerrace[GetElement(JUSTWINDOWTERRACEELEMENTID, levelIndex, availableTerrace.Count)];
+			List<Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignJustWindowTerrace> availableTerrace = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignJustWindowTerraces.FindAll(x => (!x.OnlyFloor || levelIndex == 0) && (!x.OnlyStorey || levelIndex > 0));
+			Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignJustWindowTerrace selectedTerrace = availableTerrace[GetElement(JUSTWINDOWTERRACEELEMENTID, levelIndex, availableTerrace.Count)];
 
 			GameObject justWindowTerrace = Instantiate(selectedTerrace.Prefab, parentElement.transform.position + attachPoint, parentElement.transform.rotation);
 			justWindowTerrace.transform.parent = parentElement.transform;
@@ -365,7 +364,7 @@ namespace View.Tiles.Buildings
 
 		private void DisplayDoor(uint levelIndex, Vector3 attachPoint, GameObject parentElement)
 		{
-			GameObject selectedDoor = ResidentialDesignGenerator.Instance.ResidentialDesignDoors[GetElement(DOORELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignDoors.Count)];
+			GameObject selectedDoor = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignDoors[GetElement(DOORELEMENTID, levelIndex, Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignDoors.Count)];
 
 			GameObject door = Instantiate(selectedDoor);
 			door.transform.parent = parentElement.transform;
@@ -385,7 +384,7 @@ namespace View.Tiles.Buildings
 
 		private GameObject DisplayWindow(uint levelIndex, Vector3 attachPoint, GameObject parentElement, GameObject preSelectedWindow = null)
 		{
-			GameObject selectedWindow = (preSelectedWindow != null ? preSelectedWindow : ResidentialDesignGenerator.Instance.ResidentialDesignWindows[GetElement(WINDOWELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignWindows.Count)]);
+			GameObject selectedWindow = (preSelectedWindow != null ? preSelectedWindow : Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignWindows[GetElement(WINDOWELEMENTID, levelIndex, Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignWindows.Count)]);
 
 			GameObject window = Instantiate(selectedWindow);
 			window.transform.parent = parentElement.transform;
@@ -407,9 +406,9 @@ namespace View.Tiles.Buildings
 
 		private void DisplayRoof(uint levelIndex, Vector3 attachPoint, GameObject parentElement, bool bottomNeedForeSmallNextLevel, bool bottomNeedBackSmallNextLevel, bool bottomNeedForeBigNextLevel, bool bottomNeedBackBigNextLevel)
 		{
-			List<ResidentialDesignRoof> availableRoof = ResidentialDesignGenerator.Instance.ResidentialDesignRoofs.FindAll(x => (!bottomNeedForeSmallNextLevel || !x.ForeBigBase) && (!bottomNeedBackSmallNextLevel || !x.BackBigBase) &&
+			List<Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRoof> availableRoof = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRoofs.FindAll(x => (!bottomNeedForeSmallNextLevel || !x.ForeBigBase) && (!bottomNeedBackSmallNextLevel || !x.BackBigBase) &&
 																																(!bottomNeedForeBigNextLevel || x.ForeBigBase) && (!bottomNeedBackBigNextLevel || x.BackBigBase));
-			ResidentialDesignRoof selectedRoof = availableRoof[GetElement(ROOFELEMENTID, levelIndex, availableRoof.Count)];
+			Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRoof selectedRoof = availableRoof[GetElement(ROOFELEMENTID, levelIndex, availableRoof.Count)];
 
 			int divider = 5;
 			GameObject roof = Instantiate(selectedRoof.Prefab);
@@ -433,15 +432,13 @@ namespace View.Tiles.Buildings
 
 		private void DisplayTerraceRoof(uint levelIndex, Vector3 attachPoint, bool fore, GameObject parentElement)
 		{
-			ResidentialDesignTerraceRoof selectedTerraceRoof = ResidentialDesignGenerator.Instance.ResidentialDesignTerraceRoofs[GetElement(TERRACEROOFELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignTerraceRoofs.Count)];
+			Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignTerraceRoof selectedTerraceRoof = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignTerraceRoofs[GetElement(TERRACEROOFELEMENTID, levelIndex, Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignTerraceRoofs.Count)];
 
 			GameObject terraceRoof = Instantiate(selectedTerraceRoof.Prefab);
 			terraceRoof.transform.parent = parentElement.transform;
 			terraceRoof.transform.localScale = Vector3.one;
 			terraceRoof.transform.SetLocalPositionAndRotation(attachPoint / -100, Quaternion.Euler(90, 0, 0));
 			terraceRoof.transform.Rotate(new Vector3(0, fore ? 0 : 180, 0));
-			//90 0 0
-			//-90 90 90
 
 			if (terraceRoof.GetComponent<Renderer>() != null) SetSharedMaterials(terraceRoof.GetComponent<Renderer>());
 			if (terraceRoof.GetComponent<LODGroup>() != null)
@@ -458,7 +455,7 @@ namespace View.Tiles.Buildings
 
 		private void DisplayRoofFrontWindow(uint levelIndex, Vector3 attachPoint, GameObject parentElement)
 		{
-			GameObject selectedWindow = ResidentialDesignGenerator.Instance.ResidentialDesignRoofFrontWindows[GetElement(ROOFFRONTWINDOWELEMENTID, levelIndex, ResidentialDesignGenerator.Instance.ResidentialDesignRoofFrontWindows.Count)];
+			GameObject selectedWindow = Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRoofFrontWindows[GetElement(ROOFFRONTWINDOWELEMENTID, levelIndex, Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRoofFrontWindows.Count)];
 
 			GameObject window = Instantiate(selectedWindow);
 			window.transform.parent = parentElement.transform;
@@ -532,14 +529,14 @@ namespace View.Tiles.Buildings
 		private static Gradient LoadGradientByName(string name)
 		{
 			Gradient gradient = new();
-			GradientColorKey[] colorKeys = new GradientColorKey[((JArray)ResidentialDesignGenerator.Instance.ResidentialDesignRules["Colors"][name]).Count];
+			GradientColorKey[] colorKeys = new GradientColorKey[((JArray)Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRules["Colors"][name]).Count];
 			for (int i = 0; i < colorKeys.Length; i++)
 			{
-				colorKeys[i].time = (float)ResidentialDesignGenerator.Instance.ResidentialDesignRules["Colors"][name][i][0];
+				colorKeys[i].time = (float)Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRules["Colors"][name][i][0];
 				colorKeys[i].color = new Color(
-					(float)ResidentialDesignGenerator.Instance.ResidentialDesignRules["Colors"][name][i][1] / 256,
-					(float)ResidentialDesignGenerator.Instance.ResidentialDesignRules["Colors"][name][i][2] / 256,
-					(float)ResidentialDesignGenerator.Instance.ResidentialDesignRules["Colors"][name][i][3] / 256
+					(float)Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRules["Colors"][name][i][1] / 256,
+					(float)Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRules["Colors"][name][i][2] / 256,
+					(float)Model.Tiles.Buildings.ResidentialBuildingTile.ResidentialDesignRules["Colors"][name][i][3] / 256
 				);
 			}
 
