@@ -279,13 +279,12 @@ namespace Model.Tiles.Buildings
 
 		public ZoneBuildingLevel Level { get; private set; }
 		public int ResidentLimit { get; private set; }
-		private List<Person> _residents;
+		private readonly List<Person> _residents = new();
 
 		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID)
 		{
 			Level = 0;
-			ResidentLimit = 5;
-			_residents = new List<Person>();
+			ResidentLimit = 0;
 		}
 
 		public void LevelUp()

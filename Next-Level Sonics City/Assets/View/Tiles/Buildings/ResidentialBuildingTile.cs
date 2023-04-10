@@ -466,10 +466,10 @@ namespace View.Tiles.Buildings
 			if (window.GetComponent<LODGroup>() != null)
 			{
 				foreach (var lodGroup in window.GetComponent<LODGroup>().GetLODs())
-					foreach (var renderer in lodGroup.renderers)
-					{
-						SetSharedMaterials(renderer);
-					}
+				foreach (var renderer in lodGroup.renderers)
+				{
+					SetSharedMaterials(renderer);
+				}
 			}
 		}
 		#endregion
