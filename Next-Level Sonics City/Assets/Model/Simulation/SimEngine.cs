@@ -30,11 +30,11 @@ namespace Model.Simulation
 			for (int j = 0; j < n; j++)
 			{
 				if (rnd.Next(0, 2) == 0)
-					Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialDesignGenerator.GenerateResidential(0));
+					Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential(0));
 				else
-					Instance.Tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialDesignGenerator.GenerateResidential((uint)rnd.Next(1, 6)));
+					Instance.Tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1, 6)));
 
-				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialDesignGenerator.GenerateResidential((uint)rnd.Next(1,6)));
+				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1,6)));
 			}
 			//DEMO CODE
 		}

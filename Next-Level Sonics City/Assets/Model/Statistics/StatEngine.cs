@@ -8,7 +8,7 @@ namespace Model.Statistics
 {
 	public class StatEngine
 	{
-		private List<StatReport> _statReports;
+		private readonly List<StatReport> _statReports = new();
 		public int Year { get; private set; }
 		public int Quarter { get; private set; }
 
@@ -16,7 +16,6 @@ namespace Model.Statistics
 
 		public StatEngine()
 		{
-			_statReports = new List<StatReport>();
 			Year = STARTYEAR;
 			Quarter = 0;
 		}
@@ -135,7 +134,7 @@ namespace Model.Statistics
 
 		public List<StatReport> GetLastGivenStatisticsReports(int index)
 		{
-			List<StatReport> reports = new List<StatReport>(index);
+			List<StatReport> reports = new(index);
 
 			int length = _statReports.Count - 1;
 

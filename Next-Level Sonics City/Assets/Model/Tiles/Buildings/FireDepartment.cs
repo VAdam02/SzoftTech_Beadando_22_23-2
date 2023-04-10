@@ -5,8 +5,8 @@ namespace Model.Tiles.Buildings
 {
 	public class FireDepartment : Building, IWorkplace
 	{
-		private List<Person> _workers;
-		private int _workersLimit;
+		private readonly List<Person> _workers = new();
+		private int _workersLimit = 10;
 
 		public FireDepartment(int x, int y, uint designID) : base(x, y, designID)
 		{

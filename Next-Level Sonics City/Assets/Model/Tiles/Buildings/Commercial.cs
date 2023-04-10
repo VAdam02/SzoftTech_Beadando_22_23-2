@@ -6,14 +6,12 @@ namespace Model.Tiles.Buildings
 	public class Commercial : Building, IWorkplace, IZoneBuilding
 	{
 		public ZoneBuildingLevel Level { get; private set; }
-		private List<Person> _workers;
-		private int _workersLimit;
+		private readonly List<Person> _workers = new();
+		private int _workersLimit = 0;
 
 		public Commercial(int x, int y, uint designID) : base(x, y, designID)
 		{
 			Level = 0;
-			_workersLimit = 10;
-			_workers= new List<Person>();
 		}
 
 		public void LevelUp()
