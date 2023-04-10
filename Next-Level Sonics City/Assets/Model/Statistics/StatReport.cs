@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace Model.Statistics
 {
-	public class StatReport : MonoBehaviour
+	public class StatReport
 	{
 		public int Year { get; set; }
 		public int Quarter { get; private set; }

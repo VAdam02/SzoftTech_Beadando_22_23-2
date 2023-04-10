@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 using Model.Tiles;
 
 namespace Model
 {
-	public class Navigator : MonoBehaviour
+	public class Navigator
 	{
 		private Road _from;
 		private Road _to;
