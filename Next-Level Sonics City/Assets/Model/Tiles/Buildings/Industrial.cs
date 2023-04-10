@@ -4,7 +4,7 @@ namespace Model.Tiles.Buildings
 {
 	public class Industrial : Building, IWorkplace, IZoneBuilding
 	{
-		public BuildingLevel Level { get; private set; }
+		public ZoneBuildingLevel Level { get; private set; }
 		private List<Person> _workers;
 		private int _workersLimit;
 
@@ -17,7 +17,7 @@ namespace Model.Tiles.Buildings
 
 		public void LevelUp()
 		{
-			if (Level == BuildingLevel.THREE) { return; }
+			if (Level == ZoneBuildingLevel.THREE) { return; }
 			++Level;
 			_workersLimit += 5;
 		}
