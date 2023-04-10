@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Tiles;
 
-namespace Buildings
+namespace Model.Tiles.Buildings
 {
-    public class School : Building
-    {
+	public class School : Building
+	{
 
-    }
+	}
 }

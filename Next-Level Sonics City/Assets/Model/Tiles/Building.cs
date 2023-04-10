@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Model;
 
-
-namespace Tiles
+namespace Model.Tiles
 {
-    public abstract class Building : Tile
-    {
+	public abstract class Building : Tile
+	{
 
-    }
+	}
 }

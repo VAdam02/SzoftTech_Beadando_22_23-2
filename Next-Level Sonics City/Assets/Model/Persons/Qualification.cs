@@ -1,4 +1,4 @@
-namespace Persons
+namespace Model.Persons
 {
-    public enum Qualification { LOW, MID, HIGH };
+	public enum Qualification { LOW, MID, HIGH };
 }

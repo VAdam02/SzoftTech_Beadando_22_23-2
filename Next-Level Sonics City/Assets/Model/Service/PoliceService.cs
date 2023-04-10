@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Service
+namespace Model.Service
 {
-    public class PoliceService : MonoBehaviour
-    {
+	public class PoliceService : MonoBehaviour
+	{
 
-    }
+	}
 }
