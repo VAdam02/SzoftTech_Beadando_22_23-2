@@ -35,8 +35,16 @@ public class Notch : MonoBehaviour
     }
 
     // Update is called once per frame
+    float deltatime = 0;
     void Update()
     {
+        deltatime += Time.deltaTime;
+        if (deltatime > 0.5f)
+        {
+            deltatime -= 0.5f;
+			money = (int)(1 / Time.deltaTime);
+		}
+        
         _moneyTextBox.GetComponent<TextMeshProUGUI>().text = "$" + money.ToString("N0");
         _moneyChangeTextBox.GetComponent<TextMeshProUGUI>().text = "$" + moneyChange.ToString("N0");
         _moneyChangeTextBox.GetComponent<TextMeshProUGUI>().color = moneyChange >= 0 ? _great : _bad;

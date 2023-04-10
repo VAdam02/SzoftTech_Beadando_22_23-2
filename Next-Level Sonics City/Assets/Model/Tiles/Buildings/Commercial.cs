@@ -9,7 +9,7 @@ namespace Model.Tiles.Buildings
 		private List<Person> _workers;
 		private int _workersLimit;
 
-		public Commercial()
+		public Commercial(int x, int y, uint designID) : base(x, y, designID)
 		{
 			Level = 0;
 			_workersLimit = 10;

@@ -5,7 +5,7 @@ namespace Model.Persons
 	public class Worker : Person
 	{
 		public IWorkplace WorkPlace { get; private set; }
-		public Qualification Qualification { get; private set; }
+		public Qualification PersonQualification { get; private set; }
 
 		private float _taxSum = 0f;
 		private int _taxCount = 0;
@@ -21,10 +21,10 @@ namespace Model.Persons
 		/// <param name="workPlace"></param>
 		/// <param name="age"></param>
 		/// <param name="qualification"></param>
-		public Worker(Residential home, IWorkplace workPlace, int age, Qualification qualification) : base(home, age)
+		public Worker(ResidentialBuildingTile home, IWorkplace workPlace, int age, Qualification qualification) : base(home, age)
 		{
 			WorkPlace = workPlace;
-			Qualification = qualification;
+			PersonQualification = qualification;
 		}
 
 		public Pensioner Retire()
@@ -35,14 +35,14 @@ namespace Model.Persons
 
 		public void IncreaseQualification()
 		{
-			if (Qualification == Qualification.HIGH) return;
-			++Qualification;
+			if (PersonQualification == Qualification.HIGH) return;
+			++PersonQualification;
 		}
 
 		public void DecreaseQualificaiton()
 		{
-			if (Qualification == Qualification.LOW) return;
-			--Qualification;
+			if (PersonQualification == Qualification.LOW) return;
+			--PersonQualification;
 		}
 		
 		public override float PayTax(float taxRate)
@@ -63,7 +63,7 @@ namespace Model.Persons
 		private float CalculateSalary()
 		{
 			float multiplier = 1.0f;
-			switch (Qualification)
+			switch (PersonQualification)
 			{
 				case Qualification.HIGH:
 					multiplier *= 1.5f;

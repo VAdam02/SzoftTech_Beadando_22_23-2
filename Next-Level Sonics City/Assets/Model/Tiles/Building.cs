@@ -10,6 +10,11 @@ namespace Model.Tiles
 		public bool IsOnFire { get; private set; }
 		public List<Road> ConnectedTo { get; private set; }
 
+		public Building(int x, int y, uint designID) : base(x, y, designID)
+		{
+
+		}
+
 		public bool StartFire()
 		{
 			throw new NotImplementedException();

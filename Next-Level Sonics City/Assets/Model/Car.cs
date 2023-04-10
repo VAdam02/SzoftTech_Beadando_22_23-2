@@ -14,7 +14,6 @@ namespace Model
 		private Road _isAt;
 		private Navigator navigator;
 
-
 		public int GetDesign()
 		{
 			//TODO

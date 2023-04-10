@@ -21,7 +21,7 @@ namespace Model.Statistics
 			Quarter = 0;
 		}
 
-		public async Task<float> CalculateResidenceTaxPerHouse(Residential residential, float taxRate)
+		public async Task<float> CalculateResidenceTaxPerHouse(ResidentialBuildingTile residential, float taxRate)
 		{
 			float houseTax = 0;
 			List<Person> persons = residential.GetResidents();
@@ -34,11 +34,11 @@ namespace Model.Statistics
 			return houseTax;
 		}
 
-		public async Task<float> CalculateResidenceTax(List<Residential> residentials, float taxRate)
+		public async Task<float> CalculateResidenceTax(List<ResidentialBuildingTile> residentials, float taxRate)
 		{
 			float totalTax = 0;
 
-			foreach (Residential residential in residentials)
+			foreach (ResidentialBuildingTile residential in residentials)
 			{
 				totalTax += await CalculateResidenceTaxPerHouse(residential, taxRate);
 			}
@@ -71,7 +71,7 @@ namespace Model.Statistics
 			return totalTax;
 		}
 
-		public (float avg, int weight) CalculateHappinessPerResident(Residential residential)
+		public (float avg, int weight) CalculateHappinessPerResident(ResidentialBuildingTile residential)
 		{
 			float totalResidentialHappiness = 0;
 			List<Person> persons = residential.GetResidents();
@@ -84,12 +84,12 @@ namespace Model.Statistics
 			return (totalResidentialHappiness / persons.Count, persons.Count);
 		}
 
-		public (float avg, int weight) CalculateHappiness(List<Residential> residentials)
+		public (float avg, int weight) CalculateHappiness(List<ResidentialBuildingTile> residentials)
 		{
 			float totalCityHappiness = 0;
 			int count = 0;
 
-			foreach (Residential residential in residentials)
+			foreach (ResidentialBuildingTile residential in residentials)
 			{
 				(float avg, int weight) = CalculateHappinessPerResident(residential);
 				count += weight;

@@ -8,7 +8,7 @@ namespace Model.Tiles.Buildings
 		private List<Person> _workers;
 		private int _workersLimit;
 
-		public Stadion()
+		public Stadion(int x, int y, uint designID) : base(x, y, designID)
 		{
 
 		}

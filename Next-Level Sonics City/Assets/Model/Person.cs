@@ -1,19 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Model.Persons;
 using Model.Tiles.Buildings;
 
 namespace Model
 {
 	public abstract class Person
 	{
-		private static ulong s_id = 0;
+		private static ulong s_id;
 
 		private ulong _id;
+        public ResidentialBuildingTile LiveAt { get; protected set; }
 		public int Age { get; protected set; }
-		public Residential LiveAt { get; protected set; }
+        public Qualification Qualification { get; protected set; }
 
-		public Person(Residential home, int age)
+		public Person(ResidentialBuildingTile home, int age)
 		{
 			_id = s_id++;
 			LiveAt = home;
