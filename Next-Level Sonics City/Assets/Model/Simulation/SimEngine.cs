@@ -5,15 +5,17 @@ using UnityEditor;
 using System.Threading;
 using System;
 using Model;
-using Tiles;
-using Buildings;
+
 using Statistics;
+
+
 
 
 namespace Simulation
 {
 	public class SimEngine : MonoBehaviour
 	{
+		
 		private float _money;
 		private DateTime _date;
 		private City _city;
@@ -21,6 +23,7 @@ namespace Simulation
 		private int _timeSpeed;
 		private List<Person> _people;
 		private StatEngine _statEngine;
+		private Tile[,] _tiles;
 
 		private static readonly int _tps = 10;
 		private static Thread _t;
@@ -131,7 +134,7 @@ namespace Simulation
 		/*
 		private bool LevelUpZone(IBuilding b)
 		{
-			TODO
+			
 		}*/
 		public int GetPriceMarkZone(List<Tile> tile, ZoneBuilding z)
 		{
@@ -177,12 +180,12 @@ namespace Simulation
 		}
 		private void Die(Person person)
 		{
-			throw new NotImplementedException();
+			_people.Remove(person);
 			//TODO
 		}
 		public int GetMoney()
 		{
-			throw new NotImplementedException();
+			return _money;
 			//TODO
 		}
 		public DateTime Getdate()
@@ -204,10 +207,15 @@ namespace Simulation
 		public int GetTimeSpeed()
 		{
 			throw new NotImplementedException();
+
+			return _timeSpeed;
 			//TODO
 		}
-		public int SetTimeSpeed()
+		public int SetTimeSpeed(int speed)
 		{
+
+			_timeSpeed = speed;
+			
 			throw new NotImplementedException();
 			//TODO
 		}
