@@ -34,7 +34,6 @@ namespace Simulation
 		private static bool _isRunning = false; //dont modify
 		private static bool _isPaused = false; //dont modify
 
-
 		public static void ThreadProc()
 		{
 			Debug.Log("Thread started");
@@ -116,25 +115,25 @@ namespace Simulation
 		}
 		public bool Destroy(Tile tile)
 		{
-		   throw new NotImplementedException();
-		   //TODO
+			throw new NotImplementedException();
+			//TODO
 		}
 		public bool DestoryForce(Tile tile)
 		{
-		   throw new NotImplementedException();
-		   //TODO
+			throw new NotImplementedException();
+			//TODO
 		}
-		private bool BuildByPeople(Tile t,ZoneBuilding z)
+		private bool BuildByPeople(Tile t, ZoneBuilding z)
 		{
-		   throw new NotImplementedException();
-		   //TODO
+			throw new NotImplementedException();
+			//TODO
 		}
 		/*
 		private bool LevelUpZone(IBuilding b)
 		{
 			TODO
 		}*/
-		public int GetPriceMarkZone(List<Tile> tile,ZoneBuilding z)
+		public int GetPriceMarkZone(List<Tile> tile, ZoneBuilding z)
 		{
 			throw new NotImplementedException();
 			//TODO
@@ -144,7 +143,7 @@ namespace Simulation
 			throw new NotImplementedException();
 			//TODO
 		}
-		public int GetPriceBuildService(Tile tile,ServiceBuilding sb)
+		public int GetPriceBuildService(Tile tile, ServiceBuilding sb)
 		{
 			throw new NotImplementedException();
 			//TODO
