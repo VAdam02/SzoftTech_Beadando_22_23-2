@@ -5,10 +5,7 @@ using UnityEditor;
 using System.Threading;
 using System;
 using Model;
-
 using Statistics;
-
-
 
 
 namespace Simulation
@@ -17,6 +14,7 @@ namespace Simulation
 	{
 		
 		private float _money;
+		private float _tax;
 		private DateTime _date;
 		private City _city;
 		private List<Car> _carsOnRoad;
@@ -123,6 +121,7 @@ namespace Simulation
 		}
 		public bool DestoryForce(Tile tile)
 		{
+
 			throw new NotImplementedException();
 			//TODO
 		}
@@ -153,6 +152,7 @@ namespace Simulation
 		}
 		public int GetPriceDestroy(Tile tile)
 		{
+			
 			throw new NotImplementedException();
 			//TODO
 		}
@@ -165,11 +165,21 @@ namespace Simulation
 
 		public void SetTax(float f)
 		{
-			throw new NotImplementedException();
+			_tax = f;
+			
 			//TODO
 		}
 		private bool MoveIn(int i)
-		{
+		{/*
+			bool move_in = true;
+			
+			foreach(Person p in _people)
+			{
+				if(p.GetHappiness() < 0.5)
+				{
+					p.MoveIn()
+				}
+			}*/
 			throw new NotImplementedException();
 			//TODO
 		}
@@ -183,7 +193,7 @@ namespace Simulation
 			_people.Remove(person);
 			//TODO
 		}
-		public int GetMoney()
+		public float GetMoney()
 		{
 			return _money;
 			//TODO
@@ -206,7 +216,7 @@ namespace Simulation
 		}
 		public int GetTimeSpeed()
 		{
-			throw new NotImplementedException();
+			
 
 			return _timeSpeed;
 			//TODO
@@ -215,8 +225,8 @@ namespace Simulation
 		{
 
 			_timeSpeed = speed;
+			return _timeSpeed;
 			
-			throw new NotImplementedException();
 			//TODO
 		}
 	}
