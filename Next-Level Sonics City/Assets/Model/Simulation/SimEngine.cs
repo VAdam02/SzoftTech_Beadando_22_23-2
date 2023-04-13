@@ -18,12 +18,14 @@ namespace Model.Simulation
 		public Tile[,] Tiles { get; private set; }
 
 		private float _money;
+		private float _tax;
 		private DateTime _date;
 		private City _city;
 		private List<Car> _carsOnRoad;
 		private int _timeSpeed;
 		private List<Person> _people;
 		private StatEngine _statEngine;
+		private Tile[,] _tiles;
 
 		private static readonly int _tps = 10;
 		private static Thread _t;
@@ -36,7 +38,6 @@ namespace Model.Simulation
 		}
 		private static bool _isRunning = false; //dont modify
 		private static bool _isPaused = false; //dont modify
-
 
 		public static void ThreadProc()
 		{
@@ -136,25 +137,26 @@ namespace Model.Simulation
 		}
 		public bool Destroy(Tile tile)
 		{
-		   throw new NotImplementedException();
-		   //TODO
+			throw new NotImplementedException();
+			//TODO
 		}
 		public bool DestoryForce(Tile tile)
 		{
-		   throw new NotImplementedException();
-		   //TODO
+
+			throw new NotImplementedException();
+			//TODO
 		}
-		private bool BuildByPeople(Tile t,ZoneBuilding z)
+		private bool BuildByPeople(Tile t, ZoneBuilding z)
 		{
-		   throw new NotImplementedException();
-		   //TODO
+			throw new NotImplementedException();
+			//TODO
 		}
 		/*
 		private bool LevelUpZone(IBuilding b)
 		{
-			TODO
+			
 		}*/
-		public int GetPriceMarkZone(List<Tile> tile,ZoneBuilding z)
+		public int GetPriceMarkZone(List<Tile> tile, ZoneBuilding z)
 		{
 			throw new NotImplementedException();
 			//TODO
@@ -164,13 +166,14 @@ namespace Model.Simulation
 			throw new NotImplementedException();
 			//TODO
 		}
-		public int GetPriceBuildService(Tile tile,ServiceBuilding sb)
+		public int GetPriceBuildService(Tile tile, ServiceBuilding sb)
 		{
 			throw new NotImplementedException();
 			//TODO
 		}
 		public int GetPriceDestroy(Tile tile)
 		{
+			
 			throw new NotImplementedException();
 			//TODO
 		}
@@ -183,11 +186,21 @@ namespace Model.Simulation
 
 		public void SetTax(float f)
 		{
-			throw new NotImplementedException();
+			_tax = f;
+			
 			//TODO
 		}
 		private bool MoveIn(int i)
-		{
+		{/*
+			bool move_in = true;
+			
+			foreach(Person p in _people)
+			{
+				if(p.GetHappiness() < 0.5)
+				{
+					p.MoveIn()
+				}
+			}*/
 			throw new NotImplementedException();
 			//TODO
 		}
@@ -198,12 +211,12 @@ namespace Model.Simulation
 		}
 		private void Die(Person person)
 		{
-			throw new NotImplementedException();
+			_people.Remove(person);
 			//TODO
 		}
-		public int GetMoney()
+		public float GetMoney()
 		{
-			throw new NotImplementedException();
+			return _money;
 			//TODO
 		}
 		public DateTime Getdate()
@@ -224,12 +237,17 @@ namespace Model.Simulation
 		}
 		public int GetTimeSpeed()
 		{
-			throw new NotImplementedException();
+			
+
+			return _timeSpeed;
 			//TODO
 		}
-		public int SetTimeSpeed()
+		public int SetTimeSpeed(int speed)
 		{
-			throw new NotImplementedException();
+
+			_timeSpeed = speed;
+			return _timeSpeed;
+			
 			//TODO
 		}
 	}
