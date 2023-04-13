@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using System.Threading;
-using System;
 using Model;
-using Tiles;
-using Buildings;
-using Statistics;
+using Model.Tiles;
+using System.Threading;
+using Model.Tiles.Buildings;
+using System;
+using Model.Statistics;
 
-
-namespace Simulation
+namespace Model.Simulation
 {
 	public class SimEngine : MonoBehaviour
 	{
+		private static SimEngine _instance;
+		public static SimEngine Instance { get { return _instance; } }
+
+		public Tile[,] Tiles { get; private set; }
+
 		private float _money;
 		private DateTime _date;
 		private City _city;
@@ -67,8 +70,25 @@ namespace Simulation
 		// Start is called before the first frame update
 		void Start()
 		{
+			_instance = this;
 			Init();
 			StartSimulation();
+
+			System.Random rnd = new();
+			Tiles = new Tile[100, 100];
+			for (int i = 0; i < Tiles.GetLength(0); i++)
+			for (int j = 0; j < Tiles.GetLength(1); j++)
+			{
+				if (rnd.Next(0, 2) < 1)
+				{
+					Tiles[i, j] = new EmptyTile(i, j, 0);
+				}
+				else
+				{
+					Tiles[i, j] = new ResidentialBuildingTile(i, j, (uint)rnd.Next(int.MinValue, int.MaxValue) + int.MaxValue);
+				}
+			}
+
 		}
 
 		private static void Init()
