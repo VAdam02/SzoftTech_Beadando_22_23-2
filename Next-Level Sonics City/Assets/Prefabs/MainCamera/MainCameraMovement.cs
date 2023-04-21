@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MainCameraMovement : MonoBehaviour
@@ -37,6 +35,7 @@ public class MainCameraMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		/*
 		//Manage input
 		Vector3 translation = GetTranslationByInput().trans;
 		Vector3 rotation = GetTranslationByInput().rot;
@@ -55,13 +54,15 @@ public class MainCameraMovement : MonoBehaviour
 		_rotate.transform.GetLocalPositionAndRotation(out pos, out rot);
 		rot.x = Mathf.Clamp(rot.x, MinDeg, MaxDeg);
 		_rotate.transform.SetLocalPositionAndRotation(pos, rot);
+		*/
 	}
 
 	private (Vector3 trans, Vector3 rot) GetTranslationByInput()
 	{
 		Vector3 translation = Vector3.zero;
 		Vector3 rotation = Vector3.zero;
-
+	
+		/*
 		//HIDE/SHOW CURSOR
 		if (_virtualMouse.Visible && (_virtualMouse.IsLeftHold() || _virtualMouse.IsRightHold())) { _virtualMouse.Visible = false; }        //HIDE CURSOR (if panning)
 		else if (!_virtualMouse.Visible && !(_virtualMouse.IsLeftHold() || _virtualMouse.IsRightHold())) { _virtualMouse.Visible = true; }  //SHOW CURSOR (if not panning)
@@ -100,6 +101,7 @@ public class MainCameraMovement : MonoBehaviour
 			if (Input.GetKey(KeyCode.RightArrow)) { rotation += new Vector3(0, 1, 0) * RotationMultiplier; }
 
 		}
+		*/
 
 		return (translation, rotation);
 	}

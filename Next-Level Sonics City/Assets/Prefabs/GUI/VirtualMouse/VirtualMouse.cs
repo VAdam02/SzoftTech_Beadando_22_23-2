@@ -1,93 +1,188 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class VirtualMouse : MonoBehaviour
 {
-    private RectTransform _mouseRectTransform;
-    private RawImage _mouseRawImage;
+	private RectTransform _mouseRectTransform;
+	private RawImage _mouseRawImage;
 
-    private bool _visible = true;
-    public bool Visible
-    {
-        get => _visible;
-        set { _visible = value; }
-    }
+	private bool _visible = true;
+	public bool Visible
+	{
+		get => _visible;
+		set
+		{
+			_visible = value;
+			_mouseRawImage.enabled = _visible;
+		}
+	}
 
-    private Vector3 _mousePosition = Vector3.zero;
-    public Vector3 MousePosition
-    {
-        get => _mousePosition;
-        set
-        {
-            _mousePosition = value;
-            VerifyMousePos();
-        }
-    }
+	private Vector3 _mousePosition = Vector3.zero;
+	private Vector3 MousePosition
+	{
+		get => _mousePosition;
+		set
+		{
+			_mousePosition = value;
+			_mousePosition.Set(
+				Mathf.Clamp(_mousePosition.x, 0, Screen.width),
+				Mathf.Clamp(_mousePosition.y, 0, Screen.height),
+				0);
+			_mouseRectTransform.transform.position = _mousePosition;
+		}
+	}
 
-    public float ClickMaxHoldTime = 0.2f;
-    public int MouseSensitivity = 650;
 
-    /*
-     * true && 0 => just clicked
-     * true && >0 => hold
-     * false && >0 => just released
-     * false && 0 => not clicked
-    */
-    private bool _leftClick = false;
-    private float _leftClickTime = 0;
-    private bool _rightClick = false;
-    private float _rightClickTime = 0;
-    
-    public bool IsLeftClick() { return (!_leftClick && 0 < _leftClickTime && _leftClickTime <= ClickMaxHoldTime ? true : false); }
-    public bool IsLeftHold() { return (_leftClick && _leftClickTime > ClickMaxHoldTime ? true : false); }
+	public float ClickMaxHoldTime = 0.3f;
+	public float MouseSensitivity = 16.5f;
+	public float MouseMoveToleranceDuringClick = 5;
 
-    public bool IsRightClick() { return (!_rightClick && 0 < _rightClickTime && _rightClickTime <= ClickMaxHoldTime ? true : false); }
-    public bool IsRightHold() { return (_rightClick && _rightClickTime > ClickMaxHoldTime ? true : false); }
+	List<IClickable>	_selectedElement = new();
+	private bool		_isMouseDown;
+	private bool		_isLeftMouse;
+	private bool		_isPossibleClick;
+	private bool		_isMouseHold;
+	private float		_mouseHoldTime;
 
-    private void VerifyMousePos()
-    {
-        _mousePosition = new Vector3((_mousePosition.x < 0 ? 0 : _mousePosition.x), (_mousePosition.y < 0 ? 0 : _mousePosition.y), 0); //Bottom left wall
-        _mousePosition = new Vector3((_mousePosition.x > Screen.width ? Screen.width : _mousePosition.x), (_mousePosition.y > Screen.height ? Screen.height : _mousePosition.y), 0); //Top right wall
-    }
+	private Vector3		_deltaMove;
+	private Vector3		_sumDeltaMove;
+	private Vector3		_mouseAt;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
+	/// <summary>
+	/// Manage mouse input and call the IClickable functions
+	/// </summary>
+	/// <param name="move">Deltamove since last call</param>
+	void ClickCheck(Vector3 move)
+	{
+		//filter if action interrupted by other mouse button
+		if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1) || 
+			Input.GetMouseButton(0) && Input.GetMouseButtonDown(1))
+		{ ClickRelease(); return; }
 
-        _mouseRectTransform = GetComponent<RectTransform>();
-        _mouseRawImage = GetComponent<RawImage>();
-        _mousePosition = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-    }
+		//mouse down -> init
+		if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+		{
+			_isLeftMouse = Input.GetMouseButton(0);
 
-    // Update is called once per frame
-    void Update()
-    {
-        //LEFT CLICK
-        if (Input.GetMouseButtonDown(0) && !Input.GetMouseButton(1)) { _leftClick = true; }
-        else if (Input.GetMouseButton(0) && !Input.GetMouseButton(1)) { _leftClickTime += Time.deltaTime; }
-        else if (Input.GetMouseButtonUp(0) || Input.GetMouseButton(1)) { _leftClick = false; }
-        else if (!Input.GetMouseButton(0)) { _leftClickTime = 0; }
+			_isPossibleClick = true;
+			_isMouseDown = true;
+			_mouseHoldTime = 0;
+			_isMouseHold = false;
+			_deltaMove.Set(0, 0, 0);
+			_sumDeltaMove.Set(0, 0, 0);
 
-        //RIGHT CLICK
-        if (Input.GetMouseButtonDown(1) && !Input.GetMouseButton(0)) { _rightClick = true; }
-        else if (Input.GetMouseButton(1) && !Input.GetMouseButton(0)) { _rightClickTime += Time.deltaTime; }
-        else if (Input.GetMouseButtonUp(1) || Input.GetMouseButton(0)) { _rightClick = false; }
-        else if (!Input.GetMouseButton(1)) { _rightClickTime = 0; }
+			_selectedElement.Select((item) => { item.OnSecondClick(_selectedElement); return false; });
+			
+			_selectedElement = GetTarget(MousePosition);
+		}
+		//holding -> wait/dragstart/drag
+		else if (_isMouseDown && Input.GetMouseButton(_isLeftMouse ? 0 : 1))
+		{
+			_mouseHoldTime += Time.deltaTime;
+			_deltaMove = move;
+			_sumDeltaMove += _deltaMove;
+			if (_isPossibleClick && (_mouseHoldTime > ClickMaxHoldTime || Mathf.Abs(_sumDeltaMove.magnitude) > MouseMoveToleranceDuringClick)) { _isPossibleClick = false; }
+			if (!_isPossibleClick)
+			{
+				//hold start
+				if (!_isMouseHold)
+				{
+					_isMouseHold = true;
+					foreach (IClickable item in _selectedElement) item.OnDragStart(_isLeftMouse, _mouseAt);
+				}
 
-        //MOUSE POSITION
-        if (_visible)
-        {
-            _mousePosition += new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * Time.deltaTime * MouseSensitivity;
-            VerifyMousePos();
-            _mouseRectTransform.transform.position = _mousePosition;
-            _mouseRawImage.enabled = true;
-        }
-        else
-        {
-            _mouseRawImage.enabled = false;
-        }
-    }
+				bool visible = true;
+				foreach (IClickable item in _selectedElement) visible &= item.OnDrag(_isLeftMouse, _deltaMove);
+				Visible = visible;
+				_deltaMove.Set(0, 0, 0);
+			}
+		}
+		//mouse up -> click/dragend
+		else if (Input.GetMouseButtonUp(_isLeftMouse ? 0 : 1)) { ClickRelease(); }
+	}
+
+	/// <summary>
+	/// Call the OnClick or OnDragEnd function of all IClickable components that were selected at the start of the click
+	/// </summary>
+	void ClickRelease()
+	{
+		foreach (IClickable item in _selectedElement)
+		{
+			if (_isPossibleClick) item.OnClick(_isLeftMouse, _mouseAt);
+			else item.OnDragEnd(_isLeftMouse);
+		}
+
+		_isPossibleClick = false;
+		Visible = true;
+		_isMouseDown = false;
+	}
+
+	/// <summary>
+	/// Get all IClickable components at the clicked location on the UI (if any including transparent) and on the world (if any)
+	/// Please note that the function has sideeffects
+	/// </summary>
+	/// <param name="position">Clicked location</param>
+	/// <returns>List of IClickable</returns>
+	List<IClickable> GetTarget(Vector3 position)
+	{
+		List<IClickable> output = new();
+
+		PointerEventData pointerEventData = new(GetComponent<EventSystem>()) { position = position };
+		List<RaycastResult> results = new();
+		transform.parent.GetComponent<GraphicRaycaster>().Raycast(pointerEventData, results);
+
+		GameObject hitObject;
+		//get the first object that has an IClickable component
+		if (results.Count > 0)
+		{
+			_mouseAt = results[0].worldPosition;
+			hitObject = results[0].gameObject;
+			while (!(hitObject == null || hitObject.transform.GetComponents(typeof(IClickable)).Length != 0))
+			{
+				hitObject = hitObject.transform.parent != null ? hitObject.transform.parent.gameObject : null;
+			}
+			if (hitObject != null) output.Add(hitObject.transform.GetComponent<IClickable>());
+			if (hitObject == null || !hitObject.CompareTag("IClickableTransparent")) return output;
+		}
+
+		//get the first object that has an IClickable component in the world if no UI object was found or the UI object is transparent
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(position), out RaycastHit lookat))
+		{
+			hitObject = lookat.transform.gameObject;
+			while (!(hitObject == null || hitObject.transform.GetComponents(typeof(IClickable)).Length != 0))
+			{
+				hitObject = hitObject.transform.parent != null ? hitObject.transform.parent.gameObject : null;
+			}
+			if (hitObject != null)
+			{
+				output.Add(hitObject.transform.GetComponent<IClickable>());
+			}
+		}
+
+		return output;
+	}
+
+	// Start is called before the first frame update
+	void Start()
+	{
+		Cursor.lockState = CursorLockMode.Locked;
+
+		_mouseRectTransform = GetComponent<RectTransform>();
+		_mouseRawImage = GetComponent<RawImage>();
+		_mousePosition = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+	}
+
+	// Update is called once per frame
+	void Update()
+	{
+		Vector3 currentMove = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * MouseSensitivity;
+		ClickCheck(currentMove);
+		if (Visible)
+		{
+			MousePosition += currentMove;
+		}
+	}
 }

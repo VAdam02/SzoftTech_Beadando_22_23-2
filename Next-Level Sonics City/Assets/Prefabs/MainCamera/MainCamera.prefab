@@ -78,13 +78,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MinZoom: 2
-  MaxZoom: 20
+  MaxZoom: 150
   MinDeg: -0.5
   MaxDeg: 0
   MouseTransMultiplier: 5
   MouseZoomMultiplier: 500
   MouseRotationMultiplier: 50
-  TransMultiplier: 10
+  TransMultiplier: 100
   ZoomMultiplier: 20
   RotationMultiplier: 40
   VirtualMouse: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 2896971607221050436}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
