@@ -92,5 +92,13 @@ public class CameraMove : MonoBehaviour, IClickable
 		{
 			LookFrom += (Input.GetKey(KeyCode.KeypadMinus) ? 1 : -1) * KeyboardZoomMultiplier * Time.deltaTime * new Vector3(0, 0, 1);
 		}
+		if (Input.GetKey(KeyCode.UpArrow) ^ Input.GetKey(KeyCode.DownArrow))
+		{
+			LookFrom += (Input.GetKey(KeyCode.UpArrow) ? 1 : -1) * KeyboardRotateMultiplier * Time.deltaTime * new Vector3(0, 1, 0);
+		}
+		if (Input.GetKey(KeyCode.LeftArrow) ^ Input.GetKey(KeyCode.RightArrow))
+		{
+			LookFrom += (Input.GetKey(KeyCode.RightArrow) ? 1 : -1) * KeyboardRotateMultiplier * Time.deltaTime * new Vector3(1, 0, 0);
+		}
 	}
 }
