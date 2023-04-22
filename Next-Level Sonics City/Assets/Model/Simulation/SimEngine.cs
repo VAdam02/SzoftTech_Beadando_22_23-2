@@ -25,58 +25,29 @@ namespace Model.Simulation
 		private int _timeSpeed;
 		private List<Person> _people;
 		private StatEngine _statEngine;
-		private Tile[,] _tiles;
 
-		private static readonly int _tps = 10;
-		private static Thread _t;
-		private static readonly object _lock = new();
-		private static bool _isSimulating = false; //dont modify
-		public static bool IsSimulating //Only can be set to false
-		{
-			get { lock (_lock) { return _isSimulating; } }
-			private set { if (!value) { lock (_lock) { _isSimulating = false; } } }
-		}
-		private static bool _isRunning = false; //dont modify
-		private static bool _isPaused = false; //dont modify
-
-		public static void ThreadProc()
-		{
-			Debug.Log("Thread started");
-			lock (_lock)
-			{
-				if (_isRunning) { return; }
-				_isRunning = true;
-				_isSimulating = true;
-			}
-
-			long startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-			while (IsSimulating)
-			{
-				//TICK
-				if (!_isPaused) { Tick(); }
-				else { Debug.Log("Paused"); }
-
-				//TICKING DELAY
-				long sleepTime = 1000 / _tps - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
-				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
-				else { Debug.LogWarning("Last tick took " + (-sleepTime) + "ms longer than the maximum time"); }
-				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-			}
-
-			lock (_lock)
-			{
-				_isRunning = false;
-			}
-		}
 		// Start is called before the first frame update
 		void Start()
 		{
 			_instance = this;
 			Init();
 			StartSimulation();
+		}
 
+		// Update is called once per frame
+		void Update()
+		{
+
+		}
+
+		/// <summary>
+		/// Initialize things before the starting of the simulation
+		/// </summary>
+		private void Init()
+		{
+			int size = 100;
 			System.Random rnd = new();
-			Tiles = new Tile[100, 100];
+			Tiles = new Tile[size, size];
 			for (int i = 0; i < Tiles.GetLength(0); i++)
 			for (int j = 0; j < Tiles.GetLength(1); j++)
 			{
@@ -89,35 +60,14 @@ namespace Model.Simulation
 					Tiles[i, j] = new ResidentialBuildingTile(i, j, (uint)rnd.Next(int.MinValue, int.MaxValue) + int.MaxValue);
 				}
 			}
-
 		}
 
-		private static void Init()
-		{
-
-		}
-
+		/// <summary>
+		/// Called once when the simulation should do a cycle
+		/// </summary>
 		private static void Tick()
 		{
 			//Do the things that should done during a tick
-			Debug.Log("Tick");
-		}
-
-		private static void StopSimulation()
-		{
-			IsSimulating = false;
-		}
-
-		private static void StartSimulation()
-		{
-			_t ??= new Thread(new ThreadStart(ThreadProc));
-			_t.Start();
-		}
-
-		// Update is called once per frame
-		void Update()
-		{
-
 		}
 
 		public bool MarkZone(List<Tile> tiles, ZoneBuilding z)
@@ -250,5 +200,89 @@ namespace Model.Simulation
 			
 			//TODO
 		}
+
+		#region Thread
+		private static readonly int _tps = 10;
+		private static Thread _t;
+
+		private static readonly object _lock = new();		//lock for _isSimulating and _isRunning
+		private static bool _isSimulating = false;			//dont modify
+		private static bool _isRunning = false;				//dont modify
+
+		private static readonly object _pauseLock = new();	//lock for _isPaused
+		private static bool _isPaused = false;				//dont modify
+
+		/// <summary>
+		/// Run the ticking loop
+		/// </summary>
+		private static void ThreadProc()
+		{
+			lock (_lock)
+			{
+				if (_isRunning) { return; }
+				_isRunning = true;
+				_isSimulating = true;
+			}
+
+			long startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+			while (_isSimulating)
+			{
+				//TICK
+				if (!_isPaused) { Tick(); }
+
+				//TICKING DELAY
+				long sleepTime = 1000 / _tps - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
+				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
+				else { Debug.LogWarning("Last tick took " + (-sleepTime) + "ms longer than the maximum time"); }
+				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+			}
+
+			lock (_lock)
+			{
+				_isRunning = false;
+			}
+		}
+
+		/// <summary>
+		/// Start the simulation
+		/// </summary>
+		private static void StartSimulation()
+		{
+			_t ??= new Thread(new ThreadStart(ThreadProc));
+			_t.Start();
+		}
+
+		/// <summary>
+		/// Stop the simulation
+		/// </summary>
+		private static void StopSimulation()
+		{
+			lock (_lock)
+			{
+				_isSimulating = false;
+			}
+		}
+
+		private void OnApplicationQuit()
+		{
+			StopSimulation();
+		}
+
+		private void OnApplicationFocus(bool hasFocus)
+		{
+			lock (_pauseLock)
+			{
+				_isPaused = !hasFocus;
+			}
+		}
+
+		private void OnApplicationPause(bool pauseStatus)
+		{
+			lock (_pauseLock)
+			{
+				_isPaused = pauseStatus;
+			}
+		}
+		#endregion
 	}
 }
