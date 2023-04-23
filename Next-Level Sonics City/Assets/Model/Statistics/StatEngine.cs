@@ -189,23 +189,25 @@ namespace Model.Statistics
 			return commercialCount / IndustrialCount;
 		}
 
-		/// <summary>
-		/// Records the expense of the building
-		/// </summary>
-		/// <param name="price">positive if expense and negative if income</param>
-		/// <exception cref="NotImplementedException"></exception>
-		public void SumBuildingPrice(object sender, EventArgs e)
+		public void SumBuildPrice(object sender, TileEventArgs e)
 		{
 			//TODO
 			throw new NotImplementedException();
 		}
 
-		/// <summary>
-		/// Records the income of destruction
-		/// </summary>
-		/// <param name="price">positive if income and negative if expense</param>
-		/// <exception cref="NotImplementedException"></exception>
-		public void SumDestroyPrice(object sender, EventArgs e)
+		public void SumDestroyPrice(object sender, TileEventArgs e)
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
+
+		public void SumMarkZonePrice(object sender, TileEventArgs e)
+		{
+			//TODO
+			throw new NotImplementedException();
+		}
+
+		public void SumUnMarkZonePrice(object sender, TileEventArgs e)
 		{
 			//TODO
 			throw new NotImplementedException();

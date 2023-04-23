@@ -15,28 +15,29 @@ namespace Model
 		public readonly UnityEvent OnTileChange = new ();
 		public readonly UnityEvent OnTileDelete = new ();
 
+		protected const int BUILD_PRICE = 10000;
+		protected const int DESTROY_PRICE = 2000;
+		
+
 		public Tile(int x, int y, uint designID)
 		{
 			DesignID = designID;
 			Coordinates = new Vector3(x, y, 0);
 		}
 
-		public void Build()
+		public virtual int GetBuildPrice()
 		{
-			//TODO
-			throw new NotImplementedException();
+			return BUILD_PRICE;
 		}
 
-		public void Destroy()
+		public virtual int GetDestroyPrice()
 		{
-			//TODO
-			throw new NotImplementedException();
+			return DESTROY_PRICE;
 		}
 
-		public int GetMaintainanceCost()
+		public virtual int GetMaintainanceCost()
 		{
-			//TODO
-			throw new NotImplementedException();
+			return GetBuildPrice() / 10;
 		}
 	}
 }

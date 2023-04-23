@@ -50,4 +50,19 @@ public class HighSchool : Building, IWorkplace
 	{
 		return _workersLimit;
 	}
+
+	public override int GetBuildPrice() //TODO implementik logic
+	{
+		return BUILD_PRICE;
+	}
+
+	public override int GetDestroyPrice()
+	{
+		return DESTROY_PRICE;
+	}
+
+	public override int GetMaintainanceCost()
+	{
+		return GetBuildPrice() / 10;
+	}
 }

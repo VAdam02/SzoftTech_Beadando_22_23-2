@@ -22,7 +22,10 @@ namespace Model.Simulation
 		
 		private void Init()
 		{
-			
+			ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
+			ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
+			BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
+			BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
 		}
 		
 		public Tile GetTile(int x, int y)
