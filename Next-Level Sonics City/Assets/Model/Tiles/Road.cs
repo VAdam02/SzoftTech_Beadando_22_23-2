@@ -7,10 +7,10 @@ namespace Model.Tiles
     {
         public Road(int x, int y, uint designID) : base(x, y, designID)
 		{
-
+			
 		}
 
-		public override int GetBuildPrice()
+		public override int GetBuildPrice() //TODO implementik logic
 		{
 			return BUILD_PRICE;
 		}
