@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Model;
 using Model.Tiles;
 using System.Threading;
 using Model.Tiles.Buildings;
-using System;
 using Model.Statistics;
+using System.Linq;
+using Model.Persons;
 
 namespace Model.Simulation
 {
@@ -16,7 +18,9 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }
 
 		public Tile[,] Tiles { get; private set; }
-		public SortedDictionary<int,Person> Persons {get;private set;}
+		
+		public SortedDictionary<int,Person> Personslist = new SortedDictionary<int, Person>();
+		public Worker worker;
 
 		private float _money;
 		private float _tax;
@@ -68,7 +72,26 @@ namespace Model.Simulation
 		/// </summary>
 		private static void Tick()
 		{
-			//Do the things that should done during a tick
+            //Do the things that should done during a tick
+            // temporary solution
+            System.Random rand = new();
+            int be = rand.Next(1,6);
+			int ki = rand.Next(1,6);
+			int sum = be - ki;
+			int startindex = _instance.Personslist.Keys.Last();
+			if(sum > 0){
+				for(int i = startindex+1;i< sum+1;i++){
+					//mág a worker paraméterei nincsenek meg
+					Worker w = new Worker();
+					_instance.Personslist.Add(i,w);
+				}
+			}
+			else if(sum < 0){
+				for(int i = startindex;i > sum-1;i--){
+					_instance.Personslist.Remove(i);
+				}				
+			}
+
 		}
 
 		public bool MarkZone(List<Tile> tiles, ZoneBuilding z)
@@ -162,7 +185,14 @@ namespace Model.Simulation
 		}
 		private void Die(Person person)
 		{
-			//_people.Remove(person);
+			Person toKill = person;
+			
+			foreach(KeyValuePair<int,Person> kvp in Personslist){
+				if(kvp.Value == toKill){
+					Personslist.Remove(kvp.Key);
+					break;
+				}
+			}
 			//TODO
 		}
 		public float GetMoney()
