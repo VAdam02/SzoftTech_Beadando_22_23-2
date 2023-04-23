@@ -52,7 +52,6 @@ namespace Model.Simulation
 			//DEMO CODE
 			int n = 100;
 			System.Random rnd = new ();
-			Instance.Tiles = new Tile[n, n];
 			_tiles = new Tile[n, n];
 
 			for (int i = 0; i < n; i++)
