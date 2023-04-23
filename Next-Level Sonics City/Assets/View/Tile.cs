@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using View.GUI;
 
 namespace View
 {
@@ -22,7 +23,7 @@ namespace View
 
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			Debug.Log("Tile clicked! " + isLeftMouseButton + " " + location);
+			//Debug.Log("Tile clicked! " + isLeftMouseButton + " " + location);
 		}
 
 		public void OnDragStart(bool isLeftMouseButton, Vector3 location) { }
@@ -33,12 +34,12 @@ namespace View
 
 		public void OnSecondClick(List<IClickable> clicked)
 		{
-			Debug.Log("Tile second clicked! " + clicked + "\t" + this);
+			//Debug.Log("Tile second clicked! " + clicked + "\t" + this);
 		}
 
 		public void OnHoverStart(Vector3 location)
 		{
-			Debug.Log("HoverStart " + location + "\t" + this);
+			//Debug.Log("HoverStart " + location + "\t" + this);
 		}
 
 		public void OnHover(Vector3 location)
@@ -48,7 +49,7 @@ namespace View
 
 		public void OnHoverEnd()
 		{
-			Debug.Log("HoverEnd" + "\t" + this);
+			//Debug.Log("HoverEnd" + "\t" + this);
 		}
 
 		public void OnScroll(float delta) { }

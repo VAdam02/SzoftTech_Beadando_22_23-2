@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &395080572 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8975148802963843614, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-  m_PrefabInstance: {fileID: 4204039039659944887}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &453842121
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,34 +317,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971606738260116, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2896971607014579896, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -398,38 +365,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainCamera
       objectReference: {fileID: 0}
-    - target: {fileID: 2896971607221050438, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971607221050438, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971607221050438, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971607221050438, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971607221050438, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2896971607221050438, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5706894625181597044, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5706894625181597044, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
-      propertyPath: VirtualMouse
-      value: 
-      objectReference: {fileID: 395080572}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
 --- !u!1001 &4204039039659944887
@@ -443,46 +378,6 @@ PrefabInstance:
       propertyPath: Camera
       value: 
       objectReference: {fileID: 1376791961}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: LookAtMaxLimit.x
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: LookAtMaxLimit.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: LookAtMaxLimit.z
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: LookFromMaxLimit.x
-      value: 360
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: LookFromMaxLimit.y
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: LookFromMinLimit.y
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: MouseTransMultiplier
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: MouseRotateMultiplier
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: KeyboardZoomMultiplier
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: KeyboardTransMultiplier
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 4204039039587630835, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
       propertyPath: m_Name
       value: Canvas
