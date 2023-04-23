@@ -14,7 +14,7 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }
 		
 		private Tile[,] _tiles;
-		public Tile[,] Tiles { get { return _tiles; } private set { _tiles = value; } }
+		public Tile[,] Tiles { get { return _tiles; } set { _tiles = value; } }
 
 		// Start is called before the first frame update
 		void Start()

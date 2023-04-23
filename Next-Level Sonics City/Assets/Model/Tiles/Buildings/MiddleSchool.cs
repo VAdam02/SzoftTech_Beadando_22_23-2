@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Model.Tiles.Buildings
 {
-	public class School : Building, IWorkplace
+	public class MiddleSchool : Building, IWorkplace
 	{
 		private readonly List<Person> _workers = new();
 		private int _workersLimit = 10;
 
-		public School(int x, int y, uint designID) : base(x, y, designID)
+		public MiddleSchool(int x, int y, uint designID) : base(x, y, designID)
 		{
 
 		}

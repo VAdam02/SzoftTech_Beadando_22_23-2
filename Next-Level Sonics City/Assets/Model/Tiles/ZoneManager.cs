@@ -1,50 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 using Model.Tiles.ZoneCommands;
 
 namespace Model.Tiles
 {
-	public class ZoneManager : MonoBehaviour
+	public class ZoneManager
 	{
-		private readonly object _lockObject = new object();
+		private readonly object _lock = new ();
 		public ZoneManager() { }
 
-		public void MarkZone(Tile[,] matrix, Tile topLeft, Tile bottomRight, ZoneType zoneType)
+		public void MarkZone(Tile topLeft, Tile bottomRight, ZoneType zoneType)
 		{
-			int rowStart = (int)topLeft.Coordinates[0];
-			int rowEnd = (int)bottomRight.Coordinates[0] + 1;
-			int columnStart = (int)topLeft.Coordinates[1];
-			int columnEnd = (int)bottomRight.Coordinates[1] + 1;
+			int rowStart = (int)topLeft.Coordinates.x;
+			int rowEnd = (int)bottomRight.Coordinates.x + 1;
+			int columnStart = (int)topLeft.Coordinates.y;
+			int columnEnd = (int)bottomRight.Coordinates.y + 1;
 
 			Parallel.For(rowStart, rowEnd, x =>
 			{
 				for (int y = columnStart; y < columnEnd; ++y)
 				{
-					lock (_lockObject)
+					lock (_lock)
 					{
-						MarkZoneCommand markZoneCommand = new MarkZoneCommand(matrix, x, y, zoneType);
+						MarkZoneCommand markZoneCommand = new (x, y, zoneType);
 						markZoneCommand.Execute();
 					}
 				}
 			});
 		}
 
-		public void UnMarkZone(Tile[,] matrix, Tile topLeft, Tile bottomRight)
+		public void UnMarkZone(Tile topLeft, Tile bottomRight)
 		{
-			int rowStart = (int)topLeft.Coordinates[0];
-			int rowEnd = (int)bottomRight.Coordinates[0] + 1;
-			int columnStart = (int)topLeft.Coordinates[1];
-			int columnEnd = (int)bottomRight.Coordinates[1] + 1;
+			int rowStart = (int)topLeft.Coordinates.x;
+			int rowEnd = (int)bottomRight.Coordinates.x + 1;
+			int columnStart = (int)topLeft.Coordinates.y;
+			int columnEnd = (int)bottomRight.Coordinates.y + 1;
 
 			Parallel.For(rowStart, rowEnd, x =>
 			{
 				for (int y = columnStart; y < columnEnd; ++y)
 				{
-					lock (_lockObject)
+					lock (_lock)
 					{
-						UnMarkZoneCommand unMarkZoneCommand = new UnMarkZoneCommand(matrix, x, y);
+						UnMarkZoneCommand unMarkZoneCommand = new (x, y);
 						unMarkZoneCommand.Execute();
 					}
 				}

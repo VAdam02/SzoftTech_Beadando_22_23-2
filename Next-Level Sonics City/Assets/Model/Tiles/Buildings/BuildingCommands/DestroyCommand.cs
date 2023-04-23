@@ -1,24 +1,21 @@
-using Model;
+using Model.Simulation;
 using Model.Tiles;
 
 
 public class DestroyCommand : IExecutionCommand
 {
-	private readonly Tile _tile;
-	private readonly Building _building;
+	private readonly int _x;
+	private readonly int _y;
 
-	public DestroyCommand(Tile tile)
+	public DestroyCommand(int x, int y)
 	{
-		_tile = tile;
+		_x = x;
+		_y = y;
 	}
 
-	public void Execute() //TODO what contains the building? Deallocation logic
+	public void Execute()
 	{
-		//if (_tile.Building is not null)
-		//{
-		//	return;
-		//}
-
-		//_tile.Building = null;
+		SimEngine.Instance.Tiles[_x, _y] = new EmptyTile(_x, _y, 0);
+		SimEngine.Instance.Tiles[_x, _y].OnTileDelete.Invoke();
 	}
 }

@@ -1,30 +1,34 @@
-using Model.Tiles;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Model.Tiles;
 using Model.Tiles.Buildings;
+using Model.Simulation;
 
 namespace Model.Tiles.ZoneCommands
 {
 	public class UnMarkZoneCommand : IExecutionCommand
 	{
-		private Tile[,] _matrix;
-		private int _x;
-		private int _y;
-		private uint _designID;
+		private readonly int _x;
+		private readonly int _y;
+		private readonly uint _designID;
 
-		public UnMarkZoneCommand(Tile[,] matrix, int x, int y)
+		public UnMarkZoneCommand(int x, int y)
 		{
-			_matrix = matrix;
 			_x = x;
 			_y = y;
-			_designID = _matrix[_x, _y].DesignID;
+			_designID = ResidentialBuildingTile.GenerateResidential(0);
 		}
 
 		public void Execute()
 		{
-			_matrix[_x, _y] = new EmptyTile(_x, _y, _designID);
+			if (SimEngine.Instance.Tiles[_x, _y] is not IZoneBuilding)
+			{
+				return;
+			}
+
+			DestroyCommand dc = new (_x, _y);
+			dc.Execute();
+
+			SimEngine.Instance.Tiles[_x, _y] = new EmptyTile(_x, _y, _designID);
+
+			SimEngine.Instance.Tiles[_x, _y].OnTileDelete.Invoke();
 		}
 	}
 }
