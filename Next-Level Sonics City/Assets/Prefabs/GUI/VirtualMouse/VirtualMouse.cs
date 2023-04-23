@@ -36,26 +36,56 @@ public class VirtualMouse : MonoBehaviour
 	}
 
 
-	public float ClickMaxHoldTime = 0.3f;
-	public float MouseSensitivity = 16.5f;
-	public float MouseMoveToleranceDuringClick = 5;
+	public float ClickMaxHoldTime =					0.3f;
+	public float MouseSensitivity =					16.5f;
+	public float MouseMoveToleranceDuringClick =	5;
+	public float MouseScrollSensitivity =			1;
 
-	List<IClickable>	_selectedElement = new();
-	private bool		_isMouseDown;
-	private bool		_isLeftMouse;
-	private bool		_isPossibleClick;
-	private bool		_isMouseHold;
-	private float		_mouseHoldTime;
+	private List<IClickable>	_selectedElement =	new();
+	private List<IClickable>	_hoveredElement =	new();
+	private bool	_isMouseDown;
+	private bool	_isLeftMouse;
+	private bool	_isPossibleClick;
+	private bool	_isMouseHold;
+	private float	_mouseHoldTime;
 
-	private Vector3		_deltaMove;
-	private Vector3		_sumDeltaMove;
-	private Vector3		_mouseAt;
+	private Vector3	_deltaMove;
+	private Vector3	_sumDeltaMove;
+	private Vector3	_mouseAt;
 
 	/// <summary>
-	/// Manage mouse input and call the IClickable functions
+	/// Call the IClickable OnScroll function
+	/// </summary>
+	/// <param name="deltaScroll"></param>
+	private void ScrollCheck(float deltaScroll)
+	{
+		if (deltaScroll == 0) { return; }
+		foreach (IClickable item in _hoveredElement) { item.OnScroll(deltaScroll); }
+	}
+
+	/// <summary>
+	/// Call the IClickable OnHover related function
+	/// </summary>
+	/// <param name="move"></param>
+	private void HoverCheck(Vector3 move)
+	{
+		List<IClickable> hovered = GetTarget(MousePosition, false);
+
+		if (move.magnitude > 0)
+		{
+			foreach (IClickable item in hovered.Except(_hoveredElement)) { item.OnHoverStart(MousePosition); }
+			foreach (IClickable item in _hoveredElement.Intersect(hovered)) { item.OnHover(MousePosition); }
+			foreach (IClickable item in _hoveredElement.Except(hovered)) { item.OnHoverEnd(); }
+		}
+
+		_hoveredElement = hovered;
+	}
+
+	/// <summary>
+	/// Manage mouse input and call the IClickable OnClick and OnDrag related functions
 	/// </summary>
 	/// <param name="move">Deltamove since last call</param>
-	void ClickCheck(Vector3 move)
+	private void ClickCheck(Vector3 move)
 	{
 		//filter if action interrupted by other mouse button
 		if (Input.GetMouseButtonDown(0) && Input.GetMouseButton(1) || 
@@ -76,7 +106,7 @@ public class VirtualMouse : MonoBehaviour
 
 			_selectedElement.Select((item) => { item.OnSecondClick(_selectedElement); return false; });
 			
-			_selectedElement = GetTarget(MousePosition);
+			_selectedElement = GetTarget(MousePosition, true);
 		}
 		//holding -> wait/dragstart/drag
 		else if (_isMouseDown && Input.GetMouseButton(_isLeftMouse ? 0 : 1))
@@ -105,9 +135,9 @@ public class VirtualMouse : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Call the OnClick or OnDragEnd function of all IClickable components that were selected at the start of the click
+	/// Call the OnClick or OnDragEnd function of all IClickable components those were selected at the start of the click
 	/// </summary>
-	void ClickRelease()
+	private void ClickRelease()
 	{
 		foreach (IClickable item in _selectedElement)
 		{
@@ -122,11 +152,11 @@ public class VirtualMouse : MonoBehaviour
 
 	/// <summary>
 	/// Get all IClickable components at the clicked location on the UI (if any including transparent) and on the world (if any)
-	/// Please note that the function has sideeffects
+	/// Please note that the function has sideeffects if makeSideEffect is true
 	/// </summary>
 	/// <param name="position">Clicked location</param>
 	/// <returns>List of IClickable</returns>
-	List<IClickable> GetTarget(Vector3 position)
+	private List<IClickable> GetTarget(Vector3 position, bool makeSideEffect)
 	{
 		List<IClickable> output = new();
 
@@ -138,7 +168,7 @@ public class VirtualMouse : MonoBehaviour
 		//get the first object that has an IClickable component
 		if (results.Count > 0)
 		{
-			_mouseAt = results[0].worldPosition;
+			if (makeSideEffect) { _mouseAt = results[0].worldPosition; }
 			hitObject = results[0].gameObject;
 			while (!(hitObject == null || hitObject.transform.GetComponents(typeof(IClickable)).Length != 0))
 			{
@@ -166,7 +196,7 @@ public class VirtualMouse : MonoBehaviour
 	}
 
 	// Start is called before the first frame update
-	void Start()
+	private void Start()
 	{
 		Cursor.lockState = CursorLockMode.Locked;
 
@@ -176,10 +206,17 @@ public class VirtualMouse : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void Update()
+	private void Update()
 	{
+		float currentScrool = Input.GetAxis("Mouse ScrollWheel") * MouseScrollSensitivity;
 		Vector3 currentMove = new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * MouseSensitivity;
+
+		HoverCheck(currentMove);
+		
+		ScrollCheck(currentScrool);
+
 		ClickCheck(currentMove);
+
 		if (Visible)
 		{
 			MousePosition += currentMove;

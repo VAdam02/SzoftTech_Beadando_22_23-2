@@ -5,9 +5,9 @@ public class CameraMove : MonoBehaviour, IClickable
 {
 	public float MouseTransMultiplier =		0.25f;
 	public float MouseRotateMultiplier =	0.25f;
-	public float MouseZoomMultiplier =		1;
+	public float MouseZoomMultiplier =		10;
 	public float KeyboardTransMultiplier =	100;
-	public float KeyboardRotateMultiplier =	1;
+	public float KeyboardRotateMultiplier =	100;
 	public float KeyboardZoomMultiplier =	10;
 
 
@@ -46,6 +46,8 @@ public class CameraMove : MonoBehaviour, IClickable
 	}
 
 	public void OnClick(bool isLeftMouseButton, Vector3 location) { }
+	 
+	public void OnDragStart(bool isLeftMouseButton, Vector3 location) { }
 
 	public bool OnDrag(bool isLeftMouseButton, Vector3 direction)
 	{
@@ -55,19 +57,19 @@ public class CameraMove : MonoBehaviour, IClickable
 		return false;
 	}
 
-	public void OnDragEnd(bool isLeftMouseButton)
-	{
-		Debug.Log("DragEnd");
-	}
+	public void OnDragEnd(bool isLeftMouseButton) { }
 
-	public void OnDragStart(bool isLeftMouseButton, Vector3 location)
-	{
-		Debug.Log("DragStart");
-	}
+	public void OnSecondClick(List<IClickable> clicked) { }
 
-	public void OnSecondClick(List<IClickable> clicked)
-	{
+	public void OnHoverStart(Vector3 location) { }
 
+	public void OnHover(Vector3 location) { }
+
+	public void OnHoverEnd() { }
+
+	public void OnScroll(float delta)
+	{
+		LookFrom += -delta * MouseZoomMultiplier * new Vector3(0, 0, 1);
 	}
 
 	// Start is called before the first frame update
@@ -80,22 +82,27 @@ public class CameraMove : MonoBehaviour, IClickable
 	// Update is called once per frame
 	void Update()
 	{
+		//Forward/backwards
 		if (Input.GetKey(KeyCode.W) ^ Input.GetKey(KeyCode.S))
 		{
 			LookAt += (Input.GetKey(KeyCode.W) ? 1 : -1) * KeyboardTransMultiplier * Time.deltaTime * Camera.transform.forward;
 		}
+		//Left/right
 		if (Input.GetKey(KeyCode.A) ^ Input.GetKey(KeyCode.D))
 		{
 			LookAt += (Input.GetKey(KeyCode.D) ? 1 : -1) * KeyboardTransMultiplier * Time.deltaTime * Camera.transform.right;
 		}
+		//Zoom
 		if (Input.GetKey(KeyCode.KeypadPlus) ^ Input.GetKey(KeyCode.KeypadMinus))
 		{
 			LookFrom += (Input.GetKey(KeyCode.KeypadMinus) ? 1 : -1) * KeyboardZoomMultiplier * Time.deltaTime * new Vector3(0, 0, 1);
 		}
+		//Pitch
 		if (Input.GetKey(KeyCode.UpArrow) ^ Input.GetKey(KeyCode.DownArrow))
 		{
 			LookFrom += (Input.GetKey(KeyCode.UpArrow) ? 1 : -1) * KeyboardRotateMultiplier * Time.deltaTime * new Vector3(0, 1, 0);
 		}
+		//Yaw
 		if (Input.GetKey(KeyCode.LeftArrow) ^ Input.GetKey(KeyCode.RightArrow))
 		{
 			LookFrom += (Input.GetKey(KeyCode.RightArrow) ? 1 : -1) * KeyboardRotateMultiplier * Time.deltaTime * new Vector3(1, 0, 0);

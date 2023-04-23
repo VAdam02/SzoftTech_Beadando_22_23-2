@@ -32,4 +32,27 @@ public interface IClickable
 	/// </summary>
 	/// <param name="isLeftMouseButton">True if left click and false if right click</param>
 	void OnDragEnd(bool isLeftMouseButton);
+
+	/// <summary>
+	/// Called when mouse enters the object
+	/// </summary>
+	/// <param name="location"></param>
+	void OnHoverStart(Vector3 location);
+
+	/// <summary>
+	/// Called when mouse moves over the object
+	/// </summary>
+	/// <param name="location"></param>
+	void OnHover(Vector3 location);
+
+	/// <summary>
+	/// Called when mouse leaves the object
+	/// </summary>
+	void OnHoverEnd();
+
+	/// <summary>
+	/// Called when mouse scroll
+	/// </summary>
+	/// <param name="delta"></param>
+	void OnScroll(float delta);
 }
