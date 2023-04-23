@@ -18,7 +18,7 @@ namespace Model.Tiles.ZoneCommands
 
 		public void Execute()
 		{
-			if (SimEngine.Instance.Tiles[_x, _y] is not IZoneBuilding)
+			if (SimEngine.Instance.GetTile(_x, _y) is not IZoneBuilding)
 			{
 				return;
 			}
@@ -26,7 +26,7 @@ namespace Model.Tiles.ZoneCommands
 			DestroyCommand dc = new (_x, _y);
 			dc.Execute();
 
-			SimEngine.Instance.Tiles[_x, _y] = new EmptyTile(_x, _y, _designID);
+			SimEngine.Instance.SetTile(_x, _y, new EmptyTile(_x, _y, _designID));
 		}
 	}
 }

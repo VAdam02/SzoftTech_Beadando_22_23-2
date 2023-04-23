@@ -20,7 +20,7 @@ namespace Model.Tiles.ZoneCommands
 
 		public void Execute()
 		{
-			if (SimEngine.Instance.Tiles[_x, _y] is not EmptyTile)
+			if (SimEngine.Instance.GetTile(_x, _y) is not EmptyTile)
 			{
 				return;
 			}
@@ -28,13 +28,13 @@ namespace Model.Tiles.ZoneCommands
 			switch (_zoneType)
 			{
 				case ZoneType.IndustrialZone:
-					SimEngine.Instance.Tiles[_x, _y] = new Industrial(_x, _y, _designID); // TODO update to IndustrialBuildingTIle
+					SimEngine.Instance.SetTile(_x, _y, new Industrial(_x, _y, _designID)); // TODO update to IndustrialBuildingTIle
 					break;
 				case ZoneType.CommercialZone:
-					SimEngine.Instance.Tiles[_x, _y] = new Commercial(_x, _y, _designID); // TODO update to CommercialBuildingTile
+					SimEngine.Instance.SetTile(_x, _y, new Commercial(_x, _y, _designID)); // TODO update to CommercialBuildingTile
 					break;
 				case ZoneType.ResidentialZone:
-					SimEngine.Instance.Tiles[_x, _y] = new ResidentialBuildingTile(_x, _y, _designID);
+					SimEngine.Instance.SetTile(_x, _y, new ResidentialBuildingTile(_x, _y, _designID));
 					break;
 				default:
 					break;

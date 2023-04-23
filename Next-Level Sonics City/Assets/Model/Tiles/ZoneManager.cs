@@ -27,8 +27,8 @@ namespace Model.Tiles
 					{
 						MarkZoneCommand markZoneCommand = new (x, y, zoneType);
 						markZoneCommand.Execute();
-						SimEngine.Instance.Tiles[x, y].OnTileChange.Invoke();
-						OnZoneMarked(SimEngine.Instance.Tiles[x, y]);
+						SimEngine.Instance.GetTile(x, y).OnTileChange.Invoke();
+						OnZoneMarked(SimEngine.Instance.GetTile(x, y));
 					}
 				}
 			});
@@ -44,10 +44,10 @@ namespace Model.Tiles
 				{
 					lock (_lock)
 					{
-						OnZoneUnMarked(SimEngine.Instance.Tiles[x, y]);
+						OnZoneUnMarked(SimEngine.Instance.GetTile(x, y));
 						UnMarkZoneCommand unMarkZoneCommand = new (x, y);
 						unMarkZoneCommand.Execute();
-						SimEngine.Instance.Tiles[x, y].OnTileChange.Invoke();
+						SimEngine.Instance.GetTile(x, y).OnTileChange.Invoke();
 					}
 				}
 			});
