@@ -5,6 +5,7 @@ using Model;
 using Model.Tiles;
 using System.Threading;
 using Model.Tiles.Buildings;
+using Model.Statistics;
 
 namespace Model.Simulation
 {
@@ -14,7 +15,26 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }
 		
 		private Tile[,] _tiles;
-		public Tile[,] Tiles { get { return _tiles; } set { _tiles = value; } }
+
+		public readonly StatEngine StatEngine = new();
+		public readonly ZoneManager ZoneManager = new();
+		public readonly BuildingManager BuildingManager = new();
+		
+		private void Init()
+		{
+			
+		}
+		
+		public Tile GetTile(int x, int y)
+		{
+			return _tiles[x, y];
+		}
+
+		public void SetTile(int x, int y, Tile tile)
+		{
+			_tiles[x, y] = tile;
+		}
+
 
 		// Start is called before the first frame update
 		void Start()
