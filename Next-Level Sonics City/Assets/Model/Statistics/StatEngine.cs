@@ -8,11 +8,14 @@ namespace Model.Statistics
 {
 	public class StatEngine
 	{
-		private readonly object _lock;
-		private readonly List<StatReport> _statReports = new();
 		public int Year { get; private set; }
 		public int Quarter { get; private set; }
 
+		private int _buildPrice;
+		private int _destoryPrice;
+
+		private readonly object _lock;
+		private readonly List<StatReport> _statReports = new();
 		private const int STARTYEAR = 2020;
 
 		public StatEngine()
@@ -26,15 +29,10 @@ namespace Model.Statistics
 			float houseTax = 0;
 			List<Person> persons = residential.GetResidents();
 
-			Parallel.ForEach(persons, person =>
+			foreach (Person person in persons)
 			{
-				float tax = person.PayTax(taxRate);
-
-				lock (_lock)
-				{
-					houseTax += tax;
-				}
-			});
+				houseTax += person.PayTax(taxRate);
+			}
 
 			return houseTax;
 		}
@@ -51,7 +49,6 @@ namespace Model.Statistics
 				{
 					totalTax += tax;
 				}
-
 			});
 
 			return totalTax;
@@ -74,10 +71,15 @@ namespace Model.Statistics
 		{
 			float totalTax = 0;
 
-			foreach (IWorkplace workplace in workplaces)
+			Parallel.ForEach(workplaces, workplace =>
 			{
-				totalTax += CalculateIncomeTaxPerWorkplace(workplace, taxRate);
-			}
+				float tax = CalculateIncomeTaxPerWorkplace(workplace, taxRate);
+
+				lock (_lock)
+				{
+					totalTax += tax;
+				}
+			});
 
 			return totalTax;
 		}
@@ -98,16 +100,21 @@ namespace Model.Statistics
 		public float CalculateHappiness(List<ResidentialBuildingTile> residentials)
 		{
 			float totalCityHappiness = 0;
-			int count = 0;
+			float totalWeight = 0;
 
-			foreach (ResidentialBuildingTile residential in residentials)
+			Parallel.ForEach(residentials, residential =>
 			{
 				float happiness = CalculateHappinessPerResident(residential);
-				//count += weight;
-				//totalCityHappiness += avg * weight;
-			}
+				float weight = residential.GetResidents().Count;
+
+				lock (_lock)
+				{
+					totalCityHappiness += happiness * weight;
+					totalWeight += weight;
+				}
+			});
 			
-			return totalCityHappiness / count;
+			return totalCityHappiness / totalWeight;
 		}
 
 		public int SumMaintainance(List<Building> buildings)
@@ -187,8 +194,7 @@ namespace Model.Statistics
 		/// </summary>
 		/// <param name="price">positive if expense and negative if income</param>
 		/// <exception cref="NotImplementedException"></exception>
-
-		public void SumBuildingPrice(int price)
+		public void SumBuildingPrice(object sender, EventArgs e)
 		{
 			//TODO
 			throw new NotImplementedException();
@@ -199,7 +205,7 @@ namespace Model.Statistics
 		/// </summary>
 		/// <param name="price">positive if income and negative if expense</param>
 		/// <exception cref="NotImplementedException"></exception>
-		public void SumDestroyPrice(int price)
+		public void SumDestroyPrice(object sender, EventArgs e)
 		{
 			//TODO
 			throw new NotImplementedException();
@@ -209,6 +215,9 @@ namespace Model.Statistics
 		{
 			//TODO
 			throw new NotImplementedException();
+
+			_buildPrice = 0;
+			_destoryPrice = 0;
 		}
 	}
 }
