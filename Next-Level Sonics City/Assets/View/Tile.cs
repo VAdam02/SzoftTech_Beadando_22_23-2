@@ -30,7 +30,7 @@ namespace View
 			foreach (Material material in _materials)
 			{
 				material.EnableKeyword("_EMISSION");
-				material.SetColor("_EmissionColor", new Color(1, 1, 1, 1));
+				material.SetVector("_EmissionColor", new Vector4(1, 1, 1, 1) * 0.75f);
 			}
 		}
 
@@ -39,7 +39,6 @@ namespace View
 			foreach (Material material in _materials)
 			{
 				material.DisableKeyword("_EMISSION");
-				material.SetColor("_EmissionColor", new Color(1, 1, 0, 1));
 			}
 		}
 
@@ -62,8 +61,6 @@ namespace View
 			if (tile == null) { TileManager.Instance.SelectedTiles = new(); return; }
 
 			TileManager.Instance.SelectedTiles = new List<Tile>() { this, tile };
-
-			Debug.Log("Select: + " + this + " - " + tile);
 		}
 
 		public void OnHoverStart(Vector3 location)
