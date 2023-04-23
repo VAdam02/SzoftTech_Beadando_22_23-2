@@ -48,18 +48,12 @@ namespace Model.Tiles.Buildings
 
 		protected virtual void OnBuildingBuilt(Tile tile)
 		{
-			if (BuildingBuilt is not null)
-			{
-				BuildingBuilt.Invoke(this, new TileEventArgs(tile));
-			}
+			BuildingBuilt?.Invoke(this, new TileEventArgs(tile));
 		}
 
 		protected virtual void OnBuildingDestroyed(Tile tile)
 		{
-			if (BuildingDestroyed is not null)
-			{
-				BuildingDestroyed.Invoke(this, new TileEventArgs(tile));
-			}
+			BuildingDestroyed?.Invoke(this, new TileEventArgs(tile));
 		}
 	}
 }

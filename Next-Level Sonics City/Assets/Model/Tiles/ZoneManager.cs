@@ -68,18 +68,12 @@ namespace Model.Tiles
 
 		protected void OnZoneMarked(Tile tile)
 		{
-			if (ZoneMarked is not null)
-			{
-				ZoneMarked.Invoke(this, new TileEventArgs(tile));
-			}
+			ZoneMarked?.Invoke(this, new TileEventArgs(tile));
 		}
 
 		protected void OnZoneUnMarked(Tile tile)
 		{
-			if (ZoneUnMarked is not null)
-			{
-				ZoneUnMarked.Invoke(this, new TileEventArgs(tile));
-			}
+			ZoneUnMarked?.Invoke(this, new TileEventArgs(tile));
 		}
 	}
 }
