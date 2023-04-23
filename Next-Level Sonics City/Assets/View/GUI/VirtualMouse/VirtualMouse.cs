@@ -45,6 +45,7 @@ namespace View.GUI.VirtualMouse
 
 		private List<IClickable> _selectedElement = new();
 		private List<IClickable> _hoveredElement = new();
+		private List<IClickable> _oldSelectedElement = new();
 		private bool _isMouseDown;
 		private bool _isLeftMouse;
 		private bool _isPossibleClick;
@@ -106,8 +107,7 @@ namespace View.GUI.VirtualMouse
 				_deltaMove.Set(0, 0, 0);
 				_sumDeltaMove.Set(0, 0, 0);
 
-				_selectedElement.Select((item) => { item.OnSecondClick(_selectedElement); return false; });
-
+				_oldSelectedElement = _selectedElement;
 				_selectedElement = GetTarget(MousePosition, true);
 			}
 			//holding -> wait/dragstart/drag
@@ -141,6 +141,8 @@ namespace View.GUI.VirtualMouse
 		/// </summary>
 		private void ClickRelease()
 		{
+			if (_isPossibleClick) { foreach (IClickable olditem in _oldSelectedElement) olditem.OnSecondClick(_selectedElement); }
+
 			foreach (IClickable item in _selectedElement)
 			{
 				if (_isPossibleClick) item.OnClick(_isLeftMouse, _mouseAt);
@@ -150,6 +152,7 @@ namespace View.GUI.VirtualMouse
 			_isPossibleClick = false;
 			Visible = true;
 			_isMouseDown = false;
+			_oldSelectedElement = new();
 		}
 
 		/// <summary>
@@ -176,7 +179,7 @@ namespace View.GUI.VirtualMouse
 				{
 					hitObject = hitObject.transform.parent != null ? hitObject.transform.parent.gameObject : null;
 				}
-				if (hitObject != null) output.Add(hitObject.transform.GetComponent<IClickable>());
+				if (hitObject != null) output.AddRange(hitObject.transform.GetComponents<IClickable>());
 				if (hitObject == null || !hitObject.CompareTag("IClickableTransparent")) return output;
 			}
 
@@ -190,7 +193,7 @@ namespace View.GUI.VirtualMouse
 				}
 				if (hitObject != null)
 				{
-					output.Add(hitObject.transform.GetComponent<IClickable>());
+					output.AddRange(hitObject.transform.GetComponents<IClickable>());
 				}
 			}
 
