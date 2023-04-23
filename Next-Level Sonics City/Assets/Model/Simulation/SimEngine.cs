@@ -16,6 +16,7 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }
 
 		public Tile[,] Tiles { get; private set; }
+		public SortedDictionary<int,Person> Persons {get;private set;}
 
 		private float _money;
 		private float _tax;
@@ -23,7 +24,7 @@ namespace Model.Simulation
 		private City _city;
 		private List<Car> _carsOnRoad;
 		private int _timeSpeed;
-		private List<Person> _people;
+		//private List<Person> _people;
 		private StatEngine _statEngine;
 
 		// Start is called before the first frame update
@@ -161,7 +162,7 @@ namespace Model.Simulation
 		}
 		private void Die(Person person)
 		{
-			_people.Remove(person);
+			//_people.Remove(person);
 			//TODO
 		}
 		public float GetMoney()
