@@ -48,6 +48,7 @@ namespace Model.Simulation
 		void Start()
 		{
 			_instance = this;
+			Init();
 
 			//DEMO CODE
 			int n = 100;

@@ -12,7 +12,9 @@ namespace Model.Statistics
 		public int Quarter { get; private set; }
 
 		private int _buildPrice;
-		private int _destoryPrice;
+		private int _destroyPrice;
+		private float _commercialCount;
+		private float _industrialCount;
 
 		private readonly object _lock;
 		private readonly List<StatReport> _statReports = new();
@@ -167,59 +169,55 @@ namespace Model.Statistics
 
 		public float GetCommercialToIndustrialRate(List<IZoneBuilding> zoneBuildings)
 		{
-			float commercialCount = 0;
-			float IndustrialCount = 0;
-
-			foreach (IZoneBuilding zoneBuilding in zoneBuildings)
-			{
-				if (zoneBuilding is Industrial)
-				{
-					++IndustrialCount;
-				}
-				else if (zoneBuilding is Commercial)
-				{
-					++commercialCount;
-				}
-				else
-				{
-					continue;
-				}
-			}
-
-			return commercialCount / IndustrialCount;
+			return _commercialCount / _industrialCount;
 		}
 
 		public void SumBuildPrice(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			lock (_lock)
+			{
+				_buildPrice += e.Tile.GetBuildPrice();
+			}
 		}
 
 		public void SumDestroyPrice(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			lock (_lock)
+			{
+				_destroyPrice += e.Tile.GetDestroyPrice();
+			}
 		}
 
 		public void SumMarkZonePrice(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			lock (_lock)
+			{
+				_buildPrice += e.Tile.GetBuildPrice();
+				if (e.Tile is Industrial) { ++_industrialCount; return; }
+				if (e.Tile is Commercial) { ++_commercialCount; }
+			}
 		}
 
 		public void SumUnMarkZonePrice(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			lock (_lock)
+			{
+				_destroyPrice += e.Tile.GetDestroyPrice();
+				if (e.Tile is Industrial) { --_industrialCount; return; }
+				if (e.Tile is Commercial) { --_commercialCount; }
+			}
 		}
 
 		public void NextQuarter()
 		{
-			//TODO
-			throw new NotImplementedException();
+			StatReport statReport = new StatReport();
 
-			_buildPrice = 0;
-			_destoryPrice = 0;
+
+			//TODO finish
+
+
+			_statReports.Add(statReport);
+
 		}
 	}
 }
