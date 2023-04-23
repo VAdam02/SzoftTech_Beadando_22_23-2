@@ -16,6 +16,5 @@ public class DestroyCommand : IExecutionCommand
 	public void Execute()
 	{
 		SimEngine.Instance.Tiles[_x, _y] = new EmptyTile(_x, _y, 0);
-		SimEngine.Instance.Tiles[_x, _y].OnTileDelete.Invoke();
 	}
 }

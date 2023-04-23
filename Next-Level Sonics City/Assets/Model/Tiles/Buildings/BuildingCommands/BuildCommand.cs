@@ -60,7 +60,5 @@ public class BuildCommand : IExecutionCommand
 			default:
 				break;
 		}
-
-		SimEngine.Instance.Tiles[_x, _y].OnTileChange.Invoke();
 	}
 }

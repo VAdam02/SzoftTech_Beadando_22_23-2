@@ -27,8 +27,6 @@ namespace Model.Tiles.ZoneCommands
 			dc.Execute();
 
 			SimEngine.Instance.Tiles[_x, _y] = new EmptyTile(_x, _y, _designID);
-
-			SimEngine.Instance.Tiles[_x, _y].OnTileDelete.Invoke();
 		}
 	}
 }

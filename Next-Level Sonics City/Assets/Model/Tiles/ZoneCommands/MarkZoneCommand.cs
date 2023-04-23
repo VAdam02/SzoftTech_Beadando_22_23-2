@@ -39,8 +39,6 @@ namespace Model.Tiles.ZoneCommands
 				default:
 					break;
 			}
-
-			SimEngine.Instance.Tiles[_x, _y].OnTileChange.Invoke();
 		}
 	}
 }
