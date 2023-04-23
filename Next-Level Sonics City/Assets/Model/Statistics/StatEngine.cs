@@ -8,6 +8,7 @@ namespace Model.Statistics
 {
 	public class StatEngine
 	{
+		private readonly object _lock;
 		private readonly List<StatReport> _statReports = new();
 		public int Year { get; private set; }
 		public int Quarter { get; private set; }
@@ -20,32 +21,43 @@ namespace Model.Statistics
 			Quarter = 0;
 		}
 
-		public async Task<float> CalculateResidenceTaxPerHouse(ResidentialBuildingTile residential, float taxRate)
+		public float CalculateResidenceTaxPerHouse(ResidentialBuildingTile residential, float taxRate)
 		{
 			float houseTax = 0;
 			List<Person> persons = residential.GetResidents();
 
-			foreach (Person person in persons)
+			Parallel.ForEach(persons, person =>
 			{
-				houseTax += person.PayTax(taxRate);
-			}
+				float tax = person.PayTax(taxRate);
+
+				lock (_lock)
+				{
+					houseTax += tax;
+				}
+			});
 
 			return houseTax;
 		}
 
-		public async Task<float> CalculateResidenceTax(List<ResidentialBuildingTile> residentials, float taxRate)
+		public float CalculateResidenceTax(List<ResidentialBuildingTile> residentials, float taxRate)
 		{
 			float totalTax = 0;
 
-			foreach (ResidentialBuildingTile residential in residentials)
+			Parallel.ForEach(residentials, residential =>
 			{
-				totalTax += await CalculateResidenceTaxPerHouse(residential, taxRate);
-			}
+				float tax = CalculateResidenceTaxPerHouse(residential, taxRate);
+
+				lock (_lock)
+				{
+					totalTax += tax;
+				}
+
+			});
 
 			return totalTax;
 		}
 
-		public async Task<float> CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
+		public float CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
 		{
 			float workplaceTax = 0;
 			List<Person> persons = workplace.GetWorkers();
@@ -58,19 +70,19 @@ namespace Model.Statistics
 			return workplaceTax;
 		}
 
-		public async Task<float> CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
+		public float CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
 		{
 			float totalTax = 0;
 
 			foreach (IWorkplace workplace in workplaces)
 			{
-				totalTax += await CalculateIncomeTaxPerWorkplace(workplace, taxRate);
+				totalTax += CalculateIncomeTaxPerWorkplace(workplace, taxRate);
 			}
 
 			return totalTax;
 		}
 
-		public (float avg, int weight) CalculateHappinessPerResident(ResidentialBuildingTile residential)
+		public float CalculateHappinessPerResident(ResidentialBuildingTile residential)
 		{
 			float totalResidentialHappiness = 0;
 			List<Person> persons = residential.GetResidents();
@@ -80,22 +92,22 @@ namespace Model.Statistics
 				totalResidentialHappiness += person.GetHappiness();
 			}
 
-			return (totalResidentialHappiness / persons.Count, persons.Count);
+			return totalResidentialHappiness / persons.Count;
 		}
 
-		public (float avg, int weight) CalculateHappiness(List<ResidentialBuildingTile> residentials)
+		public float CalculateHappiness(List<ResidentialBuildingTile> residentials)
 		{
 			float totalCityHappiness = 0;
 			int count = 0;
 
 			foreach (ResidentialBuildingTile residential in residentials)
 			{
-				(float avg, int weight) = CalculateHappinessPerResident(residential);
-				count += weight;
-				totalCityHappiness += avg * weight;
+				float happiness = CalculateHappinessPerResident(residential);
+				//count += weight;
+				//totalCityHappiness += avg * weight;
 			}
 			
-			return (totalCityHappiness / count, count);
+			return totalCityHappiness / count;
 		}
 
 		public int SumMaintainance(List<Building> buildings)
