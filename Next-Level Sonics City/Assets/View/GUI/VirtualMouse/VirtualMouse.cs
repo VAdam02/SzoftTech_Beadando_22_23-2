@@ -141,13 +141,13 @@ namespace View.GUI.VirtualMouse
 		/// </summary>
 		private void ClickRelease()
 		{
-			if (_isPossibleClick) { foreach (IClickable olditem in _oldSelectedElement) olditem.OnSecondClick(_selectedElement); }
-
 			foreach (IClickable item in _selectedElement)
 			{
 				if (_isPossibleClick) item.OnClick(_isLeftMouse, _mouseAt);
 				else item.OnDragEnd(_isLeftMouse);
 			}
+
+			if (_isPossibleClick) { foreach (IClickable olditem in _oldSelectedElement) olditem.OnSecondClick(_selectedElement); }
 
 			_isPossibleClick = false;
 			Visible = true;

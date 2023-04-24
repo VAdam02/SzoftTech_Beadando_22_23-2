@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -374,6 +374,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1069053960255593977, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+      propertyPath: m_Name
+      value: ResidentialZone
+      objectReference: {fileID: 0}
     - target: {fileID: 4204039039587630835, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -488,3 +492,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+--- !u!1 &4204039039659944888 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1069053960255593977, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+  m_PrefabInstance: {fileID: 4204039039659944887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4204039039659944889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4204039039659944888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

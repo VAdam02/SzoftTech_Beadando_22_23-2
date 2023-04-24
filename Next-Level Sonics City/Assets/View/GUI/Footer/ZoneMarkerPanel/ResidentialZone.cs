@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace View.GUI.Footer.ZoneMarkerPanel
 {
-	public class ResidentalZone : MonoBehaviour, IClickable
+	public class ResidentialZone : MonoBehaviour, IClickable
 	{
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			throw new System.NotImplementedException(); //TODO make selected tiles residental
+			TileManager.Instance.MarkZone(TileType.Residential);
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction) { return true; }

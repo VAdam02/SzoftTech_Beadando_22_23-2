@@ -49,7 +49,7 @@ public class BuildCommand : IExecutionCommand
 				SimEngine.Instance.SetTile(_x, _y, new ElectricPole(_x, _y, _designID));
 				break;
 			case TileType.Residential:
-				SimEngine.Instance.SetTile(_x, _y, new ResidentialBuildingTile(_x, _y, _designID));
+				SimEngine.Instance.SetTile(_x, _y, new ResidentialBuildingTile(_x, _y, ResidentialBuildingTile.GenerateResidential(0)));
 				break;
 			case TileType.Commercial:
 				SimEngine.Instance.SetTile(_x, _y, new Commercial(_x, _y, _designID)); //TODO rename

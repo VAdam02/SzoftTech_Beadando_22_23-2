@@ -1,3 +1,4 @@
+using Model.Simulation;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -23,6 +24,13 @@ namespace View
 		internal void Init(Model.Tile tileModel)
 		{
 			TileModel = tileModel;
+			TileModel.OnTileDelete.AddListener(Delete);
+		}
+
+		private void Delete()
+		{
+			TileManager.Instance.CloneTileFromModel(SimEngine.Instance.GetTile((int)TileModel.Coordinates.x, (int)TileModel.Coordinates.y));
+			Destroy(gameObject);
 		}
 
 		public void Highlight()

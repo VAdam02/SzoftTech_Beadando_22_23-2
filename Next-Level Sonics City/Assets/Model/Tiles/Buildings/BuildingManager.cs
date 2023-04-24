@@ -1,5 +1,4 @@
 using Model.Simulation;
-using System;
 
 namespace Model.Tiles.Buildings
 {
@@ -20,11 +19,12 @@ namespace Model.Tiles.Buildings
 
 			int x = (int)tile.Coordinates.x;
 			int y = (int)tile.Coordinates.y;
+			Tile oldTile = SimEngine.Instance.GetTile(x, y);
 
 			BuildCommand bc = new (x, y, tileType);
 			bc.Execute();
 
-			SimEngine.Instance.GetTile(x, y).OnTileChange.Invoke();
+			oldTile.OnTileDelete.Invoke();
 			OnBuildingBuilt(tile);
 		}
 
@@ -43,7 +43,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand dc = new (x, y);
 			dc.Execute();
 
-			SimEngine.Instance.GetTile(x, y).OnTileChange.Invoke();
+			SimEngine.Instance.GetTile(x, y).OnTileDelete.Invoke();
 		}
 
 		protected virtual void OnBuildingBuilt(Tile tile)

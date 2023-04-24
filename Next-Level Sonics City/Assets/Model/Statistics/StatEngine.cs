@@ -16,7 +16,7 @@ namespace Model.Statistics
 		private float _commercialCount;
 		private float _industrialCount;
 
-		private readonly object _lock;
+		private readonly object _lock = new();
 		private readonly List<StatReport> _statReports = new();
 		private const int STARTYEAR = 2020;
 
