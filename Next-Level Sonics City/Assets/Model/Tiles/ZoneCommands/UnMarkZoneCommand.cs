@@ -1,5 +1,6 @@
-using Model.Tiles.Buildings;
 using Model.Simulation;
+using Model.Tiles.Buildings;
+using Model.Tiles.Buildings.BuildingCommands;
 
 namespace Model.Tiles.ZoneCommands
 {

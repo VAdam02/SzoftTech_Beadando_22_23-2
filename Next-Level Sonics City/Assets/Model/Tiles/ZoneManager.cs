@@ -1,7 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using Model.Simulation;
 using Model.Tiles.ZoneCommands;
-using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -60,10 +60,10 @@ namespace Model.Tiles
 
 		private void CalculateSubMatrix(Tile limit1, Tile limit2)
 		{
-			_rowStart =    (int)(limit1.Coordinates.x < limit2.Coordinates.x ? limit1.Coordinates.x     : limit2.Coordinates.x);
-			_rowEnd =      (int)(limit1.Coordinates.x > limit2.Coordinates.x ? limit1.Coordinates.x + 1 : limit2.Coordinates.x + 1);
-			_columnStart = (int)(limit1.Coordinates.y < limit2.Coordinates.y ? limit1.Coordinates.y     : limit2.Coordinates.y);
-			_columnEnd =   (int)(limit1.Coordinates.y > limit2.Coordinates.y ? limit1.Coordinates.y + 1 : limit2.Coordinates.y + 1);
+			_rowStart =    (int)Math.Min(limit1.Coordinates.x, limit2.Coordinates.x);
+			_rowEnd =      (int)Math.Max(limit1.Coordinates.x, limit2.Coordinates.x);
+			_columnStart = (int)Math.Min(limit1.Coordinates.y, limit2.Coordinates.y);
+			_columnEnd =   (int)Math.Max(limit1.Coordinates.y, limit2.Coordinates.y);
 		}
 
 		protected void OnZoneMarked(Tile tile)

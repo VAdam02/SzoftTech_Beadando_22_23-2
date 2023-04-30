@@ -29,6 +29,7 @@ namespace Model.Statistics
 		public float CalculateResidenceTaxPerHouse(ResidentialBuildingTile residential, float taxRate)
 		{
 			float houseTax = 0;
+
 			List<Person> persons = residential.GetResidents();
 
 			foreach (Person person in persons)
@@ -59,6 +60,7 @@ namespace Model.Statistics
 		public float CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
 		{
 			float workplaceTax = 0;
+
 			List<Person> persons = workplace.GetWorkers();
 
 			foreach (Person person in persons)
@@ -89,6 +91,7 @@ namespace Model.Statistics
 		public float CalculateHappinessPerResident(ResidentialBuildingTile residential)
 		{
 			float totalResidentialHappiness = 0;
+
 			List<Person> persons = residential.GetResidents();
 
 			foreach (Person person in persons)

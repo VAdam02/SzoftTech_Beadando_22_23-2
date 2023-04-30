@@ -1,6 +1,7 @@
 using UnityEngine;
 using Model.Simulation;
 using Model.Tiles.Buildings;
+using Model.Tiles.Buildings.BuildingCommands;
 using Model.Tiles;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -54,12 +55,12 @@ namespace View
 			return tiles;
 		}
 
-		public void MarkZone(TileType tileType)
+		public void MarkZone(ZoneType tileType)
 		{
 			if (_selectedTiles.Count >= 2)
 			foreach (Tile tile in GetTilesInArea(_selectedTiles[0], _selectedTiles[1]))
 			{
-				SimEngine.Instance.BuildingManager.Build(tile.TileModel, tileType);
+				//SimEngine.Instance.ZoneManager.MarkZone(tile.TileModel, tileType); TODO Marking zone and not building zone!!!
 			}
 		}
 

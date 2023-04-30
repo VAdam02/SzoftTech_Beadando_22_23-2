@@ -1,3 +1,4 @@
+using Model.Tiles;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace View.GUI.Footer.ZoneMarkerPanel
 	{
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			TileManager.Instance.MarkZone(TileType.Residential);
+			TileManager.Instance.MarkZone(ZoneType.ResidentialZone);
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction) { return true; }

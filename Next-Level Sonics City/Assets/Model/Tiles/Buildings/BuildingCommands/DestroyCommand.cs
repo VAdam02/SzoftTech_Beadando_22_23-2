@@ -1,20 +1,21 @@
 using Model.Simulation;
-using Model.Tiles;
 
-
-public class DestroyCommand : IExecutionCommand
+namespace Model.Tiles.Buildings.BuildingCommands
 {
-	private readonly int _x;
-	private readonly int _y;
-
-	public DestroyCommand(int x, int y)
+	public class DestroyCommand : IExecutionCommand
 	{
-		_x = x;
-		_y = y;
-	}
+		private readonly int _x;
+		private readonly int _y;
 
-	public void Execute()
-	{
-		SimEngine.Instance.SetTile(_x, _y, new EmptyTile(_x, _y, 0));
+		public DestroyCommand(int x, int y)
+		{
+			_x = x;
+			_y = y;
+		}
+
+		public void Execute()
+		{
+			SimEngine.Instance.SetTile(_x, _y, new EmptyTile(_x, _y, 0));
+		}
 	}
 }

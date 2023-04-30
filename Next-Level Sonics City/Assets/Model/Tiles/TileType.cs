@@ -13,7 +13,4 @@ public enum TileType
 	Forest,
 	Road,
 	ElectricPole,
-	Residential,
-	Commercial,
-	Industrial
 }

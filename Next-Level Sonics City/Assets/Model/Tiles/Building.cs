@@ -1,3 +1,4 @@
+using Model.Tiles.Buildings;
 using System;
 using System.Collections.Generic;
 
@@ -25,5 +26,13 @@ namespace Model.Tiles
 			throw new NotImplementedException();
 		}
 
+		public virtual bool IsExpandable()
+		{
+			return false;
+		}
+		public virtual bool CanExpand(Rotation rotation)
+		{
+			return false;
+		}
 	}
 }
