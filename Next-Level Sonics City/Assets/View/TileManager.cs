@@ -75,7 +75,6 @@ namespace View
 			tileView.GetComponent<Tile>().Init(tileModel);
 			tileView.transform.SetParent(transform);
 			_tiles[(int)tileModel.Coordinates.x, (int)tileModel.Coordinates.y] = tileView.GetComponent<Tile>();
-			//_tiles[(int)tileModel.Coordinates.x, (int)tileModel.Coordinates.y] = (Tile)tileView.GetComponents<Component>().ToList().Find(item => item.GetType().BaseType == typeof(Tile));
 		}
 
 		private Tile[,] _tiles;

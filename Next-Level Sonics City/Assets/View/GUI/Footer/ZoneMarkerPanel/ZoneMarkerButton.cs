@@ -1,15 +1,15 @@
 using Model.Tiles;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace View.GUI.Footer.ZoneMarkerPanel
 {
-	public class ResidentialZone : MonoBehaviour, IClickable
+	public class ZoneMarkerButton : MonoBehaviour, IClickable
 	{
+		public ZoneType zone;
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			TileManager.Instance.MarkZone(ZoneType.ResidentialZone);
+			TileManager.Instance.MarkZone(zone);
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction) { return true; }
@@ -27,17 +27,5 @@ namespace View.GUI.Footer.ZoneMarkerPanel
 		public void OnScroll(float delta) { }
 
 		public void OnSecondClick(List<IClickable> clicked) { }
-
-		// Start is called before the first frame update
-		void Start()
-		{
-			
-		}
-
-		// Update is called once per frame
-		void Update()
-		{
-			
-		}
 	}
 }

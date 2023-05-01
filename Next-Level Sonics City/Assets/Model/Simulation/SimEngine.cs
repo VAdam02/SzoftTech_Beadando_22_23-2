@@ -53,7 +53,7 @@ namespace Model.Simulation
 			Init();
 
 			//DEMO CODE
-			int n = 3;
+			int n = 100;
 			System.Random rnd = new ();
 			_tiles = new Tile[n, n];
 
