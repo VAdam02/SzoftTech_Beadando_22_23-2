@@ -1,12 +1,7 @@
 using UnityEngine;
 using Model.Simulation;
-using Model.Tiles.Buildings;
-using Model.Tiles.Buildings.BuildingCommands;
 using Model.Tiles;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using System.Linq;
-using System.Collections;
 
 namespace View
 {
@@ -21,8 +16,19 @@ namespace View
 		private static TileManager _instance;
 		public static TileManager Instance { get { return _instance; } }
 
-		private Action _currentAction = Action.SELECTAREA;
-		public Action CurrentAction { get { return _currentAction; } set { _currentAction = value; } }
+		private Action _currentAction;
+		public Action CurrentAction
+		{
+			get { return _currentAction; }
+			set
+			{
+				_currentAction = value;
+				if (_currentAction != Action.SELECTAREA)
+				{
+					SelectedTiles = new List<Tile>();
+				}
+			}
+		}
 
 		private List<Tile> _selectedTiles = new();
 		public List<Tile> SelectedTiles
@@ -85,9 +91,6 @@ namespace View
 			for (int j = 0; j < SimEngine.Instance.GetSize(); j++)
 			{
 				CloneTileFromModel(SimEngine.Instance.GetTile(i, j));
-				/*
-				_tiles[i, j] = (Tile)tileView.GetComponents<Component>().ToList().Find(item => item.GetType().BaseType == typeof(Tile));
-				*/
 			}
 		}
 

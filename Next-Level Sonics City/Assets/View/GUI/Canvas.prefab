@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 8565594081719752422}
   - component: {fileID: 7865500664325110502}
   - component: {fileID: 6570785242323127547}
+  - component: {fileID: 4204039039659944889}
   m_Layer: 5
-  m_Name: ResidentalZone
+  m_Name: ResidentialZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,6 +77,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4204039039659944889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069053960255593977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1398942739703887589
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,6 +720,26 @@ PrefabInstance:
     - target: {fileID: 8290302168827962567, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}
       propertyPath: m_Name
       value: CameraMoveTrigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290302168827962587, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}
+      propertyPath: LookAtMaxLimit.x
+      value: 4975
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290302168827962587, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}
+      propertyPath: LookAtMaxLimit.z
+      value: 4975
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290302168827962587, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}
+      propertyPath: LookAtMinLimit.x
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290302168827962587, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}
+      propertyPath: LookAtMinLimit.z
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290302168827962587, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}
+      propertyPath: LookFromMaxLimit.z
+      value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20e3f6653c2ddbc4eb8c871db94698e7, type: 3}

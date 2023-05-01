@@ -52,7 +52,11 @@ namespace View
 
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-
+			if (TileManager.Instance.CurrentAction != Action.SELECTAREA) { return; }
+			if (TileManager.Instance.SelectedTiles.Count == 0)
+			{
+				TileManager.Instance.SelectedTiles = new List<Tile>() { this, this };
+			}
 		}
 
 		public void OnDragStart(bool isLeftMouseButton, Vector3 location) { }

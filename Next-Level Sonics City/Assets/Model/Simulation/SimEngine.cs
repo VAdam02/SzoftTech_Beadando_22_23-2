@@ -27,7 +27,7 @@ namespace Model.Simulation
 			BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
 			BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
 		}
-		
+
 		public Tile GetTile(int x, int y)
 		{
 			return _tiles[x, y];
