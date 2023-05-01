@@ -3,9 +3,7 @@ using Model.Simulation;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class HighSchool : Building, IWorkplace
 {
@@ -53,6 +51,7 @@ public class HighSchool : Building, IWorkplace
 	{
 		return _workersLimit;
 	}
+	public Tile GetTile() { return this; }
 
 	public override int GetBuildPrice() //TODO implementik logic
 	{

@@ -1,7 +1,4 @@
-using Model.Tiles.Buildings;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Model.Simulation;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +7,18 @@ namespace Model
 	public abstract class Tile
 	{
 		private uint _designID;
-		public uint DesignID { get { return _designID; } protected set { _designID = value; DesignIDChangeEvent.Invoke(); } }
+		public uint DesignID
+		{
+			get { return _designID; }
+			protected set
+			{
+				_designID = value;
+				MainThreadDispatcher.Instance.Enqueue(() =>
+				{
+					DesignIDChangeEvent.Invoke();
+				});
+			}
+		}
 		public UnityEvent DesignIDChangeEvent = new();
 		public Vector3 Coordinates { get; protected set; }
 		public readonly UnityEvent OnTileChange = new ();
@@ -24,7 +32,14 @@ namespace Model
 		{
 			DesignID = designID;
 			Coordinates = new Vector3(x, y, 0);
+
+			if (this is IWorkplace workplace)
+			{
+				SimEngine.Instance.City.AddWorkplace(workplace);
+			}
 		}
+
+		public virtual void NeighborTileChanged(Tile oldTile, Tile newTile) { }
 
 		public void Delete()
 		{

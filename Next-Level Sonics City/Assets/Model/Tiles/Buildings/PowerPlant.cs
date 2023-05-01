@@ -1,6 +1,5 @@
 using Model.Simulation;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Model.Tiles.Buildings
@@ -51,6 +50,8 @@ namespace Model.Tiles.Buildings
 		{
 			return _workersLimit;
 		}
+
+		public Tile GetTile() { return this; }
 
 		public override int GetBuildPrice() //TODO implementik logic
 		{

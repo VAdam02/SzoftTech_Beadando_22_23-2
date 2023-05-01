@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Model;
 using Model.Tiles;
-using System.Threading;
 using Model.Tiles.Buildings;
 using Model.Statistics;
 
@@ -16,9 +12,11 @@ namespace Model.Simulation
 		
 		private Tile[,] _tiles;
 
+		public readonly City City = new();
 		public readonly StatEngine StatEngine = new();
 		public readonly ZoneManager ZoneManager = new();
 		public readonly BuildingManager BuildingManager = new();
+		public readonly RoadGridManager RoadGridManager = new();
 		
 		private void Init()
 		{
@@ -30,6 +28,8 @@ namespace Model.Simulation
 
 		public Tile GetTile(int x, int y)
 		{
+			if (!(0 <= x && x < _tiles.GetLength(0) && 0 <= y && y < _tiles.GetLength(1))) return null;
+
 			return _tiles[x, y];
 		}
 
@@ -37,6 +37,10 @@ namespace Model.Simulation
 		{
 			Tile old = _tiles[x, y];
 			_tiles[x, y] = tile;
+			GetTile(x - 1, y)?.NeighborTileChanged(old, tile);
+			GetTile(x + 1, y)?.NeighborTileChanged(old, tile);
+			GetTile(x, y - 1)?.NeighborTileChanged(old, tile);
+			GetTile(x, y + 1)?.NeighborTileChanged(old, tile);
 			old.Delete();
 		}
 

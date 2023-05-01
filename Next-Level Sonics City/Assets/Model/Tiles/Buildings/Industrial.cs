@@ -50,6 +50,7 @@ namespace Model.Tiles.Buildings
 		{
 			return _workersLimit;
 		}
+		public Tile GetTile() { return this; }
 
 		public override int GetBuildPrice() //TODO implementik logic
 		{

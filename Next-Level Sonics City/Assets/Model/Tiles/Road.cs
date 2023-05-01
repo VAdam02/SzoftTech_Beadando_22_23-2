@@ -1,150 +1,115 @@
 using Model.Simulation;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Tiles
 {
-    public class Road : Tile
-    {
-		public Road FromLeft  { get; set; }
-		public Road FromRight { get; set; }
-		public Road FromAbove { get; set; }
-		public Road FromBelow { get; set; }
+	public class Road : Tile, IRoadGridElement
+	{
+		private const uint LEFTROADMASK = 1;
+		private const uint ABOVEROADMASK = 2;
+		private const uint RIGHTROADMASK = 4;
+		private const uint BELOWROADMASK = 8;
+
+		private readonly Road[] _roads = new Road[4];
+		public Road FromLeft
+		{
+			get { return _roads[0]; }
+			set
+			{
+				_roads[0] = value;
+				if (value == null)	{ DesignID &= ~LEFTROADMASK; }
+				else				{ DesignID |= LEFTROADMASK;  }
+			}
+		}
+		public Road FromAbove
+		{
+			get { return _roads[1]; }
+			set
+			{
+				_roads[1] = value;
+				if (value == null)	{ DesignID &= ~ABOVEROADMASK; }
+				else				{ DesignID |= ABOVEROADMASK;  }
+			}
+		}
+		public Road FromRight
+		{
+			get { return _roads[2]; }
+			set
+			{
+				_roads[2] = value;
+				if (value == null)	{ DesignID &= ~RIGHTROADMASK; }
+				else				{ DesignID |= RIGHTROADMASK;  }
+			}
+		}
+		public Road FromBelow
+		{
+			get { return _roads[3]; }
+			set
+			{
+				_roads[3] = value;
+				if (value == null)	{ DesignID &= ~BELOWROADMASK; }
+				else				{ DesignID |= BELOWROADMASK;  }
+			}
+		}
+
+		public List<IRoadGridElement> ConnectsTo()
+		{
+			return new List<IRoadGridElement>(_roads).Where(x => x != null).ToList();
+		}
+
+		public Tile GetTile() { return this; }
+
+		private RoadGrid _roadGrid = null;
+		public RoadGrid GetRoadGrid() { return _roadGrid; }
+
+		public void SetRoadGrid(RoadGrid roadGrid)
+		{
+			_roadGrid = roadGrid;
+			_roadGrid.AddRoadGridElement(this);
+		}
+
+		private IRoadGridElement _parent = null;
+		public void SetParent(IRoadGridElement parent) { _parent = parent; }
+		public IRoadGridElement GetPrevious() { return _parent; }
+
 
 		public Road(int x, int y, uint designID) : base(x, y, designID)
 		{
-			ConnectToSurrounding();
+			OnTileDelete.AddListener(Destroy);
+			ConnectToSurroundingRoads();
 		}
 
-		private void ConnectToSurrounding()
+		private void Destroy()
 		{
-			int lowerX, upperX, lowerY, upperY;
-
-			lowerX = (int)Coordinates.x - 1;
-			lowerY = (int)Coordinates.y - 1;
-			upperX = (int)Coordinates.x + 1;
-			upperY = (int)Coordinates.y + 1;
-
-			int lowerLimit = 0;
-			int upperLimit = SimEngine.Instance.GetSize();
-
-			if (lowerX < lowerLimit)
-			{
-				if (SimEngine.Instance.GetTile(lowerX, (int)Coordinates.y) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile(lowerX, (int)Coordinates.y)).FromRight = this;
-					FromLeft = (Road)SimEngine.Instance.GetTile(lowerX, (int)Coordinates.y);
-				}
-			}
-
-			if (lowerY < lowerLimit)
-			{
-				if (SimEngine.Instance.GetTile((int)Coordinates.x, lowerY) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile((int)Coordinates.x, lowerY)).FromBelow = this;
-					FromAbove = (Road)SimEngine.Instance.GetTile((int)Coordinates.x, lowerY);
-				}
-			}
-
-			if (upperX > upperLimit)
-			{
-				if (SimEngine.Instance.GetTile(upperX, (int)Coordinates.y) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile(lowerX, (int)Coordinates.y)).FromLeft = this;
-					FromRight = (Road)SimEngine.Instance.GetTile(upperX, (int)Coordinates.y);
-				}
-			}
-
-			if (upperY > upperLimit)
-			{
-				if (SimEngine.Instance.GetTile((int)Coordinates.x, upperY) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile((int)Coordinates.x, upperY)).FromAbove = this;
-					FromBelow = (Road)SimEngine.Instance.GetTile((int)Coordinates.x, upperY);
-				}
-			}
+			
 		}
 
-		private const uint _left = 1;
-		private const uint _above = 2;
-		private const uint _right = 4;
-		private const uint _below = 8;
-
-		public void UpdateDesignID()
+		private void ConnectToSurroundingRoads()
 		{
-			uint updatedDesignID = 0;
-
-			if (FromLeft is Road)
-			{
-				updatedDesignID |= _left;
-			}
-
-			if (FromAbove is Road)
-			{
-				updatedDesignID |= _above;
-			}
-
-			if (FromRight is Road)
-			{
-				updatedDesignID |= _right;
-			}
-
-			if (FromBelow is Road)
-			{
-				updatedDesignID |= _below;
-			}
-
-			DesignID = updatedDesignID;
+			if (SimEngine.Instance.GetTile((int)Coordinates.x - 1, (int)Coordinates.y) is Road leftRoad)  { FromLeft = leftRoad;   }
+			if (SimEngine.Instance.GetTile((int)Coordinates.x  +1, (int)Coordinates.y) is Road rightRoad) { FromRight = rightRoad; }
+			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y - 1) is Road aboveRoad) { FromAbove = aboveRoad; }
+			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y + 1) is Road belowRoad) { FromBelow = belowRoad; }
 		}
 
-		private void DisconnectFromSurrounding()
+		public override void NeighborTileChanged(Tile oldTile, Tile newTile)
 		{
-			int lowerX, upperX, lowerY, upperY;
-
-			lowerX = (int)Coordinates.x - 1;
-			lowerY = (int)Coordinates.y - 1;
-			upperX = (int)Coordinates.x + 1;
-			upperY = (int)Coordinates.y + 1;
-
-			int lowerLimit = 0;
-			int upperLimit = SimEngine.Instance.GetSize();
-
-			if (lowerX < lowerLimit)
+			if (oldTile is Road)
 			{
-				if (SimEngine.Instance.GetTile(lowerX, (int)Coordinates.y) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile(lowerX, (int)Coordinates.y)).FromRight = null;
-				}
+				if (oldTile.Coordinates.x < Coordinates.x)		{ FromLeft = null;  }
+				else if (oldTile.Coordinates.x > Coordinates.x)	{ FromRight = null; }
+				else if (oldTile.Coordinates.y < Coordinates.y)	{ FromBelow = null; }
+				else if (oldTile.Coordinates.y > Coordinates.y)	{ FromAbove = null; }
 			}
 
-			if (lowerY < lowerLimit)
+			if (newTile is Road road)
 			{
-				if (SimEngine.Instance.GetTile((int)Coordinates.x, lowerY) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile((int)Coordinates.x, lowerY)).FromBelow = null;
-				}
+				if (newTile.Coordinates.x < Coordinates.x)		{ FromLeft = road;  }
+				else if (newTile.Coordinates.x > Coordinates.x)	{ FromRight = road; }
+				else if (newTile.Coordinates.y < Coordinates.y)	{ FromBelow = road; }
+				else if (newTile.Coordinates.y > Coordinates.y)	{ FromAbove = road; }
 			}
-
-			if (upperX > upperLimit)
-			{
-				if (SimEngine.Instance.GetTile(upperX, (int)Coordinates.y) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile(upperX, (int)Coordinates.y)).FromLeft = null;
-				}
-			}
-
-			if (upperY > upperLimit)
-			{
-				if (SimEngine.Instance.GetTile((int)Coordinates.x, upperY) is Road)
-				{
-					((Road)SimEngine.Instance.GetTile((int)Coordinates.x, upperY)).FromAbove = null;
-				}
-			}
-		}
-
-		~Road()
-		{
-			DisconnectFromSurrounding();
 		}
 
 		public override int GetBuildPrice() //TODO implementing logic

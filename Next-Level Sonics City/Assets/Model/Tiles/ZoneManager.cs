@@ -36,24 +36,6 @@ namespace Model.Tiles
 			});
 		}
 
-		public void UnMarkZone(Tile limit1, Tile limit2)
-		{
-			CalculateSubMatrix(limit1, limit2);
-
-			Parallel.For(_rowStart, _rowEnd, x =>
-			{
-				for (int y = _columnStart; y < _columnEnd; ++y)
-				{
-					lock (_lock)
-					{
-						OnZoneUnMarked(SimEngine.Instance.GetTile(x, y));
-						UnMarkZoneCommand unMarkZoneCommand = new (x, y);
-						unMarkZoneCommand.Execute();
-					}
-				}
-			});
-		}
-
 		private int _rowStart;
 		private int _rowEnd;
 		private int _columnStart;
