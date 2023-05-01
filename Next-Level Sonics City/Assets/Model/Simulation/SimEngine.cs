@@ -35,7 +35,9 @@ namespace Model.Simulation
 
 		public void SetTile(int x, int y, Tile tile)
 		{
+			Tile old = _tiles[x, y];
 			_tiles[x, y] = tile;
+			old.Delete();
 		}
 
 		public int GetSize()

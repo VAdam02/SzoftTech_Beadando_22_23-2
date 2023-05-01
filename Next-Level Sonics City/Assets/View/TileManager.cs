@@ -6,6 +6,7 @@ using Model.Tiles;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Linq;
+using System.Collections;
 
 namespace View
 {
@@ -55,13 +56,10 @@ namespace View
 			return tiles;
 		}
 
-		public void MarkZone(ZoneType tileType)
+		public void MarkZone(ZoneType zoneType)
 		{
 			if (_selectedTiles.Count >= 2)
-			foreach (Tile tile in GetTilesInArea(_selectedTiles[0], _selectedTiles[1]))
-			{
-				//SimEngine.Instance.ZoneManager.MarkZone(tile.TileModel, tileType); TODO Marking zone and not building zone!!!
-			}
+				SimEngine.Instance.ZoneManager.MarkZone(_selectedTiles[0].TileModel, _selectedTiles[1].TileModel, zoneType);
 		}
 
 		public void CloneTileFromModel(Model.Tile tileModel)
@@ -72,7 +70,7 @@ namespace View
 			tileView.transform.SetParent(transform);
 			_tiles[(int)tileModel.Coordinates.x, (int)tileModel.Coordinates.y] = tileView.GetComponent<Tile>();
 			//_tiles[(int)tileModel.Coordinates.x, (int)tileModel.Coordinates.y] = (Tile)tileView.GetComponents<Component>().ToList().Find(item => item.GetType().BaseType == typeof(Tile));
-		}	
+		}
 
 		private Tile[,] _tiles;
 

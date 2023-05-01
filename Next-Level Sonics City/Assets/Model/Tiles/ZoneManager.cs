@@ -15,19 +15,21 @@ namespace Model.Tiles
 		
 		public ZoneManager() { }
 
+		//FIXME it's run in paraller but it's wait for each other because of lock
 		public void MarkZone(Tile limit1, Tile limit2, ZoneType zoneType)
 		{
 			CalculateSubMatrix(limit1, limit2);
 
-			Parallel.For(_rowStart, _rowEnd, x =>
+			Parallel.For(_rowStart, _rowEnd + 1, x =>
 			{
-				for (int y = _columnStart; y < _columnEnd; ++y)
+				for (int y = _columnStart; y < _columnEnd + 1; ++y)
 				{
 					lock (_lock)
 					{
+						Tile oldTile = SimEngine.Instance.GetTile(x, y);
 						MarkZoneCommand markZoneCommand = new (x, y, zoneType);
 						markZoneCommand.Execute();
-						SimEngine.Instance.GetTile(x, y).OnTileChange.Invoke();
+
 						OnZoneMarked(SimEngine.Instance.GetTile(x, y));
 					}
 				}
@@ -47,7 +49,6 @@ namespace Model.Tiles
 						OnZoneUnMarked(SimEngine.Instance.GetTile(x, y));
 						UnMarkZoneCommand unMarkZoneCommand = new (x, y);
 						unMarkZoneCommand.Execute();
-						SimEngine.Instance.GetTile(x, y).OnTileChange.Invoke();
 					}
 				}
 			});

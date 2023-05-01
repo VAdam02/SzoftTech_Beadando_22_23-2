@@ -26,6 +26,14 @@ namespace Model
 			Coordinates = new Vector3(x, y, 0);
 		}
 
+		public void Delete()
+		{
+			MainThreadDispatcher.Instance.Enqueue(() =>
+			{
+				OnTileDelete.Invoke();
+			});
+		}
+
 		public virtual int GetBuildPrice()
 		{
 			return BUILD_PRICE;
