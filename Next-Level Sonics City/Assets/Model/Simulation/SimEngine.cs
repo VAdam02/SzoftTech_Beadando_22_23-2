@@ -82,7 +82,9 @@ namespace Model.Simulation
 			if(sum > 0){
 				for(int i = startindex+1;i< sum+1;i++){
 					//mág a worker paraméterei nincsenek meg
-					Worker w = new Worker();
+					int age = rand.Next(18,60);
+					Qualification randomq = (Qualification)new randomq().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+					Worker w = new Worker(home,workPlace,age,randomq);
 					_instance.Personslist.Add(i,w);
 				}
 			}
