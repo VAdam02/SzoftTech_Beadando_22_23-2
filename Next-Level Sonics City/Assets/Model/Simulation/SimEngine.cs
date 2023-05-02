@@ -11,13 +11,14 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }
 		
 		private Tile[,] _tiles;
+		public City City;
 
-		public readonly City City = new();
-		public readonly StatEngine StatEngine = new();
-		public readonly ZoneManager ZoneManager = new();
-		public readonly BuildingManager BuildingManager = new();
-		public readonly RoadGridManager RoadGridManager = new();
-		
+		public ZoneManager ZoneManager;
+		public BuildingManager BuildingManager;
+
+		public RoadGridManager RoadGridManager;
+		public StatEngine StatEngine;
+
 		private void Init()
 		{
 			ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
@@ -54,7 +55,9 @@ namespace Model.Simulation
 		void Start()
 		{
 			_instance = this;
-			Init();
+			City = new();
+			ZoneManager = new();
+			BuildingManager = new();
 
 			//DEMO CODE
 			int n = 100;
@@ -72,6 +75,11 @@ namespace Model.Simulation
 				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1,6)));
 			}
 			//DEMO CODE
+
+			Init();
+
+			RoadGridManager = new();
+			StatEngine = new();
 		}
 
 		// Update is called once per frame

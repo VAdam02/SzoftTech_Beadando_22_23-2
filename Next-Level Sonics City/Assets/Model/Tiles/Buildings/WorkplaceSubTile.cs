@@ -9,7 +9,7 @@ namespace Model.Tiles.Buildings
 	{
 		private IWorkplace _baseWorkplace;
 
-		public WorkplaceSubTile(int x, int y, uint designID, IWorkplace baseBuilding) : base(x, y, designID)
+		public WorkplaceSubTile(int x, int y, uint designID, IWorkplace baseBuilding) : base(x, y, designID, ((Building)baseBuilding.GetTile()).Rotation)
 		{
 			_baseWorkplace = baseBuilding;
 		}
@@ -55,5 +55,20 @@ namespace Model.Tiles.Buildings
 		}
 
 		public Tile GetTile() { return _baseWorkplace.GetTile(); }
+
+		internal override bool IsExpandable()
+		{
+			throw new InvalidOperationException();
+		}
+
+		internal override bool CanExpand()
+		{
+			throw new InvalidOperationException();
+		}
+
+		internal override void Expand()
+		{
+			throw new InvalidOperationException();
+		}
 	}
 }
