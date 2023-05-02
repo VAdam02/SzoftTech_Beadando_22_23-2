@@ -1,7 +1,6 @@
 using Model;
 using Model.Simulation;
 using Model.Tiles.Buildings;
-using System;
 using System.Collections.Generic;
 
 public class RoadGrid
@@ -12,6 +11,7 @@ public class RoadGrid
 	}
 
 	private readonly List<IRoadGridElement> _roadGridElements = new();
+	public List<IRoadGridElement> RoadGridElements { get { return _roadGridElements; } }
 	public void AddRoadGridElement(IRoadGridElement roadGridElement)
 	{
 		lock (_roadGridElements)
@@ -28,6 +28,7 @@ public class RoadGrid
 	}
 
 	private readonly List<IWorkplace> _workplaces = new();
+	public List<IWorkplace> Workplaces { get { return _workplaces; } }
 	public void AddWorkplace(IWorkplace workplace)
 	{
 		lock (_workplaces)
@@ -44,6 +45,7 @@ public class RoadGrid
 	}
 
 	private readonly List<ResidentialBuildingTile> _homes = new();
+	public List<ResidentialBuildingTile> Homes { get { return _homes; } }
 	public void AddHome(ResidentialBuildingTile home)
 	{
 		lock (_homes)
@@ -68,5 +70,16 @@ public class RoadGrid
 		foreach (ResidentialBuildingTile home in roadGrid._homes) { AddHome(home); }
 
 		SimEngine.Instance.RoadGridManager.RemoveRoadGrid(roadGrid);
+
+		_isOptimized = false;
+	}
+
+	private bool _isOptimized = true;
+	public void OptimizePath()
+	{
+		if (_isOptimized) { return; }
+		//breadth first search from workplaces
+		Queue<IRoadGridElement> queue = new();
+		//TODO
 	}
 }

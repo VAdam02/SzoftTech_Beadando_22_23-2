@@ -60,7 +60,7 @@ namespace Model.Tiles
 
 		public Tile GetTile() { return this; }
 
-		private RoadGrid _roadGrid = null;
+		private RoadGrid _roadGrid = new();
 		public RoadGrid GetRoadGrid() { return _roadGrid; }
 
 		public void SetRoadGrid(RoadGrid roadGrid)
@@ -71,13 +71,15 @@ namespace Model.Tiles
 
 		private IRoadGridElement _parent = null;
 		public void SetParent(IRoadGridElement parent) { _parent = parent; }
-		public IRoadGridElement GetPrevious() { return _parent; }
+		public IRoadGridElement GetParent() { return _parent; }
 
 
 		public Road(int x, int y, uint designID) : base(x, y, designID)
 		{
+			_roadGrid.AddRoadGridElement(this);
 			OnTileDelete.AddListener(Destroy);
 			ConnectToSurroundingRoads();
+			SimEngine.Instance.RoadGridManager.AddRoadGridElement(this);
 		}
 
 		private void Destroy()

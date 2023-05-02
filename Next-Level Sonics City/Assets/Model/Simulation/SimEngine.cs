@@ -58,34 +58,43 @@ namespace Model.Simulation
 			City = new();
 			ZoneManager = new();
 			BuildingManager = new();
+			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 100;
+			int n = 10;
 			System.Random rnd = new ();
 			_tiles = new Tile[n, n];
 
 			for (int i = 0; i < n; i++)
-			for (int j = 0; j < n; j++)
+			for (int j = 0; j < n-1; j++)
 			{
+				if (i % 2 == 0) _tiles[i, j] = new Road(i, j, 0);
+				else _tiles[i, j] = new Industrial(i, j, 0);
+
+				Debug.Log(RoadGridManager.RoadGrids.Count);
+				/*
 				if (rnd.Next(0, 2) == 0)
 					_tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential(0));
 				else
 					_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1, 6)));
-
+				*/
 				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1,6)));
+			}
+			for (int k = 0; k < n; k++)
+			{
+				_tiles[k, n-1] = new Road(k, n-1, 0);
+				Debug.Log(RoadGridManager.RoadGrids.Count);
 			}
 			//DEMO CODE
 
 			Init();
-
-			RoadGridManager = new();
 			StatEngine = new();
 		}
 
 		// Update is called once per frame
 		void Update()
 		{
-			
+
 		}
 	}
 }

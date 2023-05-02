@@ -11,5 +11,5 @@ public interface IRoadGridElement
 	public Tile GetTile();
 
 	public void SetParent(IRoadGridElement parent);
-	public IRoadGridElement GetPrevious();
+	public IRoadGridElement GetParent();
 }
