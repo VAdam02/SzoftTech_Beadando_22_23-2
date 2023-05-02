@@ -14,12 +14,18 @@ namespace Model.Simulation
 {
 	public class SimEngine : MonoBehaviour
 	{
+		StatReport report = new StatReport();
 		private static SimEngine _instance;
-		public static SimEngine Instance { get { return _instance; } }
 
+		public static SimEngine Instance { get { return _instance; } }
+		
 		public Tile[,] Tiles { get; private set; }
 		
 		public SortedDictionary<int,Person> Personslist = new SortedDictionary<int, Person>();
+		public List<ResidentialBuildingTile>freeResidentals = new List<ResidentialBuildingTile>();
+		
+		public List<IWorkplace>freeWorkplaces = new List<IWorkplace>();
+
 		public Worker worker;
 
 		private float _money;
@@ -56,6 +62,7 @@ namespace Model.Simulation
 			for (int i = 0; i < Tiles.GetLength(0); i++)
 			for (int j = 0; j < Tiles.GetLength(1); j++)
 			{
+				
 				if (rnd.Next(0, 2) < 1)
 				{
 					Tiles[i, j] = new EmptyTile(i, j, 0);
@@ -77,19 +84,24 @@ namespace Model.Simulation
             System.Random rand = new();
             int be = rand.Next(1,6);
 			int ki = rand.Next(1,6);
-			int sum = be - ki;
+			
+			_instance.report.PopulationChange = be - ki;
 			int startindex = _instance.Personslist.Keys.Last();
-			if(sum > 0){
-				for(int i = startindex+1;i< sum+1;i++){
+			if(_instance.report.PopulationChange > 0){
+				for(int i = startindex+1;i< _instance.report.PopulationChange+1;i++){
 					//mág a worker paraméterei nincsenek meg
-					int age = rand.Next(18,60);
-					Qualification randomq = (Qualification)new randomq().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+					int age = rand.Next(18,65);
+					Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+					int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+					ResidentialBuildingTile home = _instance.freeResidentals[randResidental];
+					int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+					IWorkplace workPlace = _instance.freeWorkplaces[randWorkplace];
 					Worker w = new Worker(home,workPlace,age,randomq);
 					_instance.Personslist.Add(i,w);
 				}
 			}
-			else if(sum < 0){
-				for(int i = startindex;i > sum-1;i--){
+			else if(_instance.report.PopulationChange < 0){
+				for(int i = startindex;i > _instance.report.PopulationChange-1;i--){
 					_instance.Personslist.Remove(i);
 				}				
 			}
