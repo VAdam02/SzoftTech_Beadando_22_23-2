@@ -1,6 +1,3 @@
-using Model.Tiles.Buildings;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Model
@@ -12,5 +9,7 @@ namespace Model
 		public List<Person> GetWorkers();
 		public int GetWorkersCount();
 		public int GetWorkersLimit();
+
+		public Tile GetTile();
 	}
 }

@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Model;
 using Model.Tiles;
-using System.Threading;
 using Model.Tiles.Buildings;
 using Model.Statistics;
 
@@ -15,11 +11,13 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }
 		
 		private Tile[,] _tiles;
+		public City City;
 
-		public readonly StatEngine StatEngine = new();
-		public readonly ZoneManager ZoneManager = new();
-		public readonly BuildingManager BuildingManager = new();
-		
+		public ZoneManager ZoneManager;
+		public BuildingManager BuildingManager;
+
+		public StatEngine StatEngine;
+
 		private void Init()
 		{
 			ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
@@ -30,6 +28,8 @@ namespace Model.Simulation
 
 		public Tile GetTile(int x, int y)
 		{
+			if (!(0 <= x && x < _tiles.GetLength(0) && 0 <= y && y < _tiles.GetLength(1))) return null;
+
 			return _tiles[x, y];
 		}
 
@@ -37,6 +37,10 @@ namespace Model.Simulation
 		{
 			Tile old = _tiles[x, y];
 			_tiles[x, y] = tile;
+			GetTile(x - 1, y)?.NeighborTileChanged(old, tile);
+			GetTile(x + 1, y)?.NeighborTileChanged(old, tile);
+			GetTile(x, y - 1)?.NeighborTileChanged(old, tile);
+			GetTile(x, y + 1)?.NeighborTileChanged(old, tile);
 			old.Delete();
 		}
 
@@ -50,7 +54,9 @@ namespace Model.Simulation
 		void Start()
 		{
 			_instance = this;
-			Init();
+			City = new();
+			ZoneManager = new();
+			BuildingManager = new();
 
 			//DEMO CODE
 			int n = 100;
@@ -68,6 +74,10 @@ namespace Model.Simulation
 				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1,6)));
 			}
 			//DEMO CODE
+
+			Init();
+
+			StatEngine = new();
 		}
 
 		// Update is called once per frame

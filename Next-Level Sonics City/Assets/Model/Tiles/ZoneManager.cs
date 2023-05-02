@@ -30,25 +30,8 @@ namespace Model.Tiles
 						MarkZoneCommand markZoneCommand = new (x, y, zoneType);
 						markZoneCommand.Execute();
 
-						OnZoneMarked(SimEngine.Instance.GetTile(x, y));
-					}
-				}
-			});
-		}
-
-		public void UnMarkZone(Tile limit1, Tile limit2)
-		{
-			CalculateSubMatrix(limit1, limit2);
-
-			Parallel.For(_rowStart, _rowEnd, x =>
-			{
-				for (int y = _columnStart; y < _columnEnd; ++y)
-				{
-					lock (_lock)
-					{
-						OnZoneUnMarked(SimEngine.Instance.GetTile(x, y));
-						UnMarkZoneCommand unMarkZoneCommand = new (x, y);
-						unMarkZoneCommand.Execute();
+						if (zoneType == ZoneType.NoZone) { OnZoneUnMarked(SimEngine.Instance.GetTile(x, y)); }
+						else { OnZoneMarked(SimEngine.Instance.GetTile(x, y)); }
 					}
 				}
 			});

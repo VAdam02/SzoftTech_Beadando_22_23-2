@@ -4,9 +4,9 @@ namespace Model.Tiles.Buildings.BuildingCommands
 {
 	public class ExpandCommand : IExecutionCommand
 	{
-		private int _x;
-		private int _y;
-		private IWorkplace _workplace;
+		private readonly int _x;
+		private readonly int _y;
+		private readonly IWorkplace _workplace;
 
 		public ExpandCommand(int x, int y, IWorkplace workplace)
 		{

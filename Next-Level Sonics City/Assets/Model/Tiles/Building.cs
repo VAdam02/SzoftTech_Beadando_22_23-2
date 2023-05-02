@@ -11,9 +11,11 @@ namespace Model.Tiles
 		public bool IsOnFire { get; private set; }
 		public List<Road> ConnectedTo { get; private set; }
 
-		public Building(int x, int y, uint designID) : base(x, y, designID)
-		{
+		public Rotation Rotation { get; private set; }
 
+		public Building(int x, int y, uint designID, Rotation rotation) : base(x, y, designID)
+		{
+			Rotation = rotation;
 		}
 
 		public bool StartFire()
@@ -26,13 +28,8 @@ namespace Model.Tiles
 			throw new NotImplementedException();
 		}
 
-		public virtual bool IsExpandable()
-		{
-			return false;
-		}
-		public virtual bool CanExpand(Rotation rotation)
-		{
-			return false;
-		}
+		internal abstract bool IsExpandable();
+		internal abstract bool CanExpand();
+		internal abstract void Expand();
 	}
 }

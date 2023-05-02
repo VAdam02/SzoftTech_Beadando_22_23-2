@@ -1,4 +1,8 @@
+using Model.Simulation;
+using Model.Tiles.Buildings.BuildingCommands;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Model.Tiles.Buildings
 {
@@ -8,7 +12,7 @@ namespace Model.Tiles.Buildings
 		private readonly List<Person> _workers = new();
 		private int _workersLimit = 0;
 
-		public Industrial(int x, int y, uint designID) : base(x, y, designID)
+		public Industrial(int x, int y, uint designID) : base(x, y, designID, Rotation.Zero) //TODO rotation
 		{
 			Level = 0;
 		}
@@ -50,6 +54,7 @@ namespace Model.Tiles.Buildings
 		{
 			return _workersLimit;
 		}
+		public Tile GetTile() { return this; }
 
 		public override int GetBuildPrice() //TODO implementik logic
 		{
@@ -64,6 +69,21 @@ namespace Model.Tiles.Buildings
 		public override int GetMaintainanceCost()
 		{
 			return GetBuildPrice() / 10;
+		}
+
+		internal override bool IsExpandable()
+		{
+			return false;
+		}
+
+		internal override bool CanExpand()
+		{
+			throw new InvalidOperationException();
+		}
+
+		internal override void Expand()
+		{
+			throw new InvalidOperationException();
 		}
 	}
 }

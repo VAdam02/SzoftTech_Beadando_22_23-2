@@ -1,17 +1,20 @@
 using Model.Simulation;
+using System;
 
 namespace Model.Tiles.Buildings.BuildingCommands
 {
 	public class BuildCommand : IExecutionCommand
 	{
 		private readonly TileType _tileType;
+		private readonly Rotation _rotation;
 		private readonly int _x;
 		private readonly int _y;
 		private readonly uint _designID;
 
-		public BuildCommand(int x, int y, TileType tileType)
+		public BuildCommand(int x, int y, TileType tileType, Rotation rotation)
 		{
 			_tileType = tileType;
+			_rotation = rotation;
 			_x = x;
 			_y = y;
 			_designID = 0;
@@ -19,37 +22,57 @@ namespace Model.Tiles.Buildings.BuildingCommands
 
 		public void Execute()
 		{
+			Tile tile;
 			switch (_tileType)
 			{
 				case TileType.PoliceDepartment:
-					SimEngine.Instance.SetTile(_x, _y, new PoliceDepartment(_x, _y, _designID));
+					tile = new PoliceDepartment(_x, _y, _designID, _rotation);
+					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
+					{ throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.FireDepartment:
-					SimEngine.Instance.SetTile(_x, _y, new FireDepartment(_x, _y, _designID));
+					tile = new FireDepartment(_x, _y, _designID, _rotation);
+					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
+					{ throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.MiddleSchool:
-					SimEngine.Instance.SetTile(_x, _y, new MiddleSchool(_x, _y, _designID));
+					tile = new MiddleSchool(_x, _y, _designID, _rotation);
+					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
+					{ throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.HighSchool:
-					SimEngine.Instance.SetTile(_x, _y, new HighSchool(_x, _y, _designID));
+					tile = new HighSchool(_x, _y, _designID, _rotation);
+					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
+					{ throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.Stadion:
-					SimEngine.Instance.SetTile(_x, _y, new Stadion(_x, _y, _designID));
+					tile = new Stadion(_x, _y, _designID, _rotation);
+					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
+					{ throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.PowerPlant:
-					SimEngine.Instance.SetTile(_x, _y, new PowerPlant(_x, _y, _designID));
+					tile = new PowerPlant(_x, _y, _designID, _rotation);
+					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
+					{ throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.Forest:
-					SimEngine.Instance.SetTile(_x, _y, new Forest(_x, _y, _designID));
+					tile = new Forest(_x, _y, _designID);
 					break;
 				case TileType.Road:
-					SimEngine.Instance.SetTile(_x, _y, new Road(_x, _y, _designID));
+					tile = new Road(_x, _y, _designID);
 					break;
 				case TileType.ElectricPole:
-					SimEngine.Instance.SetTile(_x, _y, new ElectricPole(_x, _y, _designID));
+					tile = new ElectricPole(_x, _y, _designID);
 					break;
 				default:
-					break;
+					throw new NotImplementedException("TileType \'" + _tileType + "\' not implemented");
+			}
+
+			SimEngine.Instance.SetTile(_x, _y, tile);
+
+			if (tile is Building building && building.IsExpandable())
+			{
+				building.Expand();
 			}
 		}
 	}
