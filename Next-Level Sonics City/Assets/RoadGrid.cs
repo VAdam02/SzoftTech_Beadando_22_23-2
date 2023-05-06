@@ -15,52 +15,41 @@ public class RoadGrid
 	public List<IRoadGridElement> RoadGridElements { get { OptimizePaths(); return _roadGridElements; } }
 	public void AddRoadGridElement(IRoadGridElement roadGridElement)
 	{
-		lock (_roadGridElements)
-		{
-			_roadGridElements.Add(roadGridElement);
-		}
+		_roadGridElements.Add(roadGridElement);
 		_isOptimized = false;
 	}
 	public void RemoveRoadGridElement(IRoadGridElement roadGridElement)
 	{
-		lock (_roadGridElements)
+		List<Building> buildings = RoadGridManager.GetBuildingsByRoadGrid(roadGridElement);
+		foreach (Building building in buildings)
 		{
-			_roadGridElements.Remove(roadGridElement);
+			if (building is IWorkplace workplace)	{ _workplaces.Remove(workplace); }
+			if (building is IResidential home)		{ _homes.Remove(home); }
 		}
+
+		_roadGridElements.Remove(roadGridElement);
 	}
 
 	private readonly List<IWorkplace> _workplaces = new();
 	public List<IWorkplace> Workplaces { get { OptimizePaths(); return _workplaces; } }
 	public void AddWorkplace(IWorkplace workplace)
 	{
-		lock (_workplaces)
-		{
-			_workplaces.Add(workplace);
-		}
+		_workplaces.Add(workplace);
 	}
 	public void RemoveWorkplace(IWorkplace workplace)
 	{
-		lock (_workplaces)
-		{
-			_workplaces.Remove(workplace);
-		}
+		_workplaces.Remove(workplace);
 	}
 
 	private readonly List<IResidential> _homes = new();
 	public List<IResidential> Homes { get { OptimizePaths(); return _homes; } }
 	public void AddHome(IResidential home)
 	{
-		lock (_homes)
-		{
-			_homes.Add(home);
-		}
+		_homes.Add(home);
 	}
 	public void RemoveHome(IResidential home)
 	{
-		lock (_homes)
-		{
-			_homes.Remove(home);
-		}
+		_homes.Remove(home);
 	}
 
 	public void Merge(RoadGrid roadGrid)
@@ -98,7 +87,7 @@ public class RoadGrid
 
 		foreach (IWorkplace workplace in _workplaces)
 		{
-			IRoadGridElement roadGridElement = RoadGridManager.GetBuildingRoadGrig((Building)workplace);
+			IRoadGridElement roadGridElement = RoadGridManager.GetRoadGrigByBuilding((Building)workplace);
 			if (roadGridElement is null) { continue; }
 			roadGridElement.SetParent(null, 0);
 			queue.Enqueue((roadGridElement, 0));

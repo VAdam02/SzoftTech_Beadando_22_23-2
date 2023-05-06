@@ -61,7 +61,7 @@ namespace Model.Simulation
 			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 100;
+			int n = 4;
 			_tiles = new Tile[n, n];
 
 			long startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
@@ -75,9 +75,9 @@ namespace Model.Simulation
 				}
 				else
 				{
-					//_tiles[i, j] = new Industrial(i, j, 0);
+					_tiles[i, j] = new Industrial(i, j, 0);
 					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
-					_tiles[i, j] = new Commercial(i, j, 0);
+					//_tiles[i, j] = new Commercial(i, j, 0);
 				}
 			}
 
@@ -92,6 +92,15 @@ namespace Model.Simulation
 			{
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
+
+			Debug.Log("Destroy");
+			BuildingManager.Destroy(GetTile(0, 0));
+
+			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
+			{
+				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
+			}
+
 			//DEMO CODE
 
 			Init();

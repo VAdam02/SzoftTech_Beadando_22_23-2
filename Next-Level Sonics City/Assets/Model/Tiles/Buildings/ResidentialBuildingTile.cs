@@ -286,14 +286,14 @@ namespace Model.Tiles.Buildings
 			ResidentLimit = 0;
 		}
 
-		public void RegisterHome()
+		public void RegisterResidential()
 		{
-			RoadGridManager.GetBuildingRoadGrig(this)?.GetRoadGrid().AddHome(this);
+			RoadGridManager.GetRoadGrigByBuilding(this)?.GetRoadGrid().AddHome(this);
 		}
 
-		public void UnregisterHome()
+		public void UnregisterResidential()
 		{
-			RoadGridManager.GetBuildingRoadGrig(this)?.GetRoadGrid().RemoveHome(this);
+			RoadGridManager.GetRoadGrigByBuilding(this)?.GetRoadGrid().RemoveHome(this);
 		}
 
 		public void LevelUp()

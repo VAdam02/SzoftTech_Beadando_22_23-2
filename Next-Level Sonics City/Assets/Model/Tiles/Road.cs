@@ -67,9 +67,35 @@ namespace Model.Tiles
 		public void SetRoadGrid(RoadGrid roadGrid)
 		{
 			if (_roadGrid == roadGrid) { return; }
+
+			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGrid(this);
+			foreach (Building building in buildings)
+			{
+				if (building is IWorkplace workplace)
+				{
+					workplace.UnregisterWorkplace();
+				}
+				if (building is IResidential residential)
+				{
+					residential.UnregisterResidential();
+				}
+			}
+
 			_roadGrid?.RemoveRoadGridElement(this);
 			_roadGrid = roadGrid;
 			_roadGrid.AddRoadGridElement(this);
+
+			foreach (Building building in buildings)
+			{
+				if (building is IWorkplace workplace)
+				{
+					workplace.RegisterWorkplace();
+				}
+				if (building is IResidential residential)
+				{
+					residential.RegisterResidential();
+				}
+			}
 		}
 
 		private IRoadGridElement _parent = null;

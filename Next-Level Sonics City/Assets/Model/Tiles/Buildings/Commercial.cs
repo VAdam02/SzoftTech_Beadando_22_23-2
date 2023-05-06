@@ -18,12 +18,12 @@ namespace Model.Tiles.Buildings
 
 		public void RegisterWorkplace()
 		{
-			RoadGridManager.GetBuildingRoadGrig(this)?.GetRoadGrid().AddWorkplace(this);
+			RoadGridManager.GetRoadGrigByBuilding(this)?.GetRoadGrid().AddWorkplace(this);
 		}
 
 		public void UnregisterWorkplace()
 		{
-			RoadGridManager.GetBuildingRoadGrig(this)?.GetRoadGrid().RemoveWorkplace(this);
+			RoadGridManager.GetRoadGrigByBuilding(this)?.GetRoadGrid().RemoveWorkplace(this);
 		}
 
 		public void LevelUp()

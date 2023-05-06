@@ -19,7 +19,7 @@ namespace Model.Tiles
 			}
 			if (this is IResidential residential)
 			{
-				residential.RegisterHome();
+				residential.RegisterResidential();
 			}
 
 			OnTileDelete.AddListener(Destroy);
@@ -33,7 +33,7 @@ namespace Model.Tiles
 			}
 			if (this is IResidential residentialBuildingTile)
 			{
-				residentialBuildingTile.UnregisterHome();
+				residentialBuildingTile.UnregisterResidential();
 			}
 		}
 
