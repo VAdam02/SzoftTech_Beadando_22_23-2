@@ -4,19 +4,19 @@ using UnityEngine;
 
 namespace View.Tiles
 {
-    public class EmptyTile : Tile
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-            transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 10;
+	public class EmptyTile : Tile
+	{
+		// Start is called before the first frame update
+		void Start()
+		{
+			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 10;
 			transform.localScale = Vector3.one;
 		}
 
-        // Update is called once per frame
-        void Update()
-        {
-            
-        }
-    }
+		// Update is called once per frame
+		void Update()
+		{
+			
+		}
+	}
 }
