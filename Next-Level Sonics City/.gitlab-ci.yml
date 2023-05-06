@@ -10,7 +10,7 @@ variables:
   UNITY_VERSION: "2021.3.20f1"
   IMAGE: unityci/editor # https://hub.docker.com/r/unityci/editor
   IMAGE_VERSION: "1.1.2" # https://github.com/game-ci/docker/releases
-  UNITY_DIR: $CI_PROJECT_DIR # this needs to be an absolute path. Defaults to the root of your tree.
+  UNITY_DIR: $CI_PROJECT_DIR/Next-Level Sonics City # this needs to be an absolute path. Defaults to the root of your tree.
 
 
 image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
