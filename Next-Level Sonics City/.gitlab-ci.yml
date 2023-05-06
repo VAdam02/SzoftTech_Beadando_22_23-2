@@ -5,9 +5,9 @@ stages:
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' and other secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
 variables:
-  BUILD_NAME: RollBall
+  BUILD_NAME: Next-Level Sonics City
   UNITY_ACTIVATION_FILE: ./unity3d.alf
-  UNITY_VERSION: "2019.4.23f1"
+  UNITY_VERSION: "2021.3.20f1"
   IMAGE: unityci/editor # https://hub.docker.com/r/unityci/editor
   IMAGE_VERSION: "1.1.2" # https://github.com/game-ci/docker/releases
   UNITY_DIR: $CI_PROJECT_DIR # this needs to be an absolute path. Defaults to the root of your tree.
