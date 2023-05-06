@@ -15,6 +15,16 @@ namespace Model.Tiles.Buildings
 
 		}
 
+		public void RegisterWorkplace()
+		{
+			RoadGridManager.GetBuildingRoadGrig(this)?.GetRoadGrid().AddWorkplace(this);
+		}
+
+		public void UnregisterWorkplace()
+		{
+			RoadGridManager.GetBuildingRoadGrig(this)?.GetRoadGrid().RemoveWorkplace(this);
+		}
+
 		public bool Employ(Person person)
 		{
 			if (_workers.Count < _workersLimit)

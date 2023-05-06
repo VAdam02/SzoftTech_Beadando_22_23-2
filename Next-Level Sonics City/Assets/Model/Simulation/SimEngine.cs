@@ -61,29 +61,36 @@ namespace Model.Simulation
 			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 10;
-			System.Random rnd = new ();
+			int n = 100;
 			_tiles = new Tile[n, n];
 
-			for (int i = 0; i < n; i++)
-			for (int j = 0; j < n-1; j++)
-			{
-				if (i % 2 == 0) _tiles[i, j] = new Road(i, j, 0);
-				else _tiles[i, j] = new Industrial(i, j, 0);
+			long startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
 
-				Debug.Log(RoadGridManager.RoadGrids.Count);
-				/*
-				if (rnd.Next(0, 2) == 0)
-					_tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential(0));
+			for (int i = 0; i < n; i++)
+			for (int j = 0; j < (n-1); j++)
+			{
+				if (i % 2 == 0)
+				{
+					_tiles[i, j] = new Road(i, j, 0);
+				}
 				else
-					_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1, 6)));
-				*/
-				//Instance.Tiles[i, j] = new EmptyTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)rnd.Next(1,6)));
+				{
+					//_tiles[i, j] = new Industrial(i, j, 0);
+					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
+					_tiles[i, j] = new Commercial(i, j, 0);
+				}
 			}
+
+			Debug.Log("SimEngine tile generation takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
+
 			for (int k = 0; k < n; k++)
 			{
 				_tiles[k, n-1] = new Road(k, n-1, 0);
-				Debug.Log(RoadGridManager.RoadGrids.Count);
+			}
+
+			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
+			{
+				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
 			//DEMO CODE
 

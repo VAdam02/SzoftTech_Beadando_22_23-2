@@ -1,4 +1,3 @@
-using Model.Simulation;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,9 +33,9 @@ namespace Model
 			DesignID = designID;
 			Coordinates = new Vector3(x, y, 0);
 
-			if (this is IWorkplace workplace)
+			if (this is IRoadGridElement roadGridElement)
 			{
-				SimEngine.Instance.City.AddWorkplace(workplace);
+				roadGridElement.RegisterRoadGridElement();
 			}
 		}
 
@@ -44,6 +43,11 @@ namespace Model
 
 		public void Delete()
 		{
+			if (this is IRoadGridElement roadGridElement)
+			{
+				roadGridElement.UnregisterRoadGridElement();
+			}
+
 			MainThreadDispatcher.Instance.Enqueue(() =>
 			{
 				OnTileDelete.Invoke();

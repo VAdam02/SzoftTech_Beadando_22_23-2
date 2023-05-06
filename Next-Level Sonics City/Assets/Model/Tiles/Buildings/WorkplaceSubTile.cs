@@ -14,6 +14,10 @@ namespace Model.Tiles.Buildings
 			_baseWorkplace = baseBuilding;
 		}
 
+		public void RegisterWorkplace() { }
+
+		public void UnregisterWorkplace() { }
+
 		public void ParentDestroyedEventHandler(object sender, EventArgs e)
 		{
 			SimEngine.Instance.BuildingManager.Destroy(this);
