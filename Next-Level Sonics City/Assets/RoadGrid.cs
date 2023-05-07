@@ -45,6 +45,51 @@ public class RoadGrid
 		_homes.Remove(home);
 	}
 
+	public void Reinit()
+	{
+		Queue<IRoadGridElement> queue = new(_roadGridElements);
+
+		while (queue.Count > 0)
+		{
+			IRoadGridElement roadGridElement = queue.Dequeue();
+
+			Vector3 coords = roadGridElement.GetTile().Coordinates;
+			IRoadGridElement[] adjacentRoadGridElements = new IRoadGridElement[4];
+
+			adjacentRoadGridElements[0] = SimEngine.Instance.GetTile((int)coords.x, (int)coords.y - 1) as IRoadGridElement;
+			adjacentRoadGridElements[1] = SimEngine.Instance.GetTile((int)coords.x + 1, (int)coords.y) as IRoadGridElement;
+			adjacentRoadGridElements[2] = SimEngine.Instance.GetTile((int)coords.x, (int)coords.y + 1) as IRoadGridElement;
+			adjacentRoadGridElements[3] = SimEngine.Instance.GetTile((int)coords.x - 1, (int)coords.y) as IRoadGridElement;
+
+			for (int i = 0; i < adjacentRoadGridElements.Length; i++)
+			{
+				if (adjacentRoadGridElements[i] == null) { continue; }
+
+				if (adjacentRoadGridElements[i].GetRoadGrid() == this || adjacentRoadGridElements[i].GetRoadGrid() == null)
+				{
+					queue.Enqueue(adjacentRoadGridElements[i]);
+					continue;
+				}
+
+				if (roadGridElement.GetRoadGrid() == this || roadGridElement.GetRoadGrid() == null)
+				{
+					roadGridElement.SetRoadGrid(adjacentRoadGridElements[i].GetRoadGrid());
+				}
+				else
+				{
+					adjacentRoadGridElements[i].GetRoadGrid().Merge(roadGridElement.GetRoadGrid());
+				}
+			}
+
+			if (roadGridElement.GetRoadGrid() == this || roadGridElement.GetRoadGrid() == null)
+			{
+				roadGridElement.SetRoadGrid(new());
+			}
+		}
+
+		SimEngine.Instance.RoadGridManager.RemoveRoadGrid(this);
+	}
+
 	public void Merge(RoadGrid roadGrid)
 	{
 		if (this == roadGrid) return;

@@ -1,8 +1,6 @@
 using Model.Simulation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -74,197 +72,18 @@ namespace Model.Tiles
 			{
 				if (building is IWorkplace workplace)
 				{
-					Debug.Log("IWorkplace\t" + Coordinates + "\t" + building.Coordinates);
 					workplace.UnregisterWorkplace(_roadGrid);
 				}
 				if (building is IResidential residential)
 				{
-					Debug.Log("IResidential\t" + Coordinates + "\t" + building.Coordinates);
 					residential.UnregisterResidential(_roadGrid);
 				}
 			}
 
 			if (roadGrid == null)
 			{
-				//TODO remove grids
-				List<IRoadGridElement> nonProblematicSplits = RoadGridManager.GetRoadGridElementsByRoadGridElement(this).FindAll(x => x.GetParent() != this);
-				List<IRoadGridElement> breakpoints = RoadGridManager.GetRoadGridElementsByRoadGridElement(this).FindAll(x => x.GetParent() == this);
-
-				//NO MORE OPTIMIZED REQUEST ALLOWED BEYOND THIS POINT
-
 				_roadGrid?.RemoveRoadGridElement(this);
-				_roadGrid = roadGrid;
-				SetParent(null, -1);
-
-				Debug.Log("Breakpoints: " + breakpoints.Count + "\tNonProblematic: " + nonProblematicSplits.Count);
-
-				//breadth first search from each element
-				for (int i = 1000; i < breakpoints.Count; i++)
-				{
-					IRoadGridElement startElement = breakpoints[i];
-					startElement.SetRoadGrid(new()); //TODO maybe one new grid touch multiple neighbour and if that happen the bottom algorithm will broke because it don't check the validity of parent chain
-					SetParent(null, -1);
-
-					List<IRoadGridElement> escapePoints = new();
-					Queue<IRoadGridElement> queue = new();
-
-					queue.Enqueue(startElement);
-
-					while (queue.Count > 0)
-					{
-						IRoadGridElement element = queue.Dequeue();
-
-						List<IRoadGridElement> neighbours = RoadGridManager.GetRoadGridElementsByRoadGridElement(element);
-						foreach (IRoadGridElement neighbour in neighbours)
-						{
-							if (neighbour.GetParentUnoptimized() == element) //looking down
-							{
-								queue.Enqueue(neighbour);
-								neighbour.SetRoadGrid(startElement.GetRoadGrid());
-								neighbour.SetParent(null, -1);
-							}
-							else if (neighbour.GetParentUnoptimized() == null && neighbour.GetDepthUnoptimized() == -1) //looking back
-							{
-
-							}
-							else if (
-							/*
-							else if (neighbour.GetParentUnoptimized() == null && neighbour.GetDepthUnoptimized() == 0) //it's a root -> but that's not mean it's an escape point
-							{
-								escapePoints.Add(neighbour);
-								//neighbour.GetRoadGrid().Merge(startElement.GetRoadGrid());
-							}
-							else if (neighbour.GetParentUnoptimized() != null && neighbour.GetDepthUnoptimized() != -1) //it's a child of outside chain -> escape point
-							{
-								escapePoints.Add(neighbour);
-								//neighbour.GetRoadGrid().Merge(startElement.GetRoadGrid());
-							}
-							*/
-							else
-							{
-								//there is no logical way where an element's parent is null but the depth is bigger than zero or the parent is not null but the depth is -1
-								throw new Exception();
-							}
-						}
-					}
-
-					/*
-					if (startElement.GetParentUnoptimized() != null) { queue.Enqueue(startElement); }
-
-					while (queue.Count > 0)
-					{
-						IRoadGridElement element = queue.Dequeue();
-						if (element.GetParentUnoptimized().GetParentUnoptimized() == null && element.GetParentUnoptimized().GetDepthUnoptimized() == -1)
-						{
-							//looked into undefined part
-							RoadGridManager.GetRoadGridElementsByRoadGridElement(element)
-								.FindAll(x => !(x.GetParentUnoptimized() == null && x.GetDepthUnoptimized() == -1)) //we don't want to add an already processed element (like the parent and neighbour)
-								.ForEach(x => { if (!queue.Contains(x)) { queue.Enqueue(x); } });                   //we don't want to add it twice
-
-							element.SetRoadGrid(startElement.GetRoadGrid());
-							element.SetParent(null, -1);
-
-							//get roadGridElement's buildings
-							
-						}
-						else if (element.GetParentUnoptimized().GetDepthUnoptimized() >= 0)
-						{
-							//looked outside to untouched part
-							escapePoints.Add(element);
-						}
-						else
-						{
-							//there is no logical way where an element's parent is not null but the depth is -1
-							throw new Exception();
-						}
-					}
-					*/
-
-					Debug.Log("-----------------------------------");
-					foreach (IRoadGridElement escapePoint in escapePoints)
-					{
-						Debug.Log(escapePoint.GetTile().Coordinates);
-					}
-
-					Debug.Log("------");
-					foreach (IRoadGridElement breakpoint in breakpoints)
-					{
-						Debug.Log(breakpoint.GetTile().Coordinates);
-					}
-					Debug.Log("-----------------------------------");
-
-				}
-
-				Debug.Log("........................................................................");
-
-				for (int i = 0; i < nonProblematicSplits.Count; i++)
-				{
-					IRoadGridElement startElement = nonProblematicSplits[i];
-
-					while (startElement.GetParentUnoptimized() != null)
-					{
-						startElement = startElement.GetParentUnoptimized();
-					}
-					Debug.Log("Start from " + startElement.GetTile().Coordinates);
-					startElement.SetRoadGrid(new()); //TODO I don't think it through but at some conditions this may could break the algorithm (like if the parent is not null but the depth is -1)
-					startElement.SetParent(null, -1);
-
-					List<IRoadGridElement> escapePoints = new();
-					Queue<IRoadGridElement> queue = new();
-					queue.Enqueue(startElement);
-
-					while (queue.Count > 0)
-					{
-						IRoadGridElement element = queue.Dequeue();
-
-						List<IRoadGridElement> neighbours = RoadGridManager.GetRoadGridElementsByRoadGridElement(element);
-						foreach (IRoadGridElement neighbour in neighbours)
-						{
-							if (neighbour.GetParentUnoptimized() == element) //looking down
-							{
-								queue.Enqueue(neighbour);
-								neighbour.SetRoadGrid(startElement.GetRoadGrid());
-								neighbour.SetParent(null, -1);
-							}
-							else if (neighbour.GetParentUnoptimized() == null && neighbour.GetDepthUnoptimized() == -1) //looking back
-							{
-
-							}
-							else if (neighbour.GetParentUnoptimized() == null && neighbour.GetDepthUnoptimized() == 0) //it's a root -> escape point
-							{
-								escapePoints.Add(neighbour);
-								neighbour.GetRoadGrid().Merge(startElement.GetRoadGrid());
-							}
-							else if (neighbour.GetParentUnoptimized() != null && neighbour.GetDepthUnoptimized() != -1) //it's a child of outside chain -> escape point
-							{
-								escapePoints.Add(neighbour);
-								neighbour.GetRoadGrid().Merge(startElement.GetRoadGrid());
-							}
-							else
-							{
-								//there is no logical way where an element's parent is null but the depth is bigger than zero or the parent is not null but the depth is -1
-								throw new Exception();
-							}
-						}
-					}
-
-					Debug.Log("???????????????????????????????????");
-					foreach (IRoadGridElement escapePoint in escapePoints)
-					{
-						Debug.Log(escapePoint.GetTile().Coordinates);
-					}
-
-					Debug.Log("??????");
-					foreach (IRoadGridElement nonProblematicSplit in nonProblematicSplits)
-					{
-						Debug.Log(nonProblematicSplit.GetTile().Coordinates);
-					}
-					Debug.Log("???????????????????????????????????");
-				}
-				Debug.Log("------------------------------------------------------------------------");
-
-
-
+				_roadGrid.Reinit();
 			}
 			else
 			{
