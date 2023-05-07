@@ -1,4 +1,5 @@
 using Model.Simulation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -68,7 +69,7 @@ namespace Model.Tiles
 		{
 			if (_roadGrid == roadGrid) { return; }
 
-			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGrid(this);
+			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGridElement(this);
 			foreach (Building building in buildings)
 			{
 				if (building is IWorkplace workplace)
@@ -81,9 +82,68 @@ namespace Model.Tiles
 				}
 			}
 
-			_roadGrid?.RemoveRoadGridElement(this);
-			_roadGrid = roadGrid;
-			_roadGrid.AddRoadGridElement(this);
+			if (roadGrid == null)
+			{
+				//TODO remove grids
+				List<IRoadGridElement> breakpoints = RoadGridManager.GetRoadGridElementsByRoadGridElement(this).FindAll(x => x.GetParent() == this);
+				_roadGrid?.RemoveRoadGridElement(this);
+				_roadGrid = null;
+				SetParent(null, -1);
+
+				//breadth first search from each element
+				for (int i = 0; i < breakpoints.Count; i++)
+				{
+					IRoadGridElement startElement = breakpoints[i];
+					startElement.SetRoadGrid(new()); //TODO maybe one new grid touch multiple neighbour and if that happen the bottom algorithm will broke because it don't check the validity of parent chain
+					SetParent(null, -1);
+
+					List<IRoadGridElement> escapePoints = new();
+					Queue<IRoadGridElement> queue = new();
+					queue.Enqueue(startElement);
+
+					while (queue.Count > 0)
+					{
+						IRoadGridElement element = queue.Dequeue();
+						if (element.GetParentUnoptimized().GetParentUnoptimized() == null && element.GetParentUnoptimized().GetDepthUnoptimized() == -1)
+						{
+							//looked into undefined part
+							RoadGridManager.GetRoadGridElementsByRoadGridElement(element)
+								.FindAll(x => !(x.GetParentUnoptimized() == null && x.GetDepthUnoptimized() == -1)) //we don't want to add an already processed element (like the parent and neighbour)
+								.ForEach(x => { if (!queue.Contains(x)) { queue.Enqueue(x); } });                   //we don't want to add it twice
+
+							element.SetRoadGrid(startElement.GetRoadGrid());
+							element.SetParent(null, -1);
+						}
+						else if (element.GetParentUnoptimized().GetDepthUnoptimized() >= 0)
+						{
+							//looked outside to untouched part
+							escapePoints.Add(element);
+						}
+						else
+						{
+							//there is no logical way where an element's parent is not null but the depth is -1
+							throw new InvalidOperationException();
+						}
+					}
+
+					Debug.Log("-----------------------------------");
+					foreach (IRoadGridElement escapePoint in escapePoints)
+					{
+						Debug.Log(escapePoint.GetTile().Coordinates);
+					}
+
+				}
+
+
+
+
+			}
+			else
+			{
+				_roadGrid?.RemoveRoadGridElement(this);
+				_roadGrid = roadGrid;
+				_roadGrid?.AddRoadGridElement(this);
+			}
 
 			foreach (Building building in buildings)
 			{
@@ -102,6 +162,7 @@ namespace Model.Tiles
 		private int _depth = -1;
 		public void SetParent(IRoadGridElement parent, int depth) { _parent = parent; _depth = depth; }
 		public IRoadGridElement GetParent() { _roadGrid.OptimizePaths(); return _parent; }
+		IRoadGridElement IRoadGridElement.GetParentUnoptimized() { return _parent; }
 		public int GetDepth() { _roadGrid.OptimizePaths(); return _depth; }
 
 		int IRoadGridElement.GetDepthUnoptimized() { return _depth; }
@@ -118,7 +179,7 @@ namespace Model.Tiles
 
 		public void UnregisterRoadGridElement()
 		{
-			_roadGrid.RemoveRoadGridElement(this);
+			SetRoadGrid(null);
 		}
 
 		private void ConnectToSurroundingRoads()

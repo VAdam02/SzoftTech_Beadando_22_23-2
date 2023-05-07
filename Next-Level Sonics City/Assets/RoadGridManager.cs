@@ -59,7 +59,7 @@ public class RoadGridManager
 
 	}
 
-	internal static IRoadGridElement GetRoadGrigByBuilding(Building building)
+	internal static IRoadGridElement GetRoadGrigElementByBuilding(Building building)
 	{
 		Vector3 coords = building.Coordinates;
 
@@ -70,7 +70,7 @@ public class RoadGridManager
 		return null;
 	}
 
-	internal static List<Building> GetBuildingsByRoadGrid(IRoadGridElement roadGridElement)
+	internal static List<Building> GetBuildingsByRoadGridElement(IRoadGridElement roadGridElement)
 	{
 		Vector3 coords = roadGridElement.GetTile().Coordinates;
 		List<Building> buildings = new();
@@ -81,6 +81,17 @@ public class RoadGridManager
 		if (SimEngine.Instance.GetTile((int)coords.x + 1, (int)coords.y) is Building rightBuilding && rightBuilding.Rotation == Rotation.TwoSeventy)	{ buildings.Add(rightBuilding); }
 
 		return buildings;
+	}
+
+	internal static List<IRoadGridElement> GetRoadGridElementsByRoadGridElement(IRoadGridElement roadGridElement)
+	{
+		Vector3 coords = roadGridElement.GetTile().Coordinates;
+		List<IRoadGridElement> roadGridElements = new();
+		if (SimEngine.Instance.GetTile((int)coords.x, (int)coords.y - 1) is IRoadGridElement aboveRoadGridElement)	{ roadGridElements.Add(aboveRoadGridElement); }
+		if (SimEngine.Instance.GetTile((int)coords.x + 1, (int)coords.y) is IRoadGridElement rightRoadGridElement)	{ roadGridElements.Add(rightRoadGridElement); }
+		if (SimEngine.Instance.GetTile((int)coords.x, (int)coords.y + 1) is IRoadGridElement belowRoadGridElement)	{ roadGridElements.Add(belowRoadGridElement); }
+		if (SimEngine.Instance.GetTile((int)coords.x - 1, (int)coords.y) is IRoadGridElement leftRoadGridElement)	{ roadGridElements.Add(leftRoadGridElement);  }
+		return roadGridElements;
 	}
 
 	private void BreadthFirstSearch(Queue<(IRoadGridElement, int)> workplaceRoadGridElements) //bad

@@ -288,12 +288,12 @@ namespace Model.Tiles.Buildings
 
 		public void RegisterResidential()
 		{
-			RoadGridManager.GetRoadGrigByBuilding(this)?.GetRoadGrid().AddHome(this);
+			RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid().AddHome(this);
 		}
 
 		public void UnregisterResidential()
 		{
-			RoadGridManager.GetRoadGrigByBuilding(this)?.GetRoadGrid().RemoveHome(this);
+			RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid().RemoveHome(this);
 		}
 
 		public void LevelUp()

@@ -20,13 +20,6 @@ public class RoadGrid
 	}
 	public void RemoveRoadGridElement(IRoadGridElement roadGridElement)
 	{
-		List<Building> buildings = RoadGridManager.GetBuildingsByRoadGrid(roadGridElement);
-		foreach (Building building in buildings)
-		{
-			if (building is IWorkplace workplace)	{ _workplaces.Remove(workplace); }
-			if (building is IResidential home)		{ _homes.Remove(home); }
-		}
-
 		_roadGridElements.Remove(roadGridElement);
 	}
 
@@ -87,7 +80,7 @@ public class RoadGrid
 
 		foreach (IWorkplace workplace in _workplaces)
 		{
-			IRoadGridElement roadGridElement = RoadGridManager.GetRoadGrigByBuilding((Building)workplace);
+			IRoadGridElement roadGridElement = RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace);
 			if (roadGridElement is null) { continue; }
 			roadGridElement.SetParent(null, 0);
 			queue.Enqueue((roadGridElement, 0));

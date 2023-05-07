@@ -94,7 +94,7 @@ namespace Model.Simulation
 			}
 
 			Debug.Log("Destroy");
-			BuildingManager.Destroy(GetTile(0, 0));
+			BuildingManager.Destroy(GetTile(0, 2));
 
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{

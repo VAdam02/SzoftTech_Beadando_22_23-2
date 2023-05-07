@@ -13,6 +13,7 @@ public interface IRoadGridElement
 
 	public void SetParent(IRoadGridElement parent, int depth);
 	public IRoadGridElement GetParent();
+	internal IRoadGridElement GetParentUnoptimized();
 
 	public int GetDepth();
 	internal int GetDepthUnoptimized();
