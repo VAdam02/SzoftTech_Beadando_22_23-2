@@ -8,10 +8,16 @@ namespace Model.Statistics
 {
 	public class StatEngine
 	{
-		private readonly List<StatReport> _statReports = new();
 		public int Year { get; private set; }
 		public int Quarter { get; private set; }
 
+		private int _buildPrice;
+		private int _destroyPrice;
+		private float _commercialCount;
+		private float _industrialCount;
+
+		private readonly object _lock = new();
+		private readonly List<StatReport> _statReports = new();
 		private const int STARTYEAR = 2020;
 
 		public StatEngine()
@@ -20,9 +26,10 @@ namespace Model.Statistics
 			Quarter = 0;
 		}
 
-		public async Task<float> CalculateResidenceTaxPerHouse(ResidentialBuildingTile residential, float taxRate)
+		public float CalculateResidenceTaxPerHouse(IResidential residential, float taxRate)
 		{
 			float houseTax = 0;
+
 			List<Person> persons = residential.GetResidents();
 
 			foreach (Person person in persons)
@@ -33,21 +40,27 @@ namespace Model.Statistics
 			return houseTax;
 		}
 
-		public async Task<float> CalculateResidenceTax(List<ResidentialBuildingTile> residentials, float taxRate)
+		public float CalculateResidenceTax(List<IResidential> residentials, float taxRate)
 		{
 			float totalTax = 0;
 
-			foreach (ResidentialBuildingTile residential in residentials)
+			Parallel.ForEach(residentials, residential =>
 			{
-				totalTax += await CalculateResidenceTaxPerHouse(residential, taxRate);
-			}
+				float tax = CalculateResidenceTaxPerHouse(residential, taxRate);
+
+				lock (_lock)
+				{
+					totalTax += tax;
+				}
+			});
 
 			return totalTax;
 		}
 
-		public async Task<float> CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
+		public float CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
 		{
 			float workplaceTax = 0;
+
 			List<Person> persons = workplace.GetWorkers();
 
 			foreach (Person person in persons)
@@ -58,21 +71,27 @@ namespace Model.Statistics
 			return workplaceTax;
 		}
 
-		public async Task<float> CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
+		public float CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
 		{
 			float totalTax = 0;
 
-			foreach (IWorkplace workplace in workplaces)
+			Parallel.ForEach(workplaces, workplace =>
 			{
-				totalTax += await CalculateIncomeTaxPerWorkplace(workplace, taxRate);
-			}
+				float tax = CalculateIncomeTaxPerWorkplace(workplace, taxRate);
+
+				lock (_lock)
+				{
+					totalTax += tax;
+				}
+			});
 
 			return totalTax;
 		}
 
-		public (float avg, int weight) CalculateHappinessPerResident(ResidentialBuildingTile residential)
+		public float CalculateHappinessPerResident(IResidential residential)
 		{
 			float totalResidentialHappiness = 0;
+
 			List<Person> persons = residential.GetResidents();
 
 			foreach (Person person in persons)
@@ -80,22 +99,27 @@ namespace Model.Statistics
 				totalResidentialHappiness += person.GetHappiness();
 			}
 
-			return (totalResidentialHappiness / persons.Count, persons.Count);
+			return totalResidentialHappiness / persons.Count;
 		}
 
-		public (float avg, int weight) CalculateHappiness(List<ResidentialBuildingTile> residentials)
+		public float CalculateHappiness(List<IResidential> residentials)
 		{
 			float totalCityHappiness = 0;
-			int count = 0;
+			float totalWeight = 0;
 
-			foreach (ResidentialBuildingTile residential in residentials)
+			Parallel.ForEach(residentials, residential =>
 			{
-				(float avg, int weight) = CalculateHappinessPerResident(residential);
-				count += weight;
-				totalCityHappiness += avg * weight;
-			}
+				float happiness = CalculateHappinessPerResident(residential);
+				float weight = residential.GetResidents().Count;
+
+				lock (_lock)
+				{
+					totalCityHappiness += happiness * weight;
+					totalWeight += weight;
+				}
+			});
 			
-			return (totalCityHappiness / count, count);
+			return totalCityHappiness / totalWeight;
 		}
 
 		public int SumMaintainance(List<Building> buildings)
@@ -148,55 +172,55 @@ namespace Model.Statistics
 
 		public float GetCommercialToIndustrialRate(List<IZoneBuilding> zoneBuildings)
 		{
-			float commercialCount = 0;
-			float IndustrialCount = 0;
+			return _commercialCount / _industrialCount;
+		}
 
-			foreach (IZoneBuilding zoneBuilding in zoneBuildings)
+		public void SumBuildPrice(object sender, TileEventArgs e)
+		{
+			lock (_lock)
 			{
-				if (zoneBuilding is Industrial)
-				{
-					++IndustrialCount;
-				}
-				else if (zoneBuilding is Commercial)
-				{
-					++commercialCount;
-				}
-				else
-				{
-					continue;
-				}
+				_buildPrice += e.Tile.GetBuildPrice();
 			}
-
-			return commercialCount / IndustrialCount;
 		}
 
-		/// <summary>
-		/// Records the expense of the building
-		/// </summary>
-		/// <param name="price">positive if expense and negative if income</param>
-		/// <exception cref="NotImplementedException"></exception>
-
-		public void SumBuildingPrice(int price)
+		public void SumDestroyPrice(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			lock (_lock)
+			{
+				_destroyPrice += e.Tile.GetDestroyPrice();
+			}
 		}
 
-		/// <summary>
-		/// Records the income of destruction
-		/// </summary>
-		/// <param name="price">positive if income and negative if expense</param>
-		/// <exception cref="NotImplementedException"></exception>
-		public void SumDestroyPrice(int price)
+		public void SumMarkZonePrice(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			lock (_lock)
+			{
+				_buildPrice += e.Tile.GetBuildPrice();
+				if (e.Tile is Industrial) { ++_industrialCount; return; }
+				if (e.Tile is Commercial) { ++_commercialCount; }
+			}
+		}
+
+		public void SumUnMarkZonePrice(object sender, TileEventArgs e)
+		{
+			lock (_lock)
+			{
+				_destroyPrice += e.Tile.GetDestroyPrice();
+				if (e.Tile is Industrial) { --_industrialCount; return; }
+				if (e.Tile is Commercial) { --_commercialCount; }
+			}
 		}
 
 		public void NextQuarter()
 		{
-			//TODO
-			throw new NotImplementedException();
+			StatReport statReport = new();
+
+
+			//TODO finish
+
+
+			_statReports.Add(statReport);
+
 		}
 	}
 }

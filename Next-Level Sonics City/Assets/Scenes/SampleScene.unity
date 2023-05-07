@@ -123,6 +123,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &169417968 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4063626496741038691, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+  m_PrefabInstance: {fileID: 4204039039659944887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &169417972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169417968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ee9ebf9065cb14ca9d57397ed95e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &453842121
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +170,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &453842123
 MonoBehaviour:
@@ -271,6 +288,7 @@ GameObject:
   m_Component:
   - component: {fileID: 952826513}
   - component: {fileID: 952826512}
+  - component: {fileID: 952826514}
   m_Layer: 0
   m_Name: SimEngine
   m_TagString: Untagged
@@ -303,9 +321,21 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1376791961 stripped
+--- !u!114 &952826514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952826511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7feb342cd05d48d4f86e15cd5e7a3f9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1332514275 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2896971607014579897, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
   m_PrefabInstance: {fileID: 1679341732}
@@ -319,19 +349,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2896971607014579896, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2896971607014579896, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 2896971607014579896, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2896971607014579896, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2896971607014579896, guid: 067169ab8dc0d9d49a840287043e2f4e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -374,10 +404,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 56812048, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
-      propertyPath: Camera
-      value: 
-      objectReference: {fileID: 1376791961}
     - target: {fileID: 4204039039587630835, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -392,7 +418,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4204039039587630847, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4204039039587630847, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -466,5 +492,63 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5045104017671058325, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+      propertyPath: Camera
+      value: 
+      objectReference: {fileID: 1332514275}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+--- !u!1 &4204039039659944888 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8159978294336052631, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+  m_PrefabInstance: {fileID: 4204039039659944887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4204039039659944889 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4438755977621671664, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+  m_PrefabInstance: {fileID: 4204039039659944887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4204039039659944890 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1398942739703887589, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+  m_PrefabInstance: {fileID: 4204039039659944887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4204039039659944891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4204039039659944888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zone: 3
+--- !u!114 &4204039039659944892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4204039039659944889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zone: 1
+--- !u!114 &4204039039659944893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4204039039659944890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zone: 2
