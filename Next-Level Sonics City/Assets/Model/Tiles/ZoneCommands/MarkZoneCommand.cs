@@ -21,8 +21,8 @@ namespace Model.Tiles.ZoneCommands
 		public void Execute()
 		{
 			if (!(_zoneType == ZoneType.NoZone
-			  || SimEngine.Instance.GetTile(_x - 1, _y) is Road || SimEngine.Instance.GetTile(_x + 1, _y) is Road
-			  || SimEngine.Instance.GetTile(_x, _y - 1) is Road || SimEngine.Instance.GetTile(_x, _y + 1) is Road))
+			  || SimEngine.Instance.GetTile(_x - 1, _y) is RoadTile || SimEngine.Instance.GetTile(_x + 1, _y) is RoadTile
+			  || SimEngine.Instance.GetTile(_x, _y - 1) is RoadTile || SimEngine.Instance.GetTile(_x, _y + 1) is RoadTile))
 			{ return; }
 
 			switch (_zoneType)

@@ -3,6 +3,7 @@ using Model.Tiles;
 using Model.Tiles.Buildings;
 using Model.Statistics;
 using Model.RoadGrids;
+using System.Security.Cryptography;
 
 namespace Model.Simulation
 {
@@ -43,7 +44,7 @@ namespace Model.Simulation
 			GetTile(x + 1, y)?.NeighborTileChanged(old, tile);
 			GetTile(x, y - 1)?.NeighborTileChanged(old, tile);
 			GetTile(x, y + 1)?.NeighborTileChanged(old, tile);
-			old.Delete();
+			old?.Delete();
 		}
 
 		public int GetSize()
@@ -72,7 +73,7 @@ namespace Model.Simulation
 			{
 				if (i % 2 == 0)
 				{
-					_tiles[i, j] = new Road(i, j, 0);
+					SetTile(i, j, new RoadTile(i, j, 0));
 				}
 				else
 				{
@@ -86,7 +87,7 @@ namespace Model.Simulation
 
 			for (int k = 0; k < n; k++)
 			{
-				_tiles[k, n-1] = new Road(k, n-1, 0);
+				SetTile(k, n-1, new RoadTile(k, n-1, 0));
 			}
 
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
@@ -94,9 +95,10 @@ namespace Model.Simulation
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
 
+			/*
 			Debug.Log("DESTROY START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Destroy(GetTile(40, 99));
+			BuildingManager.Destroy(GetTile(3, 4));
 			Debug.Log("Destroy takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("DESTROY FINISH");
 
@@ -115,10 +117,11 @@ namespace Model.Simulation
 			{
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
+			*/
 
 			//DEMO CODE
 
-			Init();
+			//Init();
 			StatEngine = new();
 		}
 

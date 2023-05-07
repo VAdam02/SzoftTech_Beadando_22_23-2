@@ -11,7 +11,7 @@ namespace View.Tiles.Buildings
 		// Start is called before the first frame update
 		void Start()
 		{
-			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, TileModel.Coordinates.y) * 10;
+			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, -TileModel.Coordinates.y) * 10;
 			transform.localScale = Vector3.one;
 
 			TileModel.DesignIDChangeEvent.AddListener(Display);
