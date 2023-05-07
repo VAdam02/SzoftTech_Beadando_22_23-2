@@ -2,6 +2,7 @@ using UnityEngine;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 using Model.Statistics;
+using Model.RoadGrids;
 
 namespace Model.Simulation
 {
@@ -75,8 +76,8 @@ namespace Model.Simulation
 				}
 				else
 				{
-					_tiles[i, j] = new Industrial(i, j, 0);
-					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
+					//_tiles[i, j] = new Industrial(i, j, 0);
+					_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
 					//_tiles[i, j] = new Commercial(i, j, 0);
 				}
 			}
@@ -88,12 +89,10 @@ namespace Model.Simulation
 				_tiles[k, n-1] = new Road(k, n-1, 0);
 			}
 
-			/*
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{
-				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
+				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-			*/
 
 			Debug.Log("DESTROY START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
@@ -101,12 +100,10 @@ namespace Model.Simulation
 			Debug.Log("Destroy takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("DESTROY FINISH");
 
-			/*
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{
-				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
+				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-			*/
 
 			Debug.Log("BUILD START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
@@ -114,12 +111,10 @@ namespace Model.Simulation
 			Debug.Log("BUILD takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("BUILD FINISH");
 
-			/*
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{
-				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
+				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-			*/
 
 			//DEMO CODE
 

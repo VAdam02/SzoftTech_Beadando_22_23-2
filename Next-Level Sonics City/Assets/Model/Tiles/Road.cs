@@ -1,6 +1,7 @@
 using Model.Simulation;
 using System.Collections.Generic;
 using System.Linq;
+using Model.RoadGrids;
 
 namespace Model.Tiles
 {
@@ -104,15 +105,6 @@ namespace Model.Tiles
 				}
 			}
 		}
-
-		private IRoadGridElement _parent = null;
-		private int _depth = -1;
-		public void SetParent(IRoadGridElement parent, int depth) { _parent = parent; _depth = depth; }
-		public IRoadGridElement GetParent() { _roadGrid.OptimizePaths(); return _parent; }
-		IRoadGridElement IRoadGridElement.GetParentUnoptimized() { return _parent; }
-		public int GetDepth() { _roadGrid.OptimizePaths(); return _depth; }
-
-		int IRoadGridElement.GetDepthUnoptimized() { return _depth; }
 
 		public Road(int x, int y, uint designID) : base(x, y, designID)
 		{
