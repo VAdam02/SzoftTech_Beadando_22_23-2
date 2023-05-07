@@ -4,8 +4,8 @@ namespace Model
 {
 	public interface IWorkplace
 	{
-		public void RegisterWorkplace();
-		public void UnregisterWorkplace();
+		public void RegisterWorkplace(RoadGrid roadGrid);
+		public void UnregisterWorkplace(RoadGrid roadGrid);
 
 		public bool Employ(Person person);
 		public bool Unemploy(Person person);

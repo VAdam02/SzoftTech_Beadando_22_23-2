@@ -15,11 +15,11 @@ namespace Model.Tiles
 
 			if (this is IWorkplace workplace)
 			{
-				workplace.RegisterWorkplace();
+				workplace.RegisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace).GetRoadGrid());
 			}
 			if (this is IResidential residential)
 			{
-				residential.RegisterResidential();
+				residential.RegisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential).GetRoadGrid());
 			}
 
 			OnTileDelete.AddListener(Destroy);
@@ -29,11 +29,11 @@ namespace Model.Tiles
 		{
 			if (this is IWorkplace workplace)
 			{
-				workplace.UnregisterWorkplace();
+				workplace.UnregisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace).GetRoadGrid());
 			}
-			if (this is IResidential residentialBuildingTile)
+			if (this is IResidential residential)
 			{
-				residentialBuildingTile.UnregisterResidential();
+				residential.UnregisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential).GetRoadGrid());
 			}
 		}
 

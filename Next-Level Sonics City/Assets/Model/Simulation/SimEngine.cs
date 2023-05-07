@@ -61,7 +61,7 @@ namespace Model.Simulation
 			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 4;
+			int n = 5;
 			_tiles = new Tile[n, n];
 
 			long startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
@@ -93,8 +93,15 @@ namespace Model.Simulation
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Homes.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
 
-			Debug.Log("Destroy");
-			BuildingManager.Destroy(GetTile(0, 2));
+			Debug.Log("DESTROY START");
+			//BuildingManager.Destroy(GetTile(0, 0)); 	//1 nonproblematic split
+			//BuildingManager.Destroy(GetTile(0, 1)); 	//2 nonproblematic split
+			BuildingManager.Destroy(GetTile(0, 2));	//1 nonproblematic, 1 problematic split 	//TODO not splitted
+			//BuildingManager.Destroy(GetTile(0, 3));	//1 nonproblematic, 1 problematic split		//TODO not splitted
+			//BuildingManager.Destroy(GetTile(1, 3));	//2 nobproblematic							//TODO not splitted
+
+
+			Debug.Log("DESTROY FINISH");
 
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{

@@ -136,7 +136,7 @@ public class RoadGridManager
 				}
 				else if (adjacentTile is ResidentialBuildingTile home)
 				{
-					roadGridElement.element.GetRoadGrid().AddHome(home);
+					roadGridElement.element.GetRoadGrid().AddResidential(home);
 				}
 			}
 		}

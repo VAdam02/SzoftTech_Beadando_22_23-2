@@ -36,11 +36,11 @@ public class RoadGrid
 
 	private readonly List<IResidential> _homes = new();
 	public List<IResidential> Homes { get { OptimizePaths(); return _homes; } }
-	public void AddHome(IResidential home)
+	public void AddResidential(IResidential home)
 	{
 		_homes.Add(home);
 	}
-	public void RemoveHome(IResidential home)
+	public void RemoveResidential(IResidential home)
 	{
 		_homes.Remove(home);
 	}

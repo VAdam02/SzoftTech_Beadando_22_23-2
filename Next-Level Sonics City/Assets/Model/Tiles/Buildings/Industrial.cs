@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
@@ -14,14 +15,14 @@ namespace Model.Tiles.Buildings
 			Level = 0;
 		}
 
-		public void RegisterWorkplace()
+		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
-			RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid().AddWorkplace(this);
+			roadGrid?.AddWorkplace(this);
 		}
 
-		public void UnregisterWorkplace()
+		public void UnregisterWorkplace(RoadGrid roadGrid)
 		{
-			RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid().RemoveWorkplace(this);
+			roadGrid?.RemoveWorkplace(this);
 		}
 
 		public void LevelUp()

@@ -14,9 +14,9 @@ namespace Model.Tiles.Buildings
 			_baseWorkplace = baseBuilding;
 		}
 
-		public void RegisterWorkplace() { }
+		public void RegisterWorkplace(RoadGrid roadGrid) { }
 
-		public void UnregisterWorkplace() { }
+		public void UnregisterWorkplace(RoadGrid roadGrid) { }
 
 		public void ParentDestroyedEventHandler(object sender, EventArgs e)
 		{
