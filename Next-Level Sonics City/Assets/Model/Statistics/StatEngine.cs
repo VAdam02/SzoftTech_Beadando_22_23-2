@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Model.Persons;
+using Model.Simulation;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 
@@ -143,6 +144,18 @@ namespace Model.Statistics
 			return totalCityHappiness / totalWeight;
 		}
 
+		public int CalculatePopulation(List<ResidentialBuildingTile> residentials)
+		{
+			int totalPopulation = 0;
+
+			foreach (var residential in residentials)
+			{
+				totalPopulation += residential.GetResidents().Count;
+			}
+
+			return totalPopulation;
+		}
+
 		public int SumMaintainance(List<Building> buildings)
 		{
 			int totalMaintainanceCost = 0;
@@ -245,12 +258,40 @@ namespace Model.Statistics
 		{
 			StatReport statReport = new StatReport();
 
+			statReport.Quarter = Quarter;
+			statReport.Year = Year;
 
-			//TODO finish
+			//TODO finish residential and workplace lists
+			// statReport.Happiness = CalculateHappiness();
 
+			statReport.BuildExpenses = _buildPrice;
+			statReport.DestroyIncomes = _destroyPrice;
+			// statReport.MaintainanceCosts = SumMaintainance();
+
+			// statReport.IncomeTax = CalculateIncomeTax();
+			// statReport.ResidenceTax = CalculateResidenceTax();
+			statReport.Incomes = statReport.IncomeTax + statReport.ResidenceTax + _destroyPrice;
+			statReport.Expenses = statReport.MaintainanceCosts + _buildPrice;
+			statReport.Profit = statReport.Incomes - statReport.Expenses;
+
+			// statReport.Population = CalculatePopulation();
+			statReport.PopulationChange = statReport.Population - _statReports[^1].Population;
+
+			statReport.ElectricityProduced = GetElectricityProduced();
+			statReport.ElectricityConsumed = GetElectricityConsumed();
 
 			_statReports.Add(statReport);
 
+			++Quarter;
+			Quarter %= 4;
+
+			if (Quarter == 0)
+			{
+				++Year;
+			}
+
+			_buildPrice = 0;
+			_destroyPrice = 0;
 		}
 	}
 }
