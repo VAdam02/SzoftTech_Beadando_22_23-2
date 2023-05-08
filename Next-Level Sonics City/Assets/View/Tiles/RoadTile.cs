@@ -4,6 +4,80 @@ namespace View.Tiles
 {
 	public class RoadTile : Tile
 	{
+		private static Material _asphaltMaterial;
+		public static Material AsphaltMaterial { get { if (_asphaltMaterial == null) _asphaltMaterial = LoadMaterialByName("AsphaltMaterial"); return _asphaltMaterial; } }
+		private Material _sharedAsphaltMaterial;
+		private Material SharedAsphaltMaterial
+		{
+			get
+			{
+				if (_sharedAsphaltMaterial == null)
+				{
+					_sharedAsphaltMaterial = new Material(AsphaltMaterial);
+					_materials.Add(_sharedAsphaltMaterial);
+				}
+				return _sharedAsphaltMaterial;
+			}
+		}
+
+		private static Material _sidewalkMaterial;
+		public static Material SidewalkMaterial { get { if (_sidewalkMaterial == null) _sidewalkMaterial = LoadMaterialByName("SidewalkMaterial"); return _sidewalkMaterial; } }
+		private Material _sharedSidewalkMaterial;
+		private Material SharedSidewalkMaterial
+		{
+			get
+			{
+				if (_sharedSidewalkMaterial == null)
+				{
+					_sharedSidewalkMaterial = new Material(SidewalkMaterial);
+					_materials.Add(_sharedSidewalkMaterial);
+				}
+				return _sharedSidewalkMaterial;
+			}
+		}
+
+		private static Material _whitelineMaterial;
+		public static Material WhitelineMaterial { get { if (_whitelineMaterial == null) _whitelineMaterial = LoadMaterialByName("WhitelineMaterial"); return _whitelineMaterial; } }
+		private Material _sharedWhitelineMaterial;
+		private Material SharedWhitelineMaterial
+		{
+			get
+			{
+				if (_sharedWhitelineMaterial == null)
+				{
+					_sharedWhitelineMaterial = new Material(WhitelineMaterial);
+					_materials.Add(_sharedWhitelineMaterial);
+				}
+				return _sharedWhitelineMaterial;
+			}
+		}
+
+		private static Material LoadMaterialByName(string name)
+		{
+			return Resources.Load<Material>("Tiles/RoadTile/Material/" + name);
+		}
+
+		private void SetSharedMaterials(Renderer renderer)
+		{
+			if (renderer == null) return;
+
+			Material[] materials = renderer.sharedMaterials;
+
+			for (int i = 0; i < materials.Length; i++)
+			{
+				if		(materials[i].name.Split(' ')[0] == "AsphaltMaterial")		{ materials[i] = SharedAsphaltMaterial;		}
+				else if (materials[i].name.Split(' ')[0] == "SidewalkMaterial")		{ materials[i] = SharedSidewalkMaterial;	}
+				else if (materials[i].name.Split(' ')[0] == "WhitelineMaterial")	{ materials[i] = SharedWhitelineMaterial;	}
+				else
+				{
+					Debug.LogWarning(renderer);
+					Debug.LogError("Unknown material found: " + renderer.materials[i].name);
+				}
+			}
+
+			renderer.sharedMaterials = materials;
+		}
+
 		// Start is called before the first frame update
 		void Start()
 		{
@@ -11,6 +85,8 @@ namespace View.Tiles
 			transform.localScale = Vector3.one;
 
 			TileModel.DesignIDChangeEvent.AddListener(OnDesignIDChange);
+
+			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 		}
 
 		// Update is called once per frame
@@ -89,12 +165,7 @@ namespace View.Tiles
 			road.transform.SetLocalPositionAndRotation(new Vector3(0, 0, 0), Quaternion.Euler(-90, 0, 0));
 			road.transform.Rotate(rotation);
 
-			/*
-			if (dirCount == 0)
-			{
-				GameObject road = Instantiate(LoadModelByName("0direction.fbx"));
-			}
-			*/
+			SetSharedMaterials(road.GetComponent<Renderer>());
 		}
 
 		private static GameObject LoadModelByName(string name)

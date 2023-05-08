@@ -91,12 +91,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseTransMultiplier: 0.25
   MouseRotateMultiplier: 0.25
-  MouseZoomMultiplier: 10
+  MouseZoomMultiplier: 20
   KeyboardTransMultiplier: 100
   KeyboardRotateMultiplier: 100
   KeyboardZoomMultiplier: 10
   Camera: {fileID: 0}
-  LookAtMinLimit: {x: 0, y: 0, z: 0}
-  LookAtMaxLimit: {x: 1000, y: 10, z: 1000}
+  LookAtMinLimit: {x: -25, y: 0, z: -4975}
+  LookAtMaxLimit: {x: 4975, y: 10, z: 25}
   LookFromMinLimit: {x: 0, y: 30, z: 2}
-  LookFromMaxLimit: {x: 360, y: 90, z: 150}
+  LookFromMaxLimit: {x: 360, y: 90, z: 200}

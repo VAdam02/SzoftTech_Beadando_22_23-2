@@ -479,5 +479,9 @@ PrefabInstance:
       propertyPath: Camera
       value: 
       objectReference: {fileID: 1332514275}
+    - target: {fileID: 5045104017671058325, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
+      propertyPath: MouseZoomMultiplier
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 762750291aada0f4281ed156b5c6355a, type: 3}
