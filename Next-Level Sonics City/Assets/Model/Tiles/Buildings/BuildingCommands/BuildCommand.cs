@@ -59,7 +59,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 					tile = new Forest(_x, _y, _designID);
 					break;
 				case TileType.Road:
-					tile = new Road(_x, _y, _designID);
+					tile = new RoadTile(_x, _y, _designID);
 					break;
 				case TileType.ElectricPole:
 					tile = new ElectricPole(_x, _y, _designID);

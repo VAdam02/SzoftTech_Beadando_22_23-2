@@ -7,11 +7,11 @@ namespace Model
 {
 	public class Navigator
 	{
-		private Road _from;
-		private Road _to;
-		private List<Road> _path;
+		private RoadTile _from;
+		private RoadTile _to;
+		private List<RoadTile> _path;
 
-		public List<Road> GetPath()
+		public List<RoadTile> GetPath()
 		{
 			throw new NotImplementedException();
 		}

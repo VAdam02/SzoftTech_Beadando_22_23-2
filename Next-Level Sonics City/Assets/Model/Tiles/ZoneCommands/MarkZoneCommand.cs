@@ -21,8 +21,8 @@ namespace Model.Tiles.ZoneCommands
 		public void Execute()
 		{
 			if (!(_zoneType == ZoneType.NoZone
-			  || SimEngine.Instance.GetTile(_x - 1, _y) is Road || SimEngine.Instance.GetTile(_x + 1, _y) is Road
-			  || SimEngine.Instance.GetTile(_x, _y - 1) is Road || SimEngine.Instance.GetTile(_x, _y + 1) is Road))
+			  || SimEngine.Instance.GetTile(_x - 1, _y) is RoadTile || SimEngine.Instance.GetTile(_x + 1, _y) is RoadTile
+			  || SimEngine.Instance.GetTile(_x, _y - 1) is RoadTile || SimEngine.Instance.GetTile(_x, _y + 1) is RoadTile))
 			{ return; }
 
 			switch (_zoneType)
@@ -40,7 +40,7 @@ namespace Model.Tiles.ZoneCommands
 					SimEngine.Instance.SetTile(_x, _y, new ResidentialBuildingTile(_x, _y, _designID));
 					break;
 				case ZoneType.NoZone:
-					if (SimEngine.Instance.GetTile(_x, _y) is EmptyTile) { break; }
+					if (SimEngine.Instance.GetTile(_x, _y) is not Industrial && SimEngine.Instance.GetTile(_x, _y) is not Commercial && SimEngine.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
 					SimEngine.Instance.SetTile(_x, _y, new EmptyTile(_x, _y, _designID));
 					break;
 				default:
