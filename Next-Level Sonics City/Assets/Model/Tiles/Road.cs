@@ -124,7 +124,7 @@ namespace Model.Tiles
 		private void ConnectToSurroundingRoads()
 		{
 			if (SimEngine.Instance.GetTile((int)Coordinates.x - 1, (int)Coordinates.y) is Road leftRoad)  { FromLeft = leftRoad;   }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x  +1, (int)Coordinates.y) is Road rightRoad) { FromRight = rightRoad; }
+			if (SimEngine.Instance.GetTile((int)Coordinates.x + 1, (int)Coordinates.y) is Road rightRoad) { FromRight = rightRoad; }
 			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y - 1) is Road aboveRoad) { FromAbove = aboveRoad; }
 			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y + 1) is Road belowRoad) { FromBelow = belowRoad; }
 		}
