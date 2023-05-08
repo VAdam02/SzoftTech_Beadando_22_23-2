@@ -35,7 +35,7 @@ namespace Model.Tiles
 						MarkZoneCommand markZoneCommand = new (x, y, zoneType);
 						markZoneCommand.Execute();
 
-						if (zoneType == ZoneType.NoZone) { OnZoneUnMarked(SimEngine.Instance.GetTile(x, y)); }
+						if (zoneType == ZoneType.NoZone) { OnZoneUnMarked(oldTile); }
 						else { OnZoneMarked(SimEngine.Instance.GetTile(x, y)); }
 					}
 				}
