@@ -3,6 +3,7 @@ using Model.Simulation;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
@@ -14,6 +15,10 @@ namespace Model.Tiles.Buildings
 		{
 			_baseWorkplace = baseBuilding;
 		}
+
+		public void RegisterWorkplace(RoadGrid roadGrid) { }
+
+		public void UnregisterWorkplace(RoadGrid roadGrid) { }
 
 		public void ParentDestroyedEventHandler(object sender, EventArgs e)
 		{

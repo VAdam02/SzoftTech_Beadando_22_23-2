@@ -27,7 +27,7 @@ namespace Model.Statistics
 			Quarter = 0;
 		}
 
-		public float CalculateResidenceTaxPerHouse(ResidentialBuildingTile residential, float taxRate)
+		public float CalculateResidenceTaxPerHouse(IResidential residential, float taxRate)
 		{
 			float houseTax = 0;
 
@@ -41,7 +41,7 @@ namespace Model.Statistics
 			return houseTax;
 		}
 
-		public float CalculateResidenceTax(List<ResidentialBuildingTile> residentials, float taxRate)
+		public float CalculateResidenceTax(List<IResidential> residentials, float taxRate)
 		{
 			float totalTax = 0;
 			object taxLock = new();
@@ -119,7 +119,7 @@ namespace Model.Statistics
 			return totalResidentialHappiness / persons.Count;
 		}
 
-		public float CalculateHappiness(List<ResidentialBuildingTile> residentials)
+		public float CalculateHappiness(List<IResidential> residentials)
 		{
 			float totalCityHappiness = 0;
 			float totalWeight = 0;
@@ -256,7 +256,7 @@ namespace Model.Statistics
 
 		public void NextQuarter()
 		{
-			StatReport statReport = new StatReport();
+			StatReport statReport = new();
 
 			statReport.Quarter = Quarter;
 			statReport.Year = Year;

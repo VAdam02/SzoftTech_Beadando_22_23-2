@@ -1,30 +1,21 @@
 using Model.Simulation;
 using System.Collections.Generic;
 using System.Linq;
+using Model.RoadGrids;
 
 namespace Model.Tiles
 {
-	public class Road : Tile
+	public class Road : Tile, IRoadGridElement
 	{
-		private const uint LEFTROADMASK = 1;
-		private const uint ABOVEROADMASK = 2;
-		private const uint RIGHTROADMASK = 4;
-		private const uint BELOWROADMASK = 8;
+		private const uint ABOVEROADMASK = 1;
+		private const uint RIGHTROADMASK = 2;
+		private const uint BELOWROADMASK = 4;
+		private const uint LEFTROADMASK = 8;
 
 		private readonly Road[] _roads = new Road[4];
-		public Road FromLeft
-		{
-			get { return _roads[0]; }
-			set
-			{
-				_roads[0] = value;
-				if (value == null)	{ DesignID &= ~LEFTROADMASK; }
-				else				{ DesignID |= LEFTROADMASK;  }
-			}
-		}
 		public Road FromAbove
 		{
-			get { return _roads[1]; }
+			get { return _roads[0]; }
 			set
 			{
 				_roads[1] = value;
@@ -34,7 +25,7 @@ namespace Model.Tiles
 		}
 		public Road FromRight
 		{
-			get { return _roads[2]; }
+			get { return _roads[1]; }
 			set
 			{
 				_roads[2] = value;
@@ -44,7 +35,7 @@ namespace Model.Tiles
 		}
 		public Road FromBelow
 		{
-			get { return _roads[3]; }
+			get { return _roads[2]; }
 			set
 			{
 				_roads[3] = value;
@@ -52,22 +43,88 @@ namespace Model.Tiles
 				else				{ DesignID |= BELOWROADMASK;  }
 			}
 		}
+		public Road FromLeft
+		{
+			get { return _roads[3]; }
+			set
+			{
+				_roads[0] = value;
+				if (value == null) { DesignID &= ~LEFTROADMASK; }
+				else { DesignID |= LEFTROADMASK; }
+			}
+		}
+
+		public List<IRoadGridElement> ConnectsTo()
+		{
+			return new List<IRoadGridElement>(_roads).Where(x => x != null).ToList();
+		}
+
+		public Tile GetTile() { return this; }
+
+		private RoadGrid _roadGrid = null;
+		public RoadGrid GetRoadGrid() { return _roadGrid; }
+
+		public void SetRoadGrid(RoadGrid roadGrid)
+		{
+			if (_roadGrid == roadGrid) { return; }
+
+			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGridElement(this);
+			foreach (Building building in buildings)
+			{
+				if (building is IWorkplace workplace)
+				{
+					workplace.UnregisterWorkplace(_roadGrid);
+				}
+				if (building is IResidential residential)
+				{
+					residential.UnregisterResidential(_roadGrid);
+				}
+			}
+
+			if (roadGrid == null)
+			{
+				_roadGrid?.RemoveRoadGridElement(this);
+				_roadGrid.Reinit();
+			}
+			else
+			{
+				_roadGrid?.RemoveRoadGridElement(this);
+				_roadGrid = roadGrid;
+				_roadGrid?.AddRoadGridElement(this);
+			}
+
+			foreach (Building building in buildings)
+			{
+				if (building is IWorkplace workplace)
+				{
+					workplace.RegisterWorkplace(_roadGrid);
+				}
+				if (building is IResidential residential)
+				{
+					residential.RegisterResidential(_roadGrid);
+				}
+			}
+		}
 
 		public Road(int x, int y, uint designID) : base(x, y, designID)
 		{
-			OnTileDelete.AddListener(Destroy);
 			ConnectToSurroundingRoads();
 		}
 
-		private void Destroy()
+		public void RegisterRoadGridElement()
 		{
-			
+			SimEngine.Instance.RoadGridManager.AddRoadGridElement(this);
+		}
+
+		public void UnregisterRoadGridElement()
+		{
+			SetRoadGrid(null);
 		}
 
 		private void ConnectToSurroundingRoads()
 		{
 			if (SimEngine.Instance.GetTile((int)Coordinates.x - 1, (int)Coordinates.y) is Road leftRoad)  { FromLeft = leftRoad;   }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x  +1, (int)Coordinates.y) is Road rightRoad) { FromRight = rightRoad; }
+			if (SimEngine.Instance.GetTile((int)Coordinates.x + 1, (int)Coordinates.y) is Road rightRoad) { FromRight = rightRoad; }
 			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y - 1) is Road aboveRoad) { FromAbove = aboveRoad; }
 			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y + 1) is Road belowRoad) { FromBelow = belowRoad; }
 		}

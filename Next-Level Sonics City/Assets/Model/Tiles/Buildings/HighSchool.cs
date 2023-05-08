@@ -1,13 +1,12 @@
 using Model;
 using Model.Persons;
 using Model.Simulation;
-using Model.Tiles;
-using Model.Tiles.Buildings;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
+using Model.RoadGrids;
 
-public class HighSchool : Building, IWorkplace
+namespace Model.Tiles.Buildings
 {
 	private readonly List<Worker> _workers = new();
 	private int _workersLimit = 10;
@@ -15,6 +14,16 @@ public class HighSchool : Building, IWorkplace
 	public HighSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 	{
 
+	}
+
+	public void RegisterWorkplace(RoadGrid roadGrid)
+	{
+		roadGrid?.AddWorkplace(this);
+	}
+
+	public void UnregisterWorkplace(RoadGrid roadGrid)
+	{
+		roadGrid?.RemoveWorkplace(this);
 	}
 
 	public bool Employ(Worker worker)
@@ -81,7 +90,7 @@ public class HighSchool : Building, IWorkplace
 		int y1 = (int)Coordinates.y;
 		int x2 = (int)Coordinates.x;
 		int y2 = (int)Coordinates.y;
-		
+
 
 		switch (Rotation)
 		{

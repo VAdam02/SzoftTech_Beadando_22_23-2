@@ -3,7 +3,7 @@ using Model.Simulation;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
@@ -13,9 +13,19 @@ namespace Model.Tiles.Buildings
 		private readonly List<Worker> _workers = new();
 		private int _workersLimit = 0;
 
-		public Industrial(int x, int y, uint designID) : base(x, y, designID, Rotation.Zero) //TODO rotation
+		public Industrial(int x, int y, uint designID) : base(x, y, designID, Rotation.TwoSeventy) //TODO rotation
 		{
 			Level = 0;
+		}
+
+		public void RegisterWorkplace(RoadGrid roadGrid)
+		{
+			roadGrid?.AddWorkplace(this);
+		}
+
+		public void UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			roadGrid?.RemoveWorkplace(this);
 		}
 
 		public void LevelUp()

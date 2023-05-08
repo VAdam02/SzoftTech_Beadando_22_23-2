@@ -3,6 +3,7 @@ using Model.Simulation;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
+using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
@@ -14,6 +15,16 @@ namespace Model.Tiles.Buildings
 		public Stadion(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
+		}
+
+		public void RegisterWorkplace(RoadGrid roadGrid)
+		{
+			roadGrid?.AddWorkplace(this);
+		}
+
+		public void UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			roadGrid?.RemoveWorkplace(this);
 		}
 
 		public bool Employ(Worker worker)

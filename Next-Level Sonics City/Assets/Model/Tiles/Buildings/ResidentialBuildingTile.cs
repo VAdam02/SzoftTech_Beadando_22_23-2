@@ -1,12 +1,12 @@
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
-	public class ResidentialBuildingTile : Building, IZoneBuilding
+	public class ResidentialBuildingTile : Building, IResidential, IZoneBuilding
 	{
 		#region ResidentialElementsStructs
 		public struct ResidentialDesignBase
@@ -281,10 +281,20 @@ namespace Model.Tiles.Buildings
 		public int ResidentLimit { get; private set; }
 		private readonly List<Person> _residents = new();
 
-		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID, Rotation.Zero) //TODO rotation
+		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID, Rotation.TwoSeventy) //TODO rotation
 		{
 			Level = 0;
 			ResidentLimit = 0;
+		}
+
+		public void RegisterResidential(RoadGrid roadGrid)
+		{
+			roadGrid?.AddResidential(this);
+		}
+
+		public void UnregisterResidential(RoadGrid roadGrid)
+		{
+			roadGrid?.RemoveResidential(this);
 		}
 
 		public void LevelUp()
@@ -315,6 +325,17 @@ namespace Model.Tiles.Buildings
 		{
 			return _residents;
 		}
+
+		public int GetResidentsCount()
+		{
+			return _residents.Count;
+		}
+
+		public int GetResidentsLimit()
+		{
+			return ResidentLimit;
+		}
+		public Tile GetTile() { return this; }
 
 		public override int GetBuildPrice() //TODO implementik logic
 		{
