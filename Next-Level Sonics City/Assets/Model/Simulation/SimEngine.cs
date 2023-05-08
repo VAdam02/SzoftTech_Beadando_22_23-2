@@ -63,7 +63,7 @@ namespace Model.Simulation
 			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 5;
+			int n = 100;
 			_tiles = new Tile[n, n];
 
 			long startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
