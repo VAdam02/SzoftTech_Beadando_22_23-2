@@ -40,7 +40,7 @@ namespace Model.Tiles.ZoneCommands
 					SimEngine.Instance.SetTile(_x, _y, new ResidentialBuildingTile(_x, _y, _designID));
 					break;
 				case ZoneType.NoZone:
-					if (SimEngine.Instance.GetTile(_x, _y) is EmptyTile) { break; }
+					if (SimEngine.Instance.GetTile(_x, _y) is not Industrial && SimEngine.Instance.GetTile(_x, _y) is not Commercial && SimEngine.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
 					SimEngine.Instance.SetTile(_x, _y, new EmptyTile(_x, _y, _designID));
 					break;
 				default:
