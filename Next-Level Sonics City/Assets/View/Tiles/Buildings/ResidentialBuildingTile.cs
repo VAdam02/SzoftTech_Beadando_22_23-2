@@ -62,6 +62,7 @@ namespace View.Tiles.Buildings
 				if (_sharedGrassMaterial == null)
 				{
 					_sharedGrassMaterial = new Material(GrassMaterial);
+					_materials.Add(_sharedGrassMaterial);
 				}
 				return _sharedGrassMaterial;
 			}
@@ -82,6 +83,7 @@ namespace View.Tiles.Buildings
 					{
 						color = HouseBottom.Evaluate(GetColor(0))
 					};
+					_materials.Add(_sharedHouseBottomMaterial);
 				}
 				return _sharedHouseBottomMaterial;
 			}
@@ -102,6 +104,7 @@ namespace View.Tiles.Buildings
 					{
 						color = HouseColor.Evaluate(GetColor(1))
 					};
+					_materials.Add(_sharedHouseColorMaterial);
 				}
 				return _sharedHouseColorMaterial;
 			}
@@ -117,6 +120,7 @@ namespace View.Tiles.Buildings
 				if (_sharedWoodPillarMaterial == null)
 				{
 					_sharedWoodPillarMaterial = new Material(WoodPillarMaterial);
+					_materials.Add(_sharedWoodPillarMaterial);
 				}
 				return _sharedWoodPillarMaterial;
 			}
@@ -137,6 +141,7 @@ namespace View.Tiles.Buildings
 					{
 						color = Roof.Evaluate(GetColor(2))
 					};
+					_materials.Add(_sharedRoofMaterial);
 				}
 				return _sharedRoofMaterial;
 			}
@@ -157,6 +162,7 @@ namespace View.Tiles.Buildings
 					{
 						color = Door.Evaluate(GetColor(3))
 					};
+					_materials.Add(_sharedDoorMaterial);
 				}
 				return _sharedDoorMaterial;
 			}
@@ -177,6 +183,7 @@ namespace View.Tiles.Buildings
 					{
 						color = Window.Evaluate(GetColor(4))
 					};
+					_materials.Add(_sharedWindowMaterial);
 				}
 				return _sharedWindowMaterial;
 			}
@@ -192,6 +199,7 @@ namespace View.Tiles.Buildings
 				if (_sharedWindowFrameMaterial == null)
 				{
 					_sharedWindowFrameMaterial = new Material(WindowFrameMaterial);
+					_materials.Add(_sharedWindowFrameMaterial);
 				}
 				return _sharedWindowFrameMaterial;
 			}
@@ -517,6 +525,8 @@ namespace View.Tiles.Buildings
 
 			_windowFrameMaterial = null;
 			_sharedWindowFrameMaterial = null;
+
+			_materials.Clear();
 
 			gradientAndMaterialReloadEvent.Invoke();
 		}

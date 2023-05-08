@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
@@ -8,9 +10,19 @@ namespace Model.Tiles.Buildings
 		private readonly List<Person> _workers = new();
 		private int _workersLimit = 0;
 
-		public Industrial(int x, int y, uint designID) : base(x, y, designID)
+		public Industrial(int x, int y, uint designID) : base(x, y, designID, Rotation.TwoSeventy) //TODO rotation
 		{
 			Level = 0;
+		}
+
+		public void RegisterWorkplace(RoadGrid roadGrid)
+		{
+			roadGrid?.AddWorkplace(this);
+		}
+
+		public void UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			roadGrid?.RemoveWorkplace(this);
 		}
 
 		public void LevelUp()
@@ -49,6 +61,37 @@ namespace Model.Tiles.Buildings
 		public int GetWorkersLimit()
 		{
 			return _workersLimit;
+		}
+		public Tile GetTile() { return this; }
+
+		public override int GetBuildPrice() //TODO implementik logic
+		{
+			return BUILD_PRICE;
+		}
+
+		public override int GetDestroyPrice()
+		{
+			return DESTROY_PRICE;
+		}
+
+		public override int GetMaintainanceCost()
+		{
+			return GetBuildPrice() / 10;
+		}
+
+		internal override bool IsExpandable()
+		{
+			return false;
+		}
+
+		internal override bool CanExpand()
+		{
+			throw new InvalidOperationException();
+		}
+
+		internal override void Expand()
+		{
+			throw new InvalidOperationException();
 		}
 	}
 }
