@@ -91,10 +91,6 @@ namespace Model.RoadGrids
 				roadGrid._roadGridElements[0].SetRoadGrid(this);
 			}
 
-			foreach (IWorkplace workplace in roadGrid._workplaces) { _workplaces.Add(workplace); }
-
-			foreach (IResidential home in roadGrid._residential) { _residential.Add(home); }
-
 			SimEngine.Instance.RoadGridManager.RemoveRoadGrid(roadGrid);
 		}
 	}
