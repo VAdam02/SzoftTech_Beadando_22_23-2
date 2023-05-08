@@ -95,10 +95,9 @@ namespace Model.Simulation
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
 
-			/*
 			Debug.Log("DESTROY START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Destroy(GetTile(3, 4));
+			BuildingManager.Destroy(GetTile(2, 4));
 			Debug.Log("Destroy takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("DESTROY FINISH");
 
@@ -106,10 +105,10 @@ namespace Model.Simulation
 			{
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-
+			
 			Debug.Log("BUILD START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Build(GetTile(40, 99), TileType.Road, 0);
+			BuildingManager.Build(GetTile(2, 4), TileType.Road, 0);
 			Debug.Log("BUILD takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("BUILD FINISH");
 
@@ -117,7 +116,6 @@ namespace Model.Simulation
 			{
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-			*/
 
 			//DEMO CODE
 
