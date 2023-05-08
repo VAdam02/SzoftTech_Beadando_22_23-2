@@ -20,6 +20,11 @@ namespace Model.Tiles
 		{
 			CalculateSubMatrix(limit1, limit2);
 
+			if (!IsSufficientAmountSelected())
+			{
+				return;
+			}
+
 			Parallel.For(_rowStart, _rowEnd + 1, x =>
 			{
 				for (int y = _columnStart; y < _columnEnd + 1; ++y)
@@ -48,6 +53,14 @@ namespace Model.Tiles
 			_rowEnd =      (int)Math.Max(limit1.Coordinates.x, limit2.Coordinates.x);
 			_columnStart = (int)Math.Min(limit1.Coordinates.y, limit2.Coordinates.y);
 			_columnEnd =   (int)Math.Max(limit1.Coordinates.y, limit2.Coordinates.y);
+		}
+
+		private bool IsSufficientAmountSelected()
+		{
+			int row = _rowEnd + 1 - _rowStart;
+			int column = _columnEnd + 1 - _columnStart;
+
+			return row * column < 16 ? false : true;
 		}
 
 		protected void OnZoneMarked(Tile tile)
