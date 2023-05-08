@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace View.GUI.Footer
+namespace View.GUI.Footer.ZoneMarkerPanel
 {
 	public class ZoneMarker : MonoBehaviour, IClickable
 	{
