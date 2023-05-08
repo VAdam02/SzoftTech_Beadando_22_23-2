@@ -20,11 +20,14 @@ namespace Model.Tiles
 		{
 			CalculateSubMatrix(limit1, limit2);
 
-			if (!IsSufficientAmountSelected())
+			if (zoneType is not ZoneType.NoZone)
 			{
-				return;
+				if (!IsSufficientAmountSelected())
+				{
+					return;
+				}
 			}
-
+			
 			Parallel.For(_rowStart, _rowEnd + 1, x =>
 			{
 				for (int y = _columnStart; y < _columnEnd + 1; ++y)
