@@ -3,7 +3,6 @@ using Model.Tiles;
 using Model.Tiles.Buildings;
 using Model.Statistics;
 using Model.RoadGrids;
-using System.Security.Cryptography;
 
 namespace Model.Simulation
 {
@@ -119,7 +118,7 @@ namespace Model.Simulation
 
 			//DEMO CODE
 
-			//Init();
+			Init();
 			StatEngine = new();
 		}
 
