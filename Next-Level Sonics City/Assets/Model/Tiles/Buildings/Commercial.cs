@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.Simulation;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
@@ -8,7 +9,7 @@ namespace Model.Tiles.Buildings
 	public class Commercial : Building, IWorkplace, IZoneBuilding
 	{
 		public ZoneBuildingLevel Level { get; private set; }
-		private readonly List<Person> _workers = new();
+		private readonly List<Worker> _workers = new();
 		private int _workersLimit = 0;
 
 		public Commercial(int x, int y, uint designID) : base(x, y, designID, Rotation.Zero) //TODO rotation
@@ -23,23 +24,23 @@ namespace Model.Tiles.Buildings
 			_workersLimit += 5;
 		}
 
-		public bool Employ(Person person)
+		public bool Employ(Worker worker)
 		{
 			if (_workers.Count < _workersLimit)
 			{
-				_workers.Add(person);
+				_workers.Add(worker);
 				return true;
 			}
 
 			return false;
 		}
 
-		public bool Unemploy(Person person)
+		public bool Unemploy(Worker worker)
 		{
-			return _workers.Remove(person);
+			return _workers.Remove(worker);
 		}
 
-		public List<Person> GetWorkers()
+		public List<Worker> GetWorkers()
 		{
 			return _workers;
 		}

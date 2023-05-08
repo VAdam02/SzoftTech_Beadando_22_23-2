@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.Simulation;
 using System;
 using System.Collections.Generic;
@@ -29,17 +30,17 @@ namespace Model.Tiles.Buildings
 			return ((Building)_baseWorkplace).Coordinates;
 		}
 
-		public bool Employ(Person person)
+		public bool Employ(Worker worker)
 		{
-			return _baseWorkplace.Employ(person);
+			return _baseWorkplace.Employ(worker);
 		}
 
-		public bool Unemploy(Person person)
+		public bool Unemploy(Worker worker)
 		{
-			return _baseWorkplace.Unemploy(person);
+			return _baseWorkplace.Unemploy(worker);
 		}
 
-		public List<Person> GetWorkers()
+		public List<Worker> GetWorkers()
 		{
 			return _baseWorkplace.GetWorkers();
 		}

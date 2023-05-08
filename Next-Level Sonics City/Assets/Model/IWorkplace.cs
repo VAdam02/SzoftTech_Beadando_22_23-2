@@ -1,12 +1,13 @@
+using Model.Persons;
 using System.Collections.Generic;
 
 namespace Model
 {
 	public interface IWorkplace
 	{
-		public bool Employ(Person person);
-		public bool Unemploy(Person person);
-		public List<Person> GetWorkers();
+		public bool Employ(Worker worker);
+		public bool Unemploy(Worker worker);
+		public List<Worker> GetWorkers();
 		public int GetWorkersCount();
 		public int GetWorkersLimit();
 

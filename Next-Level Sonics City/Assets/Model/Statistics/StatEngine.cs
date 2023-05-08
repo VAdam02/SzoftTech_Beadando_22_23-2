@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Model.Persons;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 
@@ -61,7 +62,7 @@ namespace Model.Statistics
 		{
 			float workplaceTax = 0;
 
-			List<Person> persons = workplace.GetWorkers();
+			List<Worker> persons = workplace.GetWorkers();
 
 			foreach (Person person in persons)
 			{
@@ -86,6 +87,20 @@ namespace Model.Statistics
 			});
 
 			return totalTax;
+		}
+
+		public float CalculateWorkplaceHappiness(IWorkplace workplace)
+		{
+			float workplaceHappiness = 0;
+
+			List<Worker> workers = workplace.GetWorkers();
+
+			foreach (Worker worker in workers)
+			{
+				workplaceHappiness += worker.GetHappiness();
+			}
+
+			return workplaceHappiness / workers.Count;
 		}
 
 		public float CalculateHappinessPerResident(ResidentialBuildingTile residential)

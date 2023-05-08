@@ -1,4 +1,5 @@
 using Model;
+using Model.Persons;
 using Model.Simulation;
 using Model.Tiles;
 using Model.Tiles.Buildings;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 
 public class HighSchool : Building, IWorkplace
 {
-	private readonly List<Person> _workers = new();
+	private readonly List<Worker> _workers = new();
 	private int _workersLimit = 10;
 
 	public HighSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
@@ -16,29 +17,29 @@ public class HighSchool : Building, IWorkplace
 
 	}
 
-	public bool Employ(Person person)
+	public bool Employ(Worker worker)
 	{
 		if (_workers.Count < _workersLimit)
 		{
-			_workers.Add(person);
+			_workers.Add(worker);
 			return true;
 		}
 
 		return false;
 	}
 
-	public bool Unemploy(Person person)
+	public bool Unemploy(Worker worker)
 	{
 		if (_workers.Count > 0)
 		{
-			_workers.Remove(person);
+			_workers.Remove(worker);
 			return true;
 		}
 
 		return false;
 	}
 
-	public List<Person> GetWorkers()
+	public List<Worker> GetWorkers()
 	{
 		return _workers;
 	}
