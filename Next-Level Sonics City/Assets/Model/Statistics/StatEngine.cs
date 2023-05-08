@@ -17,7 +17,6 @@ namespace Model.Statistics
 		private float _commercialCount;
 		private float _industrialCount;
 
-		private readonly object _lock = new();
 		private readonly List<StatReport> _statReports = new();
 		private const int STARTYEAR = 2020;
 
@@ -44,12 +43,13 @@ namespace Model.Statistics
 		public float CalculateResidenceTax(List<ResidentialBuildingTile> residentials, float taxRate)
 		{
 			float totalTax = 0;
+			object taxLock = new();
 
 			Parallel.ForEach(residentials, residential =>
 			{
 				float tax = CalculateResidenceTaxPerHouse(residential, taxRate);
 
-				lock (_lock)
+				lock (taxLock)
 				{
 					totalTax += tax;
 				}
@@ -75,12 +75,13 @@ namespace Model.Statistics
 		public float CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
 		{
 			float totalTax = 0;
+			object taxLock = new();
 
 			Parallel.ForEach(workplaces, workplace =>
 			{
 				float tax = CalculateIncomeTaxPerWorkplace(workplace, taxRate);
 
-				lock (_lock)
+				lock (taxLock)
 				{
 					totalTax += tax;
 				}
@@ -121,15 +122,20 @@ namespace Model.Statistics
 		{
 			float totalCityHappiness = 0;
 			float totalWeight = 0;
+			object happinessLock = new();
+			object weightLock = new();
 
 			Parallel.ForEach(residentials, residential =>
 			{
 				float happiness = CalculateHappinessPerResident(residential);
 				float weight = residential.GetResidents().Count;
 
-				lock (_lock)
+				lock (happinessLock)
 				{
 					totalCityHappiness += happiness * weight;
+				}
+				lock (weightLock)
+				{
 					totalWeight += weight;
 				}
 			});
@@ -190,6 +196,9 @@ namespace Model.Statistics
 			return _commercialCount / _industrialCount;
 		}
 
+		private readonly object _lock = new();
+		private readonly object _incrementLock = new();
+
 		public void SumBuildPrice(object sender, TileEventArgs e)
 		{
 			lock (_lock)
@@ -211,6 +220,9 @@ namespace Model.Statistics
 			lock (_lock)
 			{
 				_buildPrice += e.Tile.GetBuildPrice();
+			}
+			lock (_incrementLock)
+			{
 				if (e.Tile is Industrial) { ++_industrialCount; return; }
 				if (e.Tile is Commercial) { ++_commercialCount; }
 			}
@@ -221,6 +233,9 @@ namespace Model.Statistics
 			lock (_lock)
 			{
 				_destroyPrice += e.Tile.GetDestroyPrice();
+			}
+			lock (_incrementLock)
+			{
 				if (e.Tile is Industrial) { --_industrialCount; return; }
 				if (e.Tile is Commercial) { --_commercialCount; }
 			}
