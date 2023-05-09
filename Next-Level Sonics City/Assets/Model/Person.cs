@@ -15,6 +15,7 @@ namespace Model
 
 		private ulong _id;
 		
+		
         public ResidentialBuildingTile LiveAt { get; protected set; }
 		public int Age { get; protected set; }
         public Qualification Qualification { get; protected set; }
@@ -63,16 +64,39 @@ namespace Model
 				happiness -= 0.15f;
 			}
 
+			//How many years is it negative TODO
 
+			//In the specific area
 			float d = 9;
 			float r = d / 2;
+			for(int i = (int)cordx; i < (int)cordx + d; i++){
+				for(int j = (int)cordy; j < (int)cordy + d; j++){
+
+					double distance = Math.Sqrt(Math.Pow(r - j, 2) + Math.Pow(r - i, 2));
+					if(distance <= r){
+						//na ezen belül benne van a "körben" itt megy a vizsgálat
+
+
+					}
+					else{
+
+					}
+				}
+			}
+			//Workplace is near to Home
+			d = 19;
+			r = d / 2;
 			for(int i = 0; i < d; i++){
 				for(int j = 0; j < d; j++){
 
 					double distance = Math.Sqrt(Math.Pow(r - j, 2) + Math.Pow(r - i, 2));
 					if(distance <= r){
 						//na ezen belül benne van a "körben" itt megy a vizsgálat
-
+						
+						if(SimEngine.Instance.Tiles[i,j] is Industrial){
+							
+								if(SimEngine.Instance.Tiles[i,j].GetWorkers())
+						}
 
 					}
 					else{
