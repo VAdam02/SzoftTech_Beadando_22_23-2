@@ -33,6 +33,7 @@ namespace Model
 			float cordx = LiveAt.Coordinates.x;
 			float cordy = LiveAt.Coordinates.y;
 
+			// TAX
 			if( SimEngine.Instance.GetTax() < 10){
 				happiness += 0.1f;
 			}
@@ -51,6 +52,17 @@ namespace Model
 			else if (SimEngine.Instance.GetTax() >= 20){
 				happiness -= 0.3f;
 			}
+
+			//MONEY IN THE CITY
+
+			if(SimEngine.Instance.GetMoney() < 0){
+				happiness -= 0.05f;
+
+			}
+			else if(SimEngine.Instance.GetMoney() < -2000){
+				happiness -= 0.15f;
+			}
+
 
 			float d = 9;
 			float r = d / 2;
