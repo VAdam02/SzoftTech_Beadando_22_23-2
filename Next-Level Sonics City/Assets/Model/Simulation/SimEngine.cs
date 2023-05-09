@@ -178,6 +178,9 @@ namespace Model.Simulation
 			
 			//TODO
 		}
+		public float GetTax(){
+			return _tax;
+		}
 		private bool MoveIn(int i)
 		{/*
 			bool move_in = true;

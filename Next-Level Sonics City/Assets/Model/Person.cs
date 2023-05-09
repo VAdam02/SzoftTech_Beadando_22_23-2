@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Model.Persons;
 using Model.Tiles.Buildings;
+using Model;
+using UnityEngine;
+using Model.Simulation;
 
 namespace Model
 {
@@ -11,6 +14,7 @@ namespace Model
 		private static ulong s_id;
 
 		private ulong _id;
+		
         public ResidentialBuildingTile LiveAt { get; protected set; }
 		public int Age { get; protected set; }
         public Qualification Qualification { get; protected set; }
@@ -24,8 +28,48 @@ namespace Model
 
 		public float GetHappiness()
 		{
-			//TODO
-			throw new NotImplementedException();
+			float happiness = 1.0f;
+			Vector3 maincord = LiveAt.Coordinates;
+			float cordx = LiveAt.Coordinates.x;
+			float cordy = LiveAt.Coordinates.y;
+
+			if( SimEngine.Instance.GetTax() < 10){
+				happiness += 0.1f;
+			}
+			else if (SimEngine.Instance.GetTax() < 7.5 ){
+				happiness += 0.2f;
+			}
+			else if (SimEngine.Instance.GetTax() == 0){
+				happiness += 1.0f;
+			}
+			else if (SimEngine.Instance.GetTax() > 10){
+				happiness -= 0.1f;
+			}
+			else if (SimEngine.Instance.GetTax() > 15){
+				happiness -= 0.2f;
+			}
+			else if (SimEngine.Instance.GetTax() >= 20){
+				happiness -= 0.3f;
+			}
+
+			float d = 9;
+			float r = d / 2;
+			for(int i = 0; i < d; i++){
+				for(int j = 0; j < d; j++){
+
+					double distance = Math.Sqrt(Math.Pow(r - j, 2) + Math.Pow(r - i, 2));
+					if(distance <= r){
+						//na ezen belül benne van a "körben" itt megy a vizsgálat
+
+
+					}
+					else{
+
+					}
+				}
+			}
+			
+			return happiness;
 		}
 
 		public void IncreaseAge()
