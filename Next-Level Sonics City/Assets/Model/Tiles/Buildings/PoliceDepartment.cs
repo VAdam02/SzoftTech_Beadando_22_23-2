@@ -164,11 +164,6 @@ namespace Model.Tiles.Buildings
 					Tile oldTile = SimEngine.Instance.GetTile(i, j);
 					ExpandCommand ec = new(i, j, this);
 					ec.Execute();
-
-					MainThreadDispatcher.Instance.Enqueue(() =>
-					{
-						oldTile.OnTileDelete.Invoke();
-					});
 				}
 			}
 		}

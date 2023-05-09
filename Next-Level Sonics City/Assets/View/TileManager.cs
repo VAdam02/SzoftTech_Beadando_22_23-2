@@ -8,7 +8,8 @@ namespace View
 	public enum Action
 	{
 		NONE,
-		SELECTAREA
+		SELECTAREA,
+		BUILDROAD
 	}
 
 	public class TileManager : MonoBehaviour
@@ -27,6 +28,10 @@ namespace View
 				{
 					SelectedTiles = new List<Tile>();
 				}
+				if (_currentAction != Action.BUILDROAD)
+				{
+					SelectedTile = null;
+				}
 			}
 		}
 
@@ -37,10 +42,22 @@ namespace View
 			set
 			{
 				if (_selectedTiles.Count >= 2)
-				foreach (Tile tile in GetTilesInArea(_selectedTiles[0], _selectedTiles[1])) { tile.Unhighlight(); }
+					foreach (Tile tile in GetTilesInArea(_selectedTiles[0], _selectedTiles[1])) { tile.Unhighlight(); }
 				_selectedTiles = value;
 				if (_selectedTiles.Count >= 2)
-				foreach (Tile tile in GetTilesInArea(_selectedTiles[0], _selectedTiles[1])) { tile.Highlight(); }
+					foreach (Tile tile in GetTilesInArea(_selectedTiles[0], _selectedTiles[1])) { tile.Highlight(); }
+			}
+		}
+
+		private Tile _selectedTile = null;
+		public Tile SelectedTile
+		{
+			get { return _selectedTile; }
+			set
+			{
+				_selectedTile?.Unhighlight();
+				_selectedTile = value;
+				_selectedTile?.Highlight();
 			}
 		}
 

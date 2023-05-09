@@ -1,3 +1,4 @@
+using Model.Simulation;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace View.GUI.Footer
 			Animator anim = transform.parent.parent.GetComponent<Animator>();
 			anim.SetInteger("DisplayedPanel", anim.GetInteger("DisplayedPanel") == 4 ? 0 : 4);
 			
-			//TileManager.Instance.CurrentAction = anim.GetInteger("DisplayedPanel") == 4 ? Action.SELECTAREA : Action.NONE;
+			TileManager.Instance.CurrentAction = anim.GetInteger("DisplayedPanel") == 4 ? Action.BUILDROAD : Action.NONE;
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction)

@@ -85,6 +85,7 @@ namespace View.Tiles
 			transform.localScale = Vector3.one;
 
 			TileModel.DesignIDChangeEvent.AddListener(OnDesignIDChange);
+			OnDesignIDChange();
 
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 		}
@@ -145,6 +146,7 @@ namespace View.Tiles
 			}
 			else if (dirCount == 3)
 			{
+				//TODO 90 and 270 must be added
 				road = Instantiate(LoadModelByName("3direction"));
 				if ((TileModel.DesignID & (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.LEFTROADMASK) & 0b1001) == 0b1011)
 				{
