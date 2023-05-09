@@ -11,7 +11,7 @@ namespace Model
 		private bool _isDuty;
 		private Building _from;
 		private Building _to;
-		private Road _isAt;
+		private RoadTile _isAt;
 		private Navigator navigator;
 
 		public int GetDesign()
@@ -24,7 +24,7 @@ namespace Model
 			throw new NotImplementedException();
 			//TODO
 		}
-		public Road GetLocation()
+		public RoadTile GetLocation()
 		{
 			throw new NotImplementedException();
 			//TODO
