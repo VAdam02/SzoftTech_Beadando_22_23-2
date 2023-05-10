@@ -7,6 +7,7 @@ using Model.RoadGrids;
 using Model.Simulation;
 using Model.Tiles;
 using Model.Tiles.Buildings;
+using UnityEngine.Events;
 
 namespace Model.Statistics
 {
@@ -24,13 +25,14 @@ namespace Model.Statistics
 		private float _industrialCount = 0;
 
 		private readonly List<StatReport> _statReports = new();
-		private const int STARTYEAR = 2020;
+		public UnityEvent BudgetChanged = new();
 
-		public StatEngine()
+
+		public StatEngine(int startYear, float startBudget)
 		{
-			Year = STARTYEAR;
+			Year = startYear;
 			Quarter = 0;
-			Budget = 100000;
+			Budget = startBudget;
 
 			StatReport zerothStatReport = new StatReport();
 			zerothStatReport.Quarter = Quarter;
@@ -245,6 +247,7 @@ namespace Model.Statistics
 		}
 
 		private readonly object _lock = new();
+		private readonly object _eventLock = new();
 		private readonly object _budgetLock = new();
 		private readonly object _incrementLock = new();
 
@@ -258,6 +261,13 @@ namespace Model.Statistics
 			{
 				Budget -= e.Tile.GetBuildPrice();
 			}
+			lock (_eventLock)
+			{
+				MainThreadDispatcher.Instance.Enqueue(() =>
+				{
+					BudgetChanged.Invoke();
+				});
+			}
 		}
 
 		public void SumDestroyPrice(object sender, TileEventArgs e)
@@ -269,6 +279,13 @@ namespace Model.Statistics
 			lock (_budgetLock)
 			{
 				Budget += e.Tile.GetDestroyPrice();
+			}
+			lock (_eventLock)
+			{
+				MainThreadDispatcher.Instance.Enqueue(() =>
+				{
+					BudgetChanged.Invoke();
+				});
 			}
 		}
 
@@ -287,6 +304,13 @@ namespace Model.Statistics
 				if (e.Tile is Industrial) { ++_industrialCount; return; }
 				if (e.Tile is Commercial) { ++_commercialCount; }
 			}
+			lock (_eventLock)
+			{
+				MainThreadDispatcher.Instance.Enqueue(() =>
+				{
+					BudgetChanged.Invoke();
+				});
+			}
 		}
 
 		public void SumUnMarkZonePrice(object sender, TileEventArgs e)
@@ -303,6 +327,13 @@ namespace Model.Statistics
 			{
 				if (e.Tile is Industrial) { --_industrialCount; return; }
 				if (e.Tile is Commercial) { --_commercialCount; }
+			}
+			lock (_eventLock)
+			{
+				MainThreadDispatcher.Instance.Enqueue(() =>
+				{
+					BudgetChanged.Invoke();
+				});
 			}
 		}
 

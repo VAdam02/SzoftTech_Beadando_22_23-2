@@ -119,7 +119,7 @@ namespace Model.Simulation
 			//DEMO CODE
 
 			Init();
-			StatEngine = new();
+			StatEngine = new(2020, 100000);
 		}
 
 		// Update is called once per frame
