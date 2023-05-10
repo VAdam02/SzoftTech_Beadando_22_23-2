@@ -14,13 +14,14 @@ namespace Model.Statistics
 	{
 		public int Year { get; private set; }
 		public int Quarter { get; private set; }
+		public float Budget { get; private set; }
 
 		private int _buildPrice = 0;
 		private int _destroyPrice = 0;
+		private float _incomeTaxRate = 0;
+		private float _residentialTaxRate = 0;
 		private float _commercialCount = 0;
 		private float _industrialCount = 0;
-		private float _incomeTaxRate = 0;
-		private float _residenceTaxRate = 0;
 
 		private readonly List<StatReport> _statReports = new();
 		private const int STARTYEAR = 2020;
@@ -29,13 +30,15 @@ namespace Model.Statistics
 		{
 			Year = STARTYEAR;
 			Quarter = 0;
+			Budget = 100000;
 
 			StatReport zerothStatReport = new StatReport();
 			zerothStatReport.Quarter = Quarter;
 			zerothStatReport.Year = Year;
+			zerothStatReport.Budget = Budget;
 			zerothStatReport.Happiness = 0;
 			zerothStatReport.IncomeTax = 0;
-			zerothStatReport.ResidenceTax = 0;
+			zerothStatReport.ResidentialTax = 0;
 			zerothStatReport.DestroyIncomes = 0;
 			zerothStatReport.BuildExpenses = 0;
 			zerothStatReport.MaintainanceCosts = 0;
@@ -49,7 +52,7 @@ namespace Model.Statistics
 			_statReports.Add(zerothStatReport);
 		}
 
-		public float CalculateResidenceTaxPerHouse(IResidential residential, float taxRate)
+		public float CalculateResidentialTaxPerHouse(IResidential residential, float taxRate)
 		{
 			float houseTax = 0;
 
@@ -63,15 +66,14 @@ namespace Model.Statistics
 			return houseTax;
 		}
 
-		public float CalculateResidenceTax(List<IResidential> residentials, float taxRate)
+		public float CalculateResidentialTax(List<IResidential> residentials, float taxRate)
 		{
-			_residenceTaxRate = taxRate;
 			float totalTax = 0;
 			object taxLock = new();
 
 			Parallel.ForEach(residentials, residential =>
 			{
-				float tax = CalculateResidenceTaxPerHouse(residential, taxRate);
+				float tax = CalculateResidentialTaxPerHouse(residential, taxRate);
 
 				lock (taxLock)
 				{
@@ -80,6 +82,11 @@ namespace Model.Statistics
 			});
 
 			return totalTax;
+		}
+
+		public void SetResidentialTaxRate(float residentialTaxRate)
+		{
+			_residentialTaxRate = residentialTaxRate;
 		}
 
 		public float CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
@@ -98,7 +105,6 @@ namespace Model.Statistics
 
 		public float CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
 		{
-			_incomeTaxRate = taxRate;
 			float totalTax = 0;
 			object taxLock = new();
 
@@ -115,6 +121,11 @@ namespace Model.Statistics
 			return totalTax;
 		}
 
+		public void SetIncomeTaxRate(float incomeTaxRate)
+		{
+			_incomeTaxRate = incomeTaxRate;
+		}
+
 		public float CalculateWorkplaceHappiness(IWorkplace workplace)
 		{
 			float workplaceHappiness = 0;
@@ -129,7 +140,7 @@ namespace Model.Statistics
 			return workplaceHappiness / workers.Count;
 		}
 
-		public float CalculateHappinessPerResident(IResidential residential)
+		public float CalculateResidentialHappinessPerHouse(IResidential residential)
 		{
 			float totalResidentialHappiness = 0;
 
@@ -152,7 +163,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(residentials, residential =>
 			{
-				float happiness = CalculateHappinessPerResident(residential);
+				float happiness = CalculateResidentialHappinessPerHouse(residential);
 				float weight = residential.GetResidents().Count;
 
 				lock (happinessLock)
@@ -234,6 +245,7 @@ namespace Model.Statistics
 		}
 
 		private readonly object _lock = new();
+		private readonly object _budgetLock = new();
 		private readonly object _incrementLock = new();
 
 		public void SumBuildPrice(object sender, TileEventArgs e)
@@ -241,6 +253,10 @@ namespace Model.Statistics
 			lock (_lock)
 			{
 				_buildPrice += e.Tile.GetBuildPrice();
+			}
+			lock (_budgetLock)
+			{
+				Budget -= e.Tile.GetBuildPrice();
 			}
 		}
 
@@ -250,6 +266,10 @@ namespace Model.Statistics
 			{
 				_destroyPrice += e.Tile.GetDestroyPrice();
 			}
+			lock (_budgetLock)
+			{
+				Budget += e.Tile.GetDestroyPrice();
+			}
 		}
 
 		public void SumMarkZonePrice(object sender, TileEventArgs e)
@@ -257,6 +277,10 @@ namespace Model.Statistics
 			lock (_lock)
 			{
 				_buildPrice += e.Tile.GetBuildPrice();
+			}
+			lock (_budgetLock)
+			{
+				Budget -= e.Tile.GetBuildPrice();
 			}
 			lock (_incrementLock)
 			{
@@ -270,6 +294,10 @@ namespace Model.Statistics
 			lock (_lock)
 			{
 				_destroyPrice += e.Tile.GetDestroyPrice();
+			}
+			lock (_budgetLock)
+			{
+				Budget += e.Tile.GetDestroyPrice();
 			}
 			lock (_incrementLock)
 			{
@@ -289,15 +317,32 @@ namespace Model.Statistics
 			statReport.Quarter = Quarter;
 			statReport.Year = Year;
 
+			++Quarter;
+			Quarter %= 4;
+
+			if (Quarter == 0)
+			{
+				++Year;
+				statReport.IncomeTax = CalculateIncomeTax(workplaces, _incomeTaxRate);
+				statReport.ResidentialTax = CalculateResidentialTax(residentials, _residentialTaxRate);
+				statReport.MaintainanceCosts = SumMaintainance(buildings);
+			}
+			else
+			{
+				statReport.IncomeTax = 0;
+				statReport.ResidentialTax = 0;
+				statReport.MaintainanceCosts = 0;
+			}
+
+			Budget += statReport.IncomeTax + statReport.ResidentialTax - statReport.MaintainanceCosts;
+			statReport.Budget = Budget;
+
 			statReport.Happiness = CalculateHappiness(residentials);
 
 			statReport.BuildExpenses = _buildPrice;
 			statReport.DestroyIncomes = _destroyPrice;
-			statReport.MaintainanceCosts = SumMaintainance(buildings);
 
-			statReport.IncomeTax = CalculateIncomeTax(workplaces, _incomeTaxRate);
-			statReport.ResidenceTax = CalculateResidenceTax(residentials, _residenceTaxRate);
-			statReport.Incomes = statReport.IncomeTax + statReport.ResidenceTax + _destroyPrice;
+			statReport.Incomes = statReport.IncomeTax + statReport.ResidentialTax + _destroyPrice;
 			statReport.Expenses = statReport.MaintainanceCosts + _buildPrice;
 			statReport.Profit = statReport.Incomes - statReport.Expenses;
 
@@ -308,14 +353,6 @@ namespace Model.Statistics
 			statReport.ElectricityConsumed = GetElectricityConsumed(buildings);
 
 			_statReports.Add(statReport);
-
-			++Quarter;
-			Quarter %= 4;
-
-			if (Quarter == 0)
-			{
-				++Year;
-			}
 
 			_buildPrice = 0;
 			_destroyPrice = 0;
