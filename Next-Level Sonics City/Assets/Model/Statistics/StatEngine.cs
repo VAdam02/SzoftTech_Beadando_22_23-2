@@ -368,6 +368,11 @@ namespace Model.Statistics
 			Budget += statReport.IncomeTax + statReport.ResidentialTax - statReport.MaintainanceCosts;
 			statReport.Budget = Budget;
 
+			MainThreadDispatcher.Instance.Enqueue(() =>
+			{
+				BudgetChanged.Invoke();
+			});
+
 			statReport.Happiness = CalculateHappiness(residentials);
 
 			statReport.BuildExpenses = _buildPrice;
