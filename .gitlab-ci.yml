@@ -35,7 +35,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 get-activation-file:
   rules:
     - if: '$UNITY_LICENSE == null'
-      when: always
+      when: manual
   stage: build_and_test
   script:
     - chmod +x ./ci/get_activation_file.sh && ./ci/get_activation_file.sh
