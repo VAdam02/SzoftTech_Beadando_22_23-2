@@ -9,6 +9,7 @@ using System;
 using Model.RoadGrids;
 using System.Linq;
 using Model.Persons;
+using System.Threading;
 
 
 namespace Model.Simulation
@@ -182,14 +183,33 @@ namespace Model.Simulation
 		/// </summary>
 		private static void Tick()
 		{
+			System.Random rand = new();
+			//mandatory continuous move-in
+			int startindex = _instance.Personslist.Keys.Last();
+			if(_instance.freeResidentals.Count>=2 && _instance.freeWorkplaces.Count>=2){
+				for(int i = startindex+1;i< startindex+3;i++){				
+					int age = rand.Next(18,65);
+					Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+					int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+					ResidentialBuildingTile home = _instance.freeResidentals[randResidental];
+					int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+					IWorkplace workPlace = _instance.freeWorkplaces[randWorkplace];
+					Worker w = new Worker(home,workPlace,age,randomq);
+					_instance.Personslist.Add(i,w);
+				}
+			}
+
+
+
+
             //Do the things that should done during a tick
             // temporary solution
-            System.Random rand = new();
+            
             int be = rand.Next(1,6);
 			int ki = rand.Next(1,6);
 			
 			_instance.report.PopulationChange = be - ki;
-			int startindex = _instance.Personslist.Keys.Last();
+			startindex = _instance.Personslist.Keys.Last();
 			if(_instance.report.PopulationChange > 0){
 
 				foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){

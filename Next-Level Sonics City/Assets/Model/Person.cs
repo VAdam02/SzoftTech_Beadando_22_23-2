@@ -93,10 +93,10 @@ namespace Model
 					if(distance <= r){
 						//na ezen belül benne van a "körben" itt megy a vizsgálat
 						
-						if(SimEngine.Instance.Tiles[i,j] is Industrial){
+						/*if(SimEngine.Instance.Tiles[i,j] is Industrial){
 							
 								if(SimEngine.Instance.Tiles[i,j].GetWorkers())
-						}
+						}*/
 
 					}
 					else{
