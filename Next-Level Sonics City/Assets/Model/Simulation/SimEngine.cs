@@ -39,6 +39,7 @@ namespace Model.Simulation
 		{
 			Tile old = _tiles[x, y];
 			_tiles[x, y] = tile;
+			tile.FinalizeTile();
 			GetTile(x - 1, y)?.NeighborTileChanged(old, tile);
 			GetTile(x + 1, y)?.NeighborTileChanged(old, tile);
 			GetTile(x, y - 1)?.NeighborTileChanged(old, tile);

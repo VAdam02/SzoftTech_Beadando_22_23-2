@@ -109,6 +109,17 @@ namespace Model.Tiles
 
 		public RoadTile(int x, int y, uint designID) : base(x, y, designID)
 		{
+			
+		}
+
+		public override void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		protected new void Finalizing()
+		{
+			base.Finalizing();
 			ConnectToSurroundingRoads();
 		}
 

@@ -13,6 +13,16 @@ namespace Model.Tiles
 		public Building(int x, int y, uint designID, Rotation rotation) : base(x, y, designID)
 		{
 			Rotation = rotation;
+		}
+
+		public override void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		protected new void Finalizing()
+		{
+			base.Finalizing();
 
 			if (this is IWorkplace workplace)
 			{
