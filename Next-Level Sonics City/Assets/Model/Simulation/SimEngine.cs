@@ -21,16 +21,17 @@ namespace Model.Simulation
 		public static SimEngine Instance { get { return _instance; } }		
 		private Tile[,] _tiles;
 		public City City;
+
 		public SortedDictionary<int,Person> Personslist = new SortedDictionary<int, Person>();
 		public List<ResidentialBuildingTile>freeResidentals = new List<ResidentialBuildingTile>();
 		public List<IWorkplace>freeWorkplaces = new List<IWorkplace>();
+
 		private float _money;
-				private float _tax;
+		private float _tax;
 		private DateTime _date;
 		private City _city;
 		private List<Car> _carsOnRoad;
 		private int _timeSpeed;
-		//private List<Person> _people;
 		private StatEngine _statEngine;
 		public Worker worker;
 
@@ -153,6 +154,7 @@ namespace Model.Simulation
 		/// <summary>
 		/// Initialize things before the starting of the simulation
 		/// </summary>
+		/*
 		private void Init()
 		{
 			int size = 100;
@@ -172,6 +174,8 @@ namespace Model.Simulation
 				}
 			}
 		}
+		*/
+
 
 		/// <summary>
 		/// Called once when the simulation should do a cycle
@@ -187,6 +191,11 @@ namespace Model.Simulation
 			_instance.report.PopulationChange = be - ki;
 			int startindex = _instance.Personslist.Keys.Last();
 			if(_instance.report.PopulationChange > 0){
+
+				foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
+					SimEngine._instance.freeResidentals = (List<ResidentialBuildingTile>)roadGrid.Residentials.Where(current => current.GetResidentsCount() < current.GetResidentsLimit());
+					SimEngine._instance.freeWorkplaces = (List<IWorkplace>)roadGrid.Workplaces.Where(current => current.GetWorkersCount() < current.GetWorkersLimit());
+				}				
 				for(int i = startindex+1;i< _instance.report.PopulationChange+1;i++){
 					//mág a worker paraméterei nincsenek meg
 					int age = rand.Next(18,65);
