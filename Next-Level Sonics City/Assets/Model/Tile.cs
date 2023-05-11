@@ -33,7 +33,15 @@ namespace Model
 		{
 			DesignID = designID;
 			Coordinates = new Vector3(x, y, 0);
+		}
 
+		public virtual void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		protected void Finalizing()
+		{
 			if (this is IRoadGridElement roadGridElement)
 			{
 				roadGridElement.RegisterRoadGridElement();
