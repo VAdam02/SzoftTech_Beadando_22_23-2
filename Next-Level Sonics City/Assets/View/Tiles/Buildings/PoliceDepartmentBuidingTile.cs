@@ -1,4 +1,5 @@
 using Model.Tiles;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace View.Tiles.Buildings
@@ -6,7 +7,7 @@ namespace View.Tiles.Buildings
 	public class PoliceDepartmentBuidingTile : Tile
     {
 		private static Material _grassMaterial;
-		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("AsphaltMaterial"); return _grassMaterial; } }
+		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
 		private Material _sharedGrassMaterial;
 		private Material SharedGrassMaterial
 		{
@@ -22,7 +23,7 @@ namespace View.Tiles.Buildings
 		}
 
 		private static Material _windowMaterial;
-		public static Material WindowMaterial { get { if (_windowMaterial == null) _windowMaterial = LoadMaterialByName("SidewalkMaterial"); return _windowMaterial; } }
+		public static Material WindowMaterial { get { if (_windowMaterial == null) _windowMaterial = LoadMaterialByName("WindowMaterial"); return _windowMaterial; } }
 		private Material _sharedWindowMaterial;
 		private Material SharedWindowMaterial
 		{
@@ -38,7 +39,7 @@ namespace View.Tiles.Buildings
 		}
 
 		private static Material _baseMaterial;
-		public static Material BaseMaterial { get { if (_baseMaterial == null) _baseMaterial = LoadMaterialByName("SidewalkMaterial"); return _baseMaterial; } }
+		public static Material BaseMaterial { get { if (_baseMaterial == null) _baseMaterial = LoadMaterialByName("BaseMaterial"); return _baseMaterial; } }
 		private Material _sharedBaseMaterial;
 		private Material SharedBaseMaterial
 		{
@@ -54,7 +55,7 @@ namespace View.Tiles.Buildings
 		}
 
 		private static Material _towerBlueMaterial;
-		public static Material TowerBlueMaterial { get { if (_towerBlueMaterial == null) _towerBlueMaterial = LoadMaterialByName("SidewalkMaterial"); return _towerBlueMaterial; } }
+		public static Material TowerBlueMaterial { get { if (_towerBlueMaterial == null) _towerBlueMaterial = LoadMaterialByName("TowerBlueMaterial"); return _towerBlueMaterial; } }
 		private Material _sharedTowerBlueMaterial;
 		private Material SharedTowerBlueMaterial
 		{
@@ -70,7 +71,7 @@ namespace View.Tiles.Buildings
 		}
 
 		private static Material _helipadMaterial;
-		public static Material HelipadMaterial { get { if (_helipadMaterial == null) _helipadMaterial = LoadMaterialByName("SidewalkMaterial"); return _helipadMaterial; } }
+		public static Material HelipadMaterial { get { if (_helipadMaterial == null) _helipadMaterial = LoadMaterialByName("HelipadMaterial"); return _helipadMaterial; } }
 		private Material _sharedHelipadMaterial;
 		private Material SharedHelipadMaterial
 		{
@@ -86,7 +87,7 @@ namespace View.Tiles.Buildings
 		}
 
 		private static Material _helipadHMaterial;
-		public static Material HelipadHMaterial { get { if (_helipadHMaterial == null) _helipadHMaterial = LoadMaterialByName("SidewalkMaterial"); return _helipadHMaterial; } }
+		public static Material HelipadHMaterial { get { if (_helipadHMaterial == null) _helipadHMaterial = LoadMaterialByName("HelipadHMaterial"); return _helipadHMaterial; } }
 		private Material _sharedHelipadHMaterial;
 		private Material SharedHelipadHMaterial
 		{
@@ -103,7 +104,7 @@ namespace View.Tiles.Buildings
 
 		private static Material LoadMaterialByName(string name)
 		{
-			return Resources.Load<Material>("Tiles/RoadTile/Material/" + name);
+			return Resources.Load<Material>("Tiles/PoliceDepartmentBuildingTile/Material/" + name);
 		}
 
 		private void SetSharedMaterials(Renderer renderer)
@@ -114,8 +115,9 @@ namespace View.Tiles.Buildings
 
 			for (int i = 0; i < materials.Length; i++)
 			{
-				if		(materials[i].name.Split(' ')[0] == "WindowMaterial") { materials[i] = SharedGrassMaterial; }
-				else if (materials[i].name.Split(' ')[0] == "BaseMaterial") { materials[i] = SharedWindowMaterial; }
+				if		(materials[i].name.Split(' ')[0] == "GrassMaterial") { materials[i] = SharedGrassMaterial; }
+				else if	(materials[i].name.Split(' ')[0] == "WindowMaterial") { materials[i] = SharedWindowMaterial; }
+				else if (materials[i].name.Split(' ')[0] == "BaseMaterial") { materials[i] = SharedBaseMaterial; }
 				else if (materials[i].name.Split(' ')[0] == "TowerBlueMaterial") { materials[i] = SharedTowerBlueMaterial; }
 				else if (materials[i].name.Split(' ')[0] == "HelipadMaterial") { materials[i] = SharedHelipadMaterial; }
 				else if (materials[i].name.Split(' ')[0] == "HelipadHMaterial") { materials[i] = SharedHelipadHMaterial; }
@@ -137,6 +139,11 @@ namespace View.Tiles.Buildings
 			transform.localRotation = Quaternion.Euler(0, ((int)((Building)TileModel).Rotation) * 90, 0);
 
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
+			foreach (Renderer renderer in gameObject.transform.GetComponentsInChildren<Renderer>())
+			{
+				SetSharedMaterials(renderer);
+			}
+			
 		}
 
 		// Update is called once per frame

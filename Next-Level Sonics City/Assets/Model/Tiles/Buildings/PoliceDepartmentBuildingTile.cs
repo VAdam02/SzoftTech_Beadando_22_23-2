@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Model.Persons;
 using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
 	public class PoliceDepartmentBuildingTile : Building, IWorkplace
 	{
-		private readonly List<Person> _workers = new();
+		private readonly List<Worker> _workers = new();
 		private int _workersLimit = 10;
 
 		public PoliceDepartmentBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
@@ -24,7 +25,7 @@ namespace Model.Tiles.Buildings
 			roadGrid?.RemoveWorkplace(this);
 		}
 
-		public bool Employ(Person person)
+		public bool Employ(Worker person)
 		{
 			if (_workers.Count < _workersLimit)
 			{
@@ -35,7 +36,7 @@ namespace Model.Tiles.Buildings
 			return false;
 		}
 
-		public bool Unemploy(Person person)
+		public bool Unemploy(Worker person)
 		{
 			if (_workers.Count > 0)
 			{
@@ -46,7 +47,7 @@ namespace Model.Tiles.Buildings
 			return false;
 		}
 
-		public List<Person> GetWorkers()
+		public List<Worker> GetWorkers()
 		{
 			return _workers;
 		}
