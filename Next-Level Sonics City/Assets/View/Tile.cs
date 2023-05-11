@@ -61,10 +61,6 @@ namespace View
 			if (TileManager.Instance.CurrentAction == Action.BUILDROAD)
 			{
 				TileManager.Instance.SelectedTile = this;
-			}
-
-			if (TileManager.Instance.CurrentAction == Action.BUILDROAD)
-			{
 				SimEngine.Instance.BuildingManager.Build(TileManager.Instance.SelectedTile.TileModel, TileType.Road, Model.Tiles.Buildings.Rotation.Zero);
 			}
 		}

@@ -2,6 +2,7 @@ using UnityEngine;
 using Model.Simulation;
 using Model.Tiles;
 using System.Collections.Generic;
+using Model.Tiles.Buildings;
 
 namespace View
 {
@@ -55,9 +56,41 @@ namespace View
 			get { return _selectedTile; }
 			set
 			{
-				_selectedTile?.Unhighlight();
+				if (_selectedTile != null) { _selectedTile.Unhighlight(); }
 				_selectedTile = value;
-				_selectedTile?.Highlight();
+				if (_selectedTile != null) { _selectedTile.Highlight(); }
+			}
+		}
+
+		private Tile _hoveredTile = null;
+		private GameObject _ghostTile = null;
+		private Rotation _rotation = Rotation.Zero;
+		public Tile HoveredTile
+		{
+			get { return _hoveredTile; }
+			set
+			{
+				_hoveredTile = value;
+				if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position, Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
+			}
+		}
+		public GameObject GhostTile
+		{
+			get { return _ghostTile; }
+			set
+			{
+				if (_ghostTile != null) { Destroy(_ghostTile); }
+				_ghostTile = value;
+				if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position, Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
+			}
+		}
+		public Rotation Rotation
+		{
+			get { return _rotation; }
+			set
+			{
+				_rotation = value;
+				if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position, Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
 			}
 		}
 
