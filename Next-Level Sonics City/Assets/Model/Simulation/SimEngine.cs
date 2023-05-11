@@ -77,8 +77,9 @@ namespace Model.Simulation
 				else
 				{
 					//_tiles[i, j] = new Industrial(i, j, 0);
-					_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
+					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
 					//_tiles[i, j] = new Commercial(i, j, 0);
+					_tiles[i, j] = new PoliceDepartmentBuildingTile(i, j, 0, Rotation.TwoSeventy);
 				}
 			}
 

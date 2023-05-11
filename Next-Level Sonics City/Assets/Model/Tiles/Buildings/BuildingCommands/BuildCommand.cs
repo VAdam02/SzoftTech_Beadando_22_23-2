@@ -26,7 +26,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 			switch (_tileType)
 			{
 				case TileType.PoliceDepartment:
-					tile = new PoliceDepartment(_x, _y, _designID, _rotation);
+					tile = new PoliceDepartmentBuildingTile(_x, _y, _designID, _rotation);
 					if (((Building)tile).IsExpandable() && !((Building)tile).CanExpand())
 					{ throw new System.Exception("Not ennough space to build"); }
 					break;
