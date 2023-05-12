@@ -50,6 +50,8 @@ namespace View
 			}
 		}
 
+		public virtual Vector3 GetPivot() { return Vector3.zero; }
+
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
 			if (TileManager.Instance.CurrentAction == Action.SELECTAREA)

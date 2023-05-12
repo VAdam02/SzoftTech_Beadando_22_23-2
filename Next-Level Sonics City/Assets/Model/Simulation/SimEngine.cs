@@ -75,6 +75,7 @@ namespace Model.Simulation
 				{
 					SetTile(i, j, new RoadTile(i, j, 0));
 				}
+				/*
 				else if (i % 3 == 1 && j % 2 == 0)
 				{
 					Building stadion = new StadionBuildingTile(i, j, 0, Rotation.Zero);
@@ -85,13 +86,14 @@ namespace Model.Simulation
 				{
 
 				}
+				*/
 				else
 				{
 					//_tiles[i, j] = new Industrial(i, j, 0);
 					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
 					//_tiles[i, j] = new Commercial(i, j, 0);
 					//_tiles[i, j] = new PoliceDepartmentBuildingTile(i, j, 0, Rotation.TwoSeventy);
-					//SetTile(i, j, new EmptyTile(i, j, 0));
+					SetTile(i, j, new EmptyTile(i, j, 0));
 				}
 			}
 

@@ -113,5 +113,10 @@ namespace View.Tiles.Buildings
 
 			renderer.sharedMaterials = materials;
 		}
+
+		public override Vector3 GetPivot()
+		{
+			return new Vector3(25f, 0, -25f);
+		}
 	}
 }

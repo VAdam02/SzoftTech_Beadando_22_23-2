@@ -70,7 +70,7 @@ namespace View
 					_hoveredTile = value;
 					if (_ghostTile != null && _hoveredTile != null)
 					{
-						_ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0));
+						_ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + _ghostTile.GetPivot() + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0));
 						_ghostTile.TileModel.UpdateCoordinates((int)_hoveredTile.TileModel.Coordinates.x, (int)_hoveredTile.TileModel.Coordinates.y);
 						_ghostTile.Highlight(_ghostTile.TileModel.CanBuild() ? Color.green : Color.red);
 					}
@@ -90,6 +90,7 @@ namespace View
 					MainThreadDispatcher.Instance.Enqueue(() =>
 					{
 						if (oldGhostTile != null) { Destroy(oldGhostTile.gameObject); }
+						_ghostTile.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 						if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
 					});
 				}
