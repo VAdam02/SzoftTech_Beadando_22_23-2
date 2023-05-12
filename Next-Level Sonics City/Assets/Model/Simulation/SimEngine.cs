@@ -25,6 +25,9 @@ namespace Model.Simulation
 
 		public SortedDictionary<int,Person> Personslist = new SortedDictionary<int, Person>();
 		public List<ResidentialBuildingTile>freeResidentals = new List<ResidentialBuildingTile>();
+		public List<IResidential>ResidentialsList = new List<IResidential>();
+		public List<Person> MoveOutList = new List<Person>();
+
 		public List<IWorkplace>freeWorkplaces = new List<IWorkplace>();
 
 		private float _money;
@@ -189,8 +192,8 @@ namespace Model.Simulation
 			int startindex = _instance.Personslist.Keys.Last();
 			if(SimEngine._instance.freeResidentals.Count !=0 && SimEngine._instance.freeWorkplaces.Count != 0){
 				if(_instance.freeResidentals.Count>=2 && _instance.freeWorkplaces.Count>=2){
-					for(int i = startindex+1;i< startindex+3;i++){	
-									
+					for(int i = startindex+1;i < startindex+3;i++){	
+
 						int age = rand.Next(18,65);
 						Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
 						int randResidental = rand.Next(0,_instance.freeResidentals.Count);
@@ -211,19 +214,30 @@ namespace Model.Simulation
             
             // temporary solution
             //happiness move-in or move-out
-            int be = rand.Next(1,6);
+			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
+				SimEngine._instance.freeResidentals = (List<ResidentialBuildingTile>)roadGrid.Residentials.Where(current => current.GetResidentsCount() < current.GetResidentsLimit());
+				SimEngine._instance.freeWorkplaces = (List<IWorkplace>)roadGrid.Workplaces.Where(current => current.GetWorkersCount() < current.GetWorkersLimit());
+				SimEngine._instance.ResidentialsList = roadGrid.Residentials;
+			}
+			for(int i = 1; i < SimEngine._instance.Personslist.Count+1;i++){
+				Person person = SimEngine._instance.Personslist[i];
+				if(SimEngine._instance.MoveOut(person)){
+					SimEngine._instance.MoveOutList.Add(person);
+					SimEngine._instance.Personslist.Remove(i);
+				}
+			}
+			
+
+            //int be = rand.Next(1,6);
 			int ki = rand.Next(1,6);
 			
-			_instance.report.PopulationChange = be - ki;
+			//_instance.report.PopulationChange = be - ki;
 			startindex = _instance.Personslist.Keys.Last();
-			if(_instance.report.PopulationChange > 0){
+			if(SimEngine._instance.StatEngine.CalculateHappiness(SimEngine._instance.ResidentialsList) > 0.65){
+			int be = (int)(SimEngine._instance.Personslist.Count * SimEngine._instance.StatEngine.CalculateHappiness(SimEngine._instance.ResidentialsList)/10);
 
-				foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
-					SimEngine._instance.freeResidentals = (List<ResidentialBuildingTile>)roadGrid.Residentials.Where(current => current.GetResidentsCount() < current.GetResidentsLimit());
-					SimEngine._instance.freeWorkplaces = (List<IWorkplace>)roadGrid.Workplaces.Where(current => current.GetWorkersCount() < current.GetWorkersLimit());
-				}
 				if(SimEngine._instance.freeResidentals.Count !=0 && SimEngine._instance.freeWorkplaces.Count != 0){
-					for(int i = startindex+1;i< _instance.report.PopulationChange+1;i++){
+					for(int i = startindex+1;i< startindex+be+1;i++){
 						//mág a worker paraméterei nincsenek meg
 						int age = rand.Next(18,65);
 						Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
@@ -242,6 +256,25 @@ namespace Model.Simulation
 				for(int i = startindex;i > _instance.report.PopulationChange-1;i--){
 					_instance.Personslist.Remove(i);
 				}				
+			}
+			//kiköltöztetés
+			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
+				foreach(ResidentialBuildingTile residential in roadGrid.Residentials){
+					//remove person from his home
+					foreach (Person residentToRemove in SimEngine._instance.MoveOutList)
+					{
+						residential.GetResidents().Remove(residentToRemove);
+					}
+					//remove person from his workplace
+					 foreach (Person workerToRemove in SimEngine._instance.MoveOutList)
+					{
+						foreach (IWorkplace workplace in SimEngine._instance.RoadGridManager.RoadGrids)
+						{
+							workplace.GetWorkers().Remove(workerToRemove);
+						}
+						
+					}
+				}
 			}
 
 		}
@@ -333,9 +366,23 @@ namespace Model.Simulation
 			throw new NotImplementedException();
 			//TODO
 		}
-		private bool MoveOut(int i)
+		private bool MoveOut(Person p)
 		{
-			throw new NotImplementedException();
+			if(p.GetHappiness() <= 0.5){
+				return(new System.Random().NextDouble()<0.9);//90% chance of moving out
+			}
+			else if(p.GetHappiness()>0.5 && p.GetHappiness() < 0.65){
+				return(new System.Random().NextDouble()<0.55);//55% chance of moving out
+
+			}
+			else if(p.GetHappiness()>= 0.65 && p.GetHappiness()<0.75) {
+				return(new System.Random().NextDouble()<0.25);//25% chance of moving out
+
+			}
+			else{
+				return(new System.Random().NextDouble()<0.05);//5% chance of moving out
+
+			}
 			//TODO
 		}
 		private void Die(Person person)

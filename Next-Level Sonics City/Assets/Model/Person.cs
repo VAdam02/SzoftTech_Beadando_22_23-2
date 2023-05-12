@@ -29,7 +29,7 @@ namespace Model
 
 		public float GetHappiness()
 		{
-			float happiness = 1.0f;
+			float happiness = 0.75f;
 			Vector3 maincord = LiveAt.Coordinates;
 			float cordx = LiveAt.Coordinates.x;
 			float cordy = LiveAt.Coordinates.y;
