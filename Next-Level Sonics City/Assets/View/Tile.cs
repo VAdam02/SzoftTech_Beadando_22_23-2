@@ -1,4 +1,6 @@
 using Model.Simulation;
+using Model.Tiles;
+using Model.Tiles.Buildings;
 using System.Collections.Generic;
 using UnityEngine;
 using View.GUI;
@@ -31,12 +33,12 @@ namespace View
 			Destroy(gameObject);
 		}
 
-		public void Highlight()
+		public void Highlight(Color color)
 		{
 			foreach (Material material in _materials)
 			{
 				material.EnableKeyword("_EMISSION");
-				material.SetVector("_EmissionColor", new Vector4(1, 1, 1, 1) * 0.75f);
+				material.SetVector("_EmissionColor", new Vector4(color.r, color.g, color.b, 1) * 0.75f);
 			}
 		}
 
@@ -48,12 +50,23 @@ namespace View
 			}
 		}
 
+		public virtual Vector3 GetPivot() { return Vector3.zero; }
+
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			if (TileManager.Instance.CurrentAction != Action.SELECTAREA) { return; }
-			if (TileManager.Instance.SelectedTiles.Count == 0)
+			if (TileManager.Instance.CurrentAction == Action.SELECTAREA)
 			{
-				TileManager.Instance.SelectedTiles = new List<Tile>() { this, this };
+				if (TileManager.Instance.SelectedTiles.Count == 0)
+				{
+					TileManager.Instance.SelectedTiles = new List<Tile>() { this, this };
+				}
+			}
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			{
+				SimEngine.Instance.BuildingManager.Build(
+					SimEngine.Instance.GetTile((int)TileManager.Instance.GhostTile.TileModel.Coordinates.x, (int)TileManager.Instance.GhostTile.TileModel.Coordinates.y),
+					TileManager.Instance.GhostTile.TileModel.GetTileType(),
+					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);
 			}
 		}
 
@@ -75,12 +88,15 @@ namespace View
 
 		public void OnHoverStart(Vector3 location)
 		{
-			//Debug.Log("HoverStart " + location + "\t" + this);
+			//Debug.Log("HoverStart\t" + location);
 		}
 
 		public void OnHover(Vector3 location)
 		{
-			//Debug.Log("Hover " + location + "\t" + this);
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			{
+				TileManager.Instance.HoveredTile = this;
+			}
 		}
 
 		public void OnHoverEnd()

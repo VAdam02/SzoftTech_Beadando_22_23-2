@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.Simulation;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
@@ -6,15 +7,17 @@ using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
-	public class Stadion : Building, IWorkplace
+	public class StadionBuildingTile : Building, IWorkplace
 	{
-		private readonly List<Person> _workers = new();
+		private readonly List<Worker> _workers = new();
 		private int _workersLimit = 10;
 
-		public Stadion(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		public StadionBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
 		}
+
+		public override TileType GetTileType() { return TileType.Stadion; }
 
 		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
@@ -26,29 +29,29 @@ namespace Model.Tiles.Buildings
 			roadGrid?.RemoveWorkplace(this);
 		}
 
-		public bool Employ(Person person)
+		public bool Employ(Worker worker)
 		{
 			if (_workers.Count < _workersLimit)
 			{
-				_workers.Add(person);
+				_workers.Add(worker);
 				return true;
 			}
 
 			return false;
 		}
 
-		public bool Unemploy(Person person)
+		public bool Unemploy(Worker worker)
 		{
 			if (_workers.Count > 0)
 			{
-				_workers.Remove(person);
+				_workers.Remove(worker);
 				return true;
 			}
 
 			return false;
 		}
 
-		public List<Person> GetWorkers()
+		public List<Worker> GetWorkers()
 		{
 			return _workers;
 		}
@@ -79,12 +82,7 @@ namespace Model.Tiles.Buildings
 			return GetBuildPrice() / 10;
 		}
 
-		internal override bool IsExpandable()
-		{
-			return true;
-		}
-
-		internal override bool CanExpand()
+		internal override bool CanBuild()
 		{
 			int x1 = (int)Coordinates.x;
 			int y1 = (int)Coordinates.y;
@@ -113,9 +111,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (SimEngine.Instance.GetTile(i, j) is not EmptyTile)
 					{
@@ -155,19 +153,14 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
 					Tile oldTile = SimEngine.Instance.GetTile(i, j);
 					ExpandCommand ec = new(i, j, this);
 					ec.Execute();
-
-					MainThreadDispatcher.Instance.Enqueue(() =>
-					{
-						oldTile.OnTileDelete.Invoke();
-					});
 				}
 			}
 		}

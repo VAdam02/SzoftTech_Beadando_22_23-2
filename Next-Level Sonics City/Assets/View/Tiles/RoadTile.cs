@@ -85,6 +85,7 @@ namespace View.Tiles
 			transform.localScale = Vector3.one;
 
 			TileModel.DesignIDChangeEvent.AddListener(OnDesignIDChange);
+			OnDesignIDChange();
 
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 		}
@@ -146,13 +147,21 @@ namespace View.Tiles
 			else if (dirCount == 3)
 			{
 				road = Instantiate(LoadModelByName("3direction"));
-				if ((TileModel.DesignID & (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.LEFTROADMASK) & 0b1001) == 0b1011)
+				if (TileModel.DesignID == (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.BELOWROADMASK))
+				{
+					rotation = new(0, 0, 90);
+				}
+				else if (TileModel.DesignID == (Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.LEFTROADMASK))
 				{
 					rotation = new(0, 0, 180);
 				}
-				else if ((TileModel.DesignID & (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.LEFTROADMASK) & 0b1001) == 0b1101)
+				else if (TileModel.DesignID == (Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.LEFTROADMASK | Model.Tiles.RoadTile.ABOVEROADMASK))
 				{
 					rotation = new(0, 0, 270);
+				}
+				else if (TileModel.DesignID == (Model.Tiles.RoadTile.LEFTROADMASK | Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK))
+				{
+					rotation = new(0, 0, 0);
 				}
 			}
 			else
