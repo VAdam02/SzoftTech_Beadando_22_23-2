@@ -231,21 +231,35 @@ namespace Model.Simulation
 			if(SimEngine._instance.StatEngine.CalculateHappiness(SimEngine._instance.ResidentialsList) > 0.65){
 			int be = (int)(SimEngine._instance.Personslist.Count * SimEngine._instance.StatEngine.CalculateHappiness(SimEngine._instance.ResidentialsList)/10);
 
-				if(SimEngine._instance.freeResidentals.Count !=0 && SimEngine._instance.freeWorkplaces.Count != 0){
+				if(SimEngine._instance.freeResidentals.Count >=be && SimEngine._instance.freeWorkplaces.Count >=be){
 					for(int i = startindex+1;i< startindex+be+1;i++){
 						//mág a worker paraméterei nincsenek meg
-						int age = rand.Next(18,65);
-						Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
-						int randResidental = rand.Next(0,_instance.freeResidentals.Count);
-						ResidentialBuildingTile home = _instance.freeResidentals[randResidental];
-						int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
-						IWorkplace workPlace = _instance.freeWorkplaces[randWorkplace];
-						Worker w = new Worker(home,workPlace,age,randomq);
-						_instance.Personslist.Add(i,w);
+						if(SimEngine._instance.FindHomeWithoutIndustrial(SimEngine._instance.freeResidentals) is null){			
+							int age = rand.Next(18,65);
+							Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+							int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+							ResidentialBuildingTile home = SimEngine._instance.FindClosestHomeToWorkplace(SimEngine._instance.RoadGridManager.RoadGrids);
+							int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+							//TODO MEGCSINÁLNI A LEGKÖZELEBBI wORKPLACE MEGTALÁLÁSÁT
+							IWorkplace workPlace = SimEngine._instance.FindClosestWorkplaceToResidential(SimEngine._instance.RoadGridManager.RoadGrids,home);
+							Worker w = new Worker(home,workPlace,age,randomq);
+							_instance.Personslist.Add(i,w);
+						}
+						else{
+							
+							int age = rand.Next(18,65);
+							Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+							int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+							ResidentialBuildingTile home = SimEngine._instance.FindHomeWithoutIndustrial(SimEngine._instance.freeResidentals);
+							int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+							//TODO MEGCSINÁLNI A LEGKÖZELEBBI wORKPLACE MEGTALÁLÁSÁT
+
+							IWorkplace workPlace = SimEngine._instance.FindClosestWorkplaceToResidential(SimEngine._instance.RoadGridManager.RoadGrids,home);
+							Worker w = new Worker(home,workPlace,age,randomq);
+							_instance.Personslist.Add(i,w);
+						}
 					}
-
 				}				
-
 			}
 			//moving the persons out
 			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
@@ -431,7 +445,7 @@ namespace Model.Simulation
 			}
 			return null;
 		}
-		public ResidentialBuildingTile FindClosestHomeToWorkplace(RoadGrid[] roadGrids){
+		public ResidentialBuildingTile FindClosestHomeToWorkplace(List<RoadGrid> roadGrids){
 			ResidentialBuildingTile closestHome = null;
 			float distance = float.MaxValue;
 			foreach(RoadGrid roadGrid in roadGrids){
@@ -459,6 +473,27 @@ namespace Model.Simulation
 				}
 			}
 			return false;
+		}
+		public IWorkplace FindClosestWorkplaceToResidential(List<RoadGrid> roadGrids, ResidentialBuildingTile residentialBuilding){
+			
+			IWorkplace closestWorkplace = null;
+			float distance = float.MaxValue;
+			
+				foreach (RoadGrid roadGrid in roadGrids)
+				{
+					foreach (IWorkplace workplace in freeWorkplaces)
+					{
+						float current = Vector3.Distance(workplace.GetTile().Coordinates, residentialBuilding.Coordinates);
+						
+						if (current < distance)
+						{
+							distance = current;
+							closestWorkplace = workplace;
+						}
+					}
+				}
+
+			return closestWorkplace;
 		}
 
 		#region Thread
