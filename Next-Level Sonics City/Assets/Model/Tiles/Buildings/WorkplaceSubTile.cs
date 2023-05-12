@@ -16,6 +16,8 @@ namespace Model.Tiles.Buildings
 			_baseWorkplace = baseBuilding;
 		}
 
+		public override TileType GetTileType() { return ((Tile)_baseWorkplace).GetTileType(); }
+
 		public void RegisterWorkplace(RoadGrid roadGrid) { }
 
 		public void UnregisterWorkplace(RoadGrid roadGrid) { }
@@ -62,12 +64,7 @@ namespace Model.Tiles.Buildings
 
 		public Tile GetTile() { return _baseWorkplace.GetTile(); }
 
-		internal override bool IsExpandable()
-		{
-			throw new InvalidOperationException();
-		}
-
-		internal override bool CanExpand()
+		internal override bool CanBuild()
 		{
 			throw new InvalidOperationException();
 		}

@@ -1,4 +1,6 @@
 using Model.Simulation;
+using Model.Tiles;
+using Model.Tiles.Buildings;
 using System.Collections.Generic;
 using UnityEngine;
 using View.GUI;
@@ -31,12 +33,12 @@ namespace View
 			Destroy(gameObject);
 		}
 
-		public void Highlight()
+		public void Highlight(Color color)
 		{
 			foreach (Material material in _materials)
 			{
 				material.EnableKeyword("_EMISSION");
-				material.SetVector("_EmissionColor", new Vector4(1, 1, 1, 1) * 0.75f);
+				material.SetVector("_EmissionColor", new Vector4(color.r, color.g, color.b, 1) * 0.75f);
 			}
 		}
 
@@ -63,6 +65,14 @@ namespace View
 				TileManager.Instance.SelectedTile = this;
 				SimEngine.Instance.BuildingManager.Build(TileManager.Instance.SelectedTile.TileModel, TileType.Road, Model.Tiles.Buildings.Rotation.Zero);
 			}
+
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			{
+				SimEngine.Instance.BuildingManager.Build(
+					SimEngine.Instance.GetTile((int)TileManager.Instance.GhostTile.TileModel.Coordinates.x, (int)TileManager.Instance.GhostTile.TileModel.Coordinates.y),
+					TileManager.Instance.GhostTile.TileModel.GetTileType(),
+					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);
+			}
 		}
 
 		public void OnDragStart(bool isLeftMouseButton, Vector3 location) { }
@@ -83,7 +93,10 @@ namespace View
 
 		public void OnHoverStart(Vector3 location)
 		{
-			//Debug.Log("HoverStart " + location + "\t" + this);
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			{
+				TileManager.Instance.HoveredTile = this;
+			}
 		}
 
 		public void OnHover(Vector3 location)

@@ -94,15 +94,18 @@ namespace Model.Tiles
 				_roadGrid?.AddRoadGridElement(this);
 			}
 
-			foreach (Building building in buildings)
+			if (_roadGrid != null)
 			{
-				if (building is IWorkplace workplace)
+				foreach (Building building in buildings)
 				{
-					workplace.RegisterWorkplace(_roadGrid);
-				}
-				if (building is IResidential residential)
-				{
-					residential.RegisterResidential(_roadGrid);
+					if (building is IWorkplace workplace)
+					{
+						workplace.RegisterWorkplace(_roadGrid);
+					}
+					if (building is IResidential residential)
+					{
+						residential.RegisterResidential(_roadGrid);
+					}
 				}
 			}
 		}
@@ -111,6 +114,8 @@ namespace Model.Tiles
 		{
 			
 		}
+
+		public override TileType GetTileType() { return TileType.Road; }
 
 		public override void FinalizeTile()
 		{

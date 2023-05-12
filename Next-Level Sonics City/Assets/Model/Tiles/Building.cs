@@ -1,6 +1,7 @@
 using Model.Tiles.Buildings;
 using System;
 using Model.RoadGrids;
+using Model.Simulation;
 
 namespace Model.Tiles
 {
@@ -24,13 +25,17 @@ namespace Model.Tiles
 		{
 			base.Finalizing();
 
-			if (this is IWorkplace workplace)
+			RoadGrid roadGrid = RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid();
+			if (roadGrid != null)
 			{
-				workplace.RegisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace).GetRoadGrid());
-			}
-			if (this is IResidential residential)
-			{
-				residential.RegisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential).GetRoadGrid());
+				if (this is IWorkplace workplace)
+				{
+					workplace.RegisterWorkplace(roadGrid);
+				}
+				if (this is IResidential residential)
+				{
+					residential.RegisterResidential(roadGrid);
+				}
 			}
 
 			OnTileDelete.AddListener(Destroy);
@@ -58,8 +63,14 @@ namespace Model.Tiles
 			throw new NotImplementedException();
 		}
 
-		internal abstract bool IsExpandable();
-		internal abstract bool CanExpand();
-		internal abstract void Expand();
+		internal virtual bool CanBuild()
+		{
+			return SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y) is EmptyTile;
+		}
+
+		internal virtual void Expand()
+		{
+
+		}
 	}
 }

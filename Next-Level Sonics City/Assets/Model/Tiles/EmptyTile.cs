@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,5 +11,7 @@ namespace Model.Tiles
 		{
 
 		}
+
+		public override TileType GetTileType() { throw new InvalidOperationException(); }
 	}
 }

@@ -35,6 +35,16 @@ namespace Model
 			Coordinates = new Vector3(x, y, 0);
 		}
 
+		public abstract TileType GetTileType();
+
+		public void UpdateCoordinates(int x, int y)
+		{
+			if (isFinalized) return;
+
+			Coordinates = new Vector3(x, y, 0);
+		}
+
+		private bool isFinalized = false;
 		public virtual void FinalizeTile()
 		{
 			Finalizing();
@@ -42,6 +52,9 @@ namespace Model
 
 		protected void Finalizing()
 		{
+			if (isFinalized) return;
+			isFinalized = true;
+
 			if (this is IRoadGridElement roadGridElement)
 			{
 				roadGridElement.RegisterRoadGridElement();

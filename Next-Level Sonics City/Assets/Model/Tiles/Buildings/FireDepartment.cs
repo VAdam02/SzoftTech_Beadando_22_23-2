@@ -17,6 +17,8 @@ namespace Model.Tiles.Buildings
 
 		}
 
+		public override TileType GetTileType() { return TileType.FireDepartment; }
+
 		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
 			roadGrid?.AddWorkplace(this);
@@ -81,12 +83,7 @@ namespace Model.Tiles.Buildings
 			return GetBuildPrice() / 10;
 		}
 
-		internal override bool IsExpandable()
-		{
-			return true;
-		}
-
-		internal override bool CanExpand()
+		internal override bool CanBuild()
 		{
 			int x1 = (int)Coordinates.x;
 			int y1 = (int)Coordinates.y;

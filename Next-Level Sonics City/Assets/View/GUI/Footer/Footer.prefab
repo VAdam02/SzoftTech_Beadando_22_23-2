@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PanelID: 3
-  Action: 0
+  Action: 3
 --- !u!1 &206932105
 GameObject:
   m_ObjectHideFlags: 0

@@ -287,6 +287,8 @@ namespace Model.Tiles.Buildings
 			ResidentLimit = 0;
 		}
 
+		public override TileType GetTileType() { throw new InvalidOperationException(); }
+
 		public void RegisterResidential(RoadGrid roadGrid)
 		{
 			roadGrid?.AddResidential(this);
@@ -350,21 +352,6 @@ namespace Model.Tiles.Buildings
 		public override int GetMaintainanceCost()
 		{
 			return GetBuildPrice() / 10;
-		}
-
-		internal override bool IsExpandable()
-		{
-			return false;
-		}
-
-		internal override bool CanExpand()
-		{
-			throw new InvalidOperationException();
-		}
-
-		internal override void Expand()
-		{
-			throw new InvalidOperationException();
 		}
 	}
 }

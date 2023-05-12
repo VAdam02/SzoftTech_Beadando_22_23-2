@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Model.Persons;
 using Model.RoadGrids;
@@ -14,6 +13,8 @@ namespace Model.Tiles.Buildings
 		{
 
 		}
+
+		public override TileType GetTileType() { return TileType.PoliceDepartment; }
 
 		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
@@ -76,21 +77,6 @@ namespace Model.Tiles.Buildings
 		public override int GetMaintainanceCost()
 		{
 			return GetBuildPrice() / 10;
-		}
-
-		internal override bool IsExpandable()
-		{
-			return false;
-		}
-
-		internal override bool CanExpand()
-		{
-			throw new InvalidOperationException();
-		}
-
-		internal override void Expand()
-		{
-			throw new InvalidOperationException();
 		}
 	}
 }

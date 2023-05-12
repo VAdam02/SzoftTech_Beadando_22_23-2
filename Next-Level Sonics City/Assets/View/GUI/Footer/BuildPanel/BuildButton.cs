@@ -1,4 +1,6 @@
 using Model.Tiles;
+using Model.Tiles.Buildings;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +8,39 @@ namespace View.GUI.Footer.BuildPanel
 {
 	public class BuildButton : MonoBehaviour, IClickable
 	{
-		public ZoneType zone;
+		public TileType type;
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			TileManager.Instance.MarkZone(zone);
+			switch (type)
+			{
+				case TileType.PoliceDepartment:
+					Tile building = TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero));
+					TileManager.Instance.GhostTile = building;
+					break;
+				case TileType.Stadion:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new Stadion(0, 0, 0, Rotation.Zero));
+					break;
+				case TileType.FireDepartment:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new FireDepartment(0, 0, 0, Rotation.Zero));
+					break;
+				case TileType.MiddleSchool:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new MiddleSchool(0, 0, 0, Rotation.Zero));
+					break;
+				case TileType.HighSchool:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new HighSchool(0, 0, 0, Rotation.Zero));
+					break;
+				case TileType.PowerPlant:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new PowerPlant(0, 0, 0, Rotation.Zero));
+					break;
+				case TileType.Forest:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new Forest(0, 0, 0));
+					break;
+				case TileType.ElectricPole:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new ElectricPole(0, 0, 0));
+					break;
+				default:
+					throw new InvalidOperationException();
+			}
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction) { return true; }
