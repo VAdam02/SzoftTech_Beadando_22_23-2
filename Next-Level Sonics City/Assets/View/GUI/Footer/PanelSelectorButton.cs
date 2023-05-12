@@ -11,9 +11,18 @@ namespace View.GUI.Footer
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
 			Animator anim = transform.parent.parent.GetComponent<Animator>();
-			anim.SetInteger("DisplayedPanel", anim.GetInteger("DisplayedPanel") == PanelID ? 0 : PanelID);
 
-			TileManager.Instance.CurrentAction = anim.GetInteger("DisplayedPanel") == PanelID ? Action : Action.NONE;
+			TileManager.Instance.CurrentAction = Action.NONE;
+
+			if (PanelID == anim.GetInteger("DisplayedPanel"))
+			{
+				anim.SetInteger("DisplayedPanel", 0);
+			}
+			else
+			{
+				anim.SetInteger("DisplayedPanel", PanelID);
+				TileManager.Instance.CurrentAction = Action;
+			}
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction)

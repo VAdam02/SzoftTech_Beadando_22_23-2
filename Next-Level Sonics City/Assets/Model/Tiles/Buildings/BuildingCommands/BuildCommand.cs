@@ -28,27 +28,21 @@ namespace Model.Tiles.Buildings.BuildingCommands
 			{
 				case TileType.PoliceDepartment:
 					tile = new PoliceDepartmentBuildingTile(_x, _y, _designID, _rotation);
-					if (!((Building)tile).CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.FireDepartment:
 					tile = new FireDepartment(_x, _y, _designID, _rotation);
-					if (!((Building)tile).CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.MiddleSchool:
 					tile = new MiddleSchool(_x, _y, _designID, _rotation);
-					if (!((Building)tile).CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.HighSchool:
 					tile = new HighSchool(_x, _y, _designID, _rotation);
-					if (!((Building)tile).CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.Stadion:
 					tile = new Stadion(_x, _y, _designID, _rotation);
-					if (!((Building)tile).CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.PowerPlant:
 					tile = new PowerPlant(_x, _y, _designID, _rotation);
-					if (!((Building)tile).CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 					break;
 				case TileType.Forest:
 					tile = new Forest(_x, _y, _designID);
@@ -63,9 +57,10 @@ namespace Model.Tiles.Buildings.BuildingCommands
 					throw new NotImplementedException("TileType \'" + _tileType + "\' not implemented");
 			}
 
+			if (!tile.CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 			SimEngine.Instance.SetTile(_x, _y, tile);
 
-			if (tile is Building building && building.CanBuild())
+			if (tile is Building building)
 			{
 				building.Expand();
 			}

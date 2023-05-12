@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4577313892904293233}
   - component: {fileID: 4796496591651827363}
   - component: {fileID: 1197496556}
-  - component: {fileID: 6817680831940438324}
   m_Layer: 5
   m_Name: PoliceDepartment
   m_TagString: Untagged
@@ -91,19 +90,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
---- !u!114 &6817680831940438324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1593398868573442066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89f4f505c866d714e8521edfbfe3781b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
 --- !u!1 &2647024381053775431
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,7 +101,6 @@ GameObject:
   - component: {fileID: 7875755049013554395}
   - component: {fileID: 7154329274044682305}
   - component: {fileID: 3711249933300516241}
-  - component: {fileID: 7421956573157637887}
   m_Layer: 5
   m_Name: EmptyZone
   m_TagString: Untagged
@@ -181,19 +166,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7421956573157637887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2647024381053775431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zone: 3
 --- !u!1 &6009579593780685542
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +257,6 @@ GameObject:
   - component: {fileID: 2098524766187977096}
   - component: {fileID: 4395425375007699521}
   - component: {fileID: 2447704825675301877}
-  - component: {fileID: 4425275136208565044}
   m_Layer: 5
   m_Name: CommercialZone
   m_TagString: Untagged
@@ -351,19 +322,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4425275136208565044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7373787015415159594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zone: 1
 --- !u!1 &8952280236517362379
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,7 +333,6 @@ GameObject:
   - component: {fileID: 1335128248604778005}
   - component: {fileID: 1559394420282064435}
   - component: {fileID: 5231387015585013470}
-  - component: {fileID: 5371300467429752381}
   m_Layer: 5
   m_Name: ResidentialZone
   m_TagString: Untagged
@@ -441,16 +398,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5371300467429752381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8952280236517362379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27fe2b121de7a374eb38bd297076f484, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zone: 0

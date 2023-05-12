@@ -11,7 +11,6 @@ namespace View
 	{
 		NONE,
 		SELECTAREA,
-		BUILDROAD,
 		BUILDGHOST
 	}
 
@@ -30,10 +29,6 @@ namespace View
 				if (_currentAction != Action.SELECTAREA)
 				{
 					SelectedTiles = new List<Tile>();
-				}
-				if (_currentAction != Action.BUILDROAD)
-				{
-					SelectedTile = null;
 				}
 				if (_currentAction != Action.BUILDGHOST)
 				{
@@ -61,23 +56,7 @@ namespace View
 			}
 		}
 
-		private object _selectedTileLock = new();
-		private Tile _selectedTile = null;
-		public Tile SelectedTile
-		{
-			get { return _selectedTile; }
-			set
-			{
-				lock (_selectedTileLock)
-				{
-					if (_selectedTile != null) { _selectedTile.Unhighlight(); }
-					_selectedTile = value;
-					if (_selectedTile != null) { _selectedTile.Highlight(Color.white); }
-				}
-			}
-		}
-
-		private object _ghostTileLock = new();
+		private readonly object _ghostTileLock = new();
 		private Tile _hoveredTile = null;
 		private Tile _ghostTile = null;
 		private Rotation _rotation = Rotation.Zero;
@@ -93,7 +72,7 @@ namespace View
 					{
 						_ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0));
 						_ghostTile.TileModel.UpdateCoordinates((int)_hoveredTile.TileModel.Coordinates.x, (int)_hoveredTile.TileModel.Coordinates.y);
-						_ghostTile.Highlight(((Building)_ghostTile.TileModel).CanBuild() ? Color.green : Color.red);
+						_ghostTile.Highlight(_ghostTile.TileModel.CanBuild() ? Color.green : Color.red);
 					}
 				}
 			}

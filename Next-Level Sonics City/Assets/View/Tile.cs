@@ -59,13 +59,6 @@ namespace View
 					TileManager.Instance.SelectedTiles = new List<Tile>() { this, this };
 				}
 			}
-
-			if (TileManager.Instance.CurrentAction == Action.BUILDROAD)
-			{
-				TileManager.Instance.SelectedTile = this;
-				SimEngine.Instance.BuildingManager.Build(TileManager.Instance.SelectedTile.TileModel, TileType.Road, Model.Tiles.Buildings.Rotation.Zero);
-			}
-
 			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
 			{
 				SimEngine.Instance.BuildingManager.Build(
@@ -93,15 +86,15 @@ namespace View
 
 		public void OnHoverStart(Vector3 location)
 		{
-			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
-			{
-				TileManager.Instance.HoveredTile = this;
-			}
+			//Debug.Log("HoverStart\t" + location);
 		}
 
 		public void OnHover(Vector3 location)
 		{
-			//Debug.Log("Hover " + location + "\t" + this);
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			{
+				TileManager.Instance.HoveredTile = this;
+			}
 		}
 
 		public void OnHoverEnd()

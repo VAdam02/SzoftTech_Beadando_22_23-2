@@ -1,7 +1,5 @@
+using Model.Simulation;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -13,5 +11,10 @@ namespace Model.Tiles
 		}
 
 		public override TileType GetTileType() { throw new InvalidOperationException(); }
+
+		internal override bool CanBuild()
+		{
+			return SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y) is not EmptyTile;
+		}
 	}
 }

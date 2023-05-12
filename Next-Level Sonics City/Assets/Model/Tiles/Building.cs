@@ -1,7 +1,6 @@
 using Model.Tiles.Buildings;
 using System;
 using Model.RoadGrids;
-using Model.Simulation;
 
 namespace Model.Tiles
 {
@@ -61,11 +60,6 @@ namespace Model.Tiles
 		public void GetFirePercentage()
 		{
 			throw new NotImplementedException();
-		}
-
-		internal virtual bool CanBuild()
-		{
-			return SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y) is EmptyTile;
 		}
 
 		internal virtual void Expand()

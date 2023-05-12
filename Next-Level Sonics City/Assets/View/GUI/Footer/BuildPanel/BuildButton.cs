@@ -14,8 +14,7 @@ namespace View.GUI.Footer.BuildPanel
 			switch (type)
 			{
 				case TileType.PoliceDepartment:
-					Tile building = TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero));
-					TileManager.Instance.GhostTile = building;
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero));
 					break;
 				case TileType.Stadion:
 					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new Stadion(0, 0, 0, Rotation.Zero));
@@ -37,6 +36,10 @@ namespace View.GUI.Footer.BuildPanel
 					break;
 				case TileType.ElectricPole:
 					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new ElectricPole(0, 0, 0));
+					break;
+
+				case TileType.Road:
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new RoadTile(0, 0, 0));
 					break;
 				default:
 					throw new InvalidOperationException();
