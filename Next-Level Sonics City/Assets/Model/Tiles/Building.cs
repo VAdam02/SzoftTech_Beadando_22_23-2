@@ -1,6 +1,7 @@
 using Model.Tiles.Buildings;
 using System;
 using Model.RoadGrids;
+using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -64,7 +65,6 @@ namespace Model.Tiles
 
 		internal virtual void Expand()
 		{
-
 		}
 	}
 }

@@ -39,8 +39,6 @@ namespace Model.Tiles.Buildings
 			int x = (int)tile.Coordinates.x;
 			int y = (int)tile.Coordinates.y;
 
-			OnBuildingDestroyed(tile);
-
 			DestroyCommand dc = new (x, y);
 			dc.Execute();
 		}

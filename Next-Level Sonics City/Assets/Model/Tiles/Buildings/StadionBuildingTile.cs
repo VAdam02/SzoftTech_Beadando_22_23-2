@@ -7,12 +7,12 @@ using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
-	public class Stadion : Building, IWorkplace
+	public class StadionBuildingTile : Building, IWorkplace
 	{
 		private readonly List<Worker> _workers = new();
 		private int _workersLimit = 10;
 
-		public Stadion(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		public StadionBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
 		}
@@ -153,9 +153,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
 					Tile oldTile = SimEngine.Instance.GetTile(i, j);

@@ -17,7 +17,7 @@ namespace View.GUI.Footer.BuildPanel
 					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero));
 					break;
 				case TileType.Stadion:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new Stadion(0, 0, 0, Rotation.Zero));
+					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new StadionBuildingTile(0, 0, 0, Rotation.Zero));
 					break;
 				case TileType.FireDepartment:
 					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new FireDepartment(0, 0, 0, Rotation.Zero));

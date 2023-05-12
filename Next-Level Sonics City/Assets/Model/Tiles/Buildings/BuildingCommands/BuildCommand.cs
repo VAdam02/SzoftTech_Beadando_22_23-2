@@ -39,7 +39,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 					tile = new HighSchool(_x, _y, _designID, _rotation);
 					break;
 				case TileType.Stadion:
-					tile = new Stadion(_x, _y, _designID, _rotation);
+					tile = new StadionBuildingTile(_x, _y, _designID, _rotation);
 					break;
 				case TileType.PowerPlant:
 					tile = new PowerPlant(_x, _y, _designID, _rotation);

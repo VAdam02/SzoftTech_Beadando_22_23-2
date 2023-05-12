@@ -63,7 +63,7 @@ namespace Model.Simulation
 			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 5;
+			int n = 7;
 			_tiles = new Tile[n, n];
 
 			long startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
@@ -71,9 +71,19 @@ namespace Model.Simulation
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < (n-1); j++)
 			{
-				if (i % 2 == 0)
+				if (i % 3 == 0)
 				{
 					SetTile(i, j, new RoadTile(i, j, 0));
+				}
+				else if (i % 3 == 1 && j % 2 == 0)
+				{
+					Building stadion = new StadionBuildingTile(i, j, 0, Rotation.Zero);
+					SetTile(i, j, stadion);
+					stadion.Expand();
+				}
+				else if (i % 3 == 2 || i % 3 == 1 && j % 2 == 0)
+				{
+
 				}
 				else
 				{
@@ -81,7 +91,7 @@ namespace Model.Simulation
 					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
 					//_tiles[i, j] = new Commercial(i, j, 0);
 					//_tiles[i, j] = new PoliceDepartmentBuildingTile(i, j, 0, Rotation.TwoSeventy);
-					SetTile(i, j, new EmptyTile(i, j, 0));
+					//SetTile(i, j, new EmptyTile(i, j, 0));
 				}
 			}
 
@@ -99,7 +109,7 @@ namespace Model.Simulation
 
 			Debug.Log("DESTROY START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Destroy(GetTile(2, 4));
+			BuildingManager.Destroy(GetTile(2, n-1));
 			Debug.Log("Destroy takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("DESTROY FINISH");
 
@@ -110,15 +120,14 @@ namespace Model.Simulation
 			
 			Debug.Log("BUILD START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Build(GetTile(2, 4), TileType.Road, 0);
+			BuildingManager.Build(GetTile(2, n-1), TileType.Road, 0);
 			Debug.Log("BUILD takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("BUILD FINISH");
-
+			
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-
 			//DEMO CODE
 
 			Init();
