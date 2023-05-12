@@ -205,13 +205,7 @@ namespace Model.Simulation
 					}
 				}
 			}
-			
-
-
-
-
-
-            
+			          
             // temporary solution
             //happiness move-in or move-out
 			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
@@ -223,13 +217,14 @@ namespace Model.Simulation
 				Person person = SimEngine._instance.Personslist[i];
 				if(SimEngine._instance.MoveOut(person)){
 					SimEngine._instance.MoveOutList.Add(person);
+					//remove the person from the Personlist
 					SimEngine._instance.Personslist.Remove(i);
 				}
 			}
 			
 
             //int be = rand.Next(1,6);
-			int ki = rand.Next(1,6);
+			//int ki = rand.Next(1,6);
 			
 			//_instance.report.PopulationChange = be - ki;
 			startindex = _instance.Personslist.Keys.Last();
@@ -252,12 +247,7 @@ namespace Model.Simulation
 				}				
 
 			}
-			else if(_instance.report.PopulationChange < 0){
-				for(int i = startindex;i > _instance.report.PopulationChange-1;i--){
-					_instance.Personslist.Remove(i);
-				}				
-			}
-			//kiköltöztetés
+			//moving the persons out
 			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
 				foreach(ResidentialBuildingTile residential in roadGrid.Residentials){
 					//remove person from his home
@@ -432,6 +422,43 @@ namespace Model.Simulation
 			return _timeSpeed;
 			
 			//TODO
+		}
+		public ResidentialBuildingTile FindHomeWithoutIndustrial(List<ResidentialBuildingTile> freeResidential){
+			foreach(ResidentialBuildingTile residential in freeResidential){
+				if(!isIndustrialNearby(residential)){
+					return residential;
+				}
+			}
+			return null;
+		}
+		public ResidentialBuildingTile FindClosestHomeToWorkplace(RoadGrid[] roadGrids){
+			ResidentialBuildingTile closestHome = null;
+			float distance = float.MaxValue;
+			foreach(RoadGrid roadGrid in roadGrids){
+				foreach(ResidentialBuildingTile residentialBuilding in freeResidentals){
+					foreach(IWorkplace workplace in freeWorkplaces){
+						float currentDistance = Vector3.Distance(residentialBuilding.Coordinates, workplace.GetTile().Coordinates);
+						if(currentDistance < distance){
+							distance = currentDistance;
+							closestHome = residentialBuilding;
+						}
+					}
+				}
+			}
+			return closestHome;
+
+		}
+		public bool isIndustrialNearby(ResidentialBuildingTile residentialBuilding){
+			foreach(IWorkplace industrial  in SimEngine._instance.RoadGridManager.RoadGrids){
+				if(industrial is Industrial){
+					float distance = Vector3.Distance(industrial.GetTile().Coordinates, residentialBuilding.Coordinates);
+					
+					if(distance < 10){
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		#region Thread
