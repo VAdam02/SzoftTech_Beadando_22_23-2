@@ -35,35 +35,18 @@ namespace Model
 			float cordy = LiveAt.Coordinates.y;
 
 			// TAX
-			if( SimEngine.Instance.GetTax() < 10){
-				happiness += 0.1f;
+			if(SimEngine.Instance.GetTax() <= 13){
+				happiness += (SimEngine.Instance.GetTax() / 100);
+
 			}
-			else if (SimEngine.Instance.GetTax() < 7.5 ){
-				happiness += 0.2f;
-			}
-			else if (SimEngine.Instance.GetTax() == 0){
-				happiness += 1.0f;
-			}
-			else if (SimEngine.Instance.GetTax() > 10){
-				happiness -= 0.1f;
-			}
-			else if (SimEngine.Instance.GetTax() > 15){
-				happiness -= 0.2f;
-			}
-			else if (SimEngine.Instance.GetTax() >= 20){
-				happiness -= 0.3f;
+			else{
+				happiness -= (SimEngine.Instance.GetTax() / 100);
 			}
 
 			//MONEY IN THE CITY
-
-			if(SimEngine.Instance.GetMoney() < 0){
-				happiness -= 0.05f;
-
+			if(SimEngine.Instance.GetMoney()<0){
+				happiness += SimEngine.Instance.GetMoney()/100000;
 			}
-			else if(SimEngine.Instance.GetMoney() < -2000){
-				happiness -= 0.15f;
-			}
-
 			//How many years is it negative TODO
 
 			//In the specific area
@@ -72,11 +55,11 @@ namespace Model
 			for(int i = (int)cordx; i < (int)cordx + d; i++){
 				for(int j = (int)cordy; j < (int)cordy + d; j++){
 
-					double distance = Math.Sqrt(Math.Pow(r - j, 2) + Math.Pow(r - i, 2));
-					if(distance <= r){
+					double distance1 = Math.Sqrt(Math.Pow(r - j, 2) + Math.Pow(r - i, 2));
+					if(distance1 <= r){
 						//na ezen belül benne van a "körben" itt megy a vizsgálat
 
-
+						
 					}
 					else{
 
@@ -84,28 +67,42 @@ namespace Model
 				}
 			}
 			//Workplace is near to Home
-			d = 19;
-			r = d / 2;
-			for(int i = 0; i < d; i++){
-				for(int j = 0; j < d; j++){
-
-					double distance = Math.Sqrt(Math.Pow(r - j, 2) + Math.Pow(r - i, 2));
-					if(distance <= r){
-						//na ezen belül benne van a "körben" itt megy a vizsgálat
-						
-						/*if(SimEngine.Instance.Tiles[i,j] is Industrial){
-							
-								if(SimEngine.Instance.Tiles[i,j].GetWorkers())
-						}*/
-
-					}
-					else{
-
-					}
+			float distance2 = float.MaxValue;
+			foreach(IWorkplace workplace in SimEngine.Instance.RoadGridManager.RoadGrids){
+				float current = Vector3.Distance(maincord,workplace.GetTile().Coordinates);
+				if(current < distance2){
+					distance2 = current;
 				}
 			}
+			if(distance2 < 10){
+			happiness += happiness*(distance2/100);
+			}
+			else{
+				happiness -= happiness*(distance2/1000);
+			}
+
+			if(!SimEngine.Instance.isIndustrialNearby(LiveAt)){
+				happiness += 0.1f;
+			}
+			else{
+				float distance3 = float.MaxValue;
+				foreach ( IWorkplace industrial in SimEngine.Instance.RoadGridManager.RoadGrids){
+					float current = Vector3.Distance(industrial.GetTile().Coordinates,maincord);
+					if(current < distance3){
+						distance3 = current;
+					}
+				}
+				happiness -= distance3/10000; 
+			}
 			
-			return happiness;
+			if(happiness > 1){
+				happiness = 1;
+				return happiness;
+			}
+			else{
+				return happiness;
+			}
+			
 		}
 
 		public void IncreaseAge()
