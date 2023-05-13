@@ -34,23 +34,25 @@ namespace Model.Statistics
 			Quarter = 0;
 			Budget = startBudget;
 
-			StatReport zerothStatReport = new StatReport();
-			zerothStatReport.Quarter = Quarter;
-			zerothStatReport.Year = Year;
-			zerothStatReport.Budget = Budget;
-			zerothStatReport.Happiness = 0;
-			zerothStatReport.IncomeTax = 0;
-			zerothStatReport.ResidentialTax = 0;
-			zerothStatReport.DestroyIncomes = 0;
-			zerothStatReport.BuildExpenses = 0;
-			zerothStatReport.MaintainanceCosts = 0;
-			zerothStatReport.Incomes = 0;
-			zerothStatReport.Expenses = 0;
-			zerothStatReport.Profit = 0;
-			zerothStatReport.Population = 0;
-			zerothStatReport.PopulationChange = 0;
-			zerothStatReport.ElectricityProduced = 0;
-			zerothStatReport.ElectricityConsumed = 0;
+			StatReport zerothStatReport = new()
+			{
+				Quarter = Quarter,
+				Year = Year,
+				Budget = Budget,
+				Happiness = 0,
+				IncomeTax = 0,
+				ResidentialTax = 0,
+				DestroyIncomes = 0,
+				BuildExpenses = 0,
+				MaintainanceCosts = 0,
+				Incomes = 0,
+				Expenses = 0,
+				Profit = 0,
+				Population = 0,
+				PopulationChange = 0,
+				ElectricityProduced = 0,
+				ElectricityConsumed = 0
+			};
 			_statReports.Add(zerothStatReport);
 		}
 
@@ -397,7 +399,7 @@ namespace Model.Statistics
 		private List<IResidential> ConcatenateResidentials()
 		{
 			List<RoadGrid> roadGrids = SimEngine.Instance.RoadGridManager.RoadGrids;
-			List<IResidential> residentials = new List<IResidential>();		
+			List<IResidential> residentials = new();		
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{
@@ -410,7 +412,7 @@ namespace Model.Statistics
 		private List<IWorkplace> ConcatenateWorkplaces()
 		{
 			List<RoadGrid> roadGrids = SimEngine.Instance.RoadGridManager.RoadGrids;
-			List<IWorkplace> workplaces = new List<IWorkplace>();
+			List<IWorkplace> workplaces = new();
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{

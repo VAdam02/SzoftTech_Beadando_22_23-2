@@ -29,10 +29,10 @@ namespace Model.Simulation
 
 		private void Init()
 		{
-			ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
-			ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
-			BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
-			BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
+			//ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
+			//ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
+			//BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
+			//BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
 		}
 
 		public Tile GetTile(int x, int y)
@@ -161,32 +161,6 @@ namespace Model.Simulation
 			//Do the things that should done during a tick
 		}
 
-		public bool MarkZone(List<Tile> tiles, ZoneBuilding z)
-		{
-			return true;
-			//TODO
-		}
-		public bool RemoveZone(List<Tile> tiles)
-		{
-			throw new NotImplementedException();
-			//TODO
-		}
-		public bool BuildService(Tile tile, ServiceBuilding s)
-		{
-			throw new NotImplementedException();
-			//TODO
-		}
-		public bool Destroy(Tile tile)
-		{
-			throw new NotImplementedException();
-			//TODO
-		}
-		public bool DestoryForce(Tile tile)
-		{
-
-			throw new NotImplementedException();
-			//TODO
-		}
 		private bool BuildByPeople(Tile t, ZoneBuilding z)
 		{
 			throw new NotImplementedException();
