@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Model.Persons;
-using Model.Tiles.Buildings;
 
 namespace Model
 {
@@ -10,16 +7,19 @@ namespace Model
 	{
 		private static ulong s_id;
 
-		private ulong _id;
-        public ResidentialBuildingTile LiveAt { get; protected set; }
+		private readonly ulong _id;
+        public IResidential LiveAt { get; protected set; }
 		public int Age { get; protected set; }
         public Qualification Qualification { get; protected set; }
 
-		public Person(ResidentialBuildingTile home, int age)
+		public Person(IResidential residential, int age)
 		{
 			_id = s_id++;
-			LiveAt = home;
+			LiveAt = residential ?? throw new ArgumentNullException("Person must have a home");
 			Age = age;
+			if (Age < 18) throw new ArgumentException("Person cannot be younger than 18 years old");
+
+			LiveAt.MoveIn(this);
 		}
 
 		public float GetHappiness()

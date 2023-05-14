@@ -1,4 +1,4 @@
-using Model.Tiles.Buildings;
+using System;
 
 namespace Model.Persons
 {
@@ -11,24 +11,24 @@ namespace Model.Persons
 		private int _taxCount = 0;
 
 		private const int BASE_SALARY = 500; //dollar
-		private const int TAXED_YEARS_FOR_PENSION = 20;
-		private const int PENSION_AGE = 65;
+		public const int TAXED_YEARS_FOR_PENSION = 20;
+		public const int PENSION_AGE = 65;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="home"></param>
-		/// <param name="workPlace"></param>
-		/// <param name="age"></param>
-		/// <param name="qualification"></param>
-		public Worker(ResidentialBuildingTile home, IWorkplace workPlace, int age, Qualification qualification) : base(home, age)
+		public Worker(IResidential home, IWorkplace workPlace, int age, Qualification qualification) : base(home, age)
 		{
-			WorkPlace = workPlace;
+			if (age < 18 || PENSION_AGE <= age) throw new ArgumentException("Worker cannot be younger than 18 and older than " + PENSION_AGE + " years old");
+			WorkPlace = workPlace ?? throw new ArgumentNullException("Worker must have a workplace");
 			PersonQualification = qualification;
+
+			WorkPlace.Employ(this);
 		}
 
 		public Pensioner Retire()
 		{
+			if (Age < PENSION_AGE) throw new ArgumentException("Worker cannot retire before " + PENSION_AGE + " years old");
+
+			WorkPlace.Unemploy(this);
+
 			float pension = _taxSum / _taxCount / 2.0f;
 			return new Pensioner(LiveAt, Age, pension);
 		}
@@ -48,7 +48,9 @@ namespace Model.Persons
 		public override float PayTax(float taxRate)
 		{
 			float currentTax = CalculateSalary() * taxRate;
-			
+
+			if (Age >= PENSION_AGE) { return 0; }
+
 			if (Age <= (PENSION_AGE - TAXED_YEARS_FOR_PENSION)) { RecordTax(currentTax); }
 
 			return currentTax;
@@ -60,7 +62,7 @@ namespace Model.Persons
 			_taxSum += paidTax;
 		}
 
-		private float CalculateSalary()
+		public float CalculateSalary()
 		{
 			float multiplier = 1.0f;
 			switch (PersonQualification)

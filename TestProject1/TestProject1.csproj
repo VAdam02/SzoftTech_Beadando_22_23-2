@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Next-Level Sonics City\Assembly-CSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Model\Cars\" />
+  </ItemGroup>
+
 </Project>
