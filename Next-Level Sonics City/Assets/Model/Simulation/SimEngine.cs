@@ -157,7 +157,6 @@ namespace Model.Simulation
 		/// </summary>
 		private static void Tick()
 		{
-			Debug.Log("Tick");
 			//Do the things that should done during a tick
 		}
 
@@ -249,7 +248,7 @@ namespace Model.Simulation
 
 		#region Thread
 		private static int _timeSpeed = 1;
-		private static readonly int _tps = 1;
+		private static readonly int _tps = 10;
 		private static Thread _t;
 
 		private static readonly object _lock = new();		//lock for _isSimulating and _isRunning
