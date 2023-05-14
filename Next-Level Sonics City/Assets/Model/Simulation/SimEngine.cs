@@ -158,6 +158,7 @@ namespace Model.Simulation
 		private static void Tick()
 		{
 			//Do the things that should done during a tick
+			Instance.StatEngine.TimeElapsed();
 		}
 
 		private bool BuildByPeople(Tile t, ZoneBuilding z)

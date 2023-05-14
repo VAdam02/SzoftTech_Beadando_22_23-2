@@ -13,8 +13,11 @@ namespace Model.Statistics
 {
 	public class StatEngine
 	{
-		public int Year { get; private set; }
-		public int Quarter { get; private set; }
+		private DateTime date; 
+		public int Year { get { return date.Year; } }
+		public int Quarter { get { return date.Month / 3; } }
+		public string YearMonth { get { return date.ToString("yyyy MMM"); } }
+		public string Day { get { return date.Day.ToString(); } }
 		public float Budget { get; private set; }
 
 		private int _buildPrice = 0;
@@ -26,12 +29,12 @@ namespace Model.Statistics
 
 		private readonly List<StatReport> _statReports = new();
 		public UnityEvent BudgetChanged = new();
+		public UnityEvent DateChanged = new();
 
 
 		public StatEngine(int startYear, float startBudget)
 		{
-			Year = startYear;
-			Quarter = 0;
+			date = new DateTime(startYear, 1, 1);
 			Budget = startBudget;
 
 			StatReport zerothStatReport = new()
@@ -56,6 +59,26 @@ namespace Model.Statistics
 			_statReports.Add(zerothStatReport);
 		}
 
+		public void TimeElapsed()
+		{
+			int quarter = Quarter;
+			string day = Day;
+
+			date = date.AddMinutes(30	);
+
+			if (day != Day)
+			{
+				MainThreadDispatcher.Instance.Enqueue(() =>
+				{
+					DateChanged.Invoke();
+				});
+			}
+			if (quarter == Quarter)
+			{
+				//NextQuarter();
+			}
+		}
+		
 		public float CalculateResidentialTaxPerHouse(IResidential residential, float taxRate)
 		{
 			float houseTax = 0;
@@ -350,12 +373,8 @@ namespace Model.Statistics
 			statReport.Quarter = Quarter;
 			statReport.Year = Year;
 
-			++Quarter;
-			Quarter %= 4;
-
 			if (Quarter == 0)
 			{
-				++Year;
 				statReport.IncomeTax = CalculateIncomeTax(workplaces, _incomeTaxRate);
 				statReport.ResidentialTax = CalculateResidentialTax(residentials, _residentialTaxRate);
 				statReport.MaintainanceCosts = SumMaintainance(buildings);
