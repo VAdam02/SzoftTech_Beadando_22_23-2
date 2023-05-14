@@ -13,9 +13,9 @@ namespace Model
 			int age = 67;
 			float pension = 25f;
 
-			Assert.Throws<ArgumentException>(() => new Pensioner(home, age, -1f));
+			Assert.Throws<ArgumentException>(() => new Pensioner(home, age, -1));
 			Assert.Throws<ArgumentException>(() => new Pensioner(home, Worker.PENSION_AGE - 1, pension));
-			Assert.Throws<ArgumentException>(() => new Pensioner(null, age, pension));
+			Assert.Throws<ArgumentNullException>(() => new Pensioner(null, age, pension));
 
 			Pensioner pensioner = new(home, age, pension);
 			Assert.Multiple(() =>
