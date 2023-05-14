@@ -3,6 +3,9 @@ using Model.Tiles;
 using Model.Tiles.Buildings;
 using Model.Statistics;
 using Model.RoadGrids;
+using System.Collections.Generic;
+using System;
+using System.Threading;
 
 namespace Model.Simulation
 {
@@ -20,12 +23,16 @@ namespace Model.Simulation
 		public RoadGridManager RoadGridManager;
 		public StatEngine StatEngine;
 
+		private float _tax;
+		private List<Person> _people;
+
 		private void Init()
 		{
-			ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
-			ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
-			BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
-			BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
+			//TODO FIX IT
+			//ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
+			//ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
+			//BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
+			//BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
 		}
 
 		public Tile GetTile(int x, int y)
@@ -57,6 +64,7 @@ namespace Model.Simulation
 		void Start()
 		{
 			_instance = this;
+			
 			City = new();
 			ZoneManager = new();
 			BuildingManager = new();
@@ -133,13 +141,195 @@ namespace Model.Simulation
 			//DEMO CODE
 
 			Init();
+
 			StatEngine = new(2020, 100000);
+			StartSimulation();
 		}
 
 		// Update is called once per frame
 		void Update()
 		{
-			
+
 		}
+
+		/// <summary>
+		/// Called once when the simulation should do a cycle
+		/// </summary>
+		private static void Tick()
+		{
+			//Do the things that should done during a tick
+			Instance.StatEngine.TimeElapsed();
+		}
+
+		private bool BuildByPeople(Tile t, ZoneBuilding z)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+		
+		private bool LevelUpZone(Building b)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+
+		public int GetPriceMarkZone(List<Tile> tile, ZoneBuilding z)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+		public int GetPriceRemoveZone(List<Tile> tiles)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+		public int GetPriceBuildService(Tile tile, ServiceBuilding sb)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+		public int GetPriceDestroy(Tile tile)
+		{
+			
+			throw new NotImplementedException();
+			//TODO
+		}
+		
+		public int GetPriceLevelUpZone(Building building)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+
+		public void SetTax(float f)
+		{
+			_tax = f;
+			
+			//TODO
+		}
+		private bool MoveIn(int i)
+		{/*
+			bool move_in = true;
+			
+			foreach(Person p in _people)
+			{
+				if(p.GetHappiness() < 0.5)
+				{
+					p.MoveIn()
+				}
+			}*/
+			throw new NotImplementedException();
+			//TODO
+		}
+		private bool MoveOut(int i)
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+		private void Die(Person person)
+		{
+			_people.Remove(person);
+			//TODO
+		}
+
+		public List<Building> GetBuildingsOnFire()
+		{
+			throw new NotImplementedException();
+			//TODO
+		}
+		
+		public int GetTimeSpeed()
+		{
+			return _timeSpeed;
+		}
+		public void SetTimeSpeed(int speed)
+		{
+			_timeSpeed = speed;
+		}
+
+		#region Thread
+		private static int _timeSpeed = 1;
+		private static readonly int _tps = 10;
+		private static Thread _t;
+
+		private static readonly object _lock = new();		//lock for _isSimulating and _isRunning
+		private static bool _isSimulating = false;			//dont modify
+		private static bool _isRunning = false;				//dont modify
+
+		private static readonly object _pauseLock = new();	//lock for _isPaused
+		private static bool _isPaused = false;				//dont modify
+
+		/// <summary>
+		/// Run the ticking loop
+		/// </summary>
+		private static void ThreadProc()
+		{
+			lock (_lock)
+			{
+				if (_isRunning) { return; }
+				_isRunning = true;
+				_isSimulating = true;
+			}
+
+			long startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+			while (_isSimulating)
+			{
+				//TICK
+				if (!_isPaused) { Tick(); }
+
+				//TICKING DELAY
+				long sleepTime = 1000 / (_tps * _timeSpeed) - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
+				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
+				else { Debug.LogWarning("Last tick took " + (-sleepTime) + "ms longer than the maximum time"); }
+				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+			}
+
+			lock (_lock)
+			{
+				_isRunning = false;
+			}
+		}
+
+		/// <summary>
+		/// Start the simulation
+		/// </summary>
+		private static void StartSimulation()
+		{
+			_t ??= new Thread(new ThreadStart(ThreadProc));
+			_t.Start();
+		}
+
+		/// <summary>
+		/// Stop the simulation
+		/// </summary>
+		private static void StopSimulation()
+		{
+			lock (_lock)
+			{
+				_isSimulating = false;
+			}
+		}
+
+		private void OnApplicationQuit()
+		{
+			StopSimulation();
+		}
+
+		private void OnApplicationFocus(bool hasFocus)
+		{
+			lock (_pauseLock)
+			{
+				_isPaused = !hasFocus;
+			}
+		}
+
+		private void OnApplicationPause(bool pauseStatus)
+		{
+			lock (_pauseLock)
+			{
+				_isPaused = pauseStatus;
+			}
+		}
+		#endregion
 	}
 }
