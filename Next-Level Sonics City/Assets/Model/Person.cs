@@ -26,6 +26,9 @@ namespace Model
 			LiveAt = home;
 			Age = age;
 		}
+		 public virtual IWorkplace GetWorkplace() {
+        	return null; // A nem dolgozóknak nincs munkahelye
+   		 }
 
 		public float GetHappiness()
 		{
@@ -33,6 +36,7 @@ namespace Model
 			Vector3 maincord = LiveAt.Coordinates;
 			float cordx = LiveAt.Coordinates.x;
 			float cordy = LiveAt.Coordinates.y;
+			
 
 			// TAX
 			if(SimEngine.Instance.GetTax() <= 13){
@@ -78,6 +82,17 @@ namespace Model
 			}
 			happiness += policeStations*(happiness/100);
 			//Workplace is near to Home
+			
+			float current = Vector3.Distance(maincord,GetWorkplace().GetTile().Coordinates);
+			if(current < 10){
+				happiness += happiness*(current/100);
+			}
+			else{
+				happiness -= happiness*(current/1000);
+			}
+	/* 
+	Nem teljes megoldás de félek még kitörölni
+
 			float distance2 = float.MaxValue;
 			foreach(IWorkplace workplace in SimEngine.Instance.RoadGridManager.RoadGrids){
 				float current = Vector3.Distance(maincord,workplace.GetTile().Coordinates);
@@ -90,7 +105,7 @@ namespace Model
 			}
 			else{
 				happiness -= happiness*(distance2/1000);
-			}
+			}*/
 
 			if(!SimEngine.Instance.isIndustrialNearby(LiveAt)){
 				happiness += 0.1f;
@@ -98,7 +113,7 @@ namespace Model
 			else{
 				float distance3 = float.MaxValue;
 				foreach ( IWorkplace industrial in SimEngine.Instance.RoadGridManager.RoadGrids){
-					float current = Vector3.Distance(industrial.GetTile().Coordinates,maincord);
+					float current1 = Vector3.Distance(industrial.GetTile().Coordinates,maincord);
 					if(current < distance3){
 						distance3 = current;
 					}

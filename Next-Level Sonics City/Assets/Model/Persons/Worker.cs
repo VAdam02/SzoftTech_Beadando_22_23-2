@@ -26,6 +26,9 @@ namespace Model.Persons
 			WorkPlace = workPlace;
 			PersonQualification = qualification;
 		}
+		 public override IWorkplace GetWorkplace() {
+        	return WorkPlace;
+   		 }
 
 		public Pensioner Retire()
 		{
