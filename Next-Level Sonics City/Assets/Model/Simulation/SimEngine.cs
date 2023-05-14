@@ -24,11 +24,11 @@ namespace Model.Simulation
 		public StatEngine StatEngine;
 
 		private float _tax;
-		private int _timeSpeed;
 		private List<Person> _people;
 
 		private void Init()
 		{
+			//TODO FIX IT
 			//ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
 			//ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
 			//BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
@@ -240,22 +240,16 @@ namespace Model.Simulation
 		
 		public int GetTimeSpeed()
 		{
-			
-
 			return _timeSpeed;
-			//TODO
 		}
-		public int SetTimeSpeed(int speed)
+		public void SetTimeSpeed(int speed)
 		{
-
 			_timeSpeed = speed;
-			return _timeSpeed;
-			
-			//TODO
 		}
 
 		#region Thread
-		private static readonly int _tps = 10;
+		private static int _timeSpeed = 1;
+		private static readonly int _tps = 1;
 		private static Thread _t;
 
 		private static readonly object _lock = new();		//lock for _isSimulating and _isRunning
@@ -284,7 +278,7 @@ namespace Model.Simulation
 				if (!_isPaused) { Tick(); }
 
 				//TICKING DELAY
-				long sleepTime = 1000 / _tps - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
+				long sleepTime = 1000 / (_tps * _timeSpeed) - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
 				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
 				else { Debug.LogWarning("Last tick took " + (-sleepTime) + "ms longer than the maximum time"); }
 				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
