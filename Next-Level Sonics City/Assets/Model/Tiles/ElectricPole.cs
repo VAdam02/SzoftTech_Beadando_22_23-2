@@ -10,5 +10,7 @@ namespace Model.Tiles
 		{
 
 		}
+
+		public override TileType GetTileType() { return TileType.ElectricPole; }
 	}
 }

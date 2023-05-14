@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.Simulation;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace Model.Tiles.Buildings
 		{
 			_baseWorkplace = baseBuilding;
 		}
+
+		public override TileType GetTileType() { return ((Tile)_baseWorkplace).GetTileType(); }
 
 		public void RegisterWorkplace(RoadGrid roadGrid) { }
 
@@ -34,17 +37,17 @@ namespace Model.Tiles.Buildings
 			return ((Building)_baseWorkplace).Coordinates;
 		}
 
-		public bool Employ(Person person)
+		public bool Employ(Worker worker)
 		{
-			return _baseWorkplace.Employ(person);
+			return _baseWorkplace.Employ(worker);
 		}
 
-		public bool Unemploy(Person person)
+		public bool Unemploy(Worker worker)
 		{
-			return _baseWorkplace.Unemploy(person);
+			return _baseWorkplace.Unemploy(worker);
 		}
 
-		public List<Person> GetWorkers()
+		public List<Worker> GetWorkers()
 		{
 			return _baseWorkplace.GetWorkers();
 		}
@@ -61,12 +64,7 @@ namespace Model.Tiles.Buildings
 
 		public Tile GetTile() { return _baseWorkplace.GetTile(); }
 
-		internal override bool IsExpandable()
-		{
-			throw new InvalidOperationException();
-		}
-
-		internal override bool CanExpand()
+		internal override bool CanBuild()
 		{
 			throw new InvalidOperationException();
 		}
