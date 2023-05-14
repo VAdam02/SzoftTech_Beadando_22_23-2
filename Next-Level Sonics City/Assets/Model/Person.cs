@@ -82,30 +82,16 @@ namespace Model
 			}
 			happiness += policeStations*(happiness/100);
 			//Workplace is near to Home
-			
-			float current = Vector3.Distance(maincord,GetWorkplace().GetTile().Coordinates);
-			if(current < 10){
-				happiness += happiness*(current/100);
-			}
-			else{
-				happiness -= happiness*(current/1000);
-			}
-	/* 
-	Nem teljes megoldás de félek még kitörölni
-
-			float distance2 = float.MaxValue;
-			foreach(IWorkplace workplace in SimEngine.Instance.RoadGridManager.RoadGrids){
-				float current = Vector3.Distance(maincord,workplace.GetTile().Coordinates);
-				if(current < distance2){
-					distance2 = current;
+			if(!(GetWorkplace() is null)){
+				//check if person is worker the pensioners dont have workplaces
+				float current = Vector3.Distance(maincord,GetWorkplace().GetTile().Coordinates);
+				if(current < 10){
+					happiness += happiness*(current/100);
+				}
+				else{
+					happiness -= happiness*(current/1000);
 				}
 			}
-			if(distance2 < 10){
-			happiness += happiness*(distance2/100);
-			}
-			else{
-				happiness -= happiness*(distance2/1000);
-			}*/
 
 			if(!SimEngine.Instance.isIndustrialNearby(LiveAt)){
 				happiness += 0.1f;
@@ -114,8 +100,8 @@ namespace Model
 				float distance3 = float.MaxValue;
 				foreach ( IWorkplace industrial in SimEngine.Instance.RoadGridManager.RoadGrids){
 					float current1 = Vector3.Distance(industrial.GetTile().Coordinates,maincord);
-					if(current < distance3){
-						distance3 = current;
+					if(current1 < distance3){
+						distance3 = current1;
 					}
 				}
 				happiness -= distance3/10000; 
