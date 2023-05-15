@@ -42,7 +42,7 @@ namespace Model.Persons
 			++PersonQualification;
 		}
 
-		public void DecreaseQualificaiton()
+		public void DecreaseQualification()
 		{
 			if (PersonQualification == Qualification.LOW) return;
 			--PersonQualification;

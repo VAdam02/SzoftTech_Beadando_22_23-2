@@ -1,4 +1,4 @@
-﻿using Model.RoadGrids;
+﻿using Model.Tiles.Buildings;
 using NUnit.Framework;
 using System;
 
@@ -9,7 +9,7 @@ namespace Model.Persons
 		[Test]
 		public void PensionerConstructorSetsProperties()
 		{
-			IResidential home = new MockResidential();
+			IResidential home = new MockResidentialBuildingTile();
 			int age = 67;
 			float pension = 25f;
 
@@ -27,10 +27,10 @@ namespace Model.Persons
 		[Test]
 		public void PensionerPayTaxReturnsZero()
 		{
-			IResidential home = new MockResidential();
+			IResidential home = new MockResidentialBuildingTile();
 			int age = 67;
 			float pension = 1000f;
-			Pensioner pensioner = new (home, age, pension);
+			Pensioner pensioner = new(home, age, pension);
 
 			Assert.That(pensioner.PayTax(0.1f), Is.EqualTo(0f));
 		}

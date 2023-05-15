@@ -1,4 +1,4 @@
-﻿using Model.RoadGrids;
+﻿using Model.Tiles.Buildings;
 using NUnit.Framework;
 using System;
 
@@ -12,36 +12,55 @@ namespace Model.Persons
 		[SetUp]
 		public void SetUp()
 		{
-			_home = new MockResidential();
-			_workplace = new MockWorkplace();
+			_home = new MockResidentialBuildingTile();
+			_workplace = new MockWorkplaceBuildingTile();
 		}
 
 		[Test]
-		public void TestTooOldAndYoungConstructor()
+		public void Constructor_ThrowsExceptionWhenAgeTooYoungOrTooOld()
 		{
 			Assert.Throws<ArgumentException>(() => new Worker(_home, _workplace, 17, Qualification.LOW));
 			Assert.Throws<ArgumentException>(() => new Worker(_home, _workplace, Worker.PENSION_AGE, Qualification.LOW));
 			Assert.Throws<ArgumentException>(() => new Worker(_home, _workplace, Worker.PENSION_AGE + 1, Qualification.LOW));
+		}
 
+		[Test]
+		public void Constructor_ThrowsExceptionWhenHomeOrWorkplaceIsNull()
+		{
 			Assert.Throws<ArgumentNullException>(() => new Worker(null, _workplace, 18, Qualification.LOW));
 			Assert.Throws<ArgumentNullException>(() => new Worker(_home, null, 18, Qualification.LOW));
+		}
 
+		[Test]
+		public void Constructor_SucceedsWhenValidArgumentsProvided()
+		{
 			Assert.DoesNotThrow(() => new Worker(_home, _workplace, 18, Qualification.LOW));
 		}
 
 		[Test]
-		public void RetireTest()
+		public void IncreaseAge_IncreasesAgeByOne()
+		{
+			Worker worker = new(_home, _workplace, 30, Qualification.LOW);
+
+			worker.IncreaseAge();
+
+			Assert.That(worker.Age, Is.EqualTo(31));
+		}
+
+		[Test]
+		public void Retire_ReturnsPensionerWithMatchingProperties()
 		{
 			Worker worker = new(_home, _workplace, Worker.PENSION_AGE - 1, Qualification.LOW);
 			worker.IncreaseAge();
+
 			Pensioner pensioner = worker.Retire();
-			
+
 			Assert.That(pensioner.Age, Is.EqualTo(worker.Age));
 			Assert.That(pensioner.LiveAt, Is.EqualTo(worker.LiveAt));
 		}
 
 		[Test]
-		public void TestPensionAmount()
+		public void CalculatePension_ReturnsExpectedPensionAmount()
 		{
 			Worker worker = new(_home, _workplace, Worker.PENSION_AGE - Worker.TAXED_YEARS_FOR_PENSION, Qualification.LOW);
 
@@ -63,7 +82,7 @@ namespace Model.Persons
 		}
 
 		[Test]
-		public void TestIncreaseQualification()
+		public void IncreaseQualification_IncreasesQualificationByOneLevel()
 		{
 			Worker worker = new(_home, _workplace, 30, Qualification.LOW);
 
@@ -78,22 +97,22 @@ namespace Model.Persons
 		}
 
 		[Test]
-		public void TestDecreaseQualification()
+		public void DecreaseQualification_DecreasesQualificationByOneLevel()
 		{
 			Worker worker = new(_home, _workplace, 30, Qualification.HIGH);
 
-			worker.DecreaseQualificaiton();
+			worker.DecreaseQualification();
 			Assert.That(worker.PersonQualification, Is.EqualTo(Qualification.MID));
 
-			worker.DecreaseQualificaiton();
+			worker.DecreaseQualification();
 			Assert.That(worker.PersonQualification, Is.EqualTo(Qualification.LOW));
 
-			worker.DecreaseQualificaiton();
+			worker.DecreaseQualification();
 			Assert.That(worker.PersonQualification, Is.EqualTo(Qualification.LOW));
 		}
 
 		[Test]
-		public void TestPayTax()
+		public void PayTax_ReturnsExpectedTaxAmount()
 		{
 			Worker worker = new(_home, _workplace, Worker.PENSION_AGE - 1, Qualification.LOW);
 			float taxRate = 0.2f;
@@ -105,7 +124,6 @@ namespace Model.Persons
 
 			worker.IncreaseQualification();
 			Assert.That(worker.PayTax(taxRate), Is.EqualTo(150));
-
 
 			Assert.That(worker.PayTax(taxRate), Is.EqualTo(150));
 			worker.IncreaseAge();
