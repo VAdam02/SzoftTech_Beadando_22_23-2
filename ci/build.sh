@@ -5,18 +5,18 @@ set -x
 
 echo "Building for $BUILD_TARGET"
 
-export BUILD_PATH=$UNITY_DIR/Builds/$BUILD_TARGET/
-mkdir -p $BUILD_PATH
+export BUILD_PATH="$UNITY_DIR/Builds/$BUILD_TARGET/"
+mkdir -p "$BUILD_PATH"
 
 ${UNITY_EXECUTABLE:-xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' unity-editor} \
-  -projectPath $UNITY_DIR \
+  -projectPath "$UNITY_DIR" \
   -quit \
   -batchmode \
   -nographics \
-  -buildTarget $BUILD_TARGET \
-  -customBuildTarget $BUILD_TARGET \
-  -customBuildName $BUILD_NAME \
-  -customBuildPath $BUILD_PATH \
+  -buildTarget "$BUILD_TARGET" \
+  -customBuildTarget "$BUILD_TARGET" \
+  -customBuildName "$BUILD_NAME" \
+  -customBuildPath "$BUILD_PATH" \
   -executeMethod BuildCommand.PerformBuild \
   -logFile /dev/stdout
 
@@ -32,5 +32,5 @@ else
   echo "Unexpected exit code $UNITY_EXIT_CODE";
 fi
 
-ls -la $BUILD_PATH
-[ -n "$(ls -A $BUILD_PATH)" ] # fail job if build folder is empty
+ls -la "$BUILD_PATH"
+[ -n "$(ls -A \"$BUILD_PATH\")" ] # fail job if build folder is empty
