@@ -161,7 +161,7 @@ namespace Model.Simulation
 			Instance.StatEngine.TimeElapsed();
 		}
 
-		private bool BuildByPeople(Tile t, ZoneBuilding z)
+		private bool BuildByPeople(Tile t, ZoneType z)
 		{
 			throw new NotImplementedException();
 			//TODO
@@ -173,7 +173,7 @@ namespace Model.Simulation
 			//TODO
 		}
 
-		public int GetPriceMarkZone(List<Tile> tile, ZoneBuilding z)
+		public int GetPriceMarkZone(List<Tile> tile, ZoneType z)
 		{
 			throw new NotImplementedException();
 			//TODO
@@ -183,7 +183,7 @@ namespace Model.Simulation
 			throw new NotImplementedException();
 			//TODO
 		}
-		public int GetPriceBuildService(Tile tile, ServiceBuilding sb)
+		public int GetPriceBuildService(Tile tile, TileType sb)
 		{
 			throw new NotImplementedException();
 			//TODO
