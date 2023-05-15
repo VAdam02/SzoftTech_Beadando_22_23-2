@@ -1,4 +1,5 @@
-﻿using Model.Tiles.Buildings;
+﻿using Model.RoadGrids;
+using Model.Tiles.Buildings;
 using NUnit.Framework;
 using System;
 
@@ -6,20 +7,31 @@ namespace Model.Persons
 {
 	internal class PensionerTest
 	{
+		private MockResidentialBuildingTile _home;
+
+		[SetUp]
+		public void SetUp()
+		{
+			RoadGridManager.Reset();
+			City.Reset();
+
+			_home = new(0, 0);
+			City.Instance.SetTile(_home);
+		}
+
 		[Test]
 		public void PensionerConstructorSetsProperties()
 		{
-			IResidential home = new MockResidentialBuildingTile();
 			int age = 67;
 			float pension = 25f;
 
-			Assert.Throws<ArgumentException>(() => new Pensioner(home, age, -1));
-			Assert.Throws<ArgumentException>(() => new Pensioner(home, Worker.PENSION_AGE - 1, pension));
+			Assert.Throws<ArgumentException>(() => new Pensioner(_home, age, -1));
+			Assert.Throws<ArgumentException>(() => new Pensioner(_home, Worker.PENSION_AGE - 1, pension));
 			Assert.Throws<ArgumentNullException>(() => new Pensioner(null, age, pension));
 
-			Pensioner pensioner = new(home, age, pension);
+			Pensioner pensioner = new(_home, age, pension);
 
-			Assert.That(pensioner.LiveAt, Is.EqualTo(home));
+			Assert.That(pensioner.LiveAt, Is.EqualTo(_home));
 			Assert.That(pensioner.Age, Is.EqualTo(age));
 			Assert.That(pensioner.Pension, Is.EqualTo(pension));
 		}
@@ -27,10 +39,9 @@ namespace Model.Persons
 		[Test]
 		public void PensionerPayTaxReturnsZero()
 		{
-			IResidential home = new MockResidentialBuildingTile();
 			int age = 67;
 			float pension = 1000f;
-			Pensioner pensioner = new(home, age, pension);
+			Pensioner pensioner = new(_home, age, pension);
 
 			Assert.That(pensioner.PayTax(0.1f), Is.EqualTo(0f));
 		}

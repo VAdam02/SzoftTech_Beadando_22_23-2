@@ -1,4 +1,5 @@
-﻿using Model.Tiles.Buildings;
+﻿using Model.RoadGrids;
+using Model.Tiles.Buildings;
 using NUnit.Framework;
 using System;
 
@@ -6,14 +7,19 @@ namespace Model.Persons
 {
 	internal class WorkerTest
 	{
-		private IResidential _home;
-		private IWorkplace _workplace;
+		private MockResidentialBuildingTile _home;
+		private MockWorkplaceBuildingTile _workplace;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_home = new MockResidentialBuildingTile();
-			_workplace = new MockWorkplaceBuildingTile();
+			RoadGridManager.Reset();
+			City.Reset();
+
+			_home = new(0, 0);
+			City.Instance.SetTile(_home);
+			_workplace = new(0, 1);
+			City.Instance.SetTile(_workplace);
 		}
 
 		[Test]
