@@ -93,12 +93,6 @@ build-StandaloneWindows64:
   image: $IMAGE:$UNITY_VERSION-windows-mono-$IMAGE_VERSION
   variables:
     BUILD_TARGET: StandaloneWindows64
-
-build-WebGL:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: WebGL
     
 pages:
   image: alpine:latest
