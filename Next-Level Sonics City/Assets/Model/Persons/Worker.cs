@@ -1,4 +1,7 @@
 using System;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Tests")]
 
 namespace Model.Persons
 {
@@ -62,7 +65,7 @@ namespace Model.Persons
 			_taxSum += paidTax;
 		}
 
-		public float CalculateSalary()
+		internal float CalculateSalary()
 		{
 			float multiplier = 1.0f;
 			switch (PersonQualification)
