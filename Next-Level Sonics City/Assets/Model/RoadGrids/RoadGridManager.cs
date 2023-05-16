@@ -24,15 +24,34 @@ namespace Model.RoadGrids
 
 		private readonly List<RoadGrid> _roadGrids = new();
 		public List<RoadGrid> RoadGrids { get { return _roadGrids; } }
+
+		private RoadGridManager()
+		{
+
+		}
+
+		/// <summary>
+		/// Adds a new road grid to the list of road grids
+		/// </summary>
+		/// <param name="roadGrid">Newly generated road grid</param>
 		public void AddRoadGrid(RoadGrid roadGrid)
 		{
 			_roadGrids.Add(roadGrid);
 		}
+
+		/// <summary>
+		/// Removes a road grid from the list of road grids
+		/// </summary>
+		/// <param name="roadGrid">Destroyed road grid</param>
 		public void RemoveRoadGrid(RoadGrid roadGrid)
 		{
 			_roadGrids.Remove(roadGrid);
 		}
 
+		/// <summary>
+		/// Detect the new road grid element is individual, or it is connected to one or more existing road grids and merge if needed
+		/// </summary>
+		/// <param name="roadGridElement">Newly created road grid element</param>
 		public void AddRoadGridElement(IRoadGridElement roadGridElement)
 		{
 			List<IRoadGridElement> adjacentRoadGridElements = GetRoadGridElementsByRoadGridElement(roadGridElement);
@@ -57,11 +76,11 @@ namespace Model.RoadGrids
 			}
 		}
 
-		private RoadGridManager()
-		{
-
-		}
-
+		/// <summary>
+		/// Return the road grid which belongs to the building
+		/// </summary>
+		/// <param name="building">Building that should be checked</param>
+		/// <returns>Road grid element which belongs to the building or null if there's no any</returns>
 		internal static IRoadGridElement GetRoadGrigElementByBuilding(Building building)
 		{
 			Vector3 coords = building.Coordinates;
@@ -73,6 +92,11 @@ namespace Model.RoadGrids
 			return null;
 		}
 
+		/// <summary>
+		/// Return the list of buildings which are connected to the road grid element
+		/// </summary>
+		/// <param name="roadGridElement">Road grid element which should be checked</param>
+		/// <returns>List of building that connected to road grid element</returns>
 		internal static List<Building> GetBuildingsByRoadGridElement(IRoadGridElement roadGridElement)
 		{
 			Vector3 coords = roadGridElement.GetTile().Coordinates;
@@ -86,6 +110,11 @@ namespace Model.RoadGrids
 			return buildings;
 		}
 
+		/// <summary>
+		/// Return the list of road grid elements which are connected to the road grid element
+		/// </summary>
+		/// <param name="roadGridElement">Road grid element which should be checked</param>
+		/// <returns>List of connected road grid elements</returns>
 		internal static List<IRoadGridElement> GetRoadGridElementsByRoadGridElement(IRoadGridElement roadGridElement)
 		{
 			Vector3 coords = roadGridElement.GetTile().Coordinates;
