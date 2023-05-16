@@ -48,8 +48,8 @@ namespace Model
 			}
 
 			//MONEY IN THE CITY
-			if(SimEngine.Instance.GetMoney()<0){
-				happiness += SimEngine.Instance.GetMoney()/100000;
+			if(SimEngine.Instance.StatEngine.Budget<0){
+				happiness += SimEngine.Instance.StatEngine.Budget/100000;
 			}
 			//How many years is it negative TODO
 
@@ -64,10 +64,10 @@ namespace Model
 					if(distance1 <= r){
 						//na ezen belül benne van a "körben" itt megy a vizsgálat
 						
-						if(SimEngine.Instance.GetTile(i,j) is Stadion){
+						if(SimEngine.Instance.GetTile(i,j) is StadionBuildingTile) {
 							happiness += 0.05f;
 						}
-						if(SimEngine.Instance.GetTile(i,j) is PoliceDepartment ){
+						if(SimEngine.Instance.GetTile(i,j) is PoliceDepartmentBuildingTile) {
 							IWorkplace temp = (IWorkplace)SimEngine.Instance.GetTile(i,j);
 							if(temp.GetWorkersCount() > 0){
 								policeStations++;
@@ -82,7 +82,7 @@ namespace Model
 			}
 			happiness += policeStations*(happiness/100);
 			//Workplace is near to Home
-			if(!(GetWorkplace() is null)){
+			if(GetWorkplace() is not null){
 				//check if person is worker the pensioners dont have workplaces
 				float current = Vector3.Distance(maincord,GetWorkplace().GetTile().Coordinates);
 				if(current < 10){
@@ -93,7 +93,7 @@ namespace Model
 				}
 			}
 
-			if(!SimEngine.Instance.isIndustrialNearby(LiveAt)){
+			if(!SimEngine.Instance.IsIndustrialNearby(LiveAt)){
 				happiness += 0.1f;
 			}
 			else{
