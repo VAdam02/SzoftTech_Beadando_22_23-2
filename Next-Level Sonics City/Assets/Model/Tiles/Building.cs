@@ -1,6 +1,7 @@
 using Model.Tiles.Buildings;
 using System;
 using Model.RoadGrids;
+using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -13,14 +14,28 @@ namespace Model.Tiles
 		public Building(int x, int y, uint designID, Rotation rotation) : base(x, y, designID)
 		{
 			Rotation = rotation;
+		}
 
-			if (this is IWorkplace workplace)
+		public override void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+
+			RoadGrid roadGrid = RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid();
+			if (roadGrid != null)
 			{
-				workplace.RegisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace).GetRoadGrid());
-			}
-			if (this is IResidential residential)
-			{
-				residential.RegisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential).GetRoadGrid());
+				if (this is IWorkplace workplace)
+				{
+					workplace.RegisterWorkplace(roadGrid);
+				}
+				if (this is IResidential residential)
+				{
+					residential.RegisterResidential(roadGrid);
+				}
 			}
 
 			OnTileDelete.AddListener(Destroy);
@@ -48,8 +63,8 @@ namespace Model.Tiles
 			throw new NotImplementedException();
 		}
 
-		internal abstract bool IsExpandable();
-		internal abstract bool CanExpand();
-		internal abstract void Expand();
+		internal virtual void Expand()
+		{
+		}
 	}
 }

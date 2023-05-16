@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.Simulation;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
@@ -9,13 +10,15 @@ namespace Model.Tiles.Buildings
 	public class Commercial : Building, IWorkplace, IZoneBuilding
 	{
 		public ZoneBuildingLevel Level { get; private set; }
-		private readonly List<Person> _workers = new();
+		private readonly List<Worker> _workers = new();
 		private int _workersLimit = 0;
 
 		public Commercial(int x, int y, uint designID) : base(x, y, designID, Rotation.TwoSeventy) //TODO rotation
 		{
 			Level = 0;
 		}
+
+		public override TileType GetTileType() { throw new InvalidOperationException(); }
 
 		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
@@ -34,23 +37,23 @@ namespace Model.Tiles.Buildings
 			_workersLimit += 5;
 		}
 
-		public bool Employ(Person person)
+		public bool Employ(Worker worker)
 		{
 			if (_workers.Count < _workersLimit)
 			{
-				_workers.Add(person);
+				_workers.Add(worker);
 				return true;
 			}
 
 			return false;
 		}
 
-		public bool Unemploy(Person person)
+		public bool Unemploy(Worker worker)
 		{
-			return _workers.Remove(person);
+			return _workers.Remove(worker);
 		}
 
-		public List<Person> GetWorkers()
+		public List<Worker> GetWorkers()
 		{
 			return _workers;
 		}
@@ -81,12 +84,7 @@ namespace Model.Tiles.Buildings
 			return GetBuildPrice() / 10;
 		}
 
-		internal override bool IsExpandable()
-		{
-			return true;
-		}
-
-		internal override bool CanExpand()
+		internal override bool CanBuild()
 		{
 			int x1 = (int)Coordinates.x;
 			int y1 = (int)Coordinates.y;
@@ -127,51 +125,6 @@ namespace Model.Tiles.Buildings
 			}
 
 			return true;
-		}
-
-		internal override void Expand()
-		{
-			int x1 = (int)Coordinates.x;
-			int y1 = (int)Coordinates.y;
-			int x2 = (int)Coordinates.x;
-			int y2 = (int)Coordinates.y;
-
-			switch (Rotation)
-			{
-				case Rotation.Zero:
-					x1 += 1; y1 += 1;
-					break;
-				case Rotation.Ninety:
-					x1 += -1; y1 += 1;
-					break;
-				case Rotation.OneEighty:
-					x1 += -1; y1 += 1;
-					break;
-				case Rotation.TwoSeventy:
-					x1 += 1; y1 += -1;
-					break;
-			}
-
-			int minX = Math.Min(x1, x2);
-			int maxX = Math.Max(x1, x2);
-			int minY = Math.Min(y1, y2);
-			int maxY = Math.Max(y1, y2);
-
-			for (int i = minX; i < maxX; ++i)
-			{
-				for (int j = minY; j < maxY; ++j)
-				{
-					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
-					Tile oldTile = SimEngine.Instance.GetTile(i, j);
-					ExpandCommand ec = new(i, j, this);
-					ec.Execute();
-
-					MainThreadDispatcher.Instance.Enqueue(() =>
-					{
-						oldTile.OnTileDelete.Invoke();
-					});
-				}
-			}
 		}
 	}
 }

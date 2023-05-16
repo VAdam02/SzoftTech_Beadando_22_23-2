@@ -3,10 +3,10 @@ using UnityEngine;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 using Model.Statistics;
-using System.Collections;
 using System.Collections.Generic;
-using System;
 using Model.RoadGrids;
+using System.Collections;
+using System;
 using System.Linq;
 using Model.Persons;
 using System.Threading;
@@ -35,8 +35,6 @@ namespace Model.Simulation
 		private DateTime _date;
 		private City _city;
 		private List<Car> _carsOnRoad;
-		private int _timeSpeed;
-		private StatEngine _statEngine;
 		public Worker worker;
 
 		public ZoneManager ZoneManager;
@@ -45,12 +43,15 @@ namespace Model.Simulation
 		public RoadGridManager RoadGridManager;
 		public StatEngine StatEngine;
 
+		private List<Person> _people;
+
 		private void Init()
 		{
-			ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
-			ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
-			BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
-			BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
+			//TODO FIX IT
+			//ZoneManager.ZoneMarked += StatEngine.SumMarkZonePrice;
+			//ZoneManager.ZoneUnMarked += StatEngine.SumUnMarkZonePrice;
+			//BuildingManager.BuildingBuilt += StatEngine.SumBuildPrice;
+			//BuildingManager.BuildingDestroyed += StatEngine.SumDestroyPrice;
 		}
 
 		public Tile GetTile(int x, int y)
@@ -64,6 +65,7 @@ namespace Model.Simulation
 		{
 			Tile old = _tiles[x, y];
 			_tiles[x, y] = tile;
+			tile.FinalizeTile();
 			GetTile(x - 1, y)?.NeighborTileChanged(old, tile);
 			GetTile(x + 1, y)?.NeighborTileChanged(old, tile);
 			GetTile(x, y - 1)?.NeighborTileChanged(old, tile);
@@ -81,15 +83,14 @@ namespace Model.Simulation
 		void Start()
 		{
 			_instance = this;
-			Init();
-			StartSimulation();
+			
 			City = new();
 			ZoneManager = new();
 			BuildingManager = new();
 			RoadGridManager = new();
 
 			//DEMO CODE
-			int n = 100;
+			int n = 10;
 			_tiles = new Tile[n, n];
 
 			long startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
@@ -97,15 +98,29 @@ namespace Model.Simulation
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < (n-1); j++)
 			{
-				if (i % 2 == 0)
+				if (i % 3 == 0)
 				{
 					SetTile(i, j, new RoadTile(i, j, 0));
 				}
+				/*
+				else if (i % 3 == 1 && j % 2 == 0)
+				{
+					Building stadion = new StadionBuildingTile(i, j, 0, Rotation.Zero);
+					SetTile(i, j, stadion);
+					stadion.Expand();
+				}
+				else if (i % 3 == 2 || i % 3 == 1 && j % 2 == 0)
+				{
+
+				}
+				*/
 				else
 				{
 					//_tiles[i, j] = new Industrial(i, j, 0);
-					_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
+					//_tiles[i, j] = new ResidentialBuildingTile(i, j, ResidentialBuildingTile.GenerateResidential((uint)new System.Random().Next(1, 6)));
 					//_tiles[i, j] = new Commercial(i, j, 0);
+					//_tiles[i, j] = new PoliceDepartmentBuildingTile(i, j, 0, Rotation.TwoSeventy);
+					SetTile(i, j, new EmptyTile(i, j, 0));
 				}
 			}
 
@@ -123,7 +138,7 @@ namespace Model.Simulation
 
 			Debug.Log("DESTROY START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Destroy(GetTile(2, 4));
+			BuildingManager.Destroy(GetTile(2, n-1));
 			Debug.Log("Destroy takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("DESTROY FINISH");
 
@@ -134,19 +149,20 @@ namespace Model.Simulation
 			
 			Debug.Log("BUILD START");
 			startTime = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
-			BuildingManager.Build(GetTile(2, 4), TileType.Road, 0);
+			BuildingManager.Build(GetTile(2, n-1), TileType.Road, 0);
 			Debug.Log("BUILD takes up " + ((System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond) - startTime) + " ms");
 			Debug.Log("BUILD FINISH");
-
+			
 			foreach (RoadGrid grid in RoadGridManager.RoadGrids)
 			{
 				Debug.Log(grid.Workplaces.Count + " IWorkplace\t" + grid.Residentials.Count + " IResidential\t" + grid.RoadGridElements.Count + " IRoadGridElement");
 			}
-
 			//DEMO CODE
 
 			Init();
-			StatEngine = new();
+
+			StatEngine = new(2020, 100000);
+			StartSimulation();
 		}
 
 		// Update is called once per frame
@@ -156,37 +172,15 @@ namespace Model.Simulation
 		}
 
 		/// <summary>
-		/// Initialize things before the starting of the simulation
-		/// </summary>
-		/*
-		private void Init()
-		{
-			int size = 100;
-			System.Random rnd = new();
-			Tiles = new Tile[size, size];
-			for (int i = 0; i < Tiles.GetLength(0); i++)
-			for (int j = 0; j < Tiles.GetLength(1); j++)
-			{
-				
-				if (rnd.Next(0, 2) < 1)
-				{
-					Tiles[i, j] = new EmptyTile(i, j, 0);
-				}
-				else
-				{
-					Tiles[i, j] = new ResidentialBuildingTile(i, j, (uint)rnd.Next(int.MinValue, int.MaxValue) + int.MaxValue);
-				}
-			}
-		}
-		*/
-
-
-		/// <summary>
 		/// Called once when the simulation should do a cycle
 		/// </summary>
 		private static void Tick()
 		{
 			//Do the things that should done during a tick
+			Instance.StatEngine.TimeElapsed();
+
+
+			
 			System.Random rand = new();
 			//mandatory continuous move-in
 			int startindex = _instance.Personslist.Keys.Last();
@@ -265,64 +259,31 @@ namespace Model.Simulation
 				}				
 			}
 			//moving the persons out
-			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
-				foreach(ResidentialBuildingTile residential in roadGrid.Residentials){
-					//remove person from his home
-					foreach (Person residentToRemove in SimEngine._instance.MoveOutList)
-					{
-						residential.GetResidents().Remove(residentToRemove);
-					}
-					//remove person from his workplace
-					 foreach (Person workerToRemove in SimEngine._instance.MoveOutList)
-					{
-						foreach (IWorkplace workplace in SimEngine._instance.RoadGridManager.RoadGrids)
-						{
-							workplace.GetWorkers().Remove(workerToRemove);
-						}
-						
-					}
+			foreach (Person residentToRemove in SimEngine._instance.MoveOutList)
+			{
+				residentToRemove.LiveAt.MoveOut(residentToRemove);
+
+				if (residentToRemove is Worker worker)
+				{
+					worker.WorkPlace.Unemploy(worker);
 				}
 			}
 
 		}
 
-		public bool MarkZone(List<Tile> tiles, ZoneBuilding z)
-		{
-			return true;
-			//TODO
-		}
-		public bool RemoveZone(List<Tile> tiles)
+		private bool BuildByPeople(Tile t, ZoneType z)
 		{
 			throw new NotImplementedException();
 			//TODO
 		}
-		public bool BuildService(Tile tile, ServiceBuilding s)
+		
+		private bool LevelUpZone(Building b)
 		{
 			throw new NotImplementedException();
 			//TODO
 		}
-		public bool Destroy(Tile tile)
-		{
-			throw new NotImplementedException();
-			//TODO
-		}
-		public bool DestoryForce(Tile tile)
-		{
 
-			throw new NotImplementedException();
-			//TODO
-		}
-		private bool BuildByPeople(Tile t, ZoneBuilding z)
-		{
-			throw new NotImplementedException();
-			//TODO
-		}
-		/*
-		private bool LevelUpZone(IBuilding b)
-		{
-			
-		}*/
-		public int GetPriceMarkZone(List<Tile> tile, ZoneBuilding z)
+		public int GetPriceMarkZone(List<Tile> tile, ZoneType z)
 		{
 			throw new NotImplementedException();
 			//TODO
@@ -332,7 +293,7 @@ namespace Model.Simulation
 			throw new NotImplementedException();
 			//TODO
 		}
-		public int GetPriceBuildService(Tile tile, ServiceBuilding sb)
+		public int GetPriceBuildService(Tile tile, TileType sb)
 		{
 			throw new NotImplementedException();
 			//TODO
@@ -343,12 +304,12 @@ namespace Model.Simulation
 			throw new NotImplementedException();
 			//TODO
 		}
-		/*
-		public int GetPriceLevelUpZone(IBuilding)
+		
+		public int GetPriceLevelUpZone(Building building)
 		{
 			throw new NotImplementedException();
 			//TODO
-		}*/
+		}
 
 		public void SetTax(float f)
 		{
@@ -404,45 +365,24 @@ namespace Model.Simulation
 			}
 			//TODO
 		}
-		public float GetMoney()
-		{
-			return _money;
-			//TODO
-		}
-		public DateTime Getdate()
+
+		public List<Building> GetBuildingsOnFire()
 		{
 			throw new NotImplementedException();
 			//TODO
 		}
-		/*
-		public List<IBuilding> GetBuildingsOnFire()
-		{
-			throw new NotImplementedException();
-			//TODO
-		}*/
-		public List<Car> GetCarsOnRoad()
-		{
-			throw new NotImplementedException();
-			//TODO
-		}
+		
 		public int GetTimeSpeed()
 		{
-			
-
 			return _timeSpeed;
-			//TODO
 		}
-		public int SetTimeSpeed(int speed)
+		public void SetTimeSpeed(int speed)
 		{
-
 			_timeSpeed = speed;
-			return _timeSpeed;
-			
-			//TODO
 		}
 		public ResidentialBuildingTile FindHomeWithoutIndustrial(List<ResidentialBuildingTile> freeResidential){
 			foreach(ResidentialBuildingTile residential in freeResidential){
-				if(!isIndustrialNearby(residential)){
+				if(!IsIndustrialNearby(residential)){
 					return residential;
 				}
 			}
@@ -465,7 +405,7 @@ namespace Model.Simulation
 			return closestHome;
 
 		}
-		public bool isIndustrialNearby(ResidentialBuildingTile residentialBuilding){
+		public bool IsIndustrialNearby(ResidentialBuildingTile residentialBuilding){
 			foreach(IWorkplace industrial  in SimEngine._instance.RoadGridManager.RoadGrids){
 				if(industrial is Industrial){
 					float distance = Vector3.Distance(industrial.GetTile().Coordinates, residentialBuilding.Coordinates);
@@ -500,6 +440,7 @@ namespace Model.Simulation
 		}
 
 		#region Thread
+		private static int _timeSpeed = 1;
 		private static readonly int _tps = 10;
 		private static Thread _t;
 
@@ -529,7 +470,7 @@ namespace Model.Simulation
 				if (!_isPaused) { Tick(); }
 
 				//TICKING DELAY
-				long sleepTime = 1000 / _tps - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
+				long sleepTime = 1000 / (_tps * _timeSpeed) - (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime);
 				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
 				else { Debug.LogWarning("Last tick took " + (-sleepTime) + "ms longer than the maximum time"); }
 				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();

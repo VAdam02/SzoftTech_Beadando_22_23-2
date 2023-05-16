@@ -25,16 +25,8 @@ namespace Model.Tiles.Buildings
 			Tile oldTile = SimEngine.Instance.GetTile(x, y);
 
 			BuildCommand bc = new (x, y, tileType, rotation);
-			try
-			{
-				bc.Execute();
-				MainThreadDispatcher.Instance.Enqueue(() =>
-				{
-					oldTile.OnTileDelete.Invoke();
-				});
-				OnBuildingBuilt(tile);
-			}
-			catch (Exception e) { Debug.Log(e); }
+			bc.Execute();
+			OnBuildingBuilt(tile);
 		}
 
 		public void Destroy(Tile tile)
@@ -47,15 +39,9 @@ namespace Model.Tiles.Buildings
 			int x = (int)tile.Coordinates.x;
 			int y = (int)tile.Coordinates.y;
 
-			OnBuildingDestroyed(tile);
-
 			DestroyCommand dc = new (x, y);
 			dc.Execute();
-
-			SimEngine.Instance.GetTile(x, y).OnTileDelete.Invoke();
 		}
-
-
 
 		protected virtual void OnBuildingBuilt(Tile tile)
 		{

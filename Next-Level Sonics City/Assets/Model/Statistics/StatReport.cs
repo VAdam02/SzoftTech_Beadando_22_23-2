@@ -4,16 +4,17 @@ namespace Model.Statistics
 	{
 		public int Year { get; internal set; }
 		public int Quarter { get; internal set; }
+		public float Budget { get; internal set; }
 		public float Happiness { get; internal set; }
 
-		public int Tax { get; internal set; }
-		public int DestroyIncomes { get; internal set; }
-		public int BuildExpenses { get; internal set; }
-		public int MaintainanceCosts { get; internal set; }
-
-		public int Incomes { get; internal set; }
-		public int Expenses { get; internal set; }
-		public int Total { get; internal set; }
+		public float IncomeTax { get; internal set; }
+		public float ResidentialTax { get; internal set; }
+		public float BuildExpenses { get; internal set; }
+		public float DestroyIncomes { get; internal set; }
+		public float MaintainanceCosts { get; internal set; }
+		public float Incomes { get; internal set; }
+		public float Expenses { get; internal set; }
+		public float Profit { get; internal set; }
 
 		public int Population { get; internal set; }
 		public int PopulationChange { get; internal set; }

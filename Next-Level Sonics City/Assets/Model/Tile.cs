@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Model.RoadGrids;
+using Model.Simulation;
+using Model.Tiles;
 
 namespace Model
 {
@@ -33,6 +35,32 @@ namespace Model
 		{
 			DesignID = designID;
 			Coordinates = new Vector3(x, y, 0);
+		}
+
+		public abstract TileType GetTileType();
+
+		internal virtual bool CanBuild()
+		{
+			return SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y) is EmptyTile;
+		}
+
+		public void UpdateCoordinates(int x, int y)
+		{
+			if (isFinalized) return;
+
+			Coordinates = new Vector3(x, y, 0);
+		}
+
+		private bool isFinalized = false;
+		public virtual void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		protected void Finalizing()
+		{
+			if (isFinalized) return;
+			isFinalized = true;
 
 			if (this is IRoadGridElement roadGridElement)
 			{

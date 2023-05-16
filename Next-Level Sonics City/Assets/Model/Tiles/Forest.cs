@@ -10,6 +10,8 @@ namespace Model.Tiles
 
 		}
 
+		public override TileType GetTileType() { return TileType.Forest; }
+
 		public override int GetBuildPrice() //TODO implementik logic
 		{
 			return BUILD_PRICE;

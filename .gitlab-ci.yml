@@ -94,23 +94,6 @@ build-StandaloneWindows64:
   variables:
     BUILD_TARGET: StandaloneWindows64
 
-build-WebGL:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: WebGL
-    
-pages:
-  image: alpine:latest
-  stage: deploy
-  script:
-    - mv "$UNITY_DIR/Builds/WebGL/${BUILD_NAME}" public
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
-
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_ID
