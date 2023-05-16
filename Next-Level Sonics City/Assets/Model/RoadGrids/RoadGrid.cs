@@ -1,4 +1,3 @@
-using Model.Simulation;
 using System.Collections.Generic;
 
 namespace Model.RoadGrids
@@ -7,7 +6,7 @@ namespace Model.RoadGrids
 	{
 		public RoadGrid()
 		{
-			SimEngine.Instance.RoadGridManager.AddRoadGrid(this);
+			RoadGridManager.Instance.AddRoadGrid(this);
 		}
 
 		private readonly List<IRoadGridElement> _roadGridElements = new();
@@ -79,7 +78,7 @@ namespace Model.RoadGrids
 				}
 			}
 
-			SimEngine.Instance.RoadGridManager.RemoveRoadGrid(this);
+			RoadGridManager.Instance.RemoveRoadGrid(this);
 		}
 
 		public void Merge(RoadGrid roadGrid)
@@ -91,7 +90,7 @@ namespace Model.RoadGrids
 				roadGrid._roadGridElements[0].SetRoadGrid(this);
 			}
 
-			SimEngine.Instance.RoadGridManager.RemoveRoadGrid(roadGrid);
+			RoadGridManager.Instance.RemoveRoadGrid(roadGrid);
 		}
 	}
 }

@@ -16,9 +16,9 @@ namespace Model.Persons
 			RoadGridManager.Reset();
 			City.Reset();
 
-			_home = new(0, 0);
+			_home = new(0, 0, Rotation.Zero);
 			City.Instance.SetTile(_home);
-			_workplace = new(0, 1);
+			_workplace = new(0, 1, Rotation.Zero);
 			City.Instance.SetTile(_workplace);
 		}
 
