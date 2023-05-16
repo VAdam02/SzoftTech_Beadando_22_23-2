@@ -25,7 +25,7 @@ namespace Model.Statistics
 
 		public static void Reset() { _instance = null; }
 
-		private readonly DateTime _date;
+		private DateTime _date;
 		public DateTime Date
 		{
 			get { return _date; }
@@ -46,6 +46,8 @@ namespace Model.Statistics
 						NextQuarter();
 					}
 				}
+				
+				_date = value;
 			}
 		}
 		public int Year { get { return Date.Year; } }
@@ -59,7 +61,6 @@ namespace Model.Statistics
 			private set
 			{
 				_budget = value;
-				_statReports[^1].Budget = _budget;
 				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 				{
 					mainThread.Enqueue(() =>
@@ -508,6 +509,7 @@ namespace Model.Statistics
 				Budget += newIncome - newExpenses;
 			}
 
+			_statReports[^1].Budget = Budget;
 			_statReports[^1].Incomes = newIncome;
 			_statReports[^1].Expenses = newExpenses;
 			_statReports[^1].Profit = newIncome - newExpenses;
