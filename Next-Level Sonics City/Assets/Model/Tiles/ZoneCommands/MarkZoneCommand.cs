@@ -1,3 +1,4 @@
+using Model.RoadGrids;
 using Model.Tiles.Buildings;
 
 namespace Model.Tiles.ZoneCommands
@@ -29,8 +30,8 @@ namespace Model.Tiles.ZoneCommands
 		public void Execute()
 		{
 			if (!(_zoneType == ZoneType.NoZone
-			  || City.Instance.GetTile(_x - 1, _y) is RoadTile || City.Instance.GetTile(_x + 1, _y) is RoadTile
-			  || City.Instance.GetTile(_x, _y - 1) is RoadTile || City.Instance.GetTile(_x, _y + 1) is RoadTile))
+			  || City.Instance.GetTile(_x - 1, _y) is IRoadGridElement || City.Instance.GetTile(_x + 1, _y) is IRoadGridElement
+			  || City.Instance.GetTile(_x, _y - 1) is IRoadGridElement || City.Instance.GetTile(_x, _y + 1) is IRoadGridElement))
 			{ return; }
 
 			switch (_zoneType)

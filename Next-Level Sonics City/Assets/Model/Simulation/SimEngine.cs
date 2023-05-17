@@ -90,7 +90,7 @@ namespace Model.Simulation
 				if (!_isPaused ) { sumTickTime += timeNeeded; tickCount++; }
 				long sleepTime = (long)(1000 / (TPS * _timeSpeed) - timeNeeded);
 				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
-				else { Debug.LogWarning("Last tick took " + timeNeeded + " thats " + (-sleepTime) + "ms longer than the maximum allowed tick process time"); }
+				else { Debug.LogWarning("Last tick took " + timeNeeded + "ms thats " + (-sleepTime) + "ms longer than the maximum allowed tick process time"); }
 				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
 				if (!_isDebugPrinted)

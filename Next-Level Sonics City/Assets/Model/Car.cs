@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System;
 using Model.Tiles;
+using System;
 
 namespace Model
 {

@@ -133,7 +133,7 @@ namespace View
 		public void MarkZone(ZoneType zoneType)
 		{
 			if (_selectedTiles.Count >= 2)
-				SimEngine.Instance.ZoneManager.MarkZone(_selectedTiles[0].TileModel, _selectedTiles[1].TileModel, zoneType);
+				ZoneManager.Instance.MarkZone(_selectedTiles[0].TileModel, _selectedTiles[1].TileModel, zoneType);
 		}
 
 		public Tile GenerateFromModel(Model.Tile tileModel)
@@ -164,12 +164,6 @@ namespace View
 			{
 				CloneTileFromModel(City.Instance.GetTile(i, j));
 			}
-		}
-
-		// Update is called once per frame
-		void Update()
-		{
-			
 		}
 	}
 }

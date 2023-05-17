@@ -300,7 +300,7 @@ namespace Model.Statistics
 		/// <param name="e"></param>
 		public void AddDestroyIncome(object sender, TileEventArgs e)
 		{
-			int destroyIncome = e.Tile.GetDestroyPrice();
+			int destroyIncome = e.Tile.GetDestroyIncome();
 
 			lock (_statReports)
 			{

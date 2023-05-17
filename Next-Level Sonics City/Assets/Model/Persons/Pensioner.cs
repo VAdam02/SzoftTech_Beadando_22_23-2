@@ -19,11 +19,6 @@ namespace Model.Persons
 			if (Age < Worker.PENSION_AGE) throw new ArgumentException("Pensioner cannot be younger than " + Worker.PENSION_AGE + " years old");
 		}
 
-		/// <summary>
-		/// Pensioner does not pay taxes
-		/// </summary>
-		/// <param name="taxRate">Tax rate what should be include in calculations</param>
-		/// <returns>Payed tax</returns>
 		public override float PayTax(float taxRate)
 		{
 			return 0f;

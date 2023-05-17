@@ -25,15 +25,17 @@ namespace Model
 			if (Age < 18) throw new ArgumentException("Person cannot be younger than 18 years old");
 
 			LiveAt.MoveIn(this);
+
+			City.Instance.AddPerson(_id, this);
 		}
 
 		/// <summary>
 		/// Get the happiness of the person
 		/// </summary>
 		/// <returns>Happiness of person</returns>
-		public float GetHappiness()
+		public virtual float GetHappiness()
 		{
-			//TODO
+			//TODO calculate happiness
 			return 0.5f;
 		}
 
@@ -46,6 +48,11 @@ namespace Model
 			++Age;
 		}
 
+		/// <summary>
+		/// Calculate the tax for the person
+		/// </summary>
+		/// <param name="taxRate">Tax rate which should be included in calculations</param>
+		/// <returns></returns>
 		public abstract float PayTax(float taxRate);
 	}
 }

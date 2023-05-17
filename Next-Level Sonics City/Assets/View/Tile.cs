@@ -66,7 +66,7 @@ namespace View
 			{
 				if (TileManager.Instance.GhostTile != null)
 				{
-					SimEngine.Instance.BuildingManager.Build(
+					BuildingManager.Instance.Build(
 					City.Instance.GetTile(TileManager.Instance.GhostTile.TileModel.Coordinates),
 					TileManager.Instance.GhostTile.TileModel.GetTileType(),
 					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);

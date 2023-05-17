@@ -23,6 +23,10 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		public abstract ZoneBuildingLevel Level { get; }
 
+		/// <summary>
+		/// Returns the tile of the zone building
+		/// </summary>
+		/// <returns>Tile of the zone building</returns>
 		public abstract Tile GetTile();
 	}
 }

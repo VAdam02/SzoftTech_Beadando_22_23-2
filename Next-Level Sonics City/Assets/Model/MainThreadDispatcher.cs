@@ -6,15 +6,21 @@ namespace Model
 {
 	public sealed class MainThreadDispatcher : MonoBehaviour
 	{
-		private static readonly Queue<Action> s_executeOnMainThread = new Queue<Action>();
+		private static readonly Queue<Action> s_executeOnMainThread = new();
 
 		public static MainThreadDispatcher Instance { get; private set; }
 
+		/// <summary>
+		/// MUST BE CALLED BY UNITY ONLY
+		/// </summary>
 		private void Awake()
 		{
 			Instance = this;
 		}
 
+		/// <summary>
+		/// MUST BE CALLED BY UNITY ONLY
+		/// </summary>
 		private void Update()
 		{
 			lock (s_executeOnMainThread)
@@ -26,6 +32,10 @@ namespace Model
 			}
 		}
 
+		/// <summary>
+		/// Enqueue an action to be executed on the main thread.
+		/// </summary>
+		/// <param name="action">Action to be executed</param>
 		public void Enqueue(Action action)
 		{
 			if (action == null)
