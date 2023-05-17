@@ -13,8 +13,8 @@ namespace Model.Tiles.Buildings.BuildingCommands
 		/// <summary>
 		/// Creates a new BuildCommand
 		/// </summary>
-		/// <param name="x">X location of the created tile</param>
-		/// <param name="y">Y location of the created tile</param>
+		/// <param name="x">X coordinate of the created tile</param>
+		/// <param name="y">Y coordinate of the created tile</param>
 		/// <param name="tileType">Type of the tile</param>
 		/// <param name="rotation">Rotation of the tile</param>
 		public BuildCommand(int x, int y, TileType tileType, Rotation rotation) : this(x, y, tileType, rotation, 0) { }
