@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
 namespace Model.Tiles.Buildings
 {
-	public class MockResidentialBuildingTile : Building, IResidential
+	public class MockResidentialBuildingTile : Building, IResidential, IZoneBuilding
 	{
 		private readonly List<Person> _residents = new();
 		public int ResidentLimit { get; private set; }
+
+		ZoneBuildingLevel IZoneBuilding.Level => throw new NotImplementedException();
 
 		public MockResidentialBuildingTile(int x, int y, Rotation rotation) : base(x, y, 0, rotation)
 		{
@@ -70,6 +72,26 @@ namespace Model.Tiles.Buildings
 		}
 
 		void IResidential.UnregisterResidential(RoadGrid roadGrid)
+		{
+			throw new NotImplementedException();
+		}
+
+		ZoneType IZoneBuilding.GetZoneType()
+		{
+			throw new NotImplementedException();
+		}
+
+		void IZoneBuilding.LevelUp()
+		{
+			throw new NotImplementedException();
+		}
+
+		int IZoneBuilding.GetLevelUpCost()
+		{
+			throw new NotImplementedException();
+		}
+
+		Tile IZoneBuilding.GetTile()
 		{
 			throw new NotImplementedException();
 		}

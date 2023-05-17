@@ -26,6 +26,11 @@ namespace View
 		{
 			TileModel = tileModel;
 			TileModel.OnTileDelete.AddListener(Delete);
+			if (TileModel is Building building)
+			{
+				transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
+				building.OnRotationChanged.AddListener(() => transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0));
+			}
 		}
 
 		private void Delete()

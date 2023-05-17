@@ -1,4 +1,5 @@
-﻿using Model.Tiles.Buildings;
+﻿using Model.RoadGrids;
+using Model.Tiles.Buildings;
 using NUnit.Framework;
 
 namespace Model.Tiles.ZoneCommands
@@ -49,6 +50,8 @@ namespace Model.Tiles.ZoneCommands
 			int y = 4;
 			ZoneType zoneType = ZoneType.NoZone;
 
+			IRoadGridElement roadGridElement = new MockRoadGridElement(3, 3);
+			City.Instance.SetTile(roadGridElement.GetTile());
 			City.Instance.SetTile(new Industrial(x, y, 123));
 
 			MarkZoneCommand command = new(x, y, zoneType);

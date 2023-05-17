@@ -85,10 +85,10 @@ namespace Model.RoadGrids
 		{
 			Vector3 coords = building.Coordinates;
 
-			if (building.Rotation == Rotation.Zero && City.Instance.GetTile(coords.x, coords.y - 1) is IRoadGridElement aboveRoadGridElement) { return aboveRoadGridElement; }
-			if (building.Rotation == Rotation.Ninety && City.Instance.GetTile(coords.x + 1, coords.y) is IRoadGridElement rightRoadGridElement) { return rightRoadGridElement; }
-			if (building.Rotation == Rotation.OneEighty && City.Instance.GetTile(coords.x, coords.y + 1) is IRoadGridElement belowRoadGridElement) { return belowRoadGridElement; }
-			if (building.Rotation == Rotation.TwoSeventy && City.Instance.GetTile(coords.x - 1, coords.y) is IRoadGridElement leftRoadGridElement) { return leftRoadGridElement; }
+			if (building.Rotation == Rotation.Zero			&& City.Instance.GetTile(coords.x, coords.y - 1) is IRoadGridElement aboveRoadGridElement) { return aboveRoadGridElement; }
+			if (building.Rotation == Rotation.Ninety		&& City.Instance.GetTile(coords.x + 1, coords.y) is IRoadGridElement rightRoadGridElement) { return rightRoadGridElement; }
+			if (building.Rotation == Rotation.OneEighty		&& City.Instance.GetTile(coords.x, coords.y + 1) is IRoadGridElement belowRoadGridElement) { return belowRoadGridElement; }
+			if (building.Rotation == Rotation.TwoSeventy	&& City.Instance.GetTile(coords.x - 1, coords.y) is IRoadGridElement leftRoadGridElement)  { return leftRoadGridElement;  }
 			return null;
 		}
 
@@ -102,10 +102,10 @@ namespace Model.RoadGrids
 			Vector3 coords = roadGridElement.GetTile().Coordinates;
 			List<Building> buildings = new();
 
-			if (City.Instance.GetTile(coords.x, coords.y + 1) is Building belowBuilding && belowBuilding.Rotation == Rotation.Zero) { buildings.Add(belowBuilding); }
-			if (City.Instance.GetTile(coords.x - 1, coords.y) is Building leftBuilding && leftBuilding.Rotation == Rotation.Ninety) { buildings.Add(leftBuilding); }
-			if (City.Instance.GetTile(coords.x, coords.y - 1) is Building aboveBuilding && aboveBuilding.Rotation == Rotation.OneEighty) { buildings.Add(aboveBuilding); }
-			if (City.Instance.GetTile(coords.x + 1, coords.y) is Building rightBuilding && rightBuilding.Rotation == Rotation.TwoSeventy) { buildings.Add(rightBuilding); }
+			if (City.Instance.GetTile(coords.x, coords.y + 1) is Building belowBuilding && belowBuilding.Rotation == Rotation.Zero)			{ buildings.Add(belowBuilding); }
+			if (City.Instance.GetTile(coords.x - 1, coords.y) is Building leftBuilding  && leftBuilding.Rotation == Rotation.Ninety)		{ buildings.Add(leftBuilding);  }
+			if (City.Instance.GetTile(coords.x, coords.y - 1) is Building aboveBuilding && aboveBuilding.Rotation == Rotation.OneEighty)	{ buildings.Add(aboveBuilding); }
+			if (City.Instance.GetTile(coords.x + 1, coords.y) is Building rightBuilding && rightBuilding.Rotation == Rotation.TwoSeventy)	{ buildings.Add(rightBuilding); }
 
 			return buildings;
 		}
@@ -122,7 +122,17 @@ namespace Model.RoadGrids
 			if (City.Instance.GetTile(coords.x, coords.y - 1) is IRoadGridElement aboveRoadGridElement) { roadGridElements.Add(aboveRoadGridElement); }
 			if (City.Instance.GetTile(coords.x + 1, coords.y) is IRoadGridElement rightRoadGridElement) { roadGridElements.Add(rightRoadGridElement); }
 			if (City.Instance.GetTile(coords.x, coords.y + 1) is IRoadGridElement belowRoadGridElement) { roadGridElements.Add(belowRoadGridElement); }
-			if (City.Instance.GetTile(coords.x - 1, coords.y) is IRoadGridElement leftRoadGridElement) { roadGridElements.Add(leftRoadGridElement); }
+			if (City.Instance.GetTile(coords.x - 1, coords.y) is IRoadGridElement leftRoadGridElement)  { roadGridElements.Add(leftRoadGridElement);  }
+			return roadGridElements;
+		}
+
+		internal static List<(IRoadGridElement, Rotation)> GetRoadGridElementsAroundTile(Tile tile)
+		{
+			List<(IRoadGridElement, Rotation)> roadGridElements = new();
+			if (City.Instance.GetTile(tile.Coordinates.x, tile.Coordinates.y - 1) is IRoadGridElement aboveRoadGridElement) { roadGridElements.Add((aboveRoadGridElement, Rotation.Zero));		}
+			if (City.Instance.GetTile(tile.Coordinates.x + 1, tile.Coordinates.y) is IRoadGridElement rightRoadGridElement) { roadGridElements.Add((rightRoadGridElement, Rotation.Ninety));	}
+			if (City.Instance.GetTile(tile.Coordinates.x, tile.Coordinates.y + 1) is IRoadGridElement belowRoadGridElement) { roadGridElements.Add((belowRoadGridElement, Rotation.OneEighty));	}
+			if (City.Instance.GetTile(tile.Coordinates.x - 1, tile.Coordinates.y) is IRoadGridElement leftRoadGridElement)  { roadGridElements.Add((leftRoadGridElement, Rotation.TwoSeventy));	}
 			return roadGridElements;
 		}
 	}
