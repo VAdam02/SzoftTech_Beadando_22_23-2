@@ -3,7 +3,6 @@ using System;
 
 namespace Model.Tiles.Buildings
 {
-	[TestFixture]
 	public class EmptyTileTest
 	{
 		private EmptyTile emptyTile;
