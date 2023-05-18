@@ -1,30 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
+using Model.Statistics;
 
 namespace Model.Tiles
 {
 	public class Forest : Tile
 	{
+		private int _plantedYear;
+
+		private const int MAINTANCENEEDEDFORYEAR = 10;
+
+		/// <summary>
+		/// Construct a new forest
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
 		public Forest(int x, int y, uint designID) : base(x, y, designID)
 		{
-
+			
 		}
 
 		public override TileType GetTileType() { return TileType.Forest; }
-
-		public override int GetBuildPrice() //TODO implementik logic
+		
+		public override void FinalizeTile()
 		{
-			return BUILD_PRICE;
+			Finalizing();
 		}
 
-		public override int GetDestroyPrice()
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
 		{
-			return DESTROY_PRICE;
+			base.Finalizing();
+			_plantedYear = StatEngine.Instance.Year;
+		}
+
+		public override int GetBuildPrice()
+		{
+			//TODO implement forest build price
+			return 100000;
+		}
+
+		public override int GetDestroyIncome()
+		{
+			//TODO implement forest destroy price
+			return 100000;
 		}
 
 		public override int GetMaintainanceCost()
 		{
-			return GetBuildPrice() / 10;
+			//TODO implement forest maintainance cost
+			if (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) { return 0; }
+			return 100000;
 		}
 	}
 }

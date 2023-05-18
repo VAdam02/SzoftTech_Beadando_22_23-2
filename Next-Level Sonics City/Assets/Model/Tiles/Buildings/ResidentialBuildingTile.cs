@@ -1,8 +1,8 @@
+using Model.RoadGrids;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
@@ -277,81 +277,122 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
-		public ZoneBuildingLevel Level { get; private set; }
+		public ZoneBuildingLevel Level { get; private set; } = 0;
 		public int ResidentLimit { get; private set; }
 		private readonly List<Person> _residents = new();
 
-		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID, Rotation.TwoSeventy) //TODO rotation
+		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID, GetRandomRotationToLookAtRoadGridElement(x, y))
 		{
-			Level = 0;
-			ResidentLimit = 0;
+			
+		}
+
+		private static Rotation GetRandomRotationToLookAtRoadGridElement(int x, int y)
+		{
+			List<(IRoadGridElement roadGridElement, Rotation rotation)> roadGridElements = RoadGridManager.GetRoadGridElementsAroundTile(City.Instance.GetTile(x, y));
+			if (roadGridElements.Count == 0) { throw new InvalidOperationException("No road grid elements around tile"); }
+			System.Random rnd = new();
+			return roadGridElements[rnd.Next(roadGridElements.Count)].rotation;
+		}
+
+		public override void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+			//TODO implement residential residential limit
+			ResidentLimit = 10;
 		}
 
 		public override TileType GetTileType() { throw new InvalidOperationException(); }
 
 		public void RegisterResidential(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			roadGrid?.AddResidential(this);
 		}
 
 		public void UnregisterResidential(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			roadGrid?.RemoveResidential(this);
+		}
+
+		public ZoneType GetZoneType()
+		{
+			return ZoneType.ResidentialZone;
 		}
 
 		public void LevelUp()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			if (Level == ZoneBuildingLevel.ZERO) { return; }
 			if (Level == ZoneBuildingLevel.THREE) { return; }
-			//TODO level up design ID too
 			++Level;
 			ResidentLimit += 5;
 		}
 
-		public bool MoveIn(Person person)
+		public int GetLevelUpCost()
 		{
-			if (_residents.Count < ResidentLimit)
-			{
-				_residents.Add(person);
-				return true;
-			}
-
-			return false;
+			//TODO implement commercial level up cost
+			return 100000;
 		}
 
-		public bool MoveOut(Person person)
+		public void MoveIn(Person person)
 		{
-			return _residents.Remove(person);
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			if (_residents.Count >= ResidentLimit) { throw new InvalidOperationException("The residential is full"); }
+
+			if (Level == ZoneBuildingLevel.ZERO) { Level = ZoneBuildingLevel.ONE; }
+
+			_residents.Add(person);
+		}
+
+		public void MoveOut(Person person)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			_residents.Remove(person);
 		}
 
 		public List<Person> GetResidents()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			return _residents;
 		}
 
 		public int GetResidentsCount()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			return _residents.Count;
 		}
 
-		public int GetResidentsLimit()
-		{
-			return ResidentLimit;
-		}
 		public Tile GetTile() { return this; }
 
-		public override int GetBuildPrice() //TODO implementik logic
+		public override int GetBuildPrice()
 		{
-			return BUILD_PRICE;
+			//TODO implement residential build price
+			return 100000;
 		}
 
-		public override int GetDestroyPrice()
+		public override int GetDestroyIncome()
 		{
-			return DESTROY_PRICE;
+			//TODO implement residential destroy income
+			return 100000;
 		}
 
-		public override int GetMaintainanceCost()
-		{
-			return GetBuildPrice() / 10;
-		}
+		public override int GetMaintainanceCost() { return 0; }
 	}
 }

@@ -1,10 +1,16 @@
-using Model.Simulation;
+using Model.Tiles.Buildings;
 using System;
 
 namespace Model.Tiles
 {
-	public class EmptyTile : Tile
+	public class EmptyTile : Tile, IZoneBuilding
 	{
+		/// <summary>
+		/// Construct a new empty tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
 		public EmptyTile(int x, int y, uint designID) : base(x, y, designID)
 		{
 
@@ -12,9 +18,41 @@ namespace Model.Tiles
 
 		public override TileType GetTileType() { throw new InvalidOperationException(); }
 
-		internal override bool CanBuild()
+		public override bool CanBuild()
 		{
-			return SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y) is not EmptyTile;
+			return City.Instance.GetTile(Coordinates) is not EmptyTile;
+		}
+
+		public override int GetBuildPrice()
+		{
+			return 0;
+		}
+
+		public override int GetDestroyIncome()
+		{
+			return 0;
+		}
+
+		ZoneType IZoneBuilding.GetZoneType()
+		{
+			return ZoneType.NoZone;
+		}
+
+		ZoneBuildingLevel IZoneBuilding.Level => throw new InvalidOperationException();
+
+		void IZoneBuilding.LevelUp()
+		{
+			throw new InvalidOperationException();
+		}
+
+		int IZoneBuilding.GetLevelUpCost()
+		{
+			throw new InvalidOperationException();
+		}
+
+		Tile IZoneBuilding.GetTile()
+		{
+			return this;
 		}
 	}
 }

@@ -1,3 +1,4 @@
+using Model;
 using Model.Simulation;
 using Model.Tiles;
 using Model.Tiles.Buildings;
@@ -25,11 +26,16 @@ namespace View
 		{
 			TileModel = tileModel;
 			TileModel.OnTileDelete.AddListener(Delete);
+			if (TileModel is Building building)
+			{
+				transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
+				building.OnRotationChanged.AddListener(() => transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0));
+			}
 		}
 
 		private void Delete()
 		{
-			TileManager.Instance.CloneTileFromModel(SimEngine.Instance.GetTile((int)TileModel.Coordinates.x, (int)TileModel.Coordinates.y));
+			TileManager.Instance.CloneTileFromModel(City.Instance.GetTile(TileModel.Coordinates));
 			Destroy(gameObject);
 		}
 
@@ -63,10 +69,13 @@ namespace View
 			}
 			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
 			{
-				SimEngine.Instance.BuildingManager.Build(
-					SimEngine.Instance.GetTile((int)TileManager.Instance.GhostTile.TileModel.Coordinates.x, (int)TileManager.Instance.GhostTile.TileModel.Coordinates.y),
+				if (TileManager.Instance.GhostTile != null)
+				{
+					BuildingManager.Instance.Build(
+					City.Instance.GetTile(TileManager.Instance.GhostTile.TileModel.Coordinates),
 					TileManager.Instance.GhostTile.TileModel.GetTileType(),
 					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);
+				}
 			}
 		}
 

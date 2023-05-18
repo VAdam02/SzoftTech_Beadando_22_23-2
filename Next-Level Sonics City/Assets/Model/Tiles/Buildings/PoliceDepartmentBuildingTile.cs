@@ -1,82 +1,106 @@
-using System.Collections.Generic;
 using Model.Persons;
 using Model.RoadGrids;
+using System;
+using System.Collections.Generic;
 
 namespace Model.Tiles.Buildings
 {
 	public class PoliceDepartmentBuildingTile : Building, IWorkplace
 	{
 		private readonly List<Worker> _workers = new();
-		private int _workersLimit = 10;
+		public int WorkplaceLimit { get; private set; }
 
+		/// <summary>
+		/// Construct a new police department tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		/// <param name="rotation">Rotation of the tile</param>
 		public PoliceDepartmentBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
+		}
+
+		public override void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+			//TODO implement  workplace limit
+			WorkplaceLimit = 10;
 		}
 
 		public override TileType GetTileType() { return TileType.PoliceDepartment; }
 
 		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			roadGrid?.AddWorkplace(this);
 		}
 
 		public void UnregisterWorkplace(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			roadGrid?.RemoveWorkplace(this);
 		}
 
-		public bool Employ(Worker person)
+		public void Employ(Worker person)
 		{
-			if (_workers.Count < _workersLimit)
-			{
-				_workers.Add(person);
-				return true;
-			}
+			if (!_isFinalized) { throw new InvalidOperationException(); }
 
-			return false;
+			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
+			_workers.Add(person);
 		}
 
-		public bool Unemploy(Worker person)
+		public void Unemploy(Worker person)
 		{
-			if (_workers.Count > 0)
-			{
-				_workers.Remove(person);
-				return true;
-			}
+			if (!_isFinalized) { throw new InvalidOperationException(); }
 
-			return false;
+			_workers.Remove(person);
 		}
 
 		public List<Worker> GetWorkers()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			return _workers;
 		}
 
 		public int GetWorkersCount()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			return _workers.Count;
 		}
 
-		public int GetWorkersLimit()
-		{
-			return _workersLimit;
-		}
 		public Tile GetTile() { return this; }
 
-		public override int GetBuildPrice() //TODO implementik logic
+		public override int GetBuildPrice()
 		{
-			return BUILD_PRICE;
+			//TODO implement police department build price
+			return 100000;
 		}
 
-		public override int GetDestroyPrice()
+		public override int GetDestroyIncome()
 		{
-			return DESTROY_PRICE;
+			//TODO implement police department destroy income
+			return 100000;
 		}
 
 		public override int GetMaintainanceCost()
 		{
-			return GetBuildPrice() / 10;
+			//TODO implement police department maintainance cost
+			return 100000;
 		}
 	}
 }
