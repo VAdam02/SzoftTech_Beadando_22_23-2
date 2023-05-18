@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Model.Tiles
 {
-	public class RoadTile : Tile, IRoadGridElement
+	public class RoadTile : Tile, IRoadGridElement, ITransparent
 	{
 		public const uint ABOVEROADMASK = 1;
 		public const uint RIGHTROADMASK = 2;
@@ -203,6 +203,11 @@ namespace Model.Tiles
 		{
 			//TODO implement road maintainance cost
 			return 100000;
+		}
+
+		public float GetTransparency()
+		{
+			return 1;
 		}
 	}
 }

@@ -46,6 +46,11 @@ namespace Model.Simulation
 
 			System.Random rand = new();
 
+			//kill who needed
+
+
+
+
 
 
 			//mandatory continuous move-in
@@ -78,9 +83,9 @@ namespace Model.Simulation
 					}
 				}
 			}
-			          
-            // temporary solution
-            //happiness move-in or move-out
+					  
+			// temporary solution
+			//happiness move-in or move-out
 			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
 				SimEngine._instance.freeResidentals = (List<ResidentialBuildingTile>)roadGrid.Residentials.Where(current => current.GetResidentsCount() < current.GetResidentsLimit());
 				SimEngine._instance.freeWorkplaces = (List<IWorkplace>)roadGrid.Workplaces.Where(current => current.GetWorkersCount() < current.GetWorkersLimit());
@@ -127,7 +132,7 @@ namespace Model.Simulation
 			//moving the persons out
 			foreach (Person residentToRemove in SimEngine._instance.MoveOutList)
 			{
-				residentToRemove.LiveAt.MoveOut(residentToRemove);
+				residentToRemove.Residential.MoveOut(residentToRemove);
 
 				if (residentToRemove is Worker worker)
 				{

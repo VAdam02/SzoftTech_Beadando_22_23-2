@@ -55,12 +55,15 @@ namespace Model.Statistics
 
 		private readonly object _budgetLock = new();
 		private float _budget = 0;
+		private int _negativeBudgetSince = 0;
 		public float Budget
 		{
 			get { return _budget; }
 			private set
 			{
 				_budget = value;
+				if (_budget < 0 && _negativeBudgetSince == 0) { _negativeBudgetSince = Year; }
+				if (_budget >= 0) { _negativeBudgetSince = 0; }
 				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 				{
 					mainThread.Enqueue(() =>
@@ -70,6 +73,8 @@ namespace Model.Statistics
 				}
 			}
 		}
+		public int NegativeBudgetSince { get { return _negativeBudgetSince == 0 ? 0 : Year - _negativeBudgetSince; } }
+
 		public float WorkplaceTaxRate { get; set; } = 0.1f;
 		public float ResidentialTaxRate { get; set; } = 0.1f;
 		private readonly object _workplaceCountLock = new();
@@ -87,6 +92,7 @@ namespace Model.Statistics
 			_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
 
 			Budget = startBudget;
+
 		}
 
 		/// <summary>

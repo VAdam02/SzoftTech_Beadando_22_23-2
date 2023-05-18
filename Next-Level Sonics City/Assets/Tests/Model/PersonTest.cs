@@ -27,7 +27,7 @@ namespace Model
 
 			Person person = new MockPerson(_residential, age);
 
-			Assert.AreEqual(_residential, person.LiveAt);
+			Assert.AreEqual(_residential, person.Residential);
 			Assert.AreEqual(age, person.Age);
 		}
 

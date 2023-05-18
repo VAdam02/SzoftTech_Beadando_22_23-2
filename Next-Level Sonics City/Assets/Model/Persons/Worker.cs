@@ -32,10 +32,7 @@ namespace Model.Persons
 
 			WorkPlace.Employ(this);
 		}
-		 public override IWorkplace GetWorkplace() {
-        	return WorkPlace;
-   		 }
-
+		
 		/// <summary>
 		/// Retires the worker and recreate as a pensioner
 		/// </summary>
@@ -47,7 +44,7 @@ namespace Model.Persons
 			WorkPlace.Unemploy(this);
 
 			float pension = _taxSum / _taxCount / 2.0f;
-			return new Pensioner(LiveAt, Age, pension);
+			return new Pensioner(Residential, Age, pension);
 		}
 
 		/// <summary>

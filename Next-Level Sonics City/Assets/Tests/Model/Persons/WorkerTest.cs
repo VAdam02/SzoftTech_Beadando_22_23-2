@@ -62,7 +62,7 @@ namespace Model.Persons
 			Pensioner pensioner = worker.Retire();
 
 			Assert.That(pensioner.Age, Is.EqualTo(worker.Age));
-			Assert.That(pensioner.LiveAt, Is.EqualTo(worker.LiveAt));
+			Assert.That(pensioner.Residential, Is.EqualTo(worker.Residential));
 		}
 
 		[Test]

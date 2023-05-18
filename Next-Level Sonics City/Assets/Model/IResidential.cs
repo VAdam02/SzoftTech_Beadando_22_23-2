@@ -1,4 +1,5 @@
 using Model.RoadGrids;
+using Model.Tiles;
 using System.Collections.Generic;
 
 namespace Model
@@ -48,5 +49,13 @@ namespace Model
 		/// </summary>
 		/// <returns>Tile of the residential zone</returns>
 		public Tile GetTile();
+
+		public (float happiness, float weight) HappinessByBuilding { get; }
+
+		/// <summary>
+		/// Register happy zone as a possible happiness changer
+		/// </summary>
+		/// <param name="zone">Happy zone that should be calculated into happiness as a changer</param>
+		public void RegisterHappinessChangerTile(IHappyZone happyZone);
 	}
 }

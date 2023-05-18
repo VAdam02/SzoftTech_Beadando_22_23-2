@@ -35,6 +35,7 @@ namespace Model.RoadGrids
 
 		private readonly List<IWorkplace> _workplaces = new();
 		public List<IWorkplace> Workplaces { get { return _workplaces; } }
+		public List<IWorkplace> FreeWorkplaces { get { return _workplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
 
 		/// <summary>
 		/// Add workplace to this
@@ -56,6 +57,7 @@ namespace Model.RoadGrids
 
 		private readonly List<IResidential> _residential = new();
 		public List<IResidential> Residentials { get { return _residential; } }
+		public List<IResidential> FreeResidentials { get { return _residential.FindAll(residential => residential.ResidentLimit > residential.GetResidentsCount()); } }
 
 		/// <summary>
 		/// Add residential to this

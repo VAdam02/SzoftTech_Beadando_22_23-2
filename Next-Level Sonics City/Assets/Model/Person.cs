@@ -1,5 +1,7 @@
-using System;
 using Model.Persons;
+using Model.Statistics;
+using System;
+using UnityEngine;
 
 namespace Model
 {
@@ -8,9 +10,9 @@ namespace Model
 		private static ulong s_id;
 
 		private readonly ulong _id;
-        public IResidential LiveAt { get; protected set; }
+		public IResidential Residential { get; protected set; }
 		public int Age { get; protected set; }
-        public Qualification Qualification { get; protected set; }
+		public Qualification Qualification { get; protected set; }
 
 		/// <summary>
 		/// Creates a new person and moves him into the given residential
@@ -20,17 +22,14 @@ namespace Model
 		public Person(IResidential residential, int age)
 		{
 			_id = s_id++;
-			LiveAt = residential ?? throw new ArgumentNullException("Person must have a home");
+			Residential = residential ?? throw new ArgumentNullException("Person must have a home");
 			Age = age;
 			if (Age < 18) throw new ArgumentException("Person cannot be younger than 18 years old");
 
-			LiveAt.MoveIn(this);
+			Residential.MoveIn(this);
 
 			City.Instance.AddPerson(_id, this);
 		}
-		 public virtual IWorkplace GetWorkplace() {
-        	return null; // A nem dolgozóknak nincs munkahelye
-   		 }
 
 		/// <summary>
 		/// Get the happiness of the person
@@ -38,28 +37,30 @@ namespace Model
 		/// <returns>Happiness of person</returns>
 		public virtual float GetHappiness()
 		{
-			float happiness = 0.75f;
-			Vector3 maincord = LiveAt.Coordinates;
-			float cordx = LiveAt.Coordinates.x;
-			float cordy = LiveAt.Coordinates.y;
+			float happiness = 0;
+			float happinessWeight = 0;
+
+			//happiness by tax
+			happiness += Mathf.Clamp(Mathf.Cos(StatEngine.Instance.ResidentialTaxRate * Mathf.PI * 1.5f), 0, 1);
+			happinessWeight += 1;
+
+			//happiness by negative budget
+			happiness += (float)1 / (StatEngine.Instance.NegativeBudgetSince + 1);
+			happinessWeight += 1;
+
+			//check the residential happiness
+			(float happiness, float weight) residentialHappiness = Residential.HappinessByBuilding;
+			happiness += residentialHappiness.happiness * residentialHappiness.weight;
+			happinessWeight += residentialHappiness.weight;
+
+			return happiness / happinessWeight;
+			//(int)Residential.GetTile().Coordinates.x
 			
-
-			// TAX
-			if(SimEngine.Instance.GetTax() <= 13){
-				happiness += (SimEngine.Instance.GetTax() / 100);
-
-			}
-			else{
-				happiness -= (SimEngine.Instance.GetTax() / 100);
-			}
-
-			//MONEY IN THE CITY
-			if(SimEngine.Instance.StatEngine.Budget<0){
-				happiness += SimEngine.Instance.StatEngine.Budget/100000;
-			}
-			//How many years is it negative TODO
+			//TODO furthermore happiness parameter
 
 			//In the specific area
+
+			/*
 			float d = 19;
 			float r = d / 2;
 			int policeStations = 0;
@@ -99,7 +100,7 @@ namespace Model
 				}
 			}
 
-			if(!SimEngine.Instance.IsIndustrialNearby(LiveAt)){
+			if(!SimEngine.Instance.IsIndustrialNearby(Residential)){
 				happiness += 0.1f;
 			}
 			else{
@@ -120,6 +121,7 @@ namespace Model
 			else{
 				return happiness;
 			}
+			*/
 			
 		}
 

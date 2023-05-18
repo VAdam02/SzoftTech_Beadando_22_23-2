@@ -1,5 +1,6 @@
 using Model.Persons;
 using Model.RoadGrids;
+using Model.Tiles;
 using System.Collections.Generic;
 
 namespace Model
@@ -49,5 +50,11 @@ namespace Model
 		/// </summary>
 		/// <returns>Tile of the workplace</returns>
 		public Tile GetTile();
+
+		/// <summary>
+		/// Register happy zone as a possible happiness changer
+		/// </summary>
+		/// <param name="zone">Zone that should be calculated into happiness as a changer</param>
+		public void RegisterHappinessChangerTile(IHappyZone zone);
 	}
 }

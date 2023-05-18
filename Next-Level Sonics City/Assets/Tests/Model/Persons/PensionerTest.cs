@@ -31,7 +31,7 @@ namespace Model.Persons
 
 			Pensioner pensioner = new(_home, age, pension);
 
-			Assert.That(pensioner.LiveAt, Is.EqualTo(_home));
+			Assert.That(pensioner.Residential, Is.EqualTo(_home));
 			Assert.That(pensioner.Age, Is.EqualTo(age));
 			Assert.That(pensioner.Pension, Is.EqualTo(pension));
 		}

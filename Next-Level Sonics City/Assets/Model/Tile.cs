@@ -27,8 +27,8 @@ namespace Model
 		public UnityEvent DesignIDChangeEvent = new();
 
 		public Vector3 Coordinates { get; protected set; }
-		public readonly UnityEvent OnTileChange = new ();
-		public readonly UnityEvent OnTileDelete = new ();
+		public readonly UnityEvent<Tile> OnTileChange = new();
+		public readonly UnityEvent<Tile> OnTileDelete = new();
 
 		/// <summary>
 		/// Constructor for Tile
@@ -126,7 +126,7 @@ namespace Model
 			{
 				mainThread.Enqueue(() =>
 				{
-					OnTileDelete.Invoke();
+					OnTileDelete.Invoke(this);
 				});
 			}
 		}
