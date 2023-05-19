@@ -35,6 +35,18 @@ namespace Model.Tiles
 		protected new void Finalizing()
 		{
 			base.Finalizing();
+
+			StatEngine.Instance.NextQuarterEvent += (object sender, EventArgs e) =>
+			{
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						OnTileChange.Invoke(this);
+					});
+				}
+			};
+
 			_plantedYear = StatEngine.Instance.Year;
 
 			for (int i = 0; i <= GetEffectiveRadius(); i++)
@@ -43,16 +55,18 @@ namespace Model.Tiles
 				if (i == 0 && j == 0) { continue; }
 
 				//register at the residentials
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IResidential residentialTopRight)	{ residentialTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IResidential residentialBottomRight)	{ residentialBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft)	{ residentialBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft)		{ residentialTopLeft.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IResidential residentialTopRight)				{ residentialTopRight.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IResidential residentialBottomRight && j != 0)	{ residentialBottomRight.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft  && j != 0)	{ residentialBottomLeft.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft)					{ residentialTopLeft.RegisterHappinessChangerTile(this); }
 
 				//register at the workplaces
+				/*
 				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight)	{ workplaceTopRight.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight)	{ workplaceBottomRight.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft)	{ workplaceBottomLeft.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft)		{ workplaceTopLeft.RegisterHappinessChangerTile(this); }
+				*/
 
 				//register to the destroy event to be notified about a new tile
 				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j).OnTileDelete.AddListener(TileDestroyedInRadius);
@@ -71,7 +85,7 @@ namespace Model.Tiles
 			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
 
 			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
-			if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	}
+			//if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	}
 			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
 		}
 
@@ -101,7 +115,7 @@ namespace Model.Tiles
 
 		public float GetTransparency()
 		{
-			return Mathf.Sin((StatEngine.Instance.Year - _plantedYear) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
+			return Mathf.Cos(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
 		}
 
 		public int GetEffectiveRadius()
@@ -118,14 +132,14 @@ namespace Model.Tiles
 
 			Vector3 delta = tile.Coordinates - Coordinates;
 
-			float weight = 1;
+			float weight = 1 - GetTransparency(); //happiness weight made by the forest is linear with transparency
 
-			//decrease weight by transparency
+			//decrease weight by transparency of the sight
 			if (delta.x > delta.y) //run on normal function
 			{
 				for (int i = (int)Mathf.Min(Coordinates.x, tile.Coordinates.x) + 1; i <= Mathf.Max(Coordinates.x, tile.Coordinates.x) - 1; i++)
 				{
-					Tile checkTile = City.Instance.GetTile(i, Mathf.RoundToInt(i * delta.y / delta.x));
+					Tile checkTile = City.Instance.GetTile(i, i + Mathf.RoundToInt(i * delta.y / delta.x));
 
 					if (checkTile is ITransparent transparent) { weight *= transparent.GetTransparency(); }
 					else { return (0, 0); }
@@ -135,7 +149,7 @@ namespace Model.Tiles
 			{
 				for (int i = (int)Mathf.Min(Coordinates.y, tile.Coordinates.y) + 1; i <= Mathf.Max(Coordinates.y, tile.Coordinates.y) - 1; i++)
 				{
-					Tile checkTile = City.Instance.GetTile(Mathf.RoundToInt(i * delta.x / delta.y), i);
+					Tile checkTile = City.Instance.GetTile(i + Mathf.RoundToInt(i * delta.x / delta.y), i);
 
 					if (checkTile is ITransparent transparent) { weight *= transparent.GetTransparency(); }
 					else { return (0, 0); }
@@ -143,7 +157,7 @@ namespace Model.Tiles
 			}
 
 			//decrease weight by distance
-			weight *= 1 - (Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y) / GetEffectiveRadius());
+			weight *= 1 - ((Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y) - 1) / GetEffectiveRadius());
 
 			return (1, weight);
 		}

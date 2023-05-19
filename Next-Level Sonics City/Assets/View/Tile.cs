@@ -33,7 +33,7 @@ namespace View
 			}
 		}
 
-		private void Delete()
+		private void Delete(Model.Tile deletedTile)
 		{
 			TileManager.Instance.CloneTileFromModel(City.Instance.GetTile(TileModel.Coordinates));
 			Destroy(gameObject);

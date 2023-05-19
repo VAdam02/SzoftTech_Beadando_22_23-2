@@ -15,6 +15,10 @@ namespace Model.Tiles
 		/// <returns>Value of the happiness modifier made by this</returns>
 		public (float happiness, float weight) GetHappinessModifierAtTile(Tile tile);
 
+		/// <summary>
+		/// Get the tile of the happy zone
+		/// </summary>
+		/// <returns>Tile of the happy zone</returns>
 		public Tile GetTile();
 	}
 }

@@ -11,6 +11,8 @@ namespace Model.Tiles.Buildings
 
 		ZoneBuildingLevel IZoneBuilding.Level => throw new NotImplementedException();
 
+		(float happiness, float weight) IResidential.HappinessByBuilding => throw new NotImplementedException();
+
 		public MockResidentialBuildingTile(int x, int y, Rotation rotation) : base(x, y, 0, rotation)
 		{
 
@@ -92,6 +94,11 @@ namespace Model.Tiles.Buildings
 		}
 
 		Tile IZoneBuilding.GetTile()
+		{
+			throw new NotImplementedException();
+		}
+
+		void IResidential.RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
 			throw new NotImplementedException();
 		}

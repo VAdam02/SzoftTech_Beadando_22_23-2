@@ -568,12 +568,16 @@ namespace Model.Statistics
 			return workplaces;
 		}
 
+		public event EventHandler NextQuarterEvent;
+
 		/// <summary>
 		/// Close the current statreport and create a new one
 		/// </summary>
 		private void NextQuarter()
 		{
 			Debug.Log("Next quarter");
+
+			NextQuarterEvent?.Invoke(this, EventArgs.Empty);
 
 			UpdateCurrentStatReportWithoutSideEffects();
 
@@ -583,6 +587,8 @@ namespace Model.Statistics
 			}
 
 			UpdateCurrentStatReportWithoutSideEffects();
+
+			Debug.Log(StatEngine.Instance.Year + "\t" + SimEngine.Instance.residential.HappinessByBuilding);
 		}
 
 		/// <summary>
@@ -591,7 +597,8 @@ namespace Model.Statistics
 		/// </summary>
 		public void TimeElapsed()
 		{
-			Date = Date.AddMinutes(30);
+			//Date = Date.AddMinutes(30);
+			Date = Date.AddHours(24);
 		}
 	}
 }
