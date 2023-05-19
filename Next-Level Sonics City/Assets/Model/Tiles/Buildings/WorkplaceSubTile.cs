@@ -85,8 +85,6 @@ namespace Model.Tiles.Buildings
 			return _baseWorkplace.GetWorkersCount();
 		}
 
-		public Tile GetTile() { return _baseWorkplace.GetTile(); }
-
 		public override bool CanBuild()
 		{
 			throw new InvalidOperationException();

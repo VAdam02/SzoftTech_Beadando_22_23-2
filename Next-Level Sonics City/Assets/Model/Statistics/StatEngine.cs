@@ -416,7 +416,7 @@ namespace Model.Statistics
 		/// <returns>Actual statreport</returns>
 		public StatReport GetLastStatisticsReport()
 		{
-			UpdateCurrentStatReportWithoutSideEffects();
+			UpdateCurrentStatReport(false);
 			return _statReports[^1];
 		}
 
@@ -427,7 +427,7 @@ namespace Model.Statistics
 		/// <returns>Requested count statreport if possible</returns>
 		public List<StatReport> GetLastGivenStatisticsReports(int count)
 		{
-			UpdateCurrentStatReportWithoutSideEffects();
+			UpdateCurrentStatReport(false);
 
 			List<StatReport> reports = new();
 
@@ -481,7 +481,7 @@ namespace Model.Statistics
 		/// <summary>
 		/// Update the current statreport without side effects
 		/// </summary>
-		private void UpdateCurrentStatReportWithoutSideEffects()
+		private void UpdateCurrentStatReport(bool withSideEffects)
 		{
 			List<IWorkplace> workplaces = ConcatenateWorkplaces();
 			List<IResidential> residentials = ConcatenateResidentials();
@@ -510,9 +510,12 @@ namespace Model.Statistics
 
 			float newIncome = _statReports[^1].ResidentialTax + _statReports[^1].WorkplaceTax;
 			float newExpenses = _statReports[^1].Pension + _statReports[^1].MaintainanceCosts;
-			lock (_budgetLock)
+			if (withSideEffects)
 			{
-				Budget += newIncome - newExpenses;
+				lock (_budgetLock)
+				{
+					Budget += newIncome - newExpenses;
+				}
 			}
 
 			_statReports[^1].Budget = Budget;
@@ -579,16 +582,20 @@ namespace Model.Statistics
 
 			NextQuarterEvent?.Invoke(this, EventArgs.Empty);
 
-			UpdateCurrentStatReportWithoutSideEffects();
+			UpdateCurrentStatReport(true);
 
 			lock (_statReports)
 			{
 				_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
 			}
 
-			UpdateCurrentStatReportWithoutSideEffects();
+			UpdateCurrentStatReport(false);
 
-			Debug.Log(StatEngine.Instance.Year + "\t" + SimEngine.Instance.residential.HappinessByBuilding);
+			for (int i = 1; i < City.Instance.GetSize(); i++)
+			{
+				IResidential residential = (IResidential)City.Instance.GetTile(i, 1);
+				Debug.Log(residential.HappinessByBuilding + "\t" + i);
+			}
 		}
 
 		/// <summary>

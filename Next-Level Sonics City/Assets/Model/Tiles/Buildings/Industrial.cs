@@ -118,8 +118,6 @@ namespace Model.Tiles.Buildings
 			return _workers.Count;
 		}
 
-		public Tile GetTile() { return this; }
-
 		public override int GetBuildPrice()
 		{
 			//TODO implement industrial building price

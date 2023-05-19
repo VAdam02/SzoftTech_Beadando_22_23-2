@@ -380,8 +380,6 @@ namespace Model.Tiles.Buildings
 			return _residents.Count;
 		}
 
-		public Tile GetTile() { return this; }
-
 		public override int GetBuildPrice()
 		{
 			//TODO implement residential build price

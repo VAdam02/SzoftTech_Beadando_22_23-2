@@ -29,12 +29,30 @@ namespace Model.Simulation
 			BuildingManager.Instance.BuildingDestroyed += (tile, building) => { StatEngine.Instance.AddDestroyIncome(tile, building); };
 		}
 
+		public IResidential residential;
+
 		/// <summary>
 		/// <para>MUST BE CALLED BY UNITY ONLY</para>
 		/// </summary>
 		private void Start()
 		{
 			StartSimulation();
+
+
+			City.Instance.SetTile(new RoadTile(0, 0, 0));
+			IWorkplace police = new PoliceDepartmentBuildingTile(0, 1, 0, Rotation.Zero);
+			City.Instance.SetTile(police.GetTile());
+
+			for (int i = 1; i < City.Instance.GetSize(); i++)
+			{
+				City.Instance.SetTile(new RoadTile(i, 0, 0));
+				residential = new ResidentialBuildingTile(i, 1, 0);
+				City.Instance.SetTile(residential.GetTile());
+
+				_ = new Worker(residential, police, 30, Qualification.LOW);
+
+				Debug.Log(residential.HappinessByBuilding + "\t" + i);
+			}
 		}
 
 		/// <summary>
@@ -50,9 +68,7 @@ namespace Model.Simulation
 
 
 
-
-
-
+			/*
 			//mandatory continuous move-in
 			int startindex = City.Instance.GetPersons().Keys.Last();
 			if(SimEngine._instance.freeResidentals.Count !=0 && SimEngine._instance.freeWorkplaces.Count != 0){
@@ -139,6 +155,7 @@ namespace Model.Simulation
 					worker.WorkPlace.Unemploy(worker);
 				}
 			}
+			*/
 		}
 		
 		private bool MoveIn(int i)
@@ -177,6 +194,7 @@ namespace Model.Simulation
 
 		private void Die(Person person)
 		{
+			/*
 			Person toKill = person;
 			
 			foreach(KeyValuePair<int,Person> kvp in Personslist){
@@ -186,6 +204,7 @@ namespace Model.Simulation
 				}
 			}
 			//TODO
+			*/
 		}
 
 		/// <summary>
@@ -196,6 +215,8 @@ namespace Model.Simulation
 		{
 			_timeSpeed = speed;
 		}
+
+		/*
 		public ResidentialBuildingTile FindHomeWithoutIndustrial(List<ResidentialBuildingTile> freeResidential){
 			foreach(ResidentialBuildingTile residential in freeResidential){
 				if(!IsIndustrialNearby(residential)){
@@ -256,6 +277,7 @@ namespace Model.Simulation
 
 			return closestWorkplace;
 		}
+		*/
 
 		#region Thread
 		private static float _timeSpeed = 1;							//multiplier for tps
@@ -295,10 +317,19 @@ namespace Model.Simulation
 				//TICKING DELAY
 				long timeNeeded = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 				if (!_isPaused ) { sumTickTime += timeNeeded; tickCount++; }
-				long sleepTime = (long)(1000 / (TPS * _timeSpeed) - timeNeeded);
-				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
-				else { Debug.LogWarning("Last tick took " + timeNeeded + "ms thats " + (-sleepTime) + "ms longer than the maximum allowed tick process time"); }
-				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+				long timeAllowed = (long)(1000 / (TPS * _timeSpeed));
+				long sleepTime = timeAllowed - timeNeeded;
+				if (sleepTime > 0)
+				{
+					Thread.Sleep((int)sleepTime);
+					startTime += timeAllowed;
+				}
+				else
+				{
+					startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+					Debug.LogWarning("Last tick took " + timeNeeded + "ms thats " + (-sleepTime) + "ms longer than the maximum allowed tick process time");
+				}
 
 				if (!_isDebugPrinted)
 				{

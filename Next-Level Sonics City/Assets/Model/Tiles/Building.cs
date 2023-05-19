@@ -109,5 +109,14 @@ namespace Model.Tiles
 		{
 
 		}
+
+		/// <summary>
+		/// Get the tile of the building
+		/// </summary>
+		/// <returns>Tile of the building</returns>
+		public Tile GetTile()
+		{
+			return this;
+		}
 	}
 }

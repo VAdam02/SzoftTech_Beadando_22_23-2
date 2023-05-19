@@ -9,11 +9,11 @@ namespace Model.Tiles
 		public int GetEffectiveRadius();
 
 		/// <summary>
-		/// Get the happiness at the given tile
+		/// Get the happiness at the given building
 		/// </summary>
-		/// <param name="tile">Tile for reference where to calculate the effect</param>
+		/// <param name="building">Building for reference where to calculate the effect</param>
 		/// <returns>Value of the happiness modifier made by this</returns>
-		public (float happiness, float weight) GetHappinessModifierAtTile(Tile tile);
+		public (float happiness, float weight) GetHappinessModifierAtTile(Building building);
 
 		/// <summary>
 		/// Get the tile of the happy zone

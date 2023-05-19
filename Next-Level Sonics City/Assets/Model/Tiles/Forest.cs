@@ -60,7 +60,7 @@ namespace Model.Tiles
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft  && j != 0)	{ residentialBottomLeft.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft)					{ residentialTopLeft.RegisterHappinessChangerTile(this); }
 
-				//register at the workplaces
+				//register at the workplaces //TODO
 				/*
 				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight)	{ workplaceTopRight.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight)	{ workplaceBottomRight.RegisterHappinessChangerTile(this); }
@@ -69,10 +69,10 @@ namespace Model.Tiles
 				*/
 
 				//register to the destroy event to be notified about a new tile
-				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j).OnTileDelete.AddListener(TileDestroyedInRadius);
-				City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j).OnTileDelete.AddListener(TileDestroyedInRadius);
-				City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j).OnTileDelete.AddListener(TileDestroyedInRadius);
-				City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j).OnTileDelete.AddListener(TileDestroyedInRadius);
+				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+				if (j != 0) City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+				if (j != 0) City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+				City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace Model.Tiles
 			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
 
 			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
-			//if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	}
+			//if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	} //TODO
 			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
 		}
 
@@ -123,21 +123,20 @@ namespace Model.Tiles
 			return 3;
 		}
 
-		public (float happiness, float weight) GetHappinessModifierAtTile(Tile tile)
+		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException(); }
 
-			if (tile == null) { throw new ArgumentNullException(); }
-			if (tile == this) { throw new ArgumentException("Target can't be same as this"); }
+			if (building == null) { throw new ArgumentNullException(); }
 
-			Vector3 delta = tile.Coordinates - Coordinates;
+			Vector3 delta = building.Coordinates - Coordinates;
 
-			float weight = 1 - GetTransparency(); //happiness weight made by the forest is linear with transparency
+			float weight = 1 - GetTransparency(); //happiness weight made by the forest is linear with age aka transparency
 
 			//decrease weight by transparency of the sight
 			if (delta.x > delta.y) //run on normal function
 			{
-				for (int i = (int)Mathf.Min(Coordinates.x, tile.Coordinates.x) + 1; i <= Mathf.Max(Coordinates.x, tile.Coordinates.x) - 1; i++)
+				for (int i = (int)Mathf.Min(Coordinates.x, building.Coordinates.x) + 1; i <= Mathf.Max(Coordinates.x, building.Coordinates.x) - 1; i++)
 				{
 					Tile checkTile = City.Instance.GetTile(i, i + Mathf.RoundToInt(i * delta.y / delta.x));
 
@@ -147,7 +146,7 @@ namespace Model.Tiles
 			}
 			else //run on inverted function
 			{
-				for (int i = (int)Mathf.Min(Coordinates.y, tile.Coordinates.y) + 1; i <= Mathf.Max(Coordinates.y, tile.Coordinates.y) - 1; i++)
+				for (int i = (int)Mathf.Min(Coordinates.y, building.Coordinates.y) + 1; i <= Mathf.Max(Coordinates.y, building.Coordinates.y) - 1; i++)
 				{
 					Tile checkTile = City.Instance.GetTile(i + Mathf.RoundToInt(i * delta.x / delta.y), i);
 
