@@ -1,13 +1,15 @@
+using log4net.Core;
 using Model.Persons;
 using Model.RoadGrids;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
-	public class StadionBuildingTile : Building, IWorkplace
+	public class StadionBuildingTile : Building, IWorkplace, IHappyZone
 	{
 		private readonly List<Worker> _workers = new();
 		public int WorkplaceLimit { get; private set; }
@@ -216,6 +218,32 @@ namespace Model.Tiles.Buildings
 		public override float GetTransparency()
 		{
 			return 0.75f;
+		}
+
+		private int GetRegisterRadius()
+		{
+			return 5;
+		}
+
+		public int GetEffectiveRadius()
+		{
+			return GetWorkersCount() > 0 ? GetRegisterRadius() : 0;
+		}
+
+		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			if (building == null) { throw new ArgumentNullException(); }
+
+			Vector3 delta = building.Coordinates - Coordinates;
+
+			float weight = 1;
+
+			//decrease weight by distance
+			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
+
+			return (0, weight);
 		}
 	}
 }
