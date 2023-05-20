@@ -133,23 +133,14 @@ namespace Model.Tiles.Buildings
 			return _workers.Count;
 		}
 
-		public override int GetBuildPrice()
-		{
-			//TODO implement police department build price
-			return 100000;
-		}
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			//TODO implement police department destroy income
-			return 100000;
-		}
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
 
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement police department maintainance cost
-			return 100000;
-		}
+		//TODO implement electric pole maintainance cost
+		public override int MaintainanceCost => 100000;
 
 		private int GetRegisterRadius()
 		{
@@ -215,6 +206,10 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
+		int IHappyZone.RegisterRadius => throw new NotImplementedException();
+
+		int IHappyZone.EffectiveRadius => throw new NotImplementedException();
+
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
@@ -240,9 +235,19 @@ namespace Model.Tiles.Buildings
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
 
-		public override float GetTransparency()
+		(float happiness, float weight) IHappyZone.GetHappinessModifierAtTile(Building building)
 		{
-			return 0.75f;
+			throw new NotImplementedException();
+		}
+
+		Tile IHappyZone.GetTile()
+		{
+			throw new NotImplementedException();
+		}
+
+		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

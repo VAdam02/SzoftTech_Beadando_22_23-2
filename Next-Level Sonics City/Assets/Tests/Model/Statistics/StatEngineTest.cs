@@ -115,7 +115,7 @@ namespace Model.Statistics
 		[Test]
 		public void SumMaintenance_EqualsToIndividualTilesMaintenanceSum()
 		{
-			float maintenance = _residential1.GetMaintainanceCost() + _residential2.GetMaintainanceCost() + _workplace1.GetMaintainanceCost() + _workplace2.GetMaintainanceCost();
+			float maintenance = _residential1.MaintainanceCost + _residential2.MaintainanceCost + _workplace1.MaintainanceCost + _workplace2.MaintainanceCost;
 			Assert.AreEqual(maintenance, StatEngine.Instance.SumMaintenance(new List<Tile>() { _residential1, _residential2, _workplace1, _workplace2 }));
 		}
 

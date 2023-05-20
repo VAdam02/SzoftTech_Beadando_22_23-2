@@ -23,20 +23,11 @@ namespace Model.Tiles
 			return City.Instance.GetTile(Coordinates) is not EmptyTile;
 		}
 
-		public override int GetBuildPrice()
-		{
-			return 0;
-		}
+		public override int BuildPrice => 0;
 
-		public override int GetDestroyIncome()
-		{
-			return 0;
-		}
+		public override int DestroyIncome => 0;
 
-		ZoneType IZoneBuilding.GetZoneType()
-		{
-			return ZoneType.NoZone;
-		}
+		public override float Transparency => 1;
 
 		ZoneBuildingLevel IZoneBuilding.Level => throw new InvalidOperationException();
 
@@ -55,11 +46,6 @@ namespace Model.Tiles
 			return this;
 		}
 
-		public override float GetTransparency()
-		{
-			return 1;
-		}
-
 		public override void DeleteTile() => Deleting();
 
 		/// <summary>
@@ -70,5 +56,7 @@ namespace Model.Tiles
 		{
 			base.Deleting();
 		}
+
+		ZoneType IZoneBuilding.GetZoneType() => ZoneType.NoZone;
 	}
 }

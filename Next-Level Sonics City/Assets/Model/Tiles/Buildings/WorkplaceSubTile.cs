@@ -95,15 +95,9 @@ namespace Model.Tiles.Buildings
 			throw new InvalidOperationException();
 		}
 
-		public override int GetBuildPrice()
-		{
-			return 0;
-		}
+		public override int BuildPrice => 0;
 
-		public override int GetDestroyIncome()
-		{
-			return 0;
-		}
+		public override int DestroyIncome => 0;
 
 		public (float happiness, float weight) HappinessByBuilding
 		{
@@ -116,11 +110,6 @@ namespace Model.Tiles.Buildings
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
 			
-		}
-
-		public override float GetTransparency()
-		{
-			return 0.75f;
 		}
 	}
 }

@@ -16,15 +16,9 @@ namespace Model.Tiles.Buildings
 
 		}
 
-		public override int GetBuildPrice()
-		{
-			return 1000;
-		}
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			return 100;
-		}
+		public override int DestroyIncome => 100000;
 
 		public override void FinalizeTile()
 		{
@@ -105,11 +99,6 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
-		}
-
-		public override float GetTransparency()
-		{
-			return 0.75f;
 		}
 	}
 }

@@ -377,6 +377,14 @@ namespace Model.Tiles.Buildings
 			_residents.Add(person);
 		}
 
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
+
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
+
+		public override float Transparency => 1 - (float)(int)Level / 12;
+
 		public void MoveOut(Person person)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException(); }
@@ -397,20 +405,6 @@ namespace Model.Tiles.Buildings
 
 			return _residents.Count;
 		}
-
-		public override int GetBuildPrice()
-		{
-			//TODO implement residential build price
-			return 100000;
-		}
-
-		public override int GetDestroyIncome()
-		{
-			//TODO implement residential destroy income
-			return 100000;
-		}
-
-		public override int GetMaintainanceCost() { return 0; }
 
 		public (float happiness, float weight) HappinessByBuilding
 		{
@@ -445,11 +439,6 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
-		}
-
-		public override float GetTransparency()
-		{
-			return 1 - (float)(int)Level / 12;
 		}
 	}
 }

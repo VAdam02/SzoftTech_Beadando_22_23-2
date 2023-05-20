@@ -179,17 +179,13 @@ namespace Model.Tiles.Buildings
 			return _workers.Count;
 		}
 
-		public override int GetBuildPrice()
-		{
-			//TODO implement industrial building price
-			return 100000;
-		}
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			//TODO implement industrial destroy income
-			return 100000;
-		}
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
+
+		public override float Transparency => 1 - (float)(int)Level / 12;
 
 		private int GetRegisterRadius()
 		{
@@ -201,40 +197,6 @@ namespace Model.Tiles.Buildings
 			return GetWorkersCount() > 0 ? GetRegisterRadius() : 0;
 		}
 
-		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (building == null) { throw new ArgumentNullException(); }
-
-			Vector3 delta = building.Coordinates - Coordinates;
-
-			float weight = (int)Level; //saddness weight is made by the level of the building
-
-			//decrease weight by transparency of the sight
-			if (delta.x > delta.y) //run on normal function
-			{
-				for (int i = (int)Mathf.Min(Coordinates.x, building.Coordinates.x) + 1; i < Mathf.Max(Coordinates.x, building.Coordinates.x); i++)
-				{
-					Tile checkTile = City.Instance.GetTile(i, (building.Coordinates.x < Coordinates.x ? building : this).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
-					weight *= checkTile.GetTransparency();
-				}
-			}
-			else //run on inverted function
-			{
-				for (int i = (int)Mathf.Min(Coordinates.y, building.Coordinates.y) + 1; i < Mathf.Max(Coordinates.y, building.Coordinates.y); i++)
-				{
-					Tile checkTile = City.Instance.GetTile((building.Coordinates.y < Coordinates.y ? building : this).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), i);
-					weight *= checkTile.GetTransparency();
-				}
-			}
-
-			//decrease weight by distance
-			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
-
-			return (0, weight);
-		}
-
 		public (float happiness, float weight) HappinessByBuilding
 		{
 			get
@@ -244,6 +206,10 @@ namespace Model.Tiles.Buildings
 				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
 			}
 		}
+
+		int IHappyZone.RegisterRadius => throw new NotImplementedException();
+
+		int IHappyZone.EffectiveRadius => throw new NotImplementedException();
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
@@ -270,9 +236,43 @@ namespace Model.Tiles.Buildings
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
 
-		public override float GetTransparency()
+		(float happiness, float weight) IHappyZone.GetHappinessModifierAtTile(Building building)
 		{
-			return 1 - (float)(int)Level / 12;
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			if (building == null) { throw new ArgumentNullException(); }
+
+			Vector3 delta = building.Coordinates - Coordinates;
+
+			float weight = (int)Level; //saddness weight is made by the level of the building
+
+			//decrease weight by transparency of the sight
+			if (delta.x > delta.y) //run on normal function
+			{
+				for (int i = (int)Mathf.Min(Coordinates.x, building.Coordinates.x) + 1; i < Mathf.Max(Coordinates.x, building.Coordinates.x); i++)
+				{
+					Tile checkTile = City.Instance.GetTile(i, (building.Coordinates.x < Coordinates.x ? building : this).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
+					weight *= checkTile.Transparency;
+				}
+			}
+			else //run on inverted function
+			{
+				for (int i = (int)Mathf.Min(Coordinates.y, building.Coordinates.y) + 1; i < Mathf.Max(Coordinates.y, building.Coordinates.y); i++)
+				{
+					Tile checkTile = City.Instance.GetTile((building.Coordinates.y < Coordinates.y ? building : this).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), i);
+					weight *= checkTile.Transparency;
+				}
+			}
+
+			//decrease weight by distance
+			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
+
+			return (0, weight);
+		}
+
+		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

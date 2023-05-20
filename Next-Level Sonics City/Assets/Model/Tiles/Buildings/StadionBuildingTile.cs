@@ -116,23 +116,14 @@ namespace Model.Tiles.Buildings
 			return _workers.Count;
 		}
 
-		public override int GetBuildPrice()
-		{
-			//TODO implement stadion build price
-			return 100000;
-		}
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			//TODO implement stadion destroy income
-			return 100000;
-		}
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
 
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement stadion maintainance cost
-			return 100000;
-		}
+		//TODO implement electric pole maintainance cost
+		public override int MaintainanceCost => 100000;
 
 		public override bool CanBuild()
 		{
@@ -226,6 +217,10 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
+		int IHappyZone.RegisterRadius => throw new NotImplementedException();
+
+		int IHappyZone.EffectiveRadius => throw new NotImplementedException();
+
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
@@ -251,11 +246,6 @@ namespace Model.Tiles.Buildings
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
 
-		public override float GetTransparency()
-		{
-			return 0.75f;
-		}
-
 		private int GetRegisterRadius()
 		{
 			return 5;
@@ -266,7 +256,7 @@ namespace Model.Tiles.Buildings
 			return GetWorkersCount() > 0 ? GetRegisterRadius() : 0;
 		}
 
-		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
+		(float happiness, float weight) IHappyZone.GetHappinessModifierAtTile(Building building)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException(); }
 
@@ -280,6 +270,11 @@ namespace Model.Tiles.Buildings
 			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
 
 			return (0, weight);
+		}
+
+		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -27,15 +27,11 @@ namespace Model.Tiles.Buildings
 			ResidentLimit = 10;
 		}
 
-		public override int GetBuildPrice()
-		{
-			return 100;
-		}
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			return 100;
-		}
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
 
 		public override TileType GetTileType()
 		{
@@ -119,11 +115,6 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
-		}
-
-		public override float GetTransparency()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

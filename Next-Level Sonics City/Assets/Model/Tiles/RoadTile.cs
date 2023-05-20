@@ -8,7 +8,7 @@ namespace Model.Tiles
 	public class RoadTile : Tile, IRoadGridElement
 	{
 		#region Tile implementation
-		public override TileType GetTileType() { return TileType.Road; }
+		public override TileType GetTileType() => TileType.Road;
 
 		public override void FinalizeTile() => Finalizing();
 
@@ -29,33 +29,19 @@ namespace Model.Tiles
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting()
-		{
-			base.Deleting();
-		}
+		protected new void Deleting() => base.Deleting();
 
-		public override int GetBuildPrice()
-		{
-			//TODO implement road build price
-			return 100000;
-		}
+		//TODO implement road build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			//TODO implement road destroy income
-			return 100000;
-		}
+		//TODO implement road destroy income
+		public override int DestroyIncome => 100000;
 
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement road maintainance cost
-			return 100000;
-		}
+		//TODO implement road maintainance cost
+		public override int MaintainanceCost => 100000;
 
-		public override float GetTransparency()
-		{
-			return 1;
-		}
+		public override float Transparency => 1;
+
 		#endregion
 
 		#region IRoadGridElement implementation
@@ -215,7 +201,7 @@ namespace Model.Tiles
 		#endregion
 
 		#region Common implementation
-		public Tile GetTile() { return this; }
+		public Tile GetTile() => this;
 		#endregion
 
 		public const uint ABOVEROADMASK = 1;

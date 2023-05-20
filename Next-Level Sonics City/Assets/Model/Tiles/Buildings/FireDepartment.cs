@@ -84,23 +84,14 @@ namespace Model.Tiles.Buildings
 			return _workers.Count;
 		}
 
-		public override int GetBuildPrice()
-		{
-			//TODO implement fire department build price
-			return 1000000;
-		}
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			//TODO implement fire department destroy income
-			return 100000;
-		}
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
 
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement fire department maintainance cost
-			return 100000;
-		}
+		//TODO implement electric pole maintainance cost
+		public override int MaintainanceCost => 100000;
 
 		public (float happiness, float weight) HappinessByBuilding
 		{
@@ -135,11 +126,6 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
-		}
-
-		public override float GetTransparency()
-		{
-			return 0.75f;
 		}
 	}
 }

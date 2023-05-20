@@ -41,7 +41,7 @@ namespace Model.Tiles
 				StatEngine.Instance.TimeElapsed();
 			}
 
-			var maintainanceCost = forest.GetMaintainanceCost();
+			var maintainanceCost = forest.MaintainanceCost;
 			Assert.AreEqual(0, maintainanceCost);
 		}
 

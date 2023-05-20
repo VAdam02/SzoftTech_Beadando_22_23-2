@@ -17,28 +17,16 @@ namespace Model.Tiles
 
 		public override TileType GetTileType() { return TileType.ElectricPole; }
 
-		public override int GetBuildPrice()
-		{
-			//TODO implement electric pole build price
-			return 100000;
-		}
+		//TODO implement electric pole build price
+		public override int BuildPrice => 100000;
 
-		public override int GetDestroyIncome()
-		{
-			//TODO implement electric pole destroy price
-			return 100000;
-		}
+		//TODO implement electric pole destroy price
+		public override int DestroyIncome => 100000;
 
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement electric pole maintainance cost
-			return 100000;
-		}
+		//TODO implement electric pole maintainance cost
+		public override int MaintainanceCost => 100000;
 
-		public override float GetTransparency()
-		{
-			return 1;
-		}
+		public override float Transparency => 1;
 
 		public override void DeleteTile() => Deleting();
 

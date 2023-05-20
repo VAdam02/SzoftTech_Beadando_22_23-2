@@ -6,23 +6,9 @@ namespace Model.Tiles
 {
 	public class Forest : Tile, IHappyZone
 	{
-		private int _plantedYear;
+		#region Tile implementation
+		public override TileType GetTileType() => TileType.Forest;
 
-		private const int MAINTANCENEEDEDFORYEAR = 10;
-
-		/// <summary>
-		/// Construct a new forest
-		/// </summary>
-		/// <param name="x">X coordinate of the tile</param>
-		/// <param name="y">Y coordinate of the tile</param>
-		/// <param name="designID">DesignID for the tile</param>
-		public Forest(int x, int y, uint designID) : base(x, y, designID)
-		{
-			
-		}
-
-		public override TileType GetTileType() { return TileType.Forest; }
-		
 		public override void FinalizeTile() => Finalizing();
 
 		/// <summary>
@@ -35,115 +21,16 @@ namespace Model.Tiles
 
 			StatEngine.Instance.NextQuarterEvent += (object sender, EventArgs e) =>
 			{
-				TileChangeInvoke();
+				if (StatEngine.Instance.Quarter == 0)
+				{
+					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, DESIGNID_AGE_MASK);
+					TileChangeInvoke();
+				}
 			};
 
 			_plantedYear = StatEngine.Instance.Year;
 
-			for (int i = 0; i <= GetEffectiveRadius(); i++)
-			for (int j = 0; Mathf.Sqrt(i * i + j * j) <= GetEffectiveRadius(); j++)
-			{
-				if (i == 0 && j == 0) { continue; }
-
-				//register at the residentials
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IResidential residentialTopRight)				{ residentialTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IResidential residentialBottomRight && j != 0)	{ residentialBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft  && j != 0)	{ residentialBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft)					{ residentialTopLeft.RegisterHappinessChangerTile(this); }
-
-				//register at the workplaces
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight)				{ workplaceTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0)	{ workplaceBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0)	{ workplaceBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft)					{ workplaceTopLeft.RegisterHappinessChangerTile(this); }
-
-				//register to the destroy event to be notified about a new tile
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is Tile aboveTile) { aboveTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is Tile rightTile && j != 0) { rightTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is Tile bottomTile && j != 0) { bottomTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is Tile leftTile) { leftTile.OnTileDelete += TileDestroyedInRadius; }
-			}
-		}
-
-		/// <summary>
-		/// Register at and to the new tile
-		/// </summary>
-		/// <param name="oldTile">Old tile that was deletetd</param>
-		private void TileDestroyedInRadius(object sender, Tile oldTile)
-		{
-			Tile newTile = City.Instance.GetTile(oldTile);
-
-			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
-			if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	} //TODO
-			newTile.OnTileDelete += TileDestroyedInRadius;
-		}
-
-		public override int GetBuildPrice()
-		{
-			//TODO implement forest build price
-			return 100000;
-		}
-
-		public override int GetDestroyIncome()
-		{
-			//TODO implement forest destroy price
-			return 100000;
-		}
-
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement forest maintainance cost
-			if (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) { return 0; }
-			return 100000;
-		}
-
-		public Tile GetTile()
-		{
-			return this;
-		}
-
-		public override float GetTransparency()
-		{
-			return 1 - Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR) / 4;
-		}
-
-		public int GetEffectiveRadius()
-		{
-			return 3;
-		}
-
-		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (building == null) { throw new ArgumentNullException(); }
-
-			Vector3 delta = building.Coordinates - Coordinates;
-
-			float weight = Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
-
-			//decrease weight by transparency of the sight
-			if (delta.x > delta.y) //run on normal function
-			{
-				for (int i = (int)Mathf.Min(Coordinates.x, building.Coordinates.x) + 1; i < Mathf.Max(Coordinates.x, building.Coordinates.x); i++)
-				{
-					Tile checkTile = City.Instance.GetTile(i, (building.Coordinates.x < Coordinates.x ? (Tile)building : this).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
-					weight *= checkTile.GetTransparency();
-				}
-			}
-			else //run on inverted function
-			{
-				for (int i = (int)Mathf.Min(Coordinates.y, building.Coordinates.y) + 1; i < Mathf.Max(Coordinates.y, building.Coordinates.y); i++)
-				{
-					Tile checkTile = City.Instance.GetTile((building.Coordinates.y < Coordinates.y ? (Tile)building : this).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), i);
-					weight *= checkTile.GetTransparency();
-				}
-			}
-
-			//decrease weight by distance
-			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
-
-			return (1, weight);
+			IHappyZone.RegisterHappinessChangerTileToRegisterRadius(this);
 		}
 
 		public override void DeleteTile() => Deleting();
@@ -152,9 +39,66 @@ namespace Model.Tiles
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting()
+		protected new void Deleting() => base.Deleting();
+
+		//TODO implement forest build price
+		public override int BuildPrice => 100000;
+
+		//TODO implement forest destroy price
+		public override int DestroyIncome => 100000;
+
+		//TODO implement forest maintainance cost
+		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : 100000;
+
+		public override float Transparency => 1 - Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR) / 4;
+		#endregion
+
+		#region IHappyZone implementation
+		int IHappyZone.RegisterRadius => 3;
+
+		int IHappyZone.EffectiveRadius => ((IHappyZone)this).RegisterRadius;
+
+		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
 		{
-			base.Deleting();
+			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
+			if (building == null) { throw new ArgumentNullException(nameof(building) + " can't be null"); }
+
+			Vector3 delta = building.Coordinates - Coordinates;
+
+			float weight = Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
+
+			//decrease weight by transparency of the sight
+			weight *= IHappyZone.SightToHappyZone(this, building);
+
+			//decrease weight by distance
+			weight *= 1 - IHappyZone.DistanceToHappyZone(this, building);
+
+			return (1, weight);
+		}
+
+		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile) => IHappyZone.TileDestroyedInRadius(this, oldTile);
+		#endregion
+
+		#region Common implementation
+		public Tile GetTile() => this;
+		#endregion
+
+		private int _plantedYear;
+
+		private const int MAINTANCENEEDEDFORYEAR = 10;
+		public const uint DESIGNID_AGE_MASK = 0x00000015; // 4 bits
+
+		public int Age => StatEngine.Instance.Year - _plantedYear;
+
+		/// <summary>
+		/// Construct a new forest
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		public Forest(int x, int y, uint designID) : base(x, y, designID)
+		{
+			
 		}
 	}
 }

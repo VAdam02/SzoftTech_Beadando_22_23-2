@@ -116,31 +116,21 @@ namespace Model
 		/// <summary>
 		/// Returns the price of building this tile
 		/// </summary>
-		/// <returns></returns>
-		public abstract int GetBuildPrice();
+		public abstract int BuildPrice { get; }
 
 		/// <summary>
 		/// Returns the price of destroying this tile
 		/// </summary>
-		/// <returns></returns>
-		public abstract int GetDestroyIncome();
+		public abstract int DestroyIncome { get; }
 
 		/// <summary>
 		/// Returns the price of maintaining this tile
 		/// </summary>
-		/// <returns></returns>
-		public virtual int GetMaintainanceCost()
-		{
-			return 0;
-		}
+		public virtual int MaintainanceCost { get; } = 0;
 
 		/// <summary>
 		/// Returns the tile transparency for the effects
 		/// </summary>
-		/// <returns>Transparency of tile</returns>
-		public virtual float GetTransparency()
-		{
-			return 0.25f;
-		}
+		public virtual float Transparency { get; } = 0.75f;
 	}
 }

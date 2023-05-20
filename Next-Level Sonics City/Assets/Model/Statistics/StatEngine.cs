@@ -287,7 +287,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(tiles, tile =>
 			{
-				float maintainanceCost = tile.GetMaintainanceCost();
+				float maintainanceCost = tile.MaintainanceCost;
 				lock (maintainanceLock)
 				{
 					totalMaintainanceCost += maintainanceCost;
@@ -305,7 +305,7 @@ namespace Model.Statistics
 		/// <param name="e"></param>
 		public void AddDestroyIncome(object sender, TileEventArgs e)
 		{
-			int destroyIncome = e.Tile.GetDestroyIncome();
+			int destroyIncome = e.Tile.DestroyIncome;
 
 			lock (_statReports)
 			{
@@ -326,7 +326,7 @@ namespace Model.Statistics
 		/// <param name="e"></param>
 		public void AddBuildExpense(object sender, TileEventArgs e)
 		{
-			int buildExpense = e.Tile.GetBuildPrice();
+			int buildExpense = e.Tile.BuildPrice;
 
 			lock (_statReports)
 			{
