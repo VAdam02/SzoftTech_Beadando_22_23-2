@@ -15,6 +15,14 @@ namespace Model.Tiles
 
 		}
 
+		public override void FinalizeTile() => Finalizing();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing() => base.Finalizing();
+
 		public override TileType GetTileType() { return TileType.ElectricPole; }
 
 		//TODO implement electric pole build price

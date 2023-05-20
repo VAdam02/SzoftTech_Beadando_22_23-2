@@ -74,7 +74,7 @@ namespace Model
 		/// <para>MUST BE CONTAINS ONLY <code>this.Finalizing()</code> AND ALL THE OTHER LOGIC MUST BE IMPLEMENTED IN THAT</para>
 		/// <para>Finalizes the tile</para>
 		/// </summary>
-		public virtual void FinalizeTile() => Finalizing();
+		public abstract void FinalizeTile();
 
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
