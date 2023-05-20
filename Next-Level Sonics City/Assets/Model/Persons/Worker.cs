@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 [assembly: InternalsVisibleTo("Tests")]
 
@@ -9,6 +12,17 @@ namespace Model.Persons
 	{
 		public IWorkplace WorkPlace { get; private set; }
 		public Qualification PersonQualification { get; private set; }
+
+		private readonly List<(float happiness, float weight)> _happinessChangers = new();
+		public override (float happiness, float weight) HappinessByPersonInheritance
+		{
+			get
+			{
+				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				return (happinessSum / happinessWeight, happinessWeight);
+			}
+		}
 
 		private float _taxSum = 0f;
 		private int _taxCount = 0;
@@ -29,10 +43,11 @@ namespace Model.Persons
 			if (age < 18 || PENSION_AGE <= age) throw new ArgumentException("Worker cannot be younger than 18 and older than " + PENSION_AGE + " years old");
 			WorkPlace = workPlace ?? throw new ArgumentNullException("Worker must have a workplace");
 			PersonQualification = qualification;
-
+			
 			WorkPlace.Employ(this);
+			_happinessChangers.Add((1, 5f - Mathf.Atan(Mathf.Sqrt(Mathf.Pow(WorkPlace.GetTile().Coordinates.x - Residential.GetTile().Coordinates.x, 2) + Mathf.Pow(WorkPlace.GetTile().Coordinates.y - Residential.GetTile().Coordinates.y, 2))) * Mathf.PI));
 		}
-		
+
 		/// <summary>
 		/// Retires the worker and recreate as a pensioner
 		/// </summary>

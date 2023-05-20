@@ -192,6 +192,31 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
+		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
+		public void RegisterHappinessChangerTile(IHappyZone happyZone)
+		{
+			happyZone.GetTile().OnTileDelete.AddListener(UnregisterHappinessChangerTile);
+			happyZone.GetTile().OnTileChange.AddListener(UpdateHappiness);
+
+			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
+			_happinessChangers.Add((happyZone, happiness, weight));
+		}
+
+		private void UnregisterHappinessChangerTile(Tile deletedTile)
+		{
+			IHappyZone happyZone = (IHappyZone)deletedTile;
+			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
+		}
+
+		private void UpdateHappiness(Tile changedTile)
+		{
+			IHappyZone happyZone = (IHappyZone)changedTile;
+			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
+
+			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
+			_happinessChangers.Add((happyZone, happiness, weight));
+		}
+
 		public override float GetTransparency()
 		{
 			return 0.75f;

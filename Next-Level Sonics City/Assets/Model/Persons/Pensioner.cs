@@ -6,6 +6,11 @@ namespace Model.Persons
 	{
 		public float Pension { get; private set; }
 
+		public override (float happiness, float weight) HappinessByPersonInheritance
+		{
+			get => (0.0f, 0.0f);
+		}
+
 		/// <summary>
 		/// Creates a new pensioner and move in to the given residential
 		/// </summary>

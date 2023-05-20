@@ -13,6 +13,7 @@ namespace Model
 		public IResidential Residential { get; protected set; }
 		public int Age { get; protected set; }
 		public Qualification Qualification { get; protected set; }
+		public abstract (float happiness, float weight) HappinessByPersonInheritance { get; }
 
 		/// <summary>
 		/// Creates a new person and moves him into the given residential
@@ -52,6 +53,11 @@ namespace Model
 			(float happiness, float weight) residentialHappiness = Residential.HappinessByBuilding;
 			happiness += residentialHappiness.happiness * residentialHappiness.weight;
 			happinessWeight += residentialHappiness.weight;
+
+			//happiness and weight by inheritance
+			(float happiness, float weight) inheritanceHappiness = HappinessByPersonInheritance;
+			happiness += inheritanceHappiness.happiness * inheritanceHappiness.weight;
+			happinessWeight += inheritanceHappiness.weight;
 
 			return happiness / happinessWeight;	
 		}

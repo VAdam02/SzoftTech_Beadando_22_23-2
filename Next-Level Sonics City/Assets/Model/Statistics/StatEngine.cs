@@ -593,7 +593,7 @@ namespace Model.Statistics
 			for (int i = 1; i < City.Instance.GetSize(); i++)
 			{
 				IResidential residential = (IResidential)City.Instance.GetTile(i, 1);
-				Debug.Log(residential.HappinessByBuilding + "\t" + i);
+				Debug.Log(residential.HappinessByBuilding + "\t" + residential.GetResidents()[0].HappinessByPersonInheritance + "\t" + i);
 			}
 		}
 

@@ -10,6 +10,8 @@ namespace Model
 
 		}
 
+		public override (float happiness, float weight) HappinessByPersonInheritance => throw new NotImplementedException();
+
 		public override float PayTax(float taxRate)
 		{
 			throw new NotImplementedException();

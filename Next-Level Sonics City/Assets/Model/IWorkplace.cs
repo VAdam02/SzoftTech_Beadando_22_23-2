@@ -56,6 +56,6 @@ namespace Model
 		/// Register happy zone as a possible happiness changer
 		/// </summary>
 		/// <param name="zone">Zone that should be calculated into happiness as a changer</param>
-		//public void RegisterHappinessChangerTile(IHappyZone zone);
+		public void RegisterHappinessChangerTile(IHappyZone zone);
 	}
 }
