@@ -18,7 +18,7 @@ namespace Model.Tiles.Buildings
 			{
 				City.Reset();
 
-				roadGridElement = new MockRoadGridElement(0, 0);
+				roadGridElement = new RoadTile(0, 0);
 				City.Instance.SetTile(roadGridElement.GetTile());
 
 				commercial = new Commercial(0, 1, 123);
@@ -30,9 +30,9 @@ namespace Model.Tiles.Buildings
 			[Test]
 			public void RegisterWorkplace_AddsWorkplaceToRoadGrid()
 			{
-				commercial.RegisterWorkplace(roadGridElement.GetRoadGrid());
+				commercial.RegisterWorkplace(roadGridElement.RoadGrid);
 
-				CollectionAssert.Contains(roadGridElement.GetRoadGrid().Workplaces, commercial);
+				CollectionAssert.Contains(roadGridElement.RoadGrid.Workplaces, commercial);
 			}
 
 			[Test]
@@ -41,7 +41,7 @@ namespace Model.Tiles.Buildings
 				DestroyCommand destroy = new((int)commercial.Coordinates.x, (int)commercial.Coordinates.y);
 				destroy.Execute();
 
-				CollectionAssert.DoesNotContain(roadGridElement.GetRoadGrid().Workplaces, commercial);
+				CollectionAssert.DoesNotContain(roadGridElement.RoadGrid.Workplaces, commercial);
 			}
 
 			[Test]

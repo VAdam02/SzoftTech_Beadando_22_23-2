@@ -20,7 +20,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void AddRoadGridElement_AddsElementToList()
 		{
-			var element = new MockRoadGridElement(0, 0);
+			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
 
 			_roadGrid.AddRoadGridElement(element);
@@ -32,7 +32,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void RemoveRoadGridElement_RemovesElementFromList()
 		{
-			var element = new MockRoadGridElement(0, 0);
+			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
 
 			_roadGrid.AddRoadGridElement(element);
@@ -107,11 +107,11 @@ namespace Model.RoadGrids
 		[Test]
 		public void Merge_EmptyRoadGridIntoNonEmptyRoadGrid_RoadGridElementsMerged()
 		{
-			MockRoadGridElement element = new(0, 0);
+			RoadTile element = new(0, 0);
 			City.Instance.SetTile(element);
 
 			var roadGrid1 = new RoadGrid();
-			var roadGrid2 = ((IRoadGridElement)element).GetRoadGrid();
+			var roadGrid2 = ((IRoadGridElement)element).RoadGrid;
 
 			roadGrid1.Merge(roadGrid2);
 
@@ -123,10 +123,10 @@ namespace Model.RoadGrids
 		[Test]
 		public void Merge_NonEmptyRoadGridIntoEmptyRoadGrid_RoadGridElementsMerged()
 		{
-			MockRoadGridElement element = new(0, 0);
+			RoadTile element = new(0, 0);
 			City.Instance.SetTile(element);
 
-			var roadGrid1 = ((IRoadGridElement)element).GetRoadGrid();
+			var roadGrid1 = ((IRoadGridElement)element).RoadGrid;
 			var roadGrid2 = new RoadGrid();
 
 			roadGrid1.Merge(roadGrid2);
@@ -139,13 +139,13 @@ namespace Model.RoadGrids
 		[Test]
 		public void Merge_TwoNonEmptyRoadGridsWithNoCommonElements_RoadGridElementsMerged()
 		{
-			MockRoadGridElement element1 = new(0, 0);
+			RoadTile element1 = new(0, 0);
 			City.Instance.SetTile(element1);
-			MockRoadGridElement element2 = new(0, 2);
+			RoadTile element2 = new(0, 2);
 			City.Instance.SetTile(element2);
 
-			var roadGrid1 = ((IRoadGridElement)element1).GetRoadGrid();
-			var roadGrid2 = ((IRoadGridElement)element2).GetRoadGrid();
+			var roadGrid1 = ((IRoadGridElement)element1).RoadGrid;
+			var roadGrid2 = ((IRoadGridElement)element2).RoadGrid;
 
 			roadGrid1.Merge(roadGrid2);
 

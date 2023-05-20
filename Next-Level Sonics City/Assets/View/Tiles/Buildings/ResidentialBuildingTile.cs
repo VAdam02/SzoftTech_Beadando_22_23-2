@@ -1,4 +1,3 @@
-using Model;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,16 +13,10 @@ namespace View.Tiles.Buildings
 			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, -TileModel.Coordinates.y) * 10;
 			transform.localScale = Vector3.one;
 
-			TileModel.DesignIDChangeEvent.AddListener(Display);
+			OnDesignIDChange.AddListener(Display);
 			gradientAndMaterialReloadEvent.AddListener(Display);
 
 			Display();
-		}
-
-		// Update is called once per frame
-		void Update()
-		{
-			
 		}
 
 		private static readonly UnityEvent gradientAndMaterialReloadEvent = new();

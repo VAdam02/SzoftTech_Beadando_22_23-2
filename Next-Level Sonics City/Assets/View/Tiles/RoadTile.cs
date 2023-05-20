@@ -84,19 +84,13 @@ namespace View.Tiles
 			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, -TileModel.Coordinates.y) * 10;
 			transform.localScale = Vector3.one;
 
-			TileModel.DesignIDChangeEvent.AddListener(OnDesignIDChange);
-			OnDesignIDChange();
+			OnDesignIDChange.AddListener(Display);
+			Display();
 
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 		}
 
-		// Update is called once per frame
-		void Update()
-		{
-
-		}
-
-		private void OnDesignIDChange()
+		private void Display()
 		{
 			
 			foreach (Transform child in transform)

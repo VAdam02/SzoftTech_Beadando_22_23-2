@@ -11,39 +11,19 @@ namespace View.GUI.Footer.BuildPanel
 		public TileType type;
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
-			switch (type)
+			TileManager.Instance.GhostTile = type switch
 			{
-				case TileType.PoliceDepartment:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero));
-					break;
-				case TileType.Stadion:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new StadionBuildingTile(0, 0, 0, Rotation.Zero));
-					break;
-				case TileType.FireDepartment:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new FireDepartment(0, 0, 0, Rotation.Zero));
-					break;
-				case TileType.MiddleSchool:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new MiddleSchool(0, 0, 0, Rotation.Zero));
-					break;
-				case TileType.HighSchool:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new HighSchool(0, 0, 0, Rotation.Zero));
-					break;
-				case TileType.PowerPlant:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new PowerPlant(0, 0, 0, Rotation.Zero));
-					break;
-				case TileType.Forest:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new Forest(0, 0, 0));
-					break;
-				case TileType.ElectricPole:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new ElectricPole(0, 0, 0));
-					break;
-
-				case TileType.Road:
-					TileManager.Instance.GhostTile = TileManager.Instance.GenerateFromModel(new RoadTile(0, 0, 0));
-					break;
-				default:
-					throw new InvalidOperationException();
-			}
+				TileType.PoliceDepartment => TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero)),
+				TileType.Stadion => TileManager.Instance.GenerateFromModel(new StadionBuildingTile(0, 0, 0, Rotation.Zero)),
+				TileType.FireDepartment => TileManager.Instance.GenerateFromModel(new FireDepartment(0, 0, 0, Rotation.Zero)),
+				TileType.MiddleSchool => TileManager.Instance.GenerateFromModel(new MiddleSchool(0, 0, 0, Rotation.Zero)),
+				TileType.HighSchool => TileManager.Instance.GenerateFromModel(new HighSchool(0, 0, 0, Rotation.Zero)),
+				TileType.PowerPlant => TileManager.Instance.GenerateFromModel(new PowerPlant(0, 0, 0, Rotation.Zero)),
+				TileType.Forest => TileManager.Instance.GenerateFromModel(new Forest(0, 0, 0)),
+				TileType.ElectricPole => TileManager.Instance.GenerateFromModel(new ElectricPole(0, 0, 0)),
+				TileType.Road => TileManager.Instance.GenerateFromModel(new RoadTile(0, 0)),
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		public bool OnDrag(bool isLeftMouseButton, Vector3 direction) { return true; }

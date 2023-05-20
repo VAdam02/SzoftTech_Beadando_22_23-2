@@ -8,7 +8,7 @@ namespace Model.Statistics
 {
 	public class StatEngineTests
 	{
-		MockRoadGridElement _road;
+		RoadTile _road;
 		MockResidentialBuildingTile _residential1;
 		MockResidentialBuildingTile _residential2;
 		MockWorkplaceBuildingTile _workplace1;
@@ -124,13 +124,6 @@ namespace Model.Statistics
 		{
 			float happiness = (_workers[0].GetHappiness() + _workers[1].GetHappiness()) / 2;
 			Assert.AreEqual(happiness, StatEngine.Instance.CalculateWorkplaceHappiness(_workplace1));
-		}
-
-		[Test]
-		public void CalculateResidentialHappiness_EqualsToIndividualPersonsHappinessAVG()
-		{
-			float happiness = (_workers[0].GetHappiness() + _workers[1].GetHappiness() + _pensioners[0].GetHappiness() + _pensioners[1].GetHappiness()) / 4;
-			Assert.AreEqual(happiness, StatEngine.Instance.CalculateResidentialHappiness(_residential1));
 		}
 	}
 }

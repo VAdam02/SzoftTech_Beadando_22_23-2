@@ -9,43 +9,43 @@ namespace Model.RoadGrids
 		[SetUp]
 		public void SetUp()
 		{
-			RoadGridManager.Reset();
 			City.Reset();
+			RoadGridManager.Reset();
 		}
 
 		[Test]
 		public void AddRoadGridElement_NoAdjacentRoadGridElements_NewRoadGridCreated()
 		{
-			MockRoadGridElement roadGridElement = new(0, 0);
+			RoadTile roadGridElement = new(0, 0);
 			City.Instance.SetTile(roadGridElement);
 
 			Assert.That(RoadGridManager.Instance.RoadGrids, Has.Count.EqualTo(1));
-			Assert.That(((IRoadGridElement)roadGridElement).GetRoadGrid(), Is.InstanceOf<RoadGrid>());
+			Assert.That(((IRoadGridElement)roadGridElement).RoadGrid, Is.InstanceOf<RoadGrid>());
 		}
 
 		[Test]
 		public void AddRoadGridElement_AdjacentRoadGridElementExists_RoadGridsMerged()
 		{
-			MockRoadGridElement roadGridElement1 = new(0, 0);
+			RoadTile roadGridElement1 = new(0, 0);
 			City.Instance.SetTile(roadGridElement1);
-			MockRoadGridElement roadGridElement2 = new(0, 1);
+			RoadTile roadGridElement2 = new(0, 1);
 			City.Instance.SetTile(roadGridElement2);
 
 			Assert.That(RoadGridManager.Instance.RoadGrids, Has.Count.EqualTo(1));
-			Assert.That(((IRoadGridElement)roadGridElement1).GetRoadGrid(), Is.InstanceOf<RoadGrid>());
-			Assert.That(((IRoadGridElement)roadGridElement2).GetRoadGrid(), Is.SameAs(((IRoadGridElement)roadGridElement1).GetRoadGrid()));
+			Assert.That(((IRoadGridElement)roadGridElement1).RoadGrid, Is.InstanceOf<RoadGrid>());
+			Assert.That(((IRoadGridElement)roadGridElement2).RoadGrid, Is.SameAs(((IRoadGridElement)roadGridElement1).RoadGrid));
 		}
 
 		[Test]
 		public void AddRoadGridElement_AdjacentRoadGridElementsHaveDifferentRoadGrids_RoadGridsMerged()
 		{
-			MockRoadGridElement roadGridElement1 = new(0, 0);
+			RoadTile roadGridElement1 = new(0, 0);
 			City.Instance.SetTile(roadGridElement1);
-			MockRoadGridElement roadGridElement2 = new(0, 1);
+			RoadTile roadGridElement2 = new(0, 1);
 			City.Instance.SetTile(roadGridElement2);
 
-			var roadGrid1 = ((IRoadGridElement)roadGridElement1).GetRoadGrid();
-			var roadGrid2 = ((IRoadGridElement)roadGridElement2).GetRoadGrid();
+			var roadGrid1 = ((IRoadGridElement)roadGridElement1).RoadGrid;
+			var roadGrid2 = ((IRoadGridElement)roadGridElement2).RoadGrid;
 
 			Assert.That(roadGrid2, Is.SameAs(roadGrid1));
 			Assert.That(RoadGridManager.Instance.RoadGrids, Has.Count.EqualTo(1));
@@ -54,22 +54,22 @@ namespace Model.RoadGrids
 		[Test]
 		public void AddRoadGridElement_RoadGridElementHasExistingRoadGrid_NoChange()
 		{
-			MockRoadGridElement roadGridElement1 = new(0, 0);
+			RoadTile roadGridElement1 = new(0, 0);
 			City.Instance.SetTile(roadGridElement1);
-			MockRoadGridElement roadGridElement2 = new(0, 1);
+			RoadTile roadGridElement2 = new(0, 1);
 			City.Instance.SetTile(roadGridElement2);
 
 			var roadGrid = new RoadGrid();
 			roadGrid.AddRoadGridElement(roadGridElement1);
 
-			Assert.That(((IRoadGridElement)roadGridElement2).GetRoadGrid(), Is.Not.SameAs(roadGrid));
+			Assert.That(((IRoadGridElement)roadGridElement2).RoadGrid, Is.Not.SameAs(roadGrid));
 			Assert.That(RoadGridManager.Instance.RoadGrids, Has.Count.EqualTo(2));
 		}
 
 		[Test]
 		public void GetRoadGrigElementByBuilding_BuildingHasAdjacentRoadGridElement_ReturnsCorrectRoadGridElement()
 		{
-			var roadGridElement = new MockRoadGridElement(0, 0);
+			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
 			var building = new MockResidentialBuildingTile(0, 1, Rotation.Zero);
 			City.Instance.SetTile(building);
@@ -94,7 +94,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void GetBuildingsByRoadGridElement_RoadGridElementHasAdjacentBuildings_ReturnsListOfBuildings()
 		{
-			var roadGridElement = new MockRoadGridElement(0, 0);
+			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
 			var residential1 = new MockResidentialBuildingTile(0, 1, Rotation.Zero);
 			City.Instance.SetTile(residential1);
@@ -110,7 +110,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void GetBuildingsByRoadGridElement_RoadGridElementHasNoAdjacentBuildings_ReturnsEmptyList()
 		{
-			var roadGridElement = new MockRoadGridElement(0, 0);
+			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
 
 			var result = RoadGridManager.GetBuildingsByRoadGridElement(roadGridElement);
@@ -121,14 +121,14 @@ namespace Model.RoadGrids
 		[Test]
 		public void GetRoadGridElementsByRoadGridElement_RoadGridElementHasAdjacentRoadGridElements_ReturnsListOfRoadGridElements()
 		{
-			var roadGridElement = new MockRoadGridElement(0, 0);
+			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
-			var adjacentRoadGridElement1 = new MockRoadGridElement(0, 1);
+			var adjacentRoadGridElement1 = new RoadTile(0, 1);
 			City.Instance.SetTile(adjacentRoadGridElement1);
-			var adjacentRoadGridElement2 = new MockRoadGridElement(1, 0);
+			var adjacentRoadGridElement2 = new RoadTile(1, 0);
 			City.Instance.SetTile(adjacentRoadGridElement2);
 
-			var result = RoadGridManager.GetRoadGridElementsByRoadGridElement(roadGridElement);
+			var result = ((IRoadGridElement)roadGridElement).ConnectsTo;
 
 			Assert.That(result, Does.Contain(adjacentRoadGridElement1));
 			Assert.That(result, Does.Contain(adjacentRoadGridElement2));
@@ -137,10 +137,10 @@ namespace Model.RoadGrids
 		[Test]
 		public void GetRoadGridElementsByRoadGridElement_RoadGridElementHasNoAdjacentRoadGridElements_ReturnsEmptyList()
 		{
-			var roadGridElement = new MockRoadGridElement(0, 0);
+			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
 
-			var result = RoadGridManager.GetRoadGridElementsByRoadGridElement(roadGridElement);
+			var result = ((IRoadGridElement)roadGridElement).ConnectsTo;
 
 			Assert.That(result, Is.Empty);
 		}

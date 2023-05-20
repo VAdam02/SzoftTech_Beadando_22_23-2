@@ -14,7 +14,7 @@ namespace Model.Tiles.Buildings
 		{
 			City.Reset();
 
-			roadGridElement = new MockRoadGridElement(0, 0);
+			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			fireDepartment = new FireDepartment(0, 1, 123, Rotation.Zero);
@@ -32,7 +32,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void RegisterWorkplace_AddsFireDepartmentToRoadGrid()
 		{
-			Assert.IsTrue(roadGridElement.GetRoadGrid().Workplaces.Contains(fireDepartment));
+			Assert.IsTrue(roadGridElement.RoadGrid.Workplaces.Contains(fireDepartment));
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)fireDepartment.Coordinates.x, (int)fireDepartment.Coordinates.y);
 			destroy.Execute();
 
-			Assert.IsFalse(roadGridElement.GetRoadGrid().Workplaces.Contains(fireDepartment));
+			Assert.IsFalse(roadGridElement.RoadGrid.Workplaces.Contains(fireDepartment));
 		}
 
 		[Test]

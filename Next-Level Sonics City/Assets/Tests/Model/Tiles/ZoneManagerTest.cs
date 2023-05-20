@@ -17,7 +17,7 @@ namespace Model.Tiles
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				City.Instance.SetTile(new MockRoadGridElement(i, 5));
+				City.Instance.SetTile(new RoadTile(i, 5));
 			}
 
 			ZoneType zoneType = ZoneType.ResidentialZone;

@@ -19,7 +19,7 @@ namespace Model.Tiles.ZoneCommands
 			int y = 4;
 			ZoneType zoneType = ZoneType.IndustrialZone;
 
-			City.Instance.SetTile(new RoadTile(x, y-1, 123));
+			City.Instance.SetTile(new RoadTile(x, y-1));
 			MarkZoneCommand command = new(x, y, zoneType);
 			command.Execute();
 
@@ -50,7 +50,7 @@ namespace Model.Tiles.ZoneCommands
 			int y = 4;
 			ZoneType zoneType = ZoneType.NoZone;
 
-			IRoadGridElement roadGridElement = new MockRoadGridElement(3, 3);
+			IRoadGridElement roadGridElement = new RoadTile(3, 3);
 			City.Instance.SetTile(roadGridElement.GetTile());
 			City.Instance.SetTile(new Industrial(x, y, 123));
 

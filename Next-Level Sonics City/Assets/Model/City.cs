@@ -40,6 +40,13 @@ namespace Model
 		/// <summary>
 		/// Get a tile at the given coordinates
 		/// </summary>
+		/// <param name="tile">tile of the requested tile</param>
+		/// <returns>Tile at the location</returns>
+		public Tile GetTile(Tile tile) { return GetTile(tile.Coordinates); }
+
+		/// <summary>
+		/// Get a tile at the given coordinates
+		/// </summary>
 		/// <param name="coordinates">Coordinates of the requested tile</param>
 		/// <returns>Tile at the location</returns>
 		public Tile GetTile(Vector3 coordinates) { return GetTile(coordinates.x, coordinates.y); }
@@ -74,10 +81,6 @@ namespace Model
 			Tile old = _tiles[(int)tile.Coordinates.x, (int)tile.Coordinates.y];
 			_tiles[(int)tile.Coordinates.x, (int)tile.Coordinates.y] = tile;
 			tile.FinalizeTile();
-			GetTile(tile.Coordinates.x - 1, tile.Coordinates.y)?.NeighborTileReplaced(old, tile);
-			GetTile(tile.Coordinates.x + 1, tile.Coordinates.y)?.NeighborTileReplaced(old, tile);
-			GetTile(tile.Coordinates.x, tile.Coordinates.y - 1)?.NeighborTileReplaced(old, tile);
-			GetTile(tile.Coordinates.x, tile.Coordinates.y + 1)?.NeighborTileReplaced(old, tile);
 			old?.DeleteTile();
 		}
 

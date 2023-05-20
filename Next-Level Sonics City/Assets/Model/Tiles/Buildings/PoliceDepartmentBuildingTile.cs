@@ -57,10 +57,10 @@ namespace Model.Tiles.Buildings
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft) { workplaceTopLeft.RegisterHappinessChangerTile(this); }
 
 				//register to the destroy event to be notified about a new tile
-				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
-				if (j != 0) City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
-				if (j != 0) City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
-				City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is Tile aboveTile) { aboveTile.OnTileDelete += TileDestroyedInRadius; }
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is Tile rightTile && j != 0) { rightTile.OnTileDelete += TileDestroyedInRadius; }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is Tile bottomTile && j != 0) { bottomTile.OnTileDelete += TileDestroyedInRadius; }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is Tile leftTile) { leftTile.OnTileDelete += TileDestroyedInRadius; }
 			}
 		}
 
@@ -68,13 +68,13 @@ namespace Model.Tiles.Buildings
 		/// Register at and to the new tile
 		/// </summary>
 		/// <param name="oldTile">Old tile that was deletetd</param>
-		private void TileDestroyedInRadius(Tile oldTile)
+		private void TileDestroyedInRadius(object sender, Tile oldTile)
 		{
-			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
+			Tile newTile = City.Instance.GetTile(oldTile);
 
 			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
 			if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this); } //TODO
-			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
+			newTile.OnTileDelete += TileDestroyedInRadius;
 		}
 
 		public override TileType GetTileType() { return TileType.PoliceDepartment; }
@@ -101,13 +101,7 @@ namespace Model.Tiles.Buildings
 
 			if (GetWorkersCount() == 0)
 			{
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						OnTileChange.Invoke(this);
-					});
-				}
+				TileChangeInvoke();
 			}
 
 			_workers.Add(person);
@@ -121,13 +115,7 @@ namespace Model.Tiles.Buildings
 
 			if (GetWorkersCount() == 0)
 			{
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						OnTileChange.Invoke(this);
-					});
-				}
+				TileChangeInvoke();
 			}
 		}
 
@@ -183,7 +171,7 @@ namespace Model.Tiles.Buildings
 			//it is not even in the same grid
 			if (RoadGridManager.GetRoadGrigElementByBuilding(this) == null) { return (0, 0); }
 			if (RoadGridManager.GetRoadGrigElementByBuilding(building) == null) { return (0, 0); }
-			if (RoadGridManager.GetRoadGrigElementByBuilding(building).GetRoadGrid() != RoadGridManager.GetRoadGrigElementByBuilding(this).GetRoadGrid()) { return (0, 0); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(building).RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(this).RoadGrid) { return (0, 0); }
 
 			//it is not reachable
 			int distance = GetDistanceOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(building), GetEffectiveRadius() - 1);
@@ -207,7 +195,7 @@ namespace Model.Tiles.Buildings
 
 				if (distance < maxDistance)
 				{
-					foreach (IRoadGridElement element in RoadGridManager.GetRoadGridElementsByRoadGridElement(roadGridElement))
+					foreach (IRoadGridElement element in roadGridElement.ConnectsTo)
 					{
 						queue.Enqueue((element, distance + 1));
 					}
@@ -230,20 +218,20 @@ namespace Model.Tiles.Buildings
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
-			happyZone.GetTile().OnTileDelete.AddListener(UnregisterHappinessChangerTile);
-			happyZone.GetTile().OnTileChange.AddListener(UpdateHappiness);
+			happyZone.GetTile().OnTileDelete += UnregisterHappinessChangerTile;
+			happyZone.GetTile().OnTileChange += UpdateHappiness;
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
 
-		private void UnregisterHappinessChangerTile(Tile deletedTile)
+		private void UnregisterHappinessChangerTile(object sender, Tile deletedTile)
 		{
 			IHappyZone happyZone = (IHappyZone)deletedTile;
 			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
 		}
 
-		private void UpdateHappiness(Tile changedTile)
+		private void UpdateHappiness(object sender, Tile changedTile)
 		{
 			IHappyZone happyZone = (IHappyZone)changedTile;
 			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);

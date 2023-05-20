@@ -2,7 +2,7 @@ using Model.Service;
 
 namespace Model.Tiles
 {
-	public class ElectricPole : Tile, IPowerGridElement
+	public class ElectricPole : Tile
 	{
 		/// <summary>
 		/// Construct a new electric pole
@@ -38,6 +38,17 @@ namespace Model.Tiles
 		public override float GetTransparency()
 		{
 			return 1;
+		}
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting()
+		{
+			base.Deleting();
 		}
 	}
 }

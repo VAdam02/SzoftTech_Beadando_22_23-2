@@ -54,26 +54,23 @@ namespace Model.RoadGrids
 		/// <param name="roadGridElement">Newly created road grid element</param>
 		public void AddRoadGridElement(IRoadGridElement roadGridElement)
 		{
-			List<IRoadGridElement> adjacentRoadGridElements = GetRoadGridElementsByRoadGridElement(roadGridElement);
+			List<IRoadGridElement> adjacentRoadGridElements = roadGridElement.ConnectsTo;
 
 			for (int i = 0; i < adjacentRoadGridElements.Count; i++)
 			{
 				if (adjacentRoadGridElements[i] == null) { continue; }
 
-				if (roadGridElement.GetRoadGrid() == null)
+				if (roadGridElement.RoadGrid == null)
 				{
-					roadGridElement.SetRoadGrid(adjacentRoadGridElements[i].GetRoadGrid());
+					roadGridElement.RoadGrid = adjacentRoadGridElements[i].RoadGrid;
 				}
 				else
 				{
-					adjacentRoadGridElements[i].GetRoadGrid().Merge(roadGridElement.GetRoadGrid());
+					adjacentRoadGridElements[i].RoadGrid.Merge(roadGridElement.RoadGrid);
 				}
 			}
 
-			if (roadGridElement.GetRoadGrid() == null)
-			{
-				roadGridElement.SetRoadGrid(new());
-			}
+			roadGridElement.RoadGrid ??= new();
 		}
 
 		/// <summary>
@@ -108,22 +105,6 @@ namespace Model.RoadGrids
 			if (City.Instance.GetTile(coords.x + 1, coords.y) is Building rightBuilding && rightBuilding.Rotation == Rotation.TwoSeventy)	{ buildings.Add(rightBuilding); }
 
 			return buildings;
-		}
-
-		/// <summary>
-		/// Return the list of road grid elements which are connected to the road grid element
-		/// </summary>
-		/// <param name="roadGridElement">Road grid element which should be checked</param>
-		/// <returns>List of connected road grid elements</returns>
-		internal static List<IRoadGridElement> GetRoadGridElementsByRoadGridElement(IRoadGridElement roadGridElement)
-		{
-			Vector3 coords = roadGridElement.GetTile().Coordinates;
-			List<IRoadGridElement> roadGridElements = new();
-			if (City.Instance.GetTile(coords.x, coords.y - 1) is IRoadGridElement aboveRoadGridElement) { roadGridElements.Add(aboveRoadGridElement); }
-			if (City.Instance.GetTile(coords.x + 1, coords.y) is IRoadGridElement rightRoadGridElement) { roadGridElements.Add(rightRoadGridElement); }
-			if (City.Instance.GetTile(coords.x, coords.y + 1) is IRoadGridElement belowRoadGridElement) { roadGridElements.Add(belowRoadGridElement); }
-			if (City.Instance.GetTile(coords.x - 1, coords.y) is IRoadGridElement leftRoadGridElement)  { roadGridElements.Add(leftRoadGridElement);  }
-			return roadGridElements;
 		}
 
 		internal static List<(IRoadGridElement, Rotation)> GetRoadGridElementsAroundTile(Tile tile)

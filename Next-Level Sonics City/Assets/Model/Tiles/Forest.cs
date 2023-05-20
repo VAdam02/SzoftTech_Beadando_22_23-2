@@ -23,10 +23,7 @@ namespace Model.Tiles
 
 		public override TileType GetTileType() { return TileType.Forest; }
 		
-		public override void FinalizeTile()
-		{
-			Finalizing();
-		}
+		public override void FinalizeTile() => Finalizing();
 
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
@@ -38,13 +35,7 @@ namespace Model.Tiles
 
 			StatEngine.Instance.NextQuarterEvent += (object sender, EventArgs e) =>
 			{
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						OnTileChange.Invoke(this);
-					});
-				}
+				TileChangeInvoke();
 			};
 
 			_plantedYear = StatEngine.Instance.Year;
@@ -67,10 +58,10 @@ namespace Model.Tiles
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft)					{ workplaceTopLeft.RegisterHappinessChangerTile(this); }
 
 				//register to the destroy event to be notified about a new tile
-				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
-				if (j != 0) City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
-				if (j != 0) City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
-				City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is Tile aboveTile) { aboveTile.OnTileDelete += TileDestroyedInRadius; }
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is Tile rightTile && j != 0) { rightTile.OnTileDelete += TileDestroyedInRadius; }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is Tile bottomTile && j != 0) { bottomTile.OnTileDelete += TileDestroyedInRadius; }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is Tile leftTile) { leftTile.OnTileDelete += TileDestroyedInRadius; }
 			}
 		}
 
@@ -78,13 +69,13 @@ namespace Model.Tiles
 		/// Register at and to the new tile
 		/// </summary>
 		/// <param name="oldTile">Old tile that was deletetd</param>
-		private void TileDestroyedInRadius(Tile oldTile)
+		private void TileDestroyedInRadius(object sender, Tile oldTile)
 		{
-			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
+			Tile newTile = City.Instance.GetTile(oldTile);
 
 			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
 			if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	} //TODO
-			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
+			newTile.OnTileDelete += TileDestroyedInRadius;
 		}
 
 		public override int GetBuildPrice()
@@ -153,6 +144,17 @@ namespace Model.Tiles
 			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
 
 			return (1, weight);
+		}
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting()
+		{
+			base.Deleting();
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Model.Tiles.Buildings
 		{
 			City.Reset();
 
-			mockRoadGridElement = new MockRoadGridElement(0, 0);
+			mockRoadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(mockRoadGridElement.GetTile());
 
 			residential = new ResidentialBuildingTile(0, 1, 0);
@@ -25,7 +25,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void RegisterResidential_AddsResidentialToRoadGrid()
 		{
-			CollectionAssert.Contains(mockRoadGridElement.GetRoadGrid().Residentials, residential);
+			CollectionAssert.Contains(mockRoadGridElement.RoadGrid.Residentials, residential);
 		}
 
 		[Test]
@@ -34,7 +34,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)residential.GetTile().Coordinates.x, (int)residential.GetTile().Coordinates.y);
 			destroy.Execute();
 
-			CollectionAssert.DoesNotContain(mockRoadGridElement.GetRoadGrid().Residentials, residential);
+			CollectionAssert.DoesNotContain(mockRoadGridElement.RoadGrid.Residentials, residential);
 		}
 
 		[Test]

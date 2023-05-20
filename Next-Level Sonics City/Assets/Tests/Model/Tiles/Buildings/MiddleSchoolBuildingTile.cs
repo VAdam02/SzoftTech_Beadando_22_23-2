@@ -16,7 +16,7 @@ namespace Model.Tiles.Buildings
 		{
 			City.Reset();
 
-			roadGridElement = new MockRoadGridElement(0, 0);
+			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 			middleSchool = new MiddleSchool(0, 1, 123, Rotation.Zero);
 			City.Instance.SetTile(middleSchool.GetTile());

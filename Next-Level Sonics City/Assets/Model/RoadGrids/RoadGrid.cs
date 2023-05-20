@@ -88,31 +88,31 @@ namespace Model.RoadGrids
 			{
 				IRoadGridElement roadGridElement = queue.Dequeue();
 
-				List<IRoadGridElement> adjacentRoadGridElements = RoadGridManager.GetRoadGridElementsByRoadGridElement(roadGridElement);
+				List<IRoadGridElement> adjacentRoadGridElements = roadGridElement.ConnectsTo;
 
 				for (int i = 0; i < adjacentRoadGridElements.Count; i++)
 				{
 					if (adjacentRoadGridElements[i] == null) { continue; }
 
-					if (adjacentRoadGridElements[i].GetRoadGrid() == this || adjacentRoadGridElements[i].GetRoadGrid() == null)
+					if (adjacentRoadGridElements[i].RoadGrid == this || adjacentRoadGridElements[i].RoadGrid == null)
 					{
 						queue.Enqueue(adjacentRoadGridElements[i]);
 						continue;
 					}
 
-					if (roadGridElement.GetRoadGrid() == this || roadGridElement.GetRoadGrid() == null)
+					if (roadGridElement.RoadGrid == this || roadGridElement.RoadGrid == null)
 					{
-						roadGridElement.SetRoadGrid(adjacentRoadGridElements[i].GetRoadGrid());
+						roadGridElement.RoadGrid = adjacentRoadGridElements[i].RoadGrid;
 					}
 					else
 					{
-						adjacentRoadGridElements[i].GetRoadGrid().Merge(roadGridElement.GetRoadGrid());
+						adjacentRoadGridElements[i].RoadGrid.Merge(roadGridElement.RoadGrid);
 					}
 				}
 
-				if (roadGridElement.GetRoadGrid() == this || roadGridElement.GetRoadGrid() == null)
+				if (roadGridElement.RoadGrid == this || roadGridElement.RoadGrid == null)
 				{
-					roadGridElement.SetRoadGrid(new());
+					roadGridElement.RoadGrid = new();
 				}
 			}
 
@@ -129,7 +129,7 @@ namespace Model.RoadGrids
 
 			while (roadGrid._roadGridElements.Count > 0)
 			{
-				roadGrid._roadGridElements[0].SetRoadGrid(this);
+				roadGrid._roadGridElements[0].RoadGrid = this;
 			}
 
 			RoadGridManager.Instance.RemoveRoadGrid(roadGrid);

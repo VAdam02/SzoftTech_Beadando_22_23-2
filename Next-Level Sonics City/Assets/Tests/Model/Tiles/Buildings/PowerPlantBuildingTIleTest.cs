@@ -16,7 +16,7 @@ namespace Model.Tiles.Buildings
 		{
 			City.Reset();
 
-			roadGridElement = new MockRoadGridElement(0, 0);
+			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 			powerPlant = new PowerPlant(0, 1, 123, Rotation.Zero);
 			City.Instance.SetTile(powerPlant.GetTile());
@@ -35,7 +35,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void RegisterWorkplace_AddsPowerPlantToRoadGrid()
 		{
-			Assert.Contains(powerPlant, roadGridElement.GetRoadGrid().Workplaces);
+			Assert.Contains(powerPlant, roadGridElement.RoadGrid.Workplaces);
 		}
 
 		[Test]
@@ -44,7 +44,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)powerPlant.Coordinates.x, (int)powerPlant.Coordinates.y);
 			destroy.Execute();
 
-			CollectionAssert.DoesNotContain(roadGridElement.GetRoadGrid().Workplaces, powerPlant);
+			CollectionAssert.DoesNotContain(roadGridElement.RoadGrid.Workplaces, powerPlant);
 		}
 
 		[Test]

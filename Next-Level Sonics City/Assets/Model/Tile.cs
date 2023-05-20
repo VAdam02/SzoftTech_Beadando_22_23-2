@@ -2,7 +2,6 @@ using Model.RoadGrids;
 using Model.Tiles;
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Model
 {
@@ -14,21 +13,18 @@ namespace Model
 			get { return _designID; }
 			protected set
 			{
+				if (value != _designID) { OnDesignIDChange?.Invoke(this, EventArgs.Empty); }
 				_designID = value;
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						DesignIDChangeEvent.Invoke();
-					});
-				}
 			}
 		}
-		public UnityEvent DesignIDChangeEvent = new();
 
 		public Vector3 Coordinates { get; protected set; }
-		public readonly UnityEvent<Tile> OnTileChange = new();
-		public readonly UnityEvent<Tile> OnTileDelete = new();
+
+		public event EventHandler<Tile> OnTileDelete;
+		private void TileDeleteInvoke() => OnTileDelete?.Invoke(this, this);
+		public event EventHandler<Tile> OnTileChange;
+		protected void TileChangeInvoke() => OnTileChange?.Invoke(this, this);
+		public event EventHandler OnDesignIDChange;
 
 		/// <summary>
 		/// Constructor for Tile
@@ -78,10 +74,7 @@ namespace Model
 		/// <para>MUST BE CONTAINS ONLY <code>this.Finalizing()</code> AND ALL THE OTHER LOGIC MUST BE IMPLEMENTED IN THAT</para>
 		/// <para>Finalizes the tile</para>
 		/// </summary>
-		public virtual void FinalizeTile()
-		{
-			Finalizing();
-		}
+		public virtual void FinalizeTile() => Finalizing();
 
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
@@ -99,15 +92,10 @@ namespace Model
 		}
 
 		/// <summary>
-		/// <para>MUST BE CONTAINS ONLY <code>this.Deleting()</code> AND ALL THE OTHER LOGIC MUST BE IMPLEMENTED IN THAT</para>
+		/// <para>MUST BE CONTAINS ONLY <code>this.Deleting()</code> AND ALL THE OTHER LOGIC MUST BE IMPLEMENTED IN THAT WHICH MUST BE START WITH <code>base.Deleting()</code></para>
 		/// <para>Delete the tile</para>
 		/// </summary>
-		public virtual void DeleteTile()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			Deleting();
-		}
+		public abstract void DeleteTile();
 
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
@@ -122,23 +110,7 @@ namespace Model
 				roadGridElement.UnregisterRoadGridElement();
 			}
 
-			if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-			{
-				mainThread.Enqueue(() =>
-				{
-					OnTileDelete.Invoke(this);
-				});
-			}
-		}
-
-		/// <summary>
-		/// Called when a neighbor tile replaced
-		/// </summary>
-		/// <param name="oldTile">Old tile</param>
-		/// <param name="newTile">New tile</param>
-		public virtual void NeighborTileReplaced(Tile oldTile, Tile newTile)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
+			TileDeleteInvoke();
 		}
 
 		/// <summary>
@@ -166,6 +138,9 @@ namespace Model
 		/// Returns the tile transparency for the effects
 		/// </summary>
 		/// <returns>Transparency of tile</returns>
-		public abstract float GetTransparency();
+		public virtual float GetTransparency()
+		{
+			return 0.25f;
+		}
 	}
 }

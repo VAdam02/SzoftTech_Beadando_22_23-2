@@ -1,17 +1,13 @@
 using Model.RoadGrids;
 using Model.Tiles.Buildings;
 using System;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace Model.Tiles
 {
 	public abstract class Building : Tile
 	{
-		public int Helath { get; private set; }
-		public bool IsOnFire { get; private set; }
-
-		public readonly UnityEvent OnRotationChanged = new();
+		public event EventHandler OnRotationChanged;
 
 		private Rotation _rotation;
 		public Rotation Rotation
@@ -19,14 +15,8 @@ namespace Model.Tiles
 			get { return _rotation; }
 			private set
 			{
+				if (_rotation != value) { OnRotationChanged?.Invoke(this, EventArgs.Empty); }
 				_rotation = value;
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						OnRotationChanged.Invoke();
-					});
-				}
 			}
 		}
 
@@ -35,10 +25,7 @@ namespace Model.Tiles
 			Rotation = rotation;
 		}
 
-		public override void FinalizeTile()
-		{
-			Finalizing();
-		}
+		public override void FinalizeTile() => Finalizing();
 
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
@@ -48,7 +35,7 @@ namespace Model.Tiles
 		{
 			base.Finalizing();
 
-			RoadGrid roadGrid = RoadGridManager.GetRoadGrigElementByBuilding(this)?.GetRoadGrid();
+			RoadGrid roadGrid = RoadGridManager.GetRoadGrigElementByBuilding(this)?.RoadGrid;
 			if (roadGrid != null)
 			{
 				if (this is IWorkplace workplace)
@@ -77,29 +64,12 @@ namespace Model.Tiles
 
 			if (this is IWorkplace workplace)
 			{
-				workplace.UnregisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace)?.GetRoadGrid());
+				workplace.UnregisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace)?.RoadGrid);
 			}
 			if (this is IResidential residential)
 			{
-				residential.UnregisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential)?.GetRoadGrid());
+				residential.UnregisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential)?.RoadGrid);
 			}
-		}
-
-		/// <summary>
-		/// Starts the fire
-		/// </summary>
-		/// <returns></returns>
-		public bool StartFire()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Calculate the chance of fire
-		/// </summary>
-		public void GetFirePercentage()
-		{
-			throw new NotImplementedException();
 		}
 
 		/// <summary>

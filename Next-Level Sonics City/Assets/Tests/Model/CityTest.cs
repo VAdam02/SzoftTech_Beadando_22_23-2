@@ -16,7 +16,7 @@ namespace Model
 		public void GetTile_ByVectorCoordinates_ReturnsCorrectTile()
 		{
 			City city = City.Instance;
-			Tile tile = new MockRoadGridElement(2, 3);
+			Tile tile = new RoadTile(2, 3);
 			city.SetTile(tile);
 
 			Tile retrievedTile = city.GetTile(2, 3);
@@ -28,7 +28,7 @@ namespace Model
 		public void GetTile_ByFloatCoordinates_ReturnsCorrectTile()
 		{
 			City city = City.Instance;
-			Tile tile = new MockRoadGridElement(2, 3);
+			Tile tile = new RoadTile(2, 3);
 			city.SetTile(tile);
 
 			Tile retrievedTile = city.GetTile(2.0f, 3.0f);
@@ -40,7 +40,7 @@ namespace Model
 		public void GetTile_ByIntegerCoordinates_ReturnsCorrectTile()
 		{
 			City city = City.Instance;
-			Tile tile = new MockRoadGridElement(2, 3);
+			Tile tile = new RoadTile(2, 3);
 			city.SetTile(tile);
 
 			Tile retrievedTile = city.GetTile(2, 3);
@@ -52,7 +52,7 @@ namespace Model
 		public void SetTile_SetsTileAtCoordinates()
 		{
 			City city = City.Instance;
-			Tile tile = new MockRoadGridElement(2, 3);
+			Tile tile = new RoadTile(2, 3);
 
 			city.SetTile(tile);
 			Tile retrievedTile = city.GetTile(2, 3);

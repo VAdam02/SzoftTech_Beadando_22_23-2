@@ -17,7 +17,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void SetTile_SetsWorkplaceLimit()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(0, 1, 123);
@@ -29,21 +29,21 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void RegisterWorkplace_AddsWorkplaceToRoadGrid()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
-			industrial.RegisterWorkplace(roadGridElement.GetRoadGrid());
+			industrial.RegisterWorkplace(roadGridElement.RoadGrid);
 
-			CollectionAssert.Contains(roadGridElement.GetRoadGrid().Workplaces, industrial);
+			CollectionAssert.Contains(roadGridElement.RoadGrid.Workplaces, industrial);
 		}
 
 		[Test]
 		public void UnregisterWorkplace_RemovesWorkplaceFromRoadGrid()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(0, 1, 123);
@@ -52,13 +52,13 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)industrial.Coordinates.x, (int)industrial.Coordinates.y);
 			destroy.Execute();
 
-			CollectionAssert.DoesNotContain(roadGridElement.GetRoadGrid().Workplaces, industrial);
+			CollectionAssert.DoesNotContain(roadGridElement.RoadGrid.Workplaces, industrial);
 		}
 
 		[Test]
 		public void GetZoneType_ReturnsIndustrialZone()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(0, 1, 123);
@@ -72,7 +72,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void LevelUp_IncreasesLevelAndWorkplaceLimit()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(1, 0, 2);
@@ -111,7 +111,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void Employ_AddsWorkerToWorkersList()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(0, 1, 123);
@@ -131,7 +131,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void Unemploy_RemovesWorkerFromWorkersList()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
@@ -153,7 +153,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetWorkers_ReturnsWorkersList()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
@@ -175,7 +175,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetWorkersCount_ReturnsWorkersCount()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
@@ -195,7 +195,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetTile_ReturnsItself()
 		{
-			IRoadGridElement roadGridElement = new MockRoadGridElement(0, 0);
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			Industrial industrial = new(0, 1, 123);

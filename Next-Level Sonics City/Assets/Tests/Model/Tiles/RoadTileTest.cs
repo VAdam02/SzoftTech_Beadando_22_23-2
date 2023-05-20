@@ -1,4 +1,6 @@
 ﻿using Model.RoadGrids;
+using Model.Tiles.Buildings;
+using Model.Tiles.Buildings.BuildingCommands;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -17,22 +19,22 @@ namespace Model.Tiles
 		{
 			City.Reset();
 
-			roadTile = new RoadTile(1, 1, 0);
+			roadTile = new RoadTile(1, 1);
 			City.Instance.SetTile(roadTile);
-			aboveRoad = new RoadTile(1, 0, 0);
+			aboveRoad = new RoadTile(1, 0);
 			City.Instance.SetTile(aboveRoad);
-			rightRoad = new RoadTile(2, 1, 0);
+			rightRoad = new RoadTile(2, 1);
 			City.Instance.SetTile(rightRoad);
-			belowRoad = new RoadTile(1, 2, 0);
+			belowRoad = new RoadTile(1, 2);
 			City.Instance.SetTile(belowRoad);
-			leftRoad = new RoadTile(0, 1, 0);
+			leftRoad = new RoadTile(0, 1);
 			City.Instance.SetTile(leftRoad);
 		}
 
 		[Test]
 		public void ConnectsTo_ReturnsCorrectConnectedRoads()
 		{
-			List<IRoadGridElement> connectedRoads = roadTile.ConnectsTo();
+			List<IRoadGridElement> connectedRoads = ((IRoadGridElement)roadTile).ConnectsTo;
 
 			Assert.Contains(aboveRoad, connectedRoads);
 			Assert.Contains(rightRoad, connectedRoads);
@@ -51,7 +53,7 @@ namespace Model.Tiles
 		[Test]
 		public void GetRoadGrid_ReturnsNullByDefault()
 		{
-			RoadGrid roadGrid = roadTile.GetRoadGrid();
+			RoadGrid roadGrid = ((IRoadGridElement)roadTile).RoadGrid;
 
 			Assert.IsNotNull(roadGrid);
 		}
@@ -61,28 +63,26 @@ namespace Model.Tiles
 		{
 			roadTile.FinalizeTile();
 
-			Assert.IsNotNull(roadTile.FromAbove);
-			Assert.IsNotNull(roadTile.FromRight);
-			Assert.IsNotNull(roadTile.FromBelow);
-			Assert.IsNotNull(roadTile.FromLeft);
+			Assert.IsNotNull(roadTile.ConnectsFromAbove);
+			Assert.IsNotNull(roadTile.ConnectsFromRight);
+			Assert.IsNotNull(roadTile.ConnectsFromBelow);
+			Assert.IsNotNull(roadTile.ConnectsFromLeft);
 		}
 
 		[Test]
-		public void NeighborTileReplaced_RemovesOldRoadConnection()
+		public void NeighborTileReplaced_DestroyAndAddsNewRoadConnection()
 		{
-			roadTile.FromAbove = aboveRoad;
+			int x = (int)aboveRoad.Coordinates.x;
+			int y = (int)aboveRoad.Coordinates.y;
+			DestroyCommand destroy = new(x, y);
+			destroy.Execute();
 
-			roadTile.NeighborTileReplaced(aboveRoad, null);
+			Assert.IsNull(roadTile.ConnectsFromAbove);
 
-			Assert.IsNull(roadTile.FromAbove);
-		}
+			BuildCommand build = new(x, y, TileType.Road, Rotation.Zero);
+			build.Execute();
 
-		[Test]
-		public void NeighborTileReplaced_AddsNewRoadConnection()
-		{
-			roadTile.NeighborTileReplaced(null, aboveRoad);
-
-			Assert.AreEqual(aboveRoad, roadTile.FromAbove);
+			Assert.AreEqual(City.Instance.GetTile(x, y), roadTile.ConnectsFromAbove);
 		}
 	}
 }
