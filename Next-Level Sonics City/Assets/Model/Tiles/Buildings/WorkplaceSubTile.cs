@@ -105,6 +105,14 @@ namespace Model.Tiles.Buildings
 			return 0;
 		}
 
+		public (float happiness, float weight) HappinessByBuilding
+		{
+			get
+			{
+				return (0, 0);
+			}
+		}
+
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
 			

@@ -590,10 +590,11 @@ namespace Model.Statistics
 
 			UpdateCurrentStatReport(false);
 
-			for (int i = 1; i < City.Instance.GetSize(); i++)
+			//TODO debug
+			for (int i = 2; i < 5/*City.Instance.GetSize()*/; i++)
 			{
-				IResidential residential = (IResidential)City.Instance.GetTile(i, 1);
-				Debug.Log(residential.HappinessByBuilding + "\t" + residential.GetResidents()[0].HappinessByPersonInheritance + "\t" + i);
+				IResidential residential = (IResidential)City.Instance.GetTile(i, 2);
+				Debug.Log(residential.HappinessByBuilding + "\t" + ((Worker)residential.GetResidents()[0]).WorkPlace.HappinessByBuilding + "\t" + residential.GetResidents()[0].HappinessByPersonInheritance + "\t" + residential.GetResidents()[0].GetHappiness() + "\t" + i);
 			}
 		}
 
@@ -603,6 +604,7 @@ namespace Model.Statistics
 		/// </summary>
 		public void TimeElapsed()
 		{
+			//TODO debug
 			//Date = Date.AddMinutes(30);
 			Date = Date.AddHours(24);
 		}

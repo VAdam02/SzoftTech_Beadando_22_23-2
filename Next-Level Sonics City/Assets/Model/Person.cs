@@ -49,7 +49,7 @@ namespace Model
 			happiness += 0;
 			happinessWeight += StatEngine.Instance.NegativeBudgetSince;
 
-			//happiness and weight by house
+			//happiness and weight by residential
 			(float happiness, float weight) residentialHappiness = Residential.HappinessByBuilding;
 			happiness += residentialHappiness.happiness * residentialHappiness.weight;
 			happinessWeight += residentialHappiness.weight;
@@ -59,7 +59,7 @@ namespace Model
 			happiness += inheritanceHappiness.happiness * inheritanceHappiness.weight;
 			happinessWeight += inheritanceHappiness.weight;
 
-			return happiness / happinessWeight;	
+			return happiness / (happinessWeight == 0 ? 1 : happinessWeight); 
 		}
 
 		/// <summary>

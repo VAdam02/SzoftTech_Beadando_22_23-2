@@ -418,7 +418,7 @@ namespace Model.Tiles.Buildings
 			{
 				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
 				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
-				return (happinessSum / happinessWeight, happinessWeight);
+				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
 			}
 		}
 

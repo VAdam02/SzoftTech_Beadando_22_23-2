@@ -13,13 +13,18 @@ namespace Model.Persons
 		public IWorkplace WorkPlace { get; private set; }
 		public Qualification PersonQualification { get; private set; }
 
-		private readonly List<(float happiness, float weight)> _happinessChangers = new();
 		public override (float happiness, float weight) HappinessByPersonInheritance
 		{
 			get
 			{
-				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
-				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				List<(float happiness, float weight)> happinessChangers = new()
+				{
+					(1, 5f - Mathf.Atan(Mathf.Sqrt(Mathf.Pow(WorkPlace.GetTile().Coordinates.x - Residential.GetTile().Coordinates.x, 2) + Mathf.Pow(WorkPlace.GetTile().Coordinates.y - Residential.GetTile().Coordinates.y, 2))) * Mathf.PI),
+					WorkPlace.HappinessByBuilding
+				};
+
+				float happinessSum = happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
 				return (happinessSum / happinessWeight, happinessWeight);
 			}
 		}
@@ -45,7 +50,6 @@ namespace Model.Persons
 			PersonQualification = qualification;
 			
 			WorkPlace.Employ(this);
-			_happinessChangers.Add((1, 5f - Mathf.Atan(Mathf.Sqrt(Mathf.Pow(WorkPlace.GetTile().Coordinates.x - Residential.GetTile().Coordinates.x, 2) + Mathf.Pow(WorkPlace.GetTile().Coordinates.y - Residential.GetTile().Coordinates.y, 2))) * Mathf.PI));
 		}
 
 		/// <summary>

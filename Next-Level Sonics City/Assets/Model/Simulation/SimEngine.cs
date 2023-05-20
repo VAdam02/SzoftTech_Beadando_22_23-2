@@ -35,20 +35,23 @@ namespace Model.Simulation
 		{
 			StartSimulation();
 
+			City.Instance.SetTile(new Forest(1, 2, 0));
 
-			City.Instance.SetTile(new RoadTile(0, 0, 0));
-			IWorkplace workplace = new Industrial(0, 1, 0, Rotation.Zero);
+			City.Instance.SetTile(new RoadTile(0, 1, 0));
+			IWorkplace workplace = new Industrial(0, 2, 0, Rotation.Zero);
 			City.Instance.SetTile(workplace.GetTile());
 
-			for (int i = 1; i < City.Instance.GetSize(); i++)
+			//IWorkplace police = new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.OneEighty);
+			//City.Instance.SetTile(police.GetTile());
+
+			for (int i = 2; i < 5/*City.Instance.GetSize()*/; i++)
 			{
-				City.Instance.SetTile(new RoadTile(i, 0, 0));
-				residential = new ResidentialBuildingTile(i, 1, 0);
+				City.Instance.SetTile(new RoadTile(i, 1, 0));
+				residential = new ResidentialBuildingTile(i, 2, 0);
 				City.Instance.SetTile(residential.GetTile());
 
 				_ = new Worker(residential, workplace, 30, Qualification.LOW);
-
-				Debug.Log(residential.HappinessByBuilding + "\t" + i);
+				//_ = new Worker(residential, police, 30, Qualification.LOW);
 			}
 		}
 
@@ -58,8 +61,6 @@ namespace Model.Simulation
 		private static void Tick()
 		{
 			StatEngine.Instance.TimeElapsed();
-
-			System.Random rand = new();
 
 			//kill who needed
 
@@ -331,7 +332,7 @@ namespace Model.Simulation
 				if (!_isDebugPrinted)
 				{
 					_isDebugPrinted = true;
-					Debug.Log((sumTickTime / tickCount) + "ms average tick time");
+					Debug.Log((sumTickTime / (tickCount == 0 ? 1 : tickCount)) + "ms average tick time");
 				}
 			}
 

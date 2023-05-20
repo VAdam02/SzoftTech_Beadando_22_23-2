@@ -51,7 +51,8 @@ namespace Model
 		/// <returns>Tile of the workplace</returns>
 		public Tile GetTile();
 
-		//TODO
+		public (float happiness, float weight) HappinessByBuilding { get; }
+
 		/// <summary>
 		/// Register happy zone as a possible happiness changer
 		/// </summary>

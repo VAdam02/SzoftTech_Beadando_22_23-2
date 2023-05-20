@@ -3,6 +3,7 @@ using Model.RoadGrids;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
@@ -174,6 +175,16 @@ namespace Model.Tiles.Buildings
 					ExpandCommand ec = new(i, j, this);
 					ec.Execute();
 				}
+			}
+		}
+
+		public (float happiness, float weight) HappinessByBuilding
+		{
+			get
+			{
+				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
 			}
 		}
 

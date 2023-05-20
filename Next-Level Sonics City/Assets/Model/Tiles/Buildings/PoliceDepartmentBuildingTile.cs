@@ -2,6 +2,7 @@ using Model.Persons;
 using Model.RoadGrids;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Model.Tiles.Buildings
@@ -49,13 +50,11 @@ namespace Model.Tiles.Buildings
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft && j != 0) { residentialBottomLeft.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft) { residentialTopLeft.RegisterHappinessChangerTile(this); }
 
-				//register at the workplaces //TODO
-				/*
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight)	{ workplaceTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight)	{ workplaceBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft)	{ workplaceBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft)		{ workplaceTopLeft.RegisterHappinessChangerTile(this); }
-				*/
+				//register at the workplaces
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight) { workplaceTopRight.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0) { workplaceBottomRight.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0) { workplaceBottomLeft.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft) { workplaceTopLeft.RegisterHappinessChangerTile(this); }
 
 				//register to the destroy event to be notified about a new tile
 				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
@@ -73,8 +72,8 @@ namespace Model.Tiles.Buildings
 		{
 			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
 
-			if (newTile is IResidential residential) { residential.RegisterHappinessChangerTile(this); }
-			//if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	} //TODO
+			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
+			if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this); } //TODO
 			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
 		}
 
@@ -180,8 +179,10 @@ namespace Model.Tiles.Buildings
 
 			if (building == null) { throw new ArgumentNullException(); }
 			if (building == this) { throw new ArgumentException("Target can't be same as this"); }
-			
+
 			//it is not even in the same grid
+			if (RoadGridManager.GetRoadGrigElementByBuilding(this) == null) { return (0, 0); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(building) == null) { return (0, 0); }
 			if (RoadGridManager.GetRoadGrigElementByBuilding(building).GetRoadGrid() != RoadGridManager.GetRoadGrigElementByBuilding(this).GetRoadGrid()) { return (0, 0); }
 
 			//it is not reachable
@@ -214,6 +215,16 @@ namespace Model.Tiles.Buildings
 			}
 
 			return -1;
+		}
+
+		public (float happiness, float weight) HappinessByBuilding
+		{
+			get
+			{
+				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
+			}
 		}
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();

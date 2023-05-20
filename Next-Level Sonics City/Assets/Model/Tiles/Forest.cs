@@ -60,13 +60,11 @@ namespace Model.Tiles
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft  && j != 0)	{ residentialBottomLeft.RegisterHappinessChangerTile(this); }
 				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft)					{ residentialTopLeft.RegisterHappinessChangerTile(this); }
 
-				//register at the workplaces //TODO
-				/*
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight)	{ workplaceTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight)	{ workplaceBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft)	{ workplaceBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft)		{ workplaceTopLeft.RegisterHappinessChangerTile(this); }
-				*/
+				//register at the workplaces
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight)				{ workplaceTopRight.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0)	{ workplaceBottomRight.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0)	{ workplaceBottomLeft.RegisterHappinessChangerTile(this); }
+				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft)					{ workplaceTopLeft.RegisterHappinessChangerTile(this); }
 
 				//register to the destroy event to be notified about a new tile
 				City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
@@ -85,7 +83,7 @@ namespace Model.Tiles
 			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
 
 			if (newTile is IResidential residential)	{ residential.RegisterHappinessChangerTile(this); }
-			//if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	} //TODO
+			if (newTile is IWorkplace workplace)		{ workplace.RegisterHappinessChangerTile(this);	} //TODO
 			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
 		}
 
@@ -136,25 +134,23 @@ namespace Model.Tiles
 			//decrease weight by transparency of the sight
 			if (delta.x > delta.y) //run on normal function
 			{
-				for (int i = (int)Mathf.Min(Coordinates.x, building.Coordinates.x) + 1; i <= Mathf.Max(Coordinates.x, building.Coordinates.x) - 1; i++)
+				for (int i = (int)Mathf.Min(Coordinates.x, building.Coordinates.x) + 1; i < Mathf.Max(Coordinates.x, building.Coordinates.x); i++)
 				{
-					Tile checkTile = City.Instance.GetTile(i, i + Mathf.RoundToInt(i * delta.y / delta.x));
-
+					Tile checkTile = City.Instance.GetTile(i, (building.Coordinates.x < Coordinates.x ? (Tile)building : this).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
 					weight *= checkTile.GetTransparency();
 				}
 			}
 			else //run on inverted function
 			{
-				for (int i = (int)Mathf.Min(Coordinates.y, building.Coordinates.y) + 1; i <= Mathf.Max(Coordinates.y, building.Coordinates.y) - 1; i++)
+				for (int i = (int)Mathf.Min(Coordinates.y, building.Coordinates.y) + 1; i < Mathf.Max(Coordinates.y, building.Coordinates.y); i++)
 				{
-					Tile checkTile = City.Instance.GetTile(i + Mathf.RoundToInt(i * delta.x / delta.y), i);
-
+					Tile checkTile = City.Instance.GetTile((building.Coordinates.y < Coordinates.y ? (Tile)building : this).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), i);
 					weight *= checkTile.GetTransparency();
 				}
 			}
 
 			//decrease weight by distance
-			weight *= 1 - ((Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y) - 1) / GetEffectiveRadius());
+			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
 
 			return (1, weight);
 		}

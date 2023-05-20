@@ -2,6 +2,7 @@ using Model.Persons;
 using Model.RoadGrids;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
@@ -99,6 +100,16 @@ namespace Model.Tiles.Buildings
 		{
 			//TODO implement fire department maintainance cost
 			return 100000;
+		}
+
+		public (float happiness, float weight) HappinessByBuilding
+		{
+			get
+			{
+				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
+			}
 		}
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
