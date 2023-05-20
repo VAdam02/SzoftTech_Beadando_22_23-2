@@ -1,6 +1,7 @@
 ﻿using Model.RoadGrids;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
@@ -10,8 +11,6 @@ namespace Model.Tiles.Buildings
 		public int ResidentLimit { get; private set; }
 
 		ZoneBuildingLevel IZoneBuilding.Level => throw new NotImplementedException();
-
-		(float happiness, float weight) IResidential.HappinessByBuilding => throw new NotImplementedException();
 
 		public MockResidentialBuildingTile(int x, int y, Rotation rotation) : base(x, y, 0, rotation)
 		{
@@ -87,9 +86,39 @@ namespace Model.Tiles.Buildings
 			throw new NotImplementedException();
 		}
 
+		public (float happiness, float weight) HappinessByBuilding
+		{
+			get
+			{
+				float happinessSum = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = _happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
+			}
+		}
+
+		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
-			throw new NotImplementedException();
+			happyZone.GetTile().OnTileDelete.AddListener(UnregisterHappinessChangerTile);
+			happyZone.GetTile().OnTileChange.AddListener(UpdateHappiness);
+
+			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
+			_happinessChangers.Add((happyZone, happiness, weight));
+		}
+
+		private void UnregisterHappinessChangerTile(Tile deletedTile)
+		{
+			IHappyZone happyZone = (IHappyZone)deletedTile;
+			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
+		}
+
+		private void UpdateHappiness(Tile changedTile)
+		{
+			IHappyZone happyZone = (IHappyZone)changedTile;
+			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
+
+			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
+			_happinessChangers.Add((happyZone, happiness, weight));
 		}
 
 		public override float GetTransparency()

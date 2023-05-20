@@ -34,25 +34,6 @@ namespace Model.Simulation
 		private void Start()
 		{
 			StartSimulation();
-
-			City.Instance.SetTile(new Forest(1, 2, 0));
-
-			City.Instance.SetTile(new RoadTile(0, 1, 0));
-			IWorkplace workplace = new Industrial(0, 2, 0, Rotation.Zero);
-			City.Instance.SetTile(workplace.GetTile());
-
-			//IWorkplace police = new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.OneEighty);
-			//City.Instance.SetTile(police.GetTile());
-
-			for (int i = 2; i < 5/*City.Instance.GetSize()*/; i++)
-			{
-				City.Instance.SetTile(new RoadTile(i, 1, 0));
-				residential = new ResidentialBuildingTile(i, 2, 0);
-				City.Instance.SetTile(residential.GetTile());
-
-				_ = new Worker(residential, workplace, 30, Qualification.LOW);
-				//_ = new Worker(residential, police, 30, Qualification.LOW);
-			}
 		}
 
 		/// <summary>

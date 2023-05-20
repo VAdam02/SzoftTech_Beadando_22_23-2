@@ -1,4 +1,3 @@
-using log4net.Core;
 using Model.Persons;
 using Model.RoadGrids;
 using Model.Tiles.Buildings.BuildingCommands;
@@ -33,6 +32,43 @@ namespace Model.Tiles.Buildings
 			base.Finalizing();
 			//TODO implement stadion workplace limit
 			WorkplaceLimit = 10;
+
+			for (int i = 0; i <= GetRegisterRadius(); i++)
+				for (int j = 0; Mathf.Sqrt(i * i + j * j) <= GetRegisterRadius(); j++)
+				{
+					if (i == 0 && j == 0) { continue; }
+
+					//register at the residentials
+					if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IResidential residentialTopRight) { residentialTopRight.RegisterHappinessChangerTile(this); }
+					if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IResidential residentialBottomRight && j != 0) { residentialBottomRight.RegisterHappinessChangerTile(this); }
+					if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft && j != 0) { residentialBottomLeft.RegisterHappinessChangerTile(this); }
+					if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft) { residentialTopLeft.RegisterHappinessChangerTile(this); }
+
+					//register at the workplaces
+					if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight) { workplaceTopRight.RegisterHappinessChangerTile(this); }
+					if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0) { workplaceBottomRight.RegisterHappinessChangerTile(this); }
+					if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0) { workplaceBottomLeft.RegisterHappinessChangerTile(this); }
+					if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft) { workplaceTopLeft.RegisterHappinessChangerTile(this); }
+
+					//register to the destroy event to be notified about a new tile
+					City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+					if (j != 0) City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+					if (j != 0) City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+					City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j)?.OnTileDelete.AddListener(TileDestroyedInRadius);
+				}
+		}
+
+		/// <summary>
+		/// Register at and to the new tile
+		/// </summary>
+		/// <param name="oldTile">Old tile that was deletetd</param>
+		private void TileDestroyedInRadius(Tile oldTile)
+		{
+			Tile newTile = City.Instance.GetTile(oldTile.Coordinates);
+
+			if (newTile is IResidential residential) { residential.RegisterHappinessChangerTile(this); }
+			if (newTile is IWorkplace workplace) { workplace.RegisterHappinessChangerTile(this); } //TODO
+			newTile.OnTileDelete.AddListener(TileDestroyedInRadius);
 		}
 
 		public override TileType GetTileType() { return TileType.Stadion; }

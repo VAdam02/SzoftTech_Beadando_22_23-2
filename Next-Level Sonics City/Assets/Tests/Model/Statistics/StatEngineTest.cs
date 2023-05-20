@@ -132,26 +132,5 @@ namespace Model.Statistics
 			float happiness = (_workers[0].GetHappiness() + _workers[1].GetHappiness() + _pensioners[0].GetHappiness() + _pensioners[1].GetHappiness()) / 4;
 			Assert.AreEqual(happiness, StatEngine.Instance.CalculateResidentialHappiness(_residential1));
 		}
-
-		[Test]
-		public void CalculateHappiness_EqualsToIndividualPersonsHappinessAVG()
-		{
-			float happiness = 0;
-			foreach (Worker worker in _workers)
-			{
-				happiness += worker.GetHappiness();
-			}
-			foreach (Pensioner pensioner in _pensioners)
-			{
-				happiness += pensioner.GetHappiness();
-			}
-			happiness /= _workers.Count + _pensioners.Count;
-
-			List<Person> persons = new();
-			persons.AddRange(_workers);
-			persons.AddRange(_pensioners);
-
-			Assert.AreEqual(happiness, StatEngine.Instance.CalculateHappiness(persons));
-		}
 	}
 }

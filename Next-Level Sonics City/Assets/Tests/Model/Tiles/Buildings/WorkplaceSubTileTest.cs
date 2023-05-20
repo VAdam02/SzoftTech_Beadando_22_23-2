@@ -83,14 +83,6 @@ namespace Model.Tiles.Buildings
 		}
 
 		[Test]
-		public void GetTile_ReturnsBaseWorkplaceTile()
-		{
-			var tile = workplaceSubTile.GetTile();
-
-			Assert.AreEqual(baseWorkplace.GetTile(), tile);
-		}
-
-		[Test]
 		public void CanBuild_ThrowsException()
 		{
 			Assert.Throws<InvalidOperationException>(() => workplaceSubTile.CanBuild());

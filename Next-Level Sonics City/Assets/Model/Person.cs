@@ -48,7 +48,7 @@ namespace Model
 			//happiness weight by negative budget //TODO make it as a city thing
 			happiness += 0;
 			happinessWeight += StatEngine.Instance.NegativeBudgetSince;
-
+			
 			//happiness and weight by residential
 			(float happiness, float weight) residentialHappiness = Residential.HappinessByBuilding;
 			happiness += residentialHappiness.happiness * residentialHappiness.weight;

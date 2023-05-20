@@ -88,7 +88,7 @@ namespace Model.Statistics
 		{
 			_date = new DateTime(startYear, 1, 1);
 
-			_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
+			_statReports.Add(new StatReport(Year, Quarter, Budget, 1, City.Instance.GetPopulation()));
 
 			Budget = startBudget;
 
@@ -589,13 +589,6 @@ namespace Model.Statistics
 			}
 
 			UpdateCurrentStatReport(false);
-
-			//TODO debug
-			for (int i = 2; i < 5/*City.Instance.GetSize()*/; i++)
-			{
-				IResidential residential = (IResidential)City.Instance.GetTile(i, 2);
-				Debug.Log(residential.HappinessByBuilding + "\t" + ((Worker)residential.GetResidents()[0]).WorkPlace.HappinessByBuilding + "\t" + residential.GetResidents()[0].HappinessByPersonInheritance + "\t" + residential.GetResidents()[0].GetHappiness() + "\t" + i);
-			}
 		}
 
 		/// <summary>
