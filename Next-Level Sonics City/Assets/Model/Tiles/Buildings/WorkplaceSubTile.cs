@@ -104,5 +104,10 @@ namespace Model.Tiles.Buildings
 		{
 			return 0;
 		}
+
+		public override float GetTransparency()
+		{
+			return 0.75f;
+		}
 	}
 }

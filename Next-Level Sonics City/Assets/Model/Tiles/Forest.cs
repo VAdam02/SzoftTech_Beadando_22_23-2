@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Model.Tiles
 {
-	public class Forest : Tile, IHappyZone, ITransparent
+	public class Forest : Tile, IHappyZone
 	{
 		private int _plantedYear;
 
@@ -113,9 +113,9 @@ namespace Model.Tiles
 			return this;
 		}
 
-		public float GetTransparency()
+		public override float GetTransparency()
 		{
-			return Mathf.Cos(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
+			return 1 - Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR) / 4;
 		}
 
 		public int GetEffectiveRadius()
@@ -131,7 +131,7 @@ namespace Model.Tiles
 
 			Vector3 delta = building.Coordinates - Coordinates;
 
-			float weight = 1 - GetTransparency(); //happiness weight made by the forest is linear with age aka transparency
+			float weight = Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
 
 			//decrease weight by transparency of the sight
 			if (delta.x > delta.y) //run on normal function
@@ -140,8 +140,7 @@ namespace Model.Tiles
 				{
 					Tile checkTile = City.Instance.GetTile(i, i + Mathf.RoundToInt(i * delta.y / delta.x));
 
-					if (checkTile is ITransparent transparent) { weight *= transparent.GetTransparency(); }
-					else { return (0, 0); }
+					weight *= checkTile.GetTransparency();
 				}
 			}
 			else //run on inverted function
@@ -150,8 +149,7 @@ namespace Model.Tiles
 				{
 					Tile checkTile = City.Instance.GetTile(i + Mathf.RoundToInt(i * delta.x / delta.y), i);
 
-					if (checkTile is ITransparent transparent) { weight *= transparent.GetTransparency(); }
-					else { return (0, 0); }
+					weight *= checkTile.GetTransparency();
 				}
 			}
 

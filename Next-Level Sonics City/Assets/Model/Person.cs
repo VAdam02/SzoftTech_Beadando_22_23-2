@@ -9,7 +9,7 @@ namespace Model
 	{
 		private static ulong s_id;
 
-		private readonly ulong _id;
+		public readonly ulong ID;
 		public IResidential Residential { get; protected set; }
 		public int Age { get; protected set; }
 		public Qualification Qualification { get; protected set; }
@@ -21,14 +21,14 @@ namespace Model
 		/// <param name="age">Age of person</param>
 		public Person(IResidential residential, int age)
 		{
-			_id = s_id++;
+			ID = s_id++;
 			Residential = residential ?? throw new ArgumentNullException("Person must have a home");
 			Age = age;
 			if (Age < 18) throw new ArgumentException("Person cannot be younger than 18 years old");
 
 			Residential.MoveIn(this);
 
-			City.Instance.AddPerson(_id, this);
+			City.Instance.AddPerson(this);
 		}
 
 		/// <summary>
@@ -53,32 +53,7 @@ namespace Model
 			happiness += residentialHappiness.happiness * residentialHappiness.weight;
 			happinessWeight += residentialHappiness.weight;
 
-			return happiness / happinessWeight;
-
-			/*
-			if(!SimEngine.Instance.IsIndustrialNearby(Residential)){
-				happiness += 0.1f;
-			}
-			else{
-				float distance3 = float.MaxValue;
-				foreach ( IWorkplace industrial in SimEngine.Instance.RoadGridManager.RoadGrids){
-					float current1 = Vector3.Distance(industrial.GetTile().Coordinates,maincord);
-					if(current1 < distance3){
-						distance3 = current1;
-					}
-				}
-				happiness -= distance3/10000; 
-			}
-			
-			if(happiness > 1){
-				happiness = 1;
-				return happiness;
-			}
-			else{
-				return happiness;
-			}
-			*/
-			
+			return happiness / happinessWeight;	
 		}
 
 		/// <summary>

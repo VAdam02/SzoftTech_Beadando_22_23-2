@@ -3,7 +3,7 @@ using System;
 
 namespace Model.Tiles
 {
-	public class EmptyTile : Tile, IZoneBuilding, ITransparent
+	public class EmptyTile : Tile, IZoneBuilding
 	{
 		/// <summary>
 		/// Construct a new empty tile
@@ -55,7 +55,7 @@ namespace Model.Tiles
 			return this;
 		}
 
-		public float GetTransparency()
+		public override float GetTransparency()
 		{
 			return 1;
 		}

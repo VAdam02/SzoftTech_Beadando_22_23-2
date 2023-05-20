@@ -1,13 +1,10 @@
+using Model.Persons;
 using Model.Statistics;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 using System;
-using System.Linq;
-using Model.Persons;
 using System.Threading;
 using UnityEngine;
-using System.Collections.Generic;
-using Model.RoadGrids;
 
 namespace Model.Simulation
 {
@@ -40,8 +37,8 @@ namespace Model.Simulation
 
 
 			City.Instance.SetTile(new RoadTile(0, 0, 0));
-			IWorkplace police = new PoliceDepartmentBuildingTile(0, 1, 0, Rotation.Zero);
-			City.Instance.SetTile(police.GetTile());
+			IWorkplace workplace = new Industrial(0, 1, 0, Rotation.Zero);
+			City.Instance.SetTile(workplace.GetTile());
 
 			for (int i = 1; i < City.Instance.GetSize(); i++)
 			{
@@ -49,7 +46,7 @@ namespace Model.Simulation
 				residential = new ResidentialBuildingTile(i, 1, 0);
 				City.Instance.SetTile(residential.GetTile());
 
-				_ = new Worker(residential, police, 30, Qualification.LOW);
+				_ = new Worker(residential, workplace, 30, Qualification.LOW);
 
 				Debug.Log(residential.HappinessByBuilding + "\t" + i);
 			}

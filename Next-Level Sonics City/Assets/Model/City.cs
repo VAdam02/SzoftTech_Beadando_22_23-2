@@ -110,9 +110,14 @@ namespace Model
 			return _persons;
 		}
 
-		internal void AddPerson(ulong id, Person person)
+		/// <summary>
+		/// Add person to the city
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="person"></param>
+		internal void AddPerson(Person person)
 		{
-			_persons.Add(id, person);
+			_persons.Add(person.ID, person);
 		}
 	}
 }

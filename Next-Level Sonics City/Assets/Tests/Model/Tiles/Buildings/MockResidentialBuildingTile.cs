@@ -43,62 +43,56 @@ namespace Model.Tiles.Buildings
 			throw new NotImplementedException();
 		}
 
-		List<Person> IResidential.GetResidents()
+		public List<Person> GetResidents()
 		{
 			return _residents;
 		}
 
-		int IResidential.GetResidentsCount()
+		public int GetResidentsCount()
 		{
 			throw new NotImplementedException();
 		}
-
-		Tile IResidential.GetTile()
-		{
-			return this;
-		}
-
-		void IResidential.MoveIn(Person person)
+		public void MoveIn(Person person)
 		{
 			_residents.Add(person);
 		}
 
-		void IResidential.MoveOut(Person person)
+		public void MoveOut(Person person)
 		{
-			//That imaginary place don't fit our expectations so we are going to move out
+			_residents.Remove(person);
 		}
 
-		void IResidential.RegisterResidential(RoadGrid roadGrid)
+		public void RegisterResidential(RoadGrid roadGrid)
 		{
 			roadGrid?.AddResidential(this);
 		}
 
-		void IResidential.UnregisterResidential(RoadGrid roadGrid)
+		public void UnregisterResidential(RoadGrid roadGrid)
 		{
 			throw new NotImplementedException();
 		}
 
-		ZoneType IZoneBuilding.GetZoneType()
+		public ZoneType GetZoneType()
 		{
 			throw new NotImplementedException();
 		}
 
-		void IZoneBuilding.LevelUp()
+		public void LevelUp()
 		{
 			throw new NotImplementedException();
 		}
 
-		int IZoneBuilding.GetLevelUpCost()
+		public int GetLevelUpCost()
 		{
 			throw new NotImplementedException();
 		}
 
-		Tile IZoneBuilding.GetTile()
+		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
 			throw new NotImplementedException();
 		}
 
-		void IResidential.RegisterHappinessChangerTile(IHappyZone happyZone)
+		public override float GetTransparency()
 		{
 			throw new NotImplementedException();
 		}

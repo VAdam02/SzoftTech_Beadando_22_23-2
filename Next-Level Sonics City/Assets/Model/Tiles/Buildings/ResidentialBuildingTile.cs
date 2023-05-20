@@ -282,6 +282,24 @@ namespace Model.Tiles.Buildings
 		public int ResidentLimit { get; private set; }
 		private readonly List<Person> _residents = new();
 
+		/// <summary>
+		/// Construct a new residential tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		/// <param name="rotation">Rotation of the tile</param>
+		public ResidentialBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		{
+
+		}
+
+		/// <summary>
+		/// Construct a new residential tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
 		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID, GetRandomRotationToLookAtRoadGridElement(x, y))
 		{
 			
@@ -427,6 +445,11 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
+		}
+
+		public override float GetTransparency()
+		{
+			return 1 - (float)(int)Level / 12;
 		}
 	}
 }

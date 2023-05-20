@@ -1,6 +1,5 @@
 using Model.Persons;
 using Model.RoadGrids;
-using Model.Statistics;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -192,8 +191,6 @@ namespace Model.Tiles.Buildings
 				return (0, 0);
 			}
 
-			Debug.Log("distance\t" + distance + "\t" + building.Coordinates);
-
 			return (1, Mathf.Cos(distance * Mathf.PI / 2 / GetEffectiveRadius()));
 		}
 
@@ -217,6 +214,11 @@ namespace Model.Tiles.Buildings
 			}
 
 			return -1;
+		}
+
+		public override float GetTransparency()
+		{
+			return 0.75f;
 		}
 	}
 }

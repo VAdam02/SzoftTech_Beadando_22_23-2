@@ -161,5 +161,11 @@ namespace Model
 		{
 			return 0;
 		}
+
+		/// <summary>
+		/// Returns the tile transparency for the effects
+		/// </summary>
+		/// <returns>Transparency of tile</returns>
+		public abstract float GetTransparency();
 	}
 }

@@ -174,5 +174,10 @@ namespace Model.Tiles.Buildings
 
 			return true;
 		}
+
+		public override float GetTransparency()
+		{
+			return 1 - (float)(int)Level / 12;
+		}
 	}
 }

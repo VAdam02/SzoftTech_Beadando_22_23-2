@@ -34,5 +34,10 @@ namespace Model.Tiles
 			//TODO implement electric pole maintainance cost
 			return 100000;
 		}
+
+		public override float GetTransparency()
+		{
+			return 1;
+		}
 	}
 }

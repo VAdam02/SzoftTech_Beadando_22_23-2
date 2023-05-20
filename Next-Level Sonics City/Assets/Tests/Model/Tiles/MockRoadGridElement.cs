@@ -28,27 +28,32 @@ namespace Model.Tiles
 			throw new NotImplementedException();
 		}
 
-		List<IRoadGridElement> IRoadGridElement.ConnectsTo()
+		public override float GetTransparency()
+		{
+			return 1;
+		}
+
+		public List<IRoadGridElement> ConnectsTo()
 		{
 			throw new NotImplementedException();
 		}
 
-		RoadGrid IRoadGridElement.GetRoadGrid()
+		public RoadGrid GetRoadGrid()
 		{
 			return _roadGrid;
 		}
 
-		Tile IRoadGridElement.GetTile()
+		public Tile GetTile()
 		{
 			return this;
 		}
 
-		void IRoadGridElement.RegisterRoadGridElement()
+		public void RegisterRoadGridElement()
 		{
 			RoadGridManager.Instance.AddRoadGridElement(this);
 		}
 
-		void IRoadGridElement.SetRoadGrid(RoadGrid roadGrid)
+		public void SetRoadGrid(RoadGrid roadGrid)
 		{
 			if (_roadGrid == roadGrid) { return; }
 
@@ -93,7 +98,7 @@ namespace Model.Tiles
 			}
 		}
 
-		void IRoadGridElement.UnregisterRoadGridElement()
+		public void UnregisterRoadGridElement()
 		{
 			_roadGrid.RemoveRoadGridElement(this);
 		}

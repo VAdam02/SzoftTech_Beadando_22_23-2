@@ -191,5 +191,10 @@ namespace Model.Tiles.Buildings
 				}
 			}
 		}
+
+		public override float GetTransparency()
+		{
+			return 0.75f;
+		}
 	}
 }

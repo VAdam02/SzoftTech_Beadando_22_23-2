@@ -1,6 +1,5 @@
 using Model.Persons;
 using Model.RoadGrids;
-using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
 
@@ -100,6 +99,11 @@ namespace Model.Tiles.Buildings
 		{
 			//TODO implement fire department maintainance cost
 			return 100000;
+		}
+
+		public override float GetTransparency()
+		{
+			return 0.75f;
 		}
 	}
 }

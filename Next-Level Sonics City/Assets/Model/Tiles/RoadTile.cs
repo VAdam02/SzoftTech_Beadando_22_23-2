@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Model.Tiles
 {
-	public class RoadTile : Tile, IRoadGridElement, ITransparent
+	public class RoadTile : Tile, IRoadGridElement
 	{
 		public const uint ABOVEROADMASK = 1;
 		public const uint RIGHTROADMASK = 2;
@@ -205,7 +205,7 @@ namespace Model.Tiles
 			return 100000;
 		}
 
-		public float GetTransparency()
+		public override float GetTransparency()
 		{
 			return 1;
 		}
