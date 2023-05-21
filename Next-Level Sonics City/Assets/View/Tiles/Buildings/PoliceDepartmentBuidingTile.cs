@@ -144,16 +144,5 @@ namespace View.Tiles.Buildings
 			}
 			
 		}
-
-		// Update is called once per frame
-		void Update()
-		{
-
-		}
-
-		private static GameObject LoadModelByName(string name)
-		{
-			return Resources.Load<GameObject>("Tiles/PoliceDepartmentBuildingTile/Model/" + name);
-		}
 	}
 }
