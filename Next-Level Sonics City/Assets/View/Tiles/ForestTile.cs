@@ -120,7 +120,7 @@ namespace View.Tiles
 				loc.y = 0;
 
 				tree.transform.localPosition = loc - new Vector3(5, 0, 5);
-				tree.transform.localScale = new Vector3(20, 20, 20f) * Mathf.Sin(Mathf.Clamp(((Model.Tiles.ForestTile)TileModel).Age, 0.1f, 10) * Mathf.PI / 2 / Model.Tiles.ForestTile.MAINTANCENEEDEDFORYEAR);
+				tree.transform.localScale = new Vector3(20, 20, 20f) * Mathf.Sin(Mathf.Clamp(((Model.Tiles.ForestTile)TileModel).Age, 0.5f, 10) * Mathf.PI / 2 / Model.Tiles.ForestTile.MAINTANCENEEDEDFORYEAR);
 				tree.transform.localRotation = Quaternion.Euler(-90f, 0, 0);
 
 				SetSharedMaterials(tree.GetComponent<Renderer>());
