@@ -5,14 +5,14 @@ namespace Model.Tiles
 {
 	public class ForestTileTest
 	{
-		private Forest forest;
+		private ForestTile forest;
 
 		[SetUp]
 		public void SetUp()
 		{
 			City.Reset();
 
-			forest = new Forest(0, 0, 123);
+			forest = new ForestTile(0, 0, 123);
 			City.Instance.SetTile(forest);
 		}
 
@@ -46,9 +46,9 @@ namespace Model.Tiles
 		}
 
 		// Helper method to access the private field _plantedYear
-		private int GetPlantedYear(Forest forest)
+		private int GetPlantedYear(ForestTile forest)
 		{
-			return (int)typeof(Forest)
+			return (int)typeof(ForestTile)
 				.GetField("_plantedYear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
 				.GetValue(forest);
 		}

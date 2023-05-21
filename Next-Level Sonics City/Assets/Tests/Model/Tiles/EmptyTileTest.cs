@@ -11,14 +11,14 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
-			emptyTile = new EmptyTile(0, 0, 123);
+			emptyTile = new EmptyTile(0, 0);
 			City.Instance.SetTile(emptyTile);
 		}
 
 		[Test]
 		public void CanBuild_ReturnsFalseIfAdjacentTileIsNotEmptyTile()
 		{
-			var adjacentTile = new EmptyTile(0, 1, 456);
+			var adjacentTile = new EmptyTile(0, 1);
 			City.Instance.SetTile(adjacentTile);
 
 			var canBuild = emptyTile.CanBuild();

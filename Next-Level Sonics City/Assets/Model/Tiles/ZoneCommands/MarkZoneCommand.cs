@@ -50,7 +50,7 @@ namespace Model.Tiles.ZoneCommands
 					break;
 				case ZoneType.NoZone:
 					if (City.Instance.GetTile(_x, _y) is not Industrial && City.Instance.GetTile(_x, _y) is not Commercial && City.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
-					City.Instance.SetTile(new EmptyTile(_x, _y, _designID));
+					City.Instance.SetTile(new EmptyTile(_x, _y));
 					break;
 				default:
 					break;

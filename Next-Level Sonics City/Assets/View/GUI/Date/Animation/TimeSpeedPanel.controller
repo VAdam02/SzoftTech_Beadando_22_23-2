@@ -220,7 +220,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 6
     m_ConditionEvent: TimeSpeed
-    m_EventTreshold: 8
+    m_EventTreshold: 2
   - m_ConditionMode: 1
     m_ConditionEvent: Display
     m_EventTreshold: 0

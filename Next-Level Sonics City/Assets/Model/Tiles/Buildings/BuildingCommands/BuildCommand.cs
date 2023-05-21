@@ -52,7 +52,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 				TileType.HighSchool => new HighSchool(_x, _y, _designID, _rotation),
 				TileType.Stadion => new StadionBuildingTile(_x, _y, _designID, _rotation),
 				TileType.PowerPlant => new PowerPlant(_x, _y, _designID, _rotation),
-				TileType.Forest => new Forest(_x, _y, _designID),
+				TileType.Forest => new ForestTile(_x, _y, _designID),
 				TileType.Road => new RoadTile(_x, _y),
 				TileType.ElectricPole => new ElectricPole(_x, _y, _designID),
 				_ => throw new NotImplementedException("TileType \'" + _tileType + "\' not implemented"),

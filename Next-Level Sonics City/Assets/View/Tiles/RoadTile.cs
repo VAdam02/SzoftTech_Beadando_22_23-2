@@ -92,7 +92,6 @@ namespace View.Tiles
 
 		private void Display()
 		{
-			
 			foreach (Transform child in transform)
 			{
 				Destroy(child.gameObject);

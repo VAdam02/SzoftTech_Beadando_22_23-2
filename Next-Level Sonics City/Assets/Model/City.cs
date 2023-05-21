@@ -31,7 +31,7 @@ namespace Model
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
 			{
-				SetTile(new EmptyTile(i, j, 0));
+				SetTile(new EmptyTile(i, j));
 			}
 		}
 

@@ -19,7 +19,7 @@ namespace View.GUI.Footer.BuildPanel
 				TileType.MiddleSchool => TileManager.Instance.GenerateFromModel(new MiddleSchool(0, 0, 0, Rotation.Zero)),
 				TileType.HighSchool => TileManager.Instance.GenerateFromModel(new HighSchool(0, 0, 0, Rotation.Zero)),
 				TileType.PowerPlant => TileManager.Instance.GenerateFromModel(new PowerPlant(0, 0, 0, Rotation.Zero)),
-				TileType.Forest => TileManager.Instance.GenerateFromModel(new Forest(0, 0, 0)),
+				TileType.Forest => TileManager.Instance.GenerateFromModel(new ForestTile(0, 0, 0)),
 				TileType.ElectricPole => TileManager.Instance.GenerateFromModel(new ElectricPole(0, 0, 0)),
 				TileType.Road => TileManager.Instance.GenerateFromModel(new RoadTile(0, 0)),
 				_ => throw new InvalidOperationException(),

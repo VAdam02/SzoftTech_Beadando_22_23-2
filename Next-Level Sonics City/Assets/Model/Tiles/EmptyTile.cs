@@ -56,7 +56,7 @@ namespace Model.Tiles
 		/// <param name="x">X coordinate of the tile</param>
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
-		public EmptyTile(int x, int y, uint designID) : base(x, y, designID)
+		public EmptyTile(int x, int y) : base(x, y, 0)
 		{
 
 		}

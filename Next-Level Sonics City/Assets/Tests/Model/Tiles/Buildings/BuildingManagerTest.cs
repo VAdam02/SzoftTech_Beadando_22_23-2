@@ -13,7 +13,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void Build_ValidEmptyTile_BuildsBuildingAndRaisesBuildingBuiltEvent()
 		{
-			Tile tile = new EmptyTile(3, 4, 123);
+			Tile tile = new EmptyTile(3, 4);
 			TileType tileType = TileType.PoliceDepartment;
 			Rotation rotation = Rotation.Zero;
 

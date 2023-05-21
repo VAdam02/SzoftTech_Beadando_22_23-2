@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Model.Tiles
 {
-	public class Forest : Tile, IHappyZone
+	public class ForestTile : Tile, IHappyZone
 	{
 		#region Tile implementation
 		public override TileType GetTileType() => TileType.Forest;
@@ -96,7 +96,7 @@ namespace Model.Tiles
 		/// <param name="x">X coordinate of the tile</param>
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
-		public Forest(int x, int y, uint designID) : base(x, y, designID)
+		public ForestTile(int x, int y, uint designID) : base(x, y, designID)
 		{
 			
 		}
