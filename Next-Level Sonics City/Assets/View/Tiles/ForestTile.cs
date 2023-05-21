@@ -1,3 +1,4 @@
+using Model.Statistics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -108,9 +109,7 @@ namespace View.Tiles
 				Destroy(child.gameObject);
 			}
 
-			Vector3 size = new(10f, 0f, 10f);
-
-			List<Vector3> locations = FindLocalExtremas(-transform.localPosition -size, -transform.localPosition, RESOLUTION);
+			List<Vector3> locations = FindLocalExtremas(-transform.localPosition - new Vector3(10f, 0f, 10f), -transform.localPosition, RESOLUTION);
 			foreach (Vector3 location in locations)
 			{
 				GameObject tree = Instantiate(LoadModelByName("Spruce"));
@@ -121,7 +120,7 @@ namespace View.Tiles
 				loc.y = 0;
 
 				tree.transform.localPosition = loc - new Vector3(5, 0, 5);
-				tree.transform.localScale = new Vector3(20f, 20f, 20f);
+				tree.transform.localScale = new Vector3(20, 20, 20f) * Mathf.Sin(Mathf.Clamp(((Model.Tiles.ForestTile)TileModel).Age, 0.1f, 10) * Mathf.PI / 2 / Model.Tiles.ForestTile.MAINTANCENEEDEDFORYEAR);
 				tree.transform.localRotation = Quaternion.Euler(-90f, 0, 0);
 
 				SetSharedMaterials(tree.GetComponent<Renderer>());

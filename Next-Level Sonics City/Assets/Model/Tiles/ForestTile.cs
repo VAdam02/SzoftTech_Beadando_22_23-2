@@ -23,7 +23,7 @@ namespace Model.Tiles
 			{
 				if (StatEngine.Instance.Quarter == 0)
 				{
-					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, DESIGNID_AGE_MASK);
+					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, MAINTANCENEEDEDFORYEAR);
 					TileChangeInvoke();
 				}
 			};
@@ -85,7 +85,7 @@ namespace Model.Tiles
 
 		private int _plantedYear;
 
-		private const int MAINTANCENEEDEDFORYEAR = 10;
+		public const int MAINTANCENEEDEDFORYEAR = 10;
 		public const uint DESIGNID_AGE_MASK = 0x00000015; // 4 bits
 
 		public int Age => StatEngine.Instance.Year - _plantedYear;
