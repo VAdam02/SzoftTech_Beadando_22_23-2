@@ -152,28 +152,6 @@ namespace Model.Tiles.Buildings
 			return GetWorkersCount() > 0 ? GetRegisterRadius() : 0;
 		}
 
-		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (building == null) { throw new ArgumentNullException(); }
-			if (building == this) { throw new ArgumentException("Target can't be same as this"); }
-
-			//it is not even in the same grid
-			if (RoadGridManager.GetRoadGrigElementByBuilding(this) == null) { return (0, 0); }
-			if (RoadGridManager.GetRoadGrigElementByBuilding(building) == null) { return (0, 0); }
-			if (RoadGridManager.GetRoadGrigElementByBuilding(building).RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(this).RoadGrid) { return (0, 0); }
-
-			//it is not reachable
-			int distance = GetDistanceOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(building), GetEffectiveRadius() - 1);
-			if (distance == -1)
-			{
-				return (0, 0);
-			}
-
-			return (1, Mathf.Cos(distance * Mathf.PI / 2 / GetEffectiveRadius()));
-		}
-
 		public int GetDistanceOnRoad(IRoadGridElement target, int maxDistance)
 		{
 			Queue<(IRoadGridElement, int)> queue = new();
@@ -237,12 +215,29 @@ namespace Model.Tiles.Buildings
 
 		(float happiness, float weight) IHappyZone.GetHappinessModifierAtTile(Building building)
 		{
-			throw new NotImplementedException();
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			if (building == null) { throw new ArgumentNullException(); }
+			if (building == this) { throw new ArgumentException("Target can't be same as this"); }
+
+			//it is not even in the same grid
+			if (RoadGridManager.GetRoadGrigElementByBuilding(this) == null) { return (0, 0); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(building) == null) { return (0, 0); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(building).RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(this).RoadGrid) { return (0, 0); }
+
+			//it is not reachable
+			int distance = GetDistanceOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(building), GetEffectiveRadius() - 1);
+			if (distance == -1)
+			{
+				return (0, 0);
+			}
+
+			return (1, Mathf.Cos(distance * Mathf.PI / 2 / GetEffectiveRadius()));
 		}
 
 		Tile IHappyZone.GetTile()
 		{
-			throw new NotImplementedException();
+			return this;
 		}
 
 		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile)

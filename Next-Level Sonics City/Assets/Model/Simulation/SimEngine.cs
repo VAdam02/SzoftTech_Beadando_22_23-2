@@ -1,4 +1,3 @@
-using Model.Persons;
 using Model.Statistics;
 using Model.Tiles;
 using Model.Tiles.Buildings;

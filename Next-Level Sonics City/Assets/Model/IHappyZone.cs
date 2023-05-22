@@ -73,6 +73,8 @@ namespace Model.Tiles
 		#region HappinessModifier modules
 		protected static float SightToHappyZone(IHappyZone happyZone, Tile tile)
 		{
+			if (happyZone == tile) { return 0; }
+
 			float sight = 1;
 
 			Vector3 delta = happyZone.GetTile().Coordinates - tile.Coordinates;
@@ -80,9 +82,10 @@ namespace Model.Tiles
 			//decrease sight by transparency
 			if (delta.x > delta.y) //run on normal function
 			{
-				for (int i = (int)Mathf.Min(happyZone.GetTile().Coordinates.x, tile.Coordinates.x) + 1; i < Mathf.Max(happyZone.GetTile().Coordinates.x, tile.Coordinates.x); i++)
+				for (int i = 1; i < delta.x; i++)
 				{
-					Tile checkTile = City.Instance.GetTile(i, (happyZone.GetTile().Coordinates.x < tile.Coordinates.x ? (Tile)happyZone : tile).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
+					Tile checkTile = City.Instance.GetTile((happyZone.GetTile().Coordinates.x < tile.Coordinates.x ? (Tile)happyZone : tile).Coordinates.y + i, (happyZone.GetTile().Coordinates.x < tile.Coordinates.x ? (Tile)happyZone : tile).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
+					Debug.Log(checkTile.Coordinates);
 					sight *= checkTile.Transparency;
 				}
 			}
@@ -90,7 +93,8 @@ namespace Model.Tiles
 			{
 				for (int i = (int)Mathf.Min(happyZone.GetTile().Coordinates.y, tile.Coordinates.y) + 1; i < Mathf.Max(happyZone.GetTile().Coordinates.y, happyZone.GetTile().Coordinates.y); i++)
 				{
-					Tile checkTile = City.Instance.GetTile((happyZone.GetTile().Coordinates.y < tile.Coordinates.y ? (Tile)happyZone : tile).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), i);
+					Tile checkTile = City.Instance.GetTile((happyZone.GetTile().Coordinates.y < tile.Coordinates.y ? (Tile)happyZone : tile).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), (happyZone.GetTile().Coordinates.y < tile.Coordinates.y ? (Tile)happyZone : tile).Coordinates.x + i);
+					Debug.Log(checkTile.Coordinates);
 					sight *= checkTile.Transparency;
 				}
 			}
