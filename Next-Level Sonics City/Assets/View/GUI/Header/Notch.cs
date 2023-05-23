@@ -18,7 +18,6 @@ namespace View.GUI.Header
         private Color _great = new Color32(128, 255, 0, 255);
         private Color _bad = new Color32(255, 32, 0, 255);
 
-        private GameObject _moneyTextBox;
         private GameObject _moneyChangeTextBox;
         private GameObject _happinessImage;
         private GameObject _populationTextBox;
@@ -27,7 +26,6 @@ namespace View.GUI.Header
         // Start is called before the first frame update
         void Start()
         {
-            _moneyTextBox = transform.Find("MoneyPanel").Find("MoneyTextBox").gameObject;
             _moneyChangeTextBox = transform.Find("MoneyPanel").Find("MoneyChangeTextBox").gameObject;
             _happinessImage = transform.Find("HappinessImage").gameObject;
             _populationTextBox = transform.Find("PopulationPanel").Find("PopulationTextBox").gameObject;
@@ -35,17 +33,8 @@ namespace View.GUI.Header
         }
 
         // Update is called once per frame
-        float deltatime = 0;
         void Update()
         {
-            deltatime += Time.deltaTime;
-            if (deltatime > 0.5f)
-            {
-                deltatime -= 0.5f;
-                money = (int)(1 / Time.deltaTime);
-            }
-
-            _moneyTextBox.GetComponent<TextMeshProUGUI>().text = "$" + money.ToString("N0");
             _moneyChangeTextBox.GetComponent<TextMeshProUGUI>().text = "$" + moneyChange.ToString("N0");
             _moneyChangeTextBox.GetComponent<TextMeshProUGUI>().color = moneyChange >= 0 ? _great : _bad;
 

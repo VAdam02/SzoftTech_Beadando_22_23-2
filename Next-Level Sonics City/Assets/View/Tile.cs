@@ -1,8 +1,10 @@
-using Model.Simulation;
+using Model;
 using Model.Tiles;
 using Model.Tiles.Buildings;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using View.GUI;
 
 namespace View
@@ -16,6 +18,9 @@ namespace View
 
 		internal readonly List<Material> _materials = new();
 
+		public readonly UnityEvent<Model.Tile> OnTileDelete = new();
+		public readonly UnityEvent OnDesignIDChange = new();
+
 		/// <summary>
 		/// Initializes the view side tile with it's model side object.
 		/// Must be called before the Start is executed!
@@ -24,12 +29,40 @@ namespace View
 		internal void Init(Model.Tile tileModel)
 		{
 			TileModel = tileModel;
-			TileModel.OnTileDelete.AddListener(Delete);
+
+			TileModel.OnTileDelete += (sender, tile) =>
+			{
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						OnTileDelete.Invoke(tile);
+					});
+				}
+			};
+
+			TileModel.OnDesignIDChange += (sender, args) =>
+			{
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						OnDesignIDChange.Invoke();
+					});
+				}
+			};
+
+			OnTileDelete.AddListener(Delete);
+			if (TileModel is Building building)
+			{
+				transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
+				building.OnRotationChanged += (object sender, EventArgs e) => transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
+			}
 		}
 
-		private void Delete()
+		private void Delete(Model.Tile deletedTile)
 		{
-			TileManager.Instance.CloneTileFromModel(SimEngine.Instance.GetTile((int)TileModel.Coordinates.x, (int)TileModel.Coordinates.y));
+			TileManager.Instance.CloneTileFromModel(City.Instance.GetTile(TileModel));
 			Destroy(gameObject);
 		}
 
@@ -63,10 +96,13 @@ namespace View
 			}
 			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
 			{
-				SimEngine.Instance.BuildingManager.Build(
-					SimEngine.Instance.GetTile((int)TileManager.Instance.GhostTile.TileModel.Coordinates.x, (int)TileManager.Instance.GhostTile.TileModel.Coordinates.y),
+				if (TileManager.Instance.GhostTile != null)
+				{
+					BuildingManager.Instance.Build(
+					City.Instance.GetTile(TileManager.Instance.GhostTile.TileModel),
 					TileManager.Instance.GhostTile.TileModel.GetTileType(),
 					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);
+				}
 			}
 		}
 

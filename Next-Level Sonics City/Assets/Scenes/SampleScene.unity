@@ -1241,18 +1241,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1342700021}
     m_Modifications:
-    - target: {fileID: 2976144003649351735, guid: 4255a89495f2bb3488ee61a508643bdf, type: 3}
-      propertyPath: m_text
-      value: ??
-      objectReference: {fileID: 0}
-    - target: {fileID: 2976144003649351735, guid: 4255a89495f2bb3488ee61a508643bdf, type: 3}
-      propertyPath: m_fontSize
-      value: 54.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3497104048517318705, guid: 4255a89495f2bb3488ee61a508643bdf, type: 3}
-      propertyPath: m_text
-      value: ???? ????
-      objectReference: {fileID: 0}
     - target: {fileID: 5105146250158273538, guid: 4255a89495f2bb3488ee61a508643bdf, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1341,6 +1329,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: Date
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2988757894162830164, guid: 4255a89495f2bb3488ee61a508643bdf, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4255a89495f2bb3488ee61a508643bdf, type: 3}

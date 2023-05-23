@@ -5,26 +5,30 @@ namespace Model.Statistics
 		public int Year { get; internal set; }
 		public int Quarter { get; internal set; }
 		public float Budget { get; internal set; }
+		public float BudgetChange { get; internal set; } = 0;
 		public float Happiness { get; internal set; }
 
-		public float IncomeTax { get; internal set; }
-		public float ResidentialTax { get; internal set; }
-		public float BuildExpenses { get; internal set; }
-		public float DestroyIncomes { get; internal set; }
-		public float MaintainanceCosts { get; internal set; }
-		public float Incomes { get; internal set; }
-		public float Expenses { get; internal set; }
-		public float Profit { get; internal set; }
+		public float ResidentialTax { get; internal set; } = 0;
+		public float WorkplaceTax { get; internal set; } = 0;
+		public float Pension { get; internal set; } = 0;
+		public float MaintainanceCosts { get; internal set; } = 0;
+
+		public float DestroyIncomes { get; internal set; } = 0;
+		public float BuildExpenses { get; internal set; } = 0;
+		public float Incomes { get; internal set; } = 0;
+		public float Expenses { get; internal set; } = 0;
+		public float Profit { get; internal set; } = 0;
 
 		public int Population { get; internal set; }
-		public int PopulationChange { get; internal set; }
+		public int PopulationChange { get; internal set; } = 0;
 
-		public int ElectricityProduced { get; internal set; }
-		public int ElectricityConsumed { get; internal set; }
-
-		public StatReport()
+		public StatReport(int year, int quarter, float budget, float happiness, int population)
 		{
-
+			Year = year;
+			Quarter = quarter;
+			Budget = budget;
+			Happiness = happiness;
+			Population = population;
 		}
 	}
 }

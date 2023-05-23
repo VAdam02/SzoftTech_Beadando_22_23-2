@@ -1,26 +1,20 @@
-using Model.Simulation;
+using Model.Statistics;
 using UnityEngine;
 
 namespace View.GUI.Date
 {
-    public class DisplayDate : MonoBehaviour
+	public class DisplayDate : MonoBehaviour
     {
         // Start is called before the first frame update
         void Start()
         {
-            SimEngine.Instance.StatEngine.DateChanged.AddListener(UpdateDate);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            StatEngine.Instance.DateChanged.AddListener(UpdateDate);
         }
 
         public void UpdateDate()
         {
-            transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = SimEngine.Instance.StatEngine.Day;
-            transform.GetChild(1).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = SimEngine.Instance.StatEngine.YearMonth;
+            transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = StatEngine.Instance.Date.Day.ToString(); ;
+            transform.GetChild(1).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = StatEngine.Instance.Date.ToString("yyyy MMM"); ;
         }
     }
 }

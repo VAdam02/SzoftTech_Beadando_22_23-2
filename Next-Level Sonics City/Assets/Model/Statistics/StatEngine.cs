@@ -1,98 +1,148 @@
+using Model.Persons;
+using Model.RoadGrids;
+using Model.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Model.Persons;
-using Model.RoadGrids;
-using Model.Simulation;
-using Model.Tiles;
-using Model.Tiles.Buildings;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Model.Statistics
 {
 	public class StatEngine
 	{
-		private DateTime date; 
-		public int Year { get { return date.Year; } }
-		public int Quarter { get { return date.Month / 3; } }
-		public string YearMonth { get { return date.ToString("yyyy MMM"); } }
-		public string Day { get { return date.Day.ToString(); } }
-		public float Budget { get; private set; }
+		private static StatEngine _instance;
+		public static StatEngine Instance
+		{
+			get
+			{
+				_instance ??= new StatEngine(2020, 100000);
+				return _instance;
+			}
+		}
 
-		private int _buildPrice = 0;
-		private int _destroyPrice = 0;
-		private float _incomeTaxRate = 0;
-		private float _residentialTaxRate = 0;
-		private float _commercialCount = 0;
-		private float _industrialCount = 0;
+		public static void Reset() { _instance = null; }
+
+		private DateTime _date;
+		public DateTime Date
+		{
+			get { return _date; }
+			private set
+			{
+				if (_date.Date != value.Date)
+				{
+					if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+					{
+						mainThread.Enqueue(() =>
+						{
+							DateChanged.Invoke();
+						});
+					}
+
+					if (Quarter != (value.Month - 1) / 3)
+					{
+						NextQuarter();
+					}
+				}
+				
+				_date = value;
+			}
+		}
+		public int Year { get { return Date.Year; } }
+		public int Quarter { get { return (Date.Month-1) / 3; } }
+
+		private readonly object _budgetLock = new();
+		private float _budget = 0;
+		private int _negativeBudgetSince = 0;
+		public float Budget
+		{
+			get { return _budget; }
+			private set
+			{
+				_budget = value;
+				if (_budget < 0 && _negativeBudgetSince == 0) { _negativeBudgetSince = Year; }
+				if (_budget >= 0) { _negativeBudgetSince = 0; }
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						BudgetChanged.Invoke();
+					});
+				}
+			}
+		}
+		public int NegativeBudgetSince { get { return _negativeBudgetSince == 0 ? 0 : Year - _negativeBudgetSince; } }
+
+		public float WorkplaceTaxRate { get; set; } = 0.1f;
+		public float ResidentialTaxRate { get; set; } = 0.1f;
+		private readonly object _workplaceCountLock = new();
+		private float _commercialWorkplaceCount = 0;
+		private float _industrialWorkplaceCount = 0;
 
 		private readonly List<StatReport> _statReports = new();
 		public UnityEvent BudgetChanged = new();
 		public UnityEvent DateChanged = new();
 
-
-		public StatEngine(int startYear, float startBudget)
+		private StatEngine(int startYear, float startBudget)
 		{
-			date = new DateTime(startYear, 1, 1);
+			_date = new DateTime(startYear, 1, 1);
+
+			_statReports.Add(new StatReport(Year, Quarter, Budget, 1, City.Instance.GetPopulation()));
+
 			Budget = startBudget;
 
-			StatReport zerothStatReport = new()
-			{
-				Quarter = Quarter,
-				Year = Year,
-				Budget = Budget,
-				Happiness = 0,
-				IncomeTax = 0,
-				ResidentialTax = 0,
-				DestroyIncomes = 0,
-				BuildExpenses = 0,
-				MaintainanceCosts = 0,
-				Incomes = 0,
-				Expenses = 0,
-				Profit = 0,
-				Population = 0,
-				PopulationChange = 0,
-				ElectricityProduced = 0,
-				ElectricityConsumed = 0
-			};
-			_statReports.Add(zerothStatReport);
 		}
 
-		public void TimeElapsed()
+		/// <summary>
+		/// Calculate the tax payed by the residents in the residential building
+		/// </summary>
+		/// <param name="residential">Residential where the tax is summed</param>
+		/// <returns>Tax sum payed by residentials</returns>
+		public float CalculateResidentialTaxPerResidential(IResidential residential)
 		{
-			int quarter = Quarter;
-			string day = Day;
+			return CalculateResidentialTaxPerResidential(residential, ResidentialTaxRate);
+		}
 
-			date = date.AddMinutes(30	);
+		/// <summary>
+		/// Calculate the tax payed by the residents in the residential building
+		/// </summary>
+		/// <param name="residential">Residential where the tax is summed</param>
+		/// <param name="taxRate">Taxrate payed by residentials</param>
+		/// <returns>Tax sum payed by residentials</returns>
+		public float CalculateResidentialTaxPerResidential(IResidential residential, float taxRate)
+		{
+			float residentialTax = 0;
+			object taxLock = new();
 
-			if (day != Day)
+			Parallel.ForEach(residential.GetResidents(), person =>
 			{
-				MainThreadDispatcher.Instance.Enqueue(() =>
+				float tax = person.PayTax(taxRate);
+				lock (taxLock)
 				{
-					DateChanged.Invoke();
-				});
-			}
-			if (quarter == Quarter)
-			{
-				//NextQuarter();
-			}
+					residentialTax += tax;
+				}
+			});
+
+			return residentialTax;
 		}
-		
-		public float CalculateResidentialTaxPerHouse(IResidential residential, float taxRate)
+
+		/// <summary>
+		/// Calculate the tax payed by the residents in the residential buildings
+		/// </summary>
+		/// <param name="residentials">Residential list where the tax is summed</param>
+		/// <returns>Tax sum payed by residentials</returns>
+		public float CalculateResidentialTax(List<IResidential> residentials)
 		{
-			float houseTax = 0;
-
-			List<Person> persons = residential.GetResidents();
-
-			foreach (Person person in persons)
-			{
-				houseTax += person.PayTax(taxRate);
-			}
-
-			return houseTax;
+			return CalculateResidentialTax(residentials, ResidentialTaxRate);
 		}
 
+		/// <summary>
+		/// Calculate the tax payed by the residents in the residential buildings
+		/// </summary>
+		/// <param name="residentials">Residential list where the tax is summed</param>
+		/// <param name="taxRate">Taxrate payed by the residentials</param>
+		/// <returns>Tax sum payed by residentials</returns>
 		public float CalculateResidentialTax(List<IResidential> residentials, float taxRate)
 		{
 			float totalTax = 0;
@@ -100,7 +150,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(residentials, residential =>
 			{
-				float tax = CalculateResidentialTaxPerHouse(residential, taxRate);
+				float tax = CalculateResidentialTaxPerResidential(residential, taxRate);
 
 				lock (taxLock)
 				{
@@ -111,33 +161,66 @@ namespace Model.Statistics
 			return totalTax;
 		}
 
-		public void SetResidentialTaxRate(float residentialTaxRate)
+		/// <summary>
+		/// Calculate the tax payed by the company in the workplace
+		/// </summary>
+		/// <param name="workplace">Workplace where the tax is summed</param>
+		/// <returns>Tax sum payed by the company</returns>
+		public float CalculateWorkplaceTaxPerWorkplace(IWorkplace workplace)
 		{
-			_residentialTaxRate = residentialTaxRate;
+			return CalculateWorkplaceTaxPerWorkplace(workplace, WorkplaceTaxRate);
 		}
 
-		public float CalculateIncomeTaxPerWorkplace(IWorkplace workplace, float taxRate)
+		/// <summary>
+		/// Calculate the tax payed by the company in the workplace
+		/// </summary>
+		/// <param name="workplace">Workplace where the tax is summed</param>
+		/// <param name="taxRate">Taxrate payed by the company</param>
+		/// <returns>Tax sum payed by the company</returns>
+		public float CalculateWorkplaceTaxPerWorkplace(IWorkplace workplace, float taxRate)
 		{
 			float workplaceTax = 0;
+			object taxLock = new();
 
-			List<Worker> persons = workplace.GetWorkers();
+			List<Worker> workers = workplace.GetWorkers();
 
-			foreach (Person person in persons)
+			Parallel.ForEach(workplace.GetWorkers(), worker =>
 			{
-				workplaceTax += person.PayTax(taxRate);
-			}
+				float tax = worker.PayTax(taxRate);
+
+				lock (taxLock)
+				{
+					workplaceTax += tax;
+				}
+			});
 
 			return workplaceTax;
 		}
 
-		public float CalculateIncomeTax(List<IWorkplace> workplaces, float taxRate)
+		/// <summary>
+		/// Calculate the tax payed by the companies in the workplaces
+		/// </summary>
+		/// <param name="workplaces">Workplaces list where the tax is summed</param>
+		/// <returns>Tax sum payed by companies</returns>
+		public float CalculateWorkplaceTax(List<IWorkplace> workplaces)
+		{
+			return CalculateWorkplaceTax(workplaces, WorkplaceTaxRate);
+		}
+
+		/// <summary>
+		/// Calculate the tax payed by the companies in the workplaces
+		/// </summary>
+		/// <param name="workplaces">Workplaces list where the tax is summed</param>
+		/// <param name="taxRate">Taxrate payed by the company</param>
+		/// <returns>Tax sum payed by companies</returns>
+		public float CalculateWorkplaceTax(List<IWorkplace> workplaces, float taxRate)
 		{
 			float totalTax = 0;
 			object taxLock = new();
 
 			Parallel.ForEach(workplaces, workplace =>
 			{
-				float tax = CalculateIncomeTaxPerWorkplace(workplace, taxRate);
+				float tax = CalculateWorkplaceTaxPerWorkplace(workplace, taxRate);
 
 				lock (taxLock)
 				{
@@ -148,277 +231,319 @@ namespace Model.Statistics
 			return totalTax;
 		}
 
-		public void SetIncomeTaxRate(float incomeTaxRate)
+		/// <summary>
+		/// Calculate the pension payed for the residents in the residential building
+		/// </summary>
+		/// <param name="residential">Residential where the pension summed</param>
+		/// <returns>Pension sum payed for the pensioners</returns>
+		public float CalculatePensionPerResidential(IResidential residential)
 		{
-			_incomeTaxRate = incomeTaxRate;
-		}
-
-		public float CalculateWorkplaceHappiness(IWorkplace workplace)
-		{
-			float workplaceHappiness = 0;
-
-			List<Worker> workers = workplace.GetWorkers();
-
-			foreach (Worker worker in workers)
+			float totalPension = 0;
+			object pensionLock = new();
+			
+			Parallel.ForEach(residential.GetResidents().OfType<Pensioner>().ToList(), pensioner =>
 			{
-				workplaceHappiness += worker.GetHappiness();
-			}
+				float pension = pensioner.Pension;
 
-			return workplaceHappiness / workers.Count;
+				lock (pensionLock)
+				{
+					totalPension += pension;
+				}
+			});
+			return totalPension;
 		}
 
-		public float CalculateResidentialHappinessPerHouse(IResidential residential)
+		/// <summary>
+		/// Calculate the pension payed for the residents in the residential buildings
+		/// </summary>
+		/// <param name="residentials">Residential list where the pension summed</param>
+		/// <returns>Pension sum payed for the pensioners</returns>
+		public float CalculatePension(List<IResidential> residentials)
 		{
-			float totalResidentialHappiness = 0;
-
-			List<Person> persons = residential.GetResidents();
-
-			foreach (Person person in persons)
-			{
-				totalResidentialHappiness += person.GetHappiness();
-			}
-
-			return totalResidentialHappiness / persons.Count;
-		}
-
-		public float CalculateHappiness(List<IResidential> residentials)
-		{
-			float totalCityHappiness = 0;
-			float totalWeight = 0;
-			object happinessLock = new();
-			object weightLock = new();
+			float totalPension = 0;
+			object pensionLock = new();
 
 			Parallel.ForEach(residentials, residential =>
 			{
-				float happiness = CalculateResidentialHappinessPerHouse(residential);
-				float weight = residential.GetResidents().Count;
+				float pension = CalculatePensionPerResidential(residential);
 
-				lock (happinessLock)
+				lock (pensionLock)
 				{
-					totalCityHappiness += happiness * weight;
-				}
-				lock (weightLock)
-				{
-					totalWeight += weight;
+					totalPension += pension;
 				}
 			});
-			
-			return totalCityHappiness / totalWeight;
+			return totalPension;
 		}
 
-		public int CalculatePopulation(List<IResidential> residentials)
-		{
-			int totalPopulation = 0;
-
-			foreach (var residential in residentials)
-			{
-				totalPopulation += residential.GetResidents().Count;
-			}
-
-			return totalPopulation;
-		}
-
-		public float SumMaintainance(List<Building> buildings)
+		/// <summary>
+		/// Calculate the maintainance cost for the tiles
+		/// </summary>
+		/// <param name="tiles">Tile list where the maintance summed</param>
+		/// <returns>Maintance sum</returns>
+		public float SumMaintenance(List<Tile> tiles)
 		{
 			float totalMaintainanceCost = 0;
+			object maintainanceLock = new();
 
-			foreach (Building building in buildings)
+			Parallel.ForEach(tiles, tile =>
 			{
-				totalMaintainanceCost += building.GetMaintainanceCost();
-			}
+				float maintainanceCost = tile.MaintainanceCost;
+				lock (maintainanceLock)
+				{
+					totalMaintainanceCost += maintainanceCost;
+				}
+			});
 
 			return totalMaintainanceCost;
 		}
 
-		public int GetElectricityProduced(List<Building> buildings)
+		/// <summary>
+		/// <para>MAKE SIDEEFFECTS</para>
+		/// Add the income of the destroyed tiles to the budget
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public void AddDestroyIncome(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			int destroyIncome = e.Tile.DestroyIncome;
+
+			lock (_statReports)
+			{
+				_statReports[^1].DestroyIncomes += destroyIncome;
+			}
+
+			lock (_budgetLock)
+			{
+				Budget += destroyIncome;
+			}
 		}
 
-		public int GetElectricityConsumed(List<Building> buildings)
+		/// <summary>
+		/// <para>MAKE SIDEEFFECTS</para>
+		/// <para>Add the expense of the built tiles to the budget</para>
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public void AddBuildExpense(object sender, TileEventArgs e)
 		{
-			//TODO
-			throw new NotImplementedException();
+			int buildExpense = e.Tile.BuildPrice;
+
+			lock (_statReports)
+			{
+				_statReports[^1].BuildExpenses += buildExpense;
+			}
+
+			lock (_budgetLock)
+			{
+				Budget -= buildExpense;
+			}
 		}
 
+		/// <summary>
+		/// Calculate the happiness of the workplace by the workers
+		/// </summary>
+		/// <param name="workplace">Workplace that should be calculated</param>
+		/// <returns>Average happiness of workplace</returns>
+		public float CalculateWorkplaceHappiness(IWorkplace workplace)
+		{
+			float workplaceHappiness = 0;
+			object happinessLock = new();
+
+			List<Worker> workers = workplace.GetWorkers();
+
+			Parallel.ForEach(workers, worker =>
+			{
+				float happiness = worker.GetHappiness();
+				lock (happinessLock)
+				{
+					workplaceHappiness += happiness;
+				}
+			});
+
+			return workplaceHappiness / workers.Count;
+		}
+
+		/// <summary>
+		/// Calculate the happiness of the residential by the residents
+		/// </summary>
+		/// <param name="residential">Residential that should be calculated</param>
+		/// <returns></returns>
+		public float CalculateResidentialHappiness(IResidential residential)
+		{
+			float totalResidentialHappiness = 0;
+			object happinessLock = new();
+
+			List<Person> persons = residential.GetResidents();
+
+			Parallel.ForEach(persons, person =>
+			{
+				float happiness = person.GetHappiness();
+				lock (happinessLock)
+				{
+					totalResidentialHappiness += happiness;
+				}
+			});
+
+			return totalResidentialHappiness / persons.Count;
+		}
+
+		/// <summary>
+		/// Calculate the happiness of persons
+		/// </summary>
+		/// <param name="persons">List of persons</param>
+		/// <returns>AVG happiness</returns>
+		public float CalculateHappiness(List<Person> persons)
+		{
+			float totalHappiness = 0;
+			object happinessLock = new();
+
+			Parallel.ForEach(persons, person =>
+			{
+				float happiness = person.GetHappiness();
+				lock (happinessLock)
+				{
+					totalHappiness += happiness;
+				}
+			});
+
+			return totalHappiness / persons.Count;
+		}
+
+		/// <summary>
+		/// Return the currently active statreport with updated values
+		/// </summary>
+		/// <returns>Actual statreport</returns>
 		public StatReport GetLastStatisticsReport()
 		{
+			UpdateCurrentStatReport(false);
 			return _statReports[^1];
 		}
 
-		public List<StatReport> GetEveryStatisticsReport()
+		/// <summary>
+		/// Return the last given statreports or the maximum amount
+		/// </summary>
+		/// <param name="count">Count of requested statreports</param>
+		/// <returns>Requested count statreport if possible</returns>
+		public List<StatReport> GetLastGivenStatisticsReports(int count)
 		{
-			return _statReports;
-		}
+			UpdateCurrentStatReport(false);
 
-		public List<StatReport> GetLastGivenStatisticsReports(int index)
-		{
-			List<StatReport> reports = new(index);
+			List<StatReport> reports = new();
 
-			int length = _statReports.Count - 1;
+			int i = _statReports.Count - count;
+			if (i < 0) i = 0;
 
-			for (int i = 0; i < index; ++i)
+			while (i < _statReports.Count)
 			{
-				reports[i] = _statReports[length - i];
+				reports.Add(_statReports[i]);
+				i++;
 			}
 
 			return reports;
 		}
 
+		/// <summary>
+		/// Register change in workplace count for commercial buildings
+		/// </summary>
+		/// <param name="oldWorkersLimit">Old limit for workers in workplace</param>
+		/// <param name="newWorkersLimit">New limit for workers in workplace</param>
+		internal void RegisterCommercialLevelChange(int oldWorkersLimit, int newWorkersLimit)
+		{
+			lock (_workplaceCountLock)
+			{
+				_commercialWorkplaceCount += newWorkersLimit - oldWorkersLimit;
+			}
+		}
+
+		/// <summary>
+		/// Register change in workplace count for industrial buildings
+		/// </summary>
+		/// <param name="oldWorkersLimit">Old limit for workers in workplace</param>
+		/// <param name="newWorkersLimit">New limit for workers in workplace</param>
+		internal void RegisterIndustrialLevelChange(int oldWorkersLimit, int newWorkersLimit)
+		{
+			lock (_workplaceCountLock)
+			{
+				_industrialWorkplaceCount += newWorkersLimit - oldWorkersLimit;
+			}
+		}
+
+		/// <summary>
+		/// Calculate the rate of commercial to industrial workplaces
+		/// </summary>
+		/// <returns>Rate of commercial to industial workplace count</returns>
 		public float GetCommercialToIndustrialRate()
 		{
-			return _commercialCount / _industrialCount;
+			return _commercialWorkplaceCount / _industrialWorkplaceCount;
 		}
 
-		private readonly object _lock = new();
-		private readonly object _eventLock = new();
-		private readonly object _budgetLock = new();
-		private readonly object _incrementLock = new();
-
-		public void SumBuildPrice(object sender, TileEventArgs e)
+		/// <summary>
+		/// Update the current statreport without side effects
+		/// </summary>
+		private void UpdateCurrentStatReport(bool withSideEffects)
 		{
-			lock (_lock)
-			{
-				_buildPrice += e.Tile.GetBuildPrice();
-			}
-			lock (_budgetLock)
-			{
-				Budget -= e.Tile.GetBuildPrice();
-			}
-			lock (_eventLock)
-			{
-				MainThreadDispatcher.Instance.Enqueue(() =>
-				{
-					BudgetChanged.Invoke();
-				});
-			}
-		}
-
-		public void SumDestroyPrice(object sender, TileEventArgs e)
-		{
-			lock (_lock)
-			{
-				_destroyPrice += e.Tile.GetDestroyPrice();
-			}
-			lock (_budgetLock)
-			{
-				Budget += e.Tile.GetDestroyPrice();
-			}
-			lock (_eventLock)
-			{
-				MainThreadDispatcher.Instance.Enqueue(() =>
-				{
-					BudgetChanged.Invoke();
-				});
-			}
-		}
-
-		public void SumMarkZonePrice(object sender, TileEventArgs e)
-		{
-			lock (_lock)
-			{
-				_buildPrice += e.Tile.GetBuildPrice();
-			}
-			lock (_budgetLock)
-			{
-				Budget -= e.Tile.GetBuildPrice();
-			}
-			lock (_incrementLock)
-			{
-				if (e.Tile is Industrial) { ++_industrialCount; return; }
-				if (e.Tile is Commercial) { ++_commercialCount; }
-			}
-			lock (_eventLock)
-			{
-				MainThreadDispatcher.Instance.Enqueue(() =>
-				{
-					BudgetChanged.Invoke();
-				});
-			}
-		}
-
-		public void SumUnMarkZonePrice(object sender, TileEventArgs e)
-		{
-			lock (_lock)
-			{
-				_destroyPrice += e.Tile.GetDestroyPrice();
-			}
-			lock (_budgetLock)
-			{
-				Budget += e.Tile.GetDestroyPrice();
-			}
-			lock (_incrementLock)
-			{
-				if (e.Tile is Industrial) { --_industrialCount; return; }
-				if (e.Tile is Commercial) { --_commercialCount; }
-			}
-			lock (_eventLock)
-			{
-				MainThreadDispatcher.Instance.Enqueue(() =>
-				{
-					BudgetChanged.Invoke();
-				});
-			}
-		}
-
-		public void NextQuarter()
-		{
-			StatReport statReport = new();
-
 			List<IWorkplace> workplaces = ConcatenateWorkplaces();
 			List<IResidential> residentials = ConcatenateResidentials();
-			List<Building> buildings = (List<Building>)Enumerable.Concat((IEnumerable<Building>)residentials, (IEnumerable<Building>)workplaces);
-
-			statReport.Quarter = Quarter;
-			statReport.Year = Year;
+			List<Tile> tiles = new();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			for (int j = 0; j < City.Instance.GetSize(); j++)
+			{
+				tiles.Add(City.Instance.GetTile(i, j));
+			}
 
 			if (Quarter == 0)
 			{
-				statReport.IncomeTax = CalculateIncomeTax(workplaces, _incomeTaxRate);
-				statReport.ResidentialTax = CalculateResidentialTax(residentials, _residentialTaxRate);
-				statReport.MaintainanceCosts = SumMaintainance(buildings);
+				float residentialTax = CalculateResidentialTax(residentials, ResidentialTaxRate);
+				float workplaceTax = CalculateWorkplaceTax(workplaces, WorkplaceTaxRate);
+				float pension = CalculatePension(residentials);
+				float maintainanceCosts = SumMaintenance(tiles);
+
+				lock (_statReports)
+				{
+					_statReports[^1].ResidentialTax = residentialTax;
+					_statReports[^1].WorkplaceTax = workplaceTax;
+					_statReports[^1].Pension = pension;
+					_statReports[^1].MaintainanceCosts = maintainanceCosts;
+				}
+			}
+
+			float newIncome = _statReports[^1].ResidentialTax + _statReports[^1].WorkplaceTax;
+			float newExpenses = _statReports[^1].Pension + _statReports[^1].MaintainanceCosts;
+			if (withSideEffects)
+			{
+				lock (_budgetLock)
+				{
+					Budget += newIncome - newExpenses;
+				}
+			}
+
+			_statReports[^1].Budget = Budget;
+			_statReports[^1].Incomes = newIncome;
+			_statReports[^1].Expenses = newExpenses;
+			_statReports[^1].Profit = newIncome - newExpenses;
+
+			_statReports[^1].Population = City.Instance.GetPopulation();
+
+			if (_statReports.Count >= 2)
+			{
+				_statReports[^1].BudgetChange = _statReports[^1].Budget - _statReports[^2].Budget;
+				_statReports[^1].PopulationChange = _statReports[^1].Population - _statReports[^2].Population;
 			}
 			else
 			{
-				statReport.IncomeTax = 0;
-				statReport.ResidentialTax = 0;
-				statReport.MaintainanceCosts = 0;
+				_statReports[^1].BudgetChange = _statReports[^1].Budget;
+				_statReports[^1].PopulationChange = _statReports[^1].Population;
 			}
-
-			Budget += statReport.IncomeTax + statReport.ResidentialTax - statReport.MaintainanceCosts;
-			statReport.Budget = Budget;
-
-			MainThreadDispatcher.Instance.Enqueue(() =>
-			{
-				BudgetChanged.Invoke();
-			});
-
-			statReport.Happiness = CalculateHappiness(residentials);
-
-			statReport.BuildExpenses = _buildPrice;
-			statReport.DestroyIncomes = _destroyPrice;
-
-			statReport.Incomes = statReport.IncomeTax + statReport.ResidentialTax + _destroyPrice;
-			statReport.Expenses = statReport.MaintainanceCosts + _buildPrice;
-			statReport.Profit = statReport.Incomes - statReport.Expenses;
-
-			statReport.Population = CalculatePopulation(residentials);
-			statReport.PopulationChange = statReport.Population - _statReports[^1].Population;
-
-			statReport.ElectricityProduced = GetElectricityProduced(buildings);
-			statReport.ElectricityConsumed = GetElectricityConsumed(buildings);
-
-			_statReports.Add(statReport);
-
-			_buildPrice = 0;
-			_destroyPrice = 0;
 		}
 
+		/// <summary>
+		/// Make a list from all of the residentials
+		/// </summary>
+		/// <returns>List contains all the residentials</returns>
 		private List<IResidential> ConcatenateResidentials()
 		{
-			List<RoadGrid> roadGrids = SimEngine.Instance.RoadGridManager.RoadGrids;
-			List<IResidential> residentials = new();		
+			List<RoadGrid> roadGrids = RoadGridManager.Instance.RoadGrids;
+			List<IResidential> residentials = new();
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{
@@ -428,9 +553,13 @@ namespace Model.Statistics
 			return residentials;
 		}
 
+		/// <summary>
+		/// Make a list from all of the workplaces
+		/// </summary>
+		/// <returns>List contains all the workplaces</returns>
 		private List<IWorkplace> ConcatenateWorkplaces()
 		{
-			List<RoadGrid> roadGrids = SimEngine.Instance.RoadGridManager.RoadGrids;
+			List<RoadGrid> roadGrids = RoadGridManager.Instance.RoadGrids;
 			List<IWorkplace> workplaces = new();
 
 			foreach (RoadGrid roadGrid in roadGrids)
@@ -439,6 +568,38 @@ namespace Model.Statistics
 			}
 
 			return workplaces;
+		}
+
+		public event EventHandler NextQuarterEvent;
+
+		/// <summary>
+		/// Close the current statreport and create a new one
+		/// </summary>
+		private void NextQuarter()
+		{
+			Debug.Log("Next quarter");
+
+			NextQuarterEvent?.Invoke(this, EventArgs.Empty);
+
+			UpdateCurrentStatReport(true);
+
+			lock (_statReports)
+			{
+				_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
+			}
+
+			UpdateCurrentStatReport(false);
+		}
+
+		/// <summary>
+		/// <para>MUST BE CALLED BY SIMENGINE ONLY</para>
+		/// <para>Make time pass</para>
+		/// </summary>
+		public void TimeElapsed()
+		{
+			//TODO debug
+			//Date = Date.AddMinutes(30);
+			Date = Date.AddHours(24);
 		}
 	}
 }

@@ -1,53 +1,135 @@
-using Model.Simulation;
+using Model.RoadGrids;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Model.RoadGrids;
-using UnityEngine;
 
 namespace Model.Tiles
 {
 	public class RoadTile : Tile, IRoadGridElement
 	{
-		public const uint ABOVEROADMASK = 1;
-		public const uint RIGHTROADMASK = 2;
-		public const uint BELOWROADMASK = 4;
-		public const uint LEFTROADMASK = 8;
+		#region Tile implementation
+		public override TileType GetTileType() => TileType.Road;
 
-		private readonly RoadTile[] _roads = new RoadTile[4];
-		public RoadTile FromAbove
+		public override void FinalizeTile() => Finalizing();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
+		{
+			RegisterNeighbourTileDeleteListeners();
+
+			base.Finalizing();
+		}
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
+
+		//TODO implement road build price
+		public override int BuildPrice => 100000;
+
+		//TODO implement road destroy income
+		public override int DestroyIncome => 100000;
+
+		//TODO implement road maintainance cost
+		public override int MaintainanceCost => 100000;
+
+		public override float Transparency => 1;
+
+		#endregion
+
+		#region IRoadGridElement implementation
+		void IRoadGridElement.RegisterRoadGridElement()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
+
+			RoadGridManager.Instance.AddRoadGridElement(this);
+		}
+
+		void IRoadGridElement.UnregisterRoadGridElement()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
+
+			SetRoadGrid(null);
+		}
+
+		private readonly IRoadGridElement[] _roads = new IRoadGridElement[4];
+		List<IRoadGridElement> IRoadGridElement.ConnectsTo { get => _roads.Where(x => x != null).ToList(); }
+
+		private void RegisterNeighbourTileDeleteListeners()
+		{
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is RoadTile aboveRoad) { ConnectsFromAbove = aboveRoad; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is RoadTile rightRoad) { ConnectsFromRight = rightRoad; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is RoadTile belowRoad) { ConnectsFromBelow = belowRoad; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is RoadTile leftRoad)  { ConnectsFromLeft  = leftRoad;  }
+
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is Tile belowTile) { belowTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is Tile leftTile)  { leftTile.OnTileDelete  += TileDeleteHandler; }
+		}
+
+		private void TileDeleteHandler(object sender, Tile oldTile)
+		{
+			Tile newTile = City.Instance.GetTile(oldTile);
+			newTile.OnTileDelete += TileDeleteHandler;
+
+			if (newTile is RoadTile road)
+			{
+				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft = road; }
+				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = road; }
+				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = road; }
+				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = road; }
+			}
+			else
+			{
+				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft = null; }
+				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = null; }
+				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = null; }
+				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = null; }
+			}
+		}
+
+		public IRoadGridElement ConnectsFromAbove
 		{
 			get { return _roads[0]; }
-			set
+			private set
 			{
 				_roads[0] = value;
-				if (value == null)	{ DesignID &= ~ABOVEROADMASK; }
-				else				{ DesignID |= ABOVEROADMASK;  }
+				if (value == null) { DesignID &= ~ABOVEROADMASK; }
+				else { DesignID |= ABOVEROADMASK; }
 			}
 		}
-		public RoadTile FromRight
+		public IRoadGridElement ConnectsFromRight
 		{
 			get { return _roads[1]; }
-			set
+			private set
 			{
 				_roads[1] = value;
-				if (value == null)	{ DesignID &= ~RIGHTROADMASK; }
-				else				{ DesignID |= RIGHTROADMASK;  }
+				if (value == null) { DesignID &= ~RIGHTROADMASK; }
+				else { DesignID |= RIGHTROADMASK; }
 			}
 		}
-		public RoadTile FromBelow
+		public IRoadGridElement ConnectsFromBelow
 		{
 			get { return _roads[2]; }
-			set
+			private set
 			{
 				_roads[2] = value;
-				if (value == null)	{ DesignID &= ~BELOWROADMASK; }
-				else				{ DesignID |= BELOWROADMASK;  }
+				if (value == null) { DesignID &= ~BELOWROADMASK; }
+				else { DesignID |= BELOWROADMASK; }
 			}
 		}
-		public RoadTile FromLeft
+		public IRoadGridElement ConnectsFromLeft
 		{
 			get { return _roads[3]; }
-			set
+			private set
 			{
 				_roads[3] = value;
 				if (value == null) { DesignID &= ~LEFTROADMASK; }
@@ -55,18 +137,25 @@ namespace Model.Tiles
 			}
 		}
 
-		public List<IRoadGridElement> ConnectsTo()
+		private RoadGrid _roadGrid = null;
+
+		RoadGrid IRoadGridElement.RoadGrid
 		{
-			return new List<IRoadGridElement>(_roads).Where(x => x != null).ToList();
+			get => _roadGrid;
+			set
+			{
+				SetRoadGrid(value);
+			}
 		}
 
-		public Tile GetTile() { return this; }
-
-		private RoadGrid _roadGrid = null;
-		public RoadGrid GetRoadGrid() { return _roadGrid; }
-
-		public void SetRoadGrid(RoadGrid roadGrid)
+		/// <summary>
+		/// Sets the new roadgrid
+		/// </summary>
+		/// <param name="roadGrid">New roadgrid</param>
+		private void SetRoadGrid(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			if (_roadGrid == roadGrid) { return; }
 
 			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGridElement(this);
@@ -85,7 +174,7 @@ namespace Model.Tiles
 			if (roadGrid == null)
 			{
 				_roadGrid?.RemoveRoadGridElement(this);
-				_roadGrid.Reinit();
+				_roadGrid?.Reinit();
 			}
 			else
 			{
@@ -109,75 +198,25 @@ namespace Model.Tiles
 				}
 			}
 		}
+		#endregion
 
-		public RoadTile(int x, int y, uint designID) : base(x, y, designID)
+		#region Common implementation
+		public Tile GetTile() => this;
+		#endregion
+
+		public const uint ABOVEROADMASK = 1;
+		public const uint RIGHTROADMASK = 2;
+		public const uint BELOWROADMASK = 4;
+		public const uint LEFTROADMASK  = 8;
+
+		/// <summary>
+		/// Construct a new road tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		public RoadTile(int x, int y) : base(x, y, 0)
 		{
-			
-		}
 
-		public override TileType GetTileType() { return TileType.Road; }
-
-		public override void FinalizeTile()
-		{
-			Finalizing();
-		}
-
-		protected new void Finalizing()
-		{
-			base.Finalizing();
-			ConnectToSurroundingRoads();
-		}
-
-		public void RegisterRoadGridElement()
-		{
-			SimEngine.Instance.RoadGridManager.AddRoadGridElement(this);
-		}
-
-		public void UnregisterRoadGridElement()
-		{
-			SetRoadGrid(null);
-		}
-
-		private void ConnectToSurroundingRoads()
-		{
-			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y - 1) is RoadTile aboveRoad) { FromAbove = aboveRoad; }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x + 1, (int)Coordinates.y) is RoadTile rightRoad) { FromRight = rightRoad; }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y + 1) is RoadTile belowRoad) { FromBelow = belowRoad; }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x - 1, (int)Coordinates.y) is RoadTile leftRoad)  { FromLeft  = leftRoad;  }
-		}
-
-		public override void NeighborTileChanged(Tile oldTile, Tile newTile)
-		{
-			if (oldTile is RoadTile)
-			{
-				if      (oldTile.Coordinates.x < Coordinates.x)	{ FromLeft  = null; }
-				else if (oldTile.Coordinates.x > Coordinates.x)	{ FromRight = null; }
-				else if (oldTile.Coordinates.y > Coordinates.y)	{ FromBelow = null; }
-				else if (oldTile.Coordinates.y < Coordinates.y)	{ FromAbove = null; }
-			}
-
-			if (newTile is RoadTile road)
-			{
-				if      (newTile.Coordinates.x < Coordinates.x)	{ FromLeft  = road; }
-				else if (newTile.Coordinates.x > Coordinates.x)	{ FromRight = road; }
-				else if (newTile.Coordinates.y > Coordinates.y)	{ FromBelow = road; }
-				else if (newTile.Coordinates.y < Coordinates.y)	{ FromAbove = road; }
-			}
-		}
-
-		public override int GetBuildPrice() //TODO implementing logic
-		{
-			return BUILD_PRICE;
-		}
-
-		public override int GetDestroyPrice()
-		{
-			return DESTROY_PRICE;
-		}
-
-		public override int GetMaintainanceCost()
-		{
-			return GetBuildPrice() / 10;
 		}
 	}
 }

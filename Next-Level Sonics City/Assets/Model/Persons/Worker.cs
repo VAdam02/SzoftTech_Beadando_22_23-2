@@ -1,4 +1,10 @@
-using Model.Tiles.Buildings;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using UnityEngine;
+
+[assembly: InternalsVisibleTo("Tests")]
 
 namespace Model.Persons
 {
@@ -7,60 +13,108 @@ namespace Model.Persons
 		public IWorkplace WorkPlace { get; private set; }
 		public Qualification PersonQualification { get; private set; }
 
+		public override (float happiness, float weight) HappinessByPersonInheritance
+		{
+			get
+			{
+				List<(float happiness, float weight)> happinessChangers = new()
+				{
+					(1, 5f - Mathf.Atan(Mathf.Sqrt(Mathf.Pow(WorkPlace.GetTile().Coordinates.x - Residential.GetTile().Coordinates.x, 2) + Mathf.Pow(WorkPlace.GetTile().Coordinates.y - Residential.GetTile().Coordinates.y, 2))) * Mathf.PI),
+					WorkPlace.HappinessByBuilding
+				};
+
+				float happinessSum = happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.happiness * item.weight);
+				float happinessWeight = happinessChangers.Aggregate(0.0f, (acc, item) => acc + item.weight);
+				return (happinessSum / happinessWeight, happinessWeight);
+			}
+		}
+
 		private float _taxSum = 0f;
 		private int _taxCount = 0;
 
 		private const int BASE_SALARY = 500; //dollar
-		private const int TAXED_YEARS_FOR_PENSION = 20;
-		private const int PENSION_AGE = 65;
+		public const int TAXED_YEARS_FOR_PENSION = 20;
+		public const int PENSION_AGE = 65;
 
 		/// <summary>
-		/// 
+		/// Creates a new worker and move in to the residential and employ to the workplace
 		/// </summary>
-		/// <param name="home"></param>
-		/// <param name="workPlace"></param>
-		/// <param name="age"></param>
-		/// <param name="qualification"></param>
-		public Worker(ResidentialBuildingTile home, IWorkplace workPlace, int age, Qualification qualification) : base(home, age)
+		/// <param name="residential">Residential where the worker will live</param>
+		/// <param name="workPlace">Workplace where the worker will work</param>
+		/// <param name="age">Age of the person</param>
+		/// <param name="qualification">Qualification of worker</param>
+		public Worker(IResidential residential, IWorkplace workPlace, int age, Qualification qualification) : base(residential, age)
 		{
-			WorkPlace = workPlace;
+			if (age < 18 || PENSION_AGE <= age) throw new ArgumentException("Worker cannot be younger than 18 and older than " + PENSION_AGE + " years old");
+			WorkPlace = workPlace ?? throw new ArgumentNullException("Worker must have a workplace");
 			PersonQualification = qualification;
+			
+			WorkPlace.Employ(this);
 		}
 
+		/// <summary>
+		/// Retires the worker and recreate as a pensioner
+		/// </summary>
+		/// <returns>Pensioner that created based on the worker datas</returns>
 		public Pensioner Retire()
 		{
+			if (Age < PENSION_AGE) throw new ArgumentException("Worker cannot retire before " + PENSION_AGE + " years old");
+
+			WorkPlace.Unemploy(this);
+
 			float pension = _taxSum / _taxCount / 2.0f;
-			return new Pensioner(LiveAt, Age, pension);
+			return new Pensioner(Residential, Age, pension);
 		}
 
+		/// <summary>
+		/// Increase the qualification of the worker
+		/// </summary>
 		public void IncreaseQualification()
 		{
 			if (PersonQualification == Qualification.HIGH) return;
 			++PersonQualification;
 		}
 
-		public void DecreaseQualificaiton()
+		/// <summary>
+		/// Decrease the qualification of the worker
+		/// </summary>
+		public void DecreaseQualification()
 		{
 			if (PersonQualification == Qualification.LOW) return;
 			--PersonQualification;
 		}
 		
+		/// <summary>
+		/// Pay tax based on the tax rate
+		/// </summary>
+		/// <param name="taxRate">Taxrate that should be include in calculations</param>
+		/// <returns>Amount of tax payed</returns>
 		public override float PayTax(float taxRate)
 		{
 			float currentTax = CalculateSalary() * taxRate;
-			
+
+			if (Age >= PENSION_AGE) { return 0; }
+
 			if (Age <= (PENSION_AGE - TAXED_YEARS_FOR_PENSION)) { RecordTax(currentTax); }
 
 			return currentTax;
 		}
 
+		/// <summary>
+		/// Log the tax that the worker payed for the pension
+		/// </summary>
+		/// <param name="paidTax"></param>
 		private void RecordTax(float paidTax)
 		{
 			++_taxCount;
 			_taxSum += paidTax;
 		}
 
-		private float CalculateSalary()
+		/// <summary>
+		/// Calculate the salary of the worker based on the qualification and other parameters
+		/// </summary>
+		/// <returns>Amount of salary</returns>
+		internal float CalculateSalary()
 		{
 			float multiplier = 1.0f;
 			switch (PersonQualification)
