@@ -14,7 +14,6 @@ namespace View.GUI.StatPanel
 		void OnEnable()
 		{
 			Model.Statistics.StatReport statReport = StatEngine.Instance.GetLastNthStatisticsReports(NthStatReport);
-			if (statReport == null) { return; }
 
 			foreach (Transform child in gameObject.transform)
 			{

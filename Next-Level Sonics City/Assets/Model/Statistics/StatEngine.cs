@@ -423,7 +423,7 @@ namespace Model.Statistics
 		{
 			UpdateCurrentStatReportWithoutSideEffects();
 
-			if (_statReports.Count - 1 - count < 0) { return null; }
+			if (_statReports.Count - 1 - count < 0) { return _statReports[0]; }
 
 			return _statReports[_statReports.Count-1-count];
 		}
