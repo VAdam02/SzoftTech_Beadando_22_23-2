@@ -423,9 +423,9 @@ namespace Model.Statistics
 		{
 			UpdateCurrentStatReportWithoutSideEffects();
 
-			if (_statReports.Count <= count) { return null; }
+			if (_statReports.Count - 1 - count < 0) { return null; }
 
-			return _statReports[-count];
+			return _statReports[_statReports.Count-1-count];
 		}
 
 		/// <summary>
@@ -577,6 +577,7 @@ namespace Model.Statistics
 		public void TimeElapsed()
 		{
 			Date = Date.AddMinutes(30);
+			Date = Date.AddHours(12);
 		}
 	}
 }

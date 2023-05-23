@@ -11,10 +11,11 @@ namespace View.GUI.StatPanel
 		private Color _great = new Color32(128, 255, 0, 255);
 		private Color _bad = new Color32(255, 32, 0, 255);
 
-		// Start is called before the first frame update
-		void Start()
+		void OnEnable()
 		{
 			Model.Statistics.StatReport statReport = StatEngine.Instance.GetLastNthStatisticsReports(NthStatReport);
+			if (statReport == null) { return; }
+
 			foreach (Transform child in gameObject.transform)
 			{
 				TextMeshProUGUI textBox = child.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -31,8 +32,8 @@ namespace View.GUI.StatPanel
 						textBox.text = statReport.Population.ToString("N0");
 						break;
 					case "MaintainanceCosts":
-						textBox.text = "$" + statReport.MaintainanceCosts.ToString("N0");
-						textBox.color = statReport.MaintainanceCosts > 0 ? _great : _bad;
+						textBox.text = "$" + (-statReport.MaintainanceCosts).ToString("N0");
+						textBox.color = statReport.MaintainanceCosts < 0 ? _great : _bad;
 						break;
 					default:
 						throw new NotImplementedException("Unknown field found: " + child.name);
