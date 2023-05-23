@@ -19,6 +19,8 @@ namespace Model
 
 		public static void Reset() { _instance = null; }
 
+		public event EventHandler<Person> PopulationChanged;
+
 		/// <summary>
 		/// Create a city filled with empty tiles
 		/// </summary>
@@ -121,6 +123,7 @@ namespace Model
 		internal void AddPerson(Person person)
 		{
 			_persons.Add(person.ID, person);
+			PopulationChanged?.Invoke(this, person);
 		}
 	}
 }

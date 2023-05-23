@@ -2,12 +2,13 @@ using Model;
 using Model.Statistics;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.CullingGroup;
 
-public class Budget : MonoBehaviour
+public class Population : MonoBehaviour
 {
 	private void Awake()
 	{
-		StatEngine.Instance.BudgetChanged += (sender, args) =>
+		City.Instance.PopulationChanged += (sender, person) =>
 		{
 			if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 			{

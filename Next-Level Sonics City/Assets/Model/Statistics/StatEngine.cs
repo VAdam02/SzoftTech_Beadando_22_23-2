@@ -30,7 +30,12 @@ namespace Model.Statistics
 			get { return _date; }
 			private set
 			{
-				if (_date.Date != value.Date)
+				bool changed = _date.Date != value.Date;
+				int oldQuarter = Quarter;
+
+				_date = value;
+
+				if (changed)
 				{
 					if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 					{
@@ -40,13 +45,11 @@ namespace Model.Statistics
 						});
 					}
 
-					if (Quarter != (value.Month - 1) / 3)
+					if (Quarter != oldQuarter)
 					{
 						NextQuarter();
 					}
 				}
-				
-				_date = value;
 			}
 		}
 		public int Year { get { return Date.Year; } }
@@ -63,13 +66,8 @@ namespace Model.Statistics
 				_budget = value;
 				if (_budget < 0 && _negativeBudgetSince == 0) { _negativeBudgetSince = Year; }
 				if (_budget >= 0) { _negativeBudgetSince = 0; }
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						BudgetChanged.Invoke();
-					});
-				}
+
+				BudgetChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 		public int NegativeBudgetSince { get { return _negativeBudgetSince == 0 ? 0 : Year - _negativeBudgetSince; } }
@@ -81,7 +79,7 @@ namespace Model.Statistics
 		private float _industrialWorkplaceCount = 0;
 
 		private readonly List<StatReport> _statReports = new();
-		public UnityEvent BudgetChanged = new();
+		public event EventHandler BudgetChanged;
 		public UnityEvent DateChanged = new();
 
 		private StatEngine(int startYear, float startBudget)
@@ -410,16 +408,6 @@ namespace Model.Statistics
 		}
 
 		/// <summary>
-		/// Return the currently active statreport with updated values
-		/// </summary>
-		/// <returns>Actual statreport</returns>
-		public StatReport GetLastStatisticsReport()
-		{
-			UpdateCurrentStatReport(false);
-			return _statReports[^1];
-		}
-
-		/// <summary>
 		/// Return the last given statreports or the maximum amount
 		/// </summary>
 		/// <param name="count">Count of requested statreports</param>
@@ -482,7 +470,7 @@ namespace Model.Statistics
 				tiles.Add(City.Instance.GetTile(i, j));
 			}
 
-			if (Quarter == 0)
+			if (Quarter == 0 && withSideEffects)
 			{
 				float residentialTax = CalculateResidentialTax(residentials, ResidentialTaxRate);
 				float workplaceTax = CalculateWorkplaceTax(workplaces, WorkplaceTaxRate);
@@ -500,6 +488,11 @@ namespace Model.Statistics
 
 			float newIncome = _statReports[^1].ResidentialTax + _statReports[^1].WorkplaceTax;
 			float newExpenses = _statReports[^1].Pension + _statReports[^1].MaintainanceCosts;
+
+			_statReports[^1].Budget = Budget;
+			_statReports[^1].Incomes = newIncome;
+			_statReports[^1].Expenses = newExpenses;
+			_statReports[^1].Total = newIncome - newExpenses;
 			if (withSideEffects)
 			{
 				lock (_budgetLock)
@@ -507,11 +500,6 @@ namespace Model.Statistics
 					Budget += newIncome - newExpenses;
 				}
 			}
-
-			_statReports[^1].Budget = Budget;
-			_statReports[^1].Incomes = newIncome;
-			_statReports[^1].Expenses = newExpenses;
-			_statReports[^1].Profit = newIncome - newExpenses;
 
 			_statReports[^1].Population = City.Instance.GetPopulation();
 
@@ -578,8 +566,6 @@ namespace Model.Statistics
 			{
 				_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
 			}
-
-			UpdateCurrentStatReport(false);
 		}
 
 		/// <summary>
