@@ -424,22 +424,13 @@ namespace Model.Statistics
 		/// </summary>
 		/// <param name="count">Count of requested statreports</param>
 		/// <returns>Requested count statreport if possible</returns>
-		public List<StatReport> GetLastGivenStatisticsReports(int count)
+		public StatReport GetLastNthStatisticsReports(int count)
 		{
 			UpdateCurrentStatReport(false);
 
-			List<StatReport> reports = new();
+			if (_statReports.Count - 1 - count < 0) { return _statReports[0]; }
 
-			int i = _statReports.Count - count;
-			if (i < 0) i = 0;
-
-			while (i < _statReports.Count)
-			{
-				reports.Add(_statReports[i]);
-				i++;
-			}
-
-			return reports;
+			return _statReports[_statReports.Count-1-count];
 		}
 
 		/// <summary>
