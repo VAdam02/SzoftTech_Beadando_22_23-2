@@ -13,18 +13,18 @@ namespace Model
 			get { return _designID; }
 			protected set
 			{
-				if (value != _designID) { OnDesignIDChange?.Invoke(this, EventArgs.Empty); }
+				if (value != _designID) { OnTileChange?.Invoke(this, this); }
 				_designID = value;
 			}
 		}
 
 		public Vector3 Coordinates { get; protected set; }
 
-		public event EventHandler<Tile> OnTileDelete;
 		private void TileDeleteInvoke() => OnTileDelete?.Invoke(this, this);
-		public event EventHandler<Tile> OnTileChange;
+		public event EventHandler<Tile> OnTileDelete;
+
 		protected void TileChangeInvoke() => OnTileChange?.Invoke(this, this);
-		public event EventHandler OnDesignIDChange;
+		public event EventHandler<Tile> OnTileChange;
 
 		/// <summary>
 		/// Constructor for Tile
@@ -66,6 +66,7 @@ namespace Model
 			if (_isFinalized) { throw new InvalidOperationException(); }
 
 			Coordinates = new Vector3(x, y, 0);
+			OnTileChange.Invoke(this, this);
 		}
 
 		protected bool _isFinalized = false;
