@@ -1,19 +1,9 @@
-using Model.Service;
-
 namespace Model.Tiles
 {
 	public class ElectricPole : Tile
 	{
-		/// <summary>
-		/// Construct a new electric pole
-		/// </summary>
-		/// <param name="x">X coordinate of the tile</param>
-		/// <param name="y">Y coordinate of the tile</param>
-		/// <param name="designID">DesignID for the tile</param>
-		public ElectricPole(int x, int y, uint designID) : base(x, y, designID)
-		{
-
-		}
+		#region Tile implementation
+		public override TileType GetTileType() { return TileType.ElectricPole; }
 
 		public override void FinalizeTile() => Finalizing();
 
@@ -23,7 +13,13 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Finalizing() => base.Finalizing();
 
-		public override TileType GetTileType() { return TileType.ElectricPole; }
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
 
 		//TODO implement electric pole build price
 		public override int BuildPrice => 100000;
@@ -35,16 +31,21 @@ namespace Model.Tiles
 		public override int MaintainanceCost => 100000;
 
 		public override float Transparency => 1;
+		#endregion
 
-		public override void DeleteTile() => Deleting();
+		#region Common implementation
+		public Tile GetTile() => this;
+		#endregion
 
 		/// <summary>
-		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
-		/// <para>Do the deletion administration</para>
+		/// Construct a new electric pole
 		/// </summary>
-		protected new void Deleting()
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		public ElectricPole(int x, int y, uint designID) : base(x, y, designID)
 		{
-			base.Deleting();
+
 		}
 	}
 }

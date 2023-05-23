@@ -44,10 +44,7 @@ namespace Model.Tiles
 		#endregion
 
 		#region Common implementation
-		public Tile GetTile()
-		{
-			return this;
-		}
+		public Tile GetTile() => return this;
 		#endregion
 
 		/// <summary>
