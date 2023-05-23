@@ -1,7 +1,8 @@
+using Model.RoadGrids;
 using Model.Tiles.Buildings;
 using System;
-using Model.RoadGrids;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Model.Tiles
 {
@@ -9,7 +10,25 @@ namespace Model.Tiles
 	{
 		public int Helath { get; private set; }
 		public bool IsOnFire { get; private set; }
-		public Rotation Rotation { get; private set; }
+
+		public readonly UnityEvent OnRotationChanged = new();
+
+		private Rotation _rotation;
+		public Rotation Rotation
+		{
+			get { return _rotation; }
+			private set
+			{
+				_rotation = value;
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						OnRotationChanged.Invoke();
+					});
+				}
+			}
+		}
 
 		public Building(int x, int y, uint designID, Rotation rotation) : base(x, y, designID)
 		{
@@ -21,6 +40,10 @@ namespace Model.Tiles
 			Finalizing();
 		}
 
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
 		protected new void Finalizing()
 		{
 			base.Finalizing();
@@ -37,34 +60,54 @@ namespace Model.Tiles
 					residential.RegisterResidential(roadGrid);
 				}
 			}
-
-			OnTileDelete.AddListener(Destroy);
 		}
 
-		private void Destroy()
+		public override void DeleteTile()
 		{
+			Deleting();
+		}
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting()
+		{
+			base.Deleting();
+
 			if (this is IWorkplace workplace)
 			{
-				workplace.UnregisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace).GetRoadGrid());
+				workplace.UnregisterWorkplace(RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace)?.GetRoadGrid());
 			}
 			if (this is IResidential residential)
 			{
-				residential.UnregisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential).GetRoadGrid());
+				residential.UnregisterResidential(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential)?.GetRoadGrid());
 			}
 		}
 
+		/// <summary>
+		/// Starts the fire
+		/// </summary>
+		/// <returns></returns>
 		public bool StartFire()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// Calculate the chance of fire
+		/// </summary>
 		public void GetFirePercentage()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// Expand the building
+		/// </summary>
 		internal virtual void Expand()
 		{
+
 		}
 	}
 }

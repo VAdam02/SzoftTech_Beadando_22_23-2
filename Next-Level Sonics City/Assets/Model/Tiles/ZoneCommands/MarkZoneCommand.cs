@@ -1,4 +1,4 @@
-using Model.Simulation;
+using Model.RoadGrids;
 using Model.Tiles.Buildings;
 
 namespace Model.Tiles.ZoneCommands
@@ -10,38 +10,47 @@ namespace Model.Tiles.ZoneCommands
 		private readonly ZoneType _zoneType;
 		private readonly uint _designID;
 
+		/// <summary>
+		/// Create a new MarkZoneCommand
+		/// </summary>
+		/// <param name="x">X coordinate of the created tile</param>
+		/// <param name="y">Y coordinate of the created tile</param>
+		/// <param name="zoneType">Type of the tile</param>
 		public MarkZoneCommand(int x, int y, ZoneType zoneType)
-		{;
+		{
 			_x = x;
 			_y = y;
 			_zoneType = zoneType;
 			_designID = ResidentialBuildingTile.GenerateResidential(0);
 		}
 
+		/// <summary>
+		/// Build the tile
+		/// </summary>
 		public void Execute()
 		{
 			if (!(_zoneType == ZoneType.NoZone
-			  || SimEngine.Instance.GetTile(_x - 1, _y) is RoadTile || SimEngine.Instance.GetTile(_x + 1, _y) is RoadTile
-			  || SimEngine.Instance.GetTile(_x, _y - 1) is RoadTile || SimEngine.Instance.GetTile(_x, _y + 1) is RoadTile))
+			  || City.Instance.GetTile(_x - 1, _y) is IRoadGridElement || City.Instance.GetTile(_x + 1, _y) is IRoadGridElement
+			  || City.Instance.GetTile(_x, _y - 1) is IRoadGridElement || City.Instance.GetTile(_x, _y + 1) is IRoadGridElement))
 			{ return; }
 
 			switch (_zoneType)
 			{
 				case ZoneType.IndustrialZone:
-					if (SimEngine.Instance.GetTile(_x, _y) is not EmptyTile) { break; }
-					SimEngine.Instance.SetTile(_x, _y, new Industrial(_x, _y, _designID)); // TODO update to IndustrialBuildingTIle
+					if (City.Instance.GetTile(_x, _y) is not EmptyTile) { break; }
+					City.Instance.SetTile(new Industrial(_x, _y, _designID));
 					break;
 				case ZoneType.CommercialZone:
-					if (SimEngine.Instance.GetTile(_x, _y) is not EmptyTile) { break; }
-					SimEngine.Instance.SetTile(_x, _y, new Commercial(_x, _y, _designID)); // TODO update to CommercialBuildingTile
+					if (City.Instance.GetTile(_x, _y) is not EmptyTile) { break; }
+					City.Instance.SetTile(new Commercial(_x, _y, _designID));
 					break;
 				case ZoneType.ResidentialZone:
-					if (SimEngine.Instance.GetTile(_x, _y) is not EmptyTile) { break; }
-					SimEngine.Instance.SetTile(_x, _y, new ResidentialBuildingTile(_x, _y, _designID));
+					if (City.Instance.GetTile(_x, _y) is not EmptyTile) { break; }
+					City.Instance.SetTile(new ResidentialBuildingTile(_x, _y, _designID));
 					break;
 				case ZoneType.NoZone:
-					if (SimEngine.Instance.GetTile(_x, _y) is not Industrial && SimEngine.Instance.GetTile(_x, _y) is not Commercial && SimEngine.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
-					SimEngine.Instance.SetTile(_x, _y, new EmptyTile(_x, _y, _designID));
+					if (City.Instance.GetTile(_x, _y) is not Industrial && City.Instance.GetTile(_x, _y) is not Commercial && City.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
+					City.Instance.SetTile(new EmptyTile(_x, _y, _designID));
 					break;
 				default:
 					break;

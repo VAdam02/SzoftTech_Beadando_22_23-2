@@ -1,8 +1,7 @@
-using Model.Simulation;
+using Model.RoadGrids;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Model.RoadGrids;
-using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -67,6 +66,8 @@ namespace Model.Tiles
 
 		public void SetRoadGrid(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			if (_roadGrid == roadGrid) { return; }
 
 			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGridElement(this);
@@ -85,7 +86,7 @@ namespace Model.Tiles
 			if (roadGrid == null)
 			{
 				_roadGrid?.RemoveRoadGridElement(this);
-				_roadGrid.Reinit();
+				_roadGrid?.Reinit();
 			}
 			else
 			{
@@ -110,6 +111,12 @@ namespace Model.Tiles
 			}
 		}
 
+		/// <summary>
+		/// Construct a new road tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
 		public RoadTile(int x, int y, uint designID) : base(x, y, designID)
 		{
 			
@@ -122,6 +129,10 @@ namespace Model.Tiles
 			Finalizing();
 		}
 
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
 		protected new void Finalizing()
 		{
 			base.Finalizing();
@@ -130,24 +141,35 @@ namespace Model.Tiles
 
 		public void RegisterRoadGridElement()
 		{
-			SimEngine.Instance.RoadGridManager.AddRoadGridElement(this);
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			RoadGridManager.Instance.AddRoadGridElement(this);
 		}
 
 		public void UnregisterRoadGridElement()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			SetRoadGrid(null);
 		}
 
+		/// <summary>
+		/// Connects this road to the surrounding roads.
+		/// </summary>
 		private void ConnectToSurroundingRoads()
 		{
-			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y - 1) is RoadTile aboveRoad) { FromAbove = aboveRoad; }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x + 1, (int)Coordinates.y) is RoadTile rightRoad) { FromRight = rightRoad; }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x, (int)Coordinates.y + 1) is RoadTile belowRoad) { FromBelow = belowRoad; }
-			if (SimEngine.Instance.GetTile((int)Coordinates.x - 1, (int)Coordinates.y) is RoadTile leftRoad)  { FromLeft  = leftRoad;  }
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is RoadTile aboveRoad) { FromAbove = aboveRoad; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is RoadTile rightRoad) { FromRight = rightRoad; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is RoadTile belowRoad) { FromBelow = belowRoad; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is RoadTile leftRoad)  { FromLeft  = leftRoad;  }
 		}
 
-		public override void NeighborTileChanged(Tile oldTile, Tile newTile)
+		public override void NeighborTileReplaced(Tile oldTile, Tile newTile)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			if (oldTile is RoadTile)
 			{
 				if      (oldTile.Coordinates.x < Coordinates.x)	{ FromLeft  = null; }
@@ -165,19 +187,22 @@ namespace Model.Tiles
 			}
 		}
 
-		public override int GetBuildPrice() //TODO implementing logic
+		public override int GetBuildPrice()
 		{
-			return BUILD_PRICE;
+			//TODO implement road build price
+			return 100000;
 		}
 
-		public override int GetDestroyPrice()
+		public override int GetDestroyIncome()
 		{
-			return DESTROY_PRICE;
+			//TODO implement road destroy income
+			return 100000;
 		}
 
 		public override int GetMaintainanceCost()
 		{
-			return GetBuildPrice() / 10;
+			//TODO implement road maintainance cost
+			return 100000;
 		}
 	}
 }

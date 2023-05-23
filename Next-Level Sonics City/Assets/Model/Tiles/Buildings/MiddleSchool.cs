@@ -1,88 +1,110 @@
 using Model.Persons;
-using Model.Simulation;
+using Model.RoadGrids;
 using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
-using Model.RoadGrids;
 
 namespace Model.Tiles.Buildings
 {
 	public class MiddleSchool : Building, IWorkplace
 	{
 		private readonly List<Worker> _workers = new();
-		private int _workersLimit = 10;
+		public int WorkplaceLimit { get; private set; }
 
+		/// <summary>
+		/// Construct a new middle school tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		/// <param name="rotation">Rotation of the tile</param>
 		public MiddleSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
+		}
+
+		public override void FinalizeTile()
+		{
+			Finalizing();
+		}
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+			//TODO implement middle school workplace limit
+			WorkplaceLimit = 10;
 		}
 
 		public override TileType GetTileType() { return TileType.MiddleSchool; }
 
 		public void RegisterWorkplace(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			roadGrid?.AddWorkplace(this);
 		}
 
 		public void UnregisterWorkplace(RoadGrid roadGrid)
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			roadGrid?.RemoveWorkplace(this);
 		}
 
-		public bool Employ(Worker worker)
+		public void Employ(Worker worker)
 		{
-			if (_workers.Count < _workersLimit)
-			{
-				_workers.Add(worker);
-				return true;
-			}
+			if (!_isFinalized) { throw new InvalidOperationException(); }
 
-			return false;
+			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
+			_workers.Add(worker);
 		}
 
-		public bool Unemploy(Worker worker)
+		public void Unemploy(Worker worker)
 		{
-			if (_workers.Count > 0)
-			{
-				_workers.Remove(worker);
-				return true;
-			}
+			if (!_isFinalized) { throw new InvalidOperationException(); }
 
-			return false;
+			_workers.Remove(worker);
 		}
 
 		public List<Worker> GetWorkers()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			return _workers;
 		}
 
 		public int GetWorkersCount()
 		{
+			if (!_isFinalized) { throw new InvalidOperationException(); }
+
 			return _workers.Count;
 		}
 
-		public int GetWorkersLimit()
-		{
-			return _workersLimit;
-		}
 		public Tile GetTile() { return this; }
 
-		public override int GetBuildPrice() //TODO implementik logic
+		public override int GetBuildPrice()
 		{
-			return BUILD_PRICE;
+			//TODO implement middle school build price
+			return 100000;
 		}
 
-		public override int GetDestroyPrice()
+		public override int GetDestroyIncome()
 		{
-			return DESTROY_PRICE;
+			//TODO implement middle school destroy income
+			return 100000;
 		}
 
 		public override int GetMaintainanceCost()
 		{
-			return GetBuildPrice() / 10;
+			//TODO implement middle school maintainance cost
+			return 100000;
 		}
 
-		internal override bool CanBuild()
+		public override bool CanBuild()
 		{
 			int x1 = (int)Coordinates.x;
 			int y1 = (int)Coordinates.y;
@@ -112,7 +134,7 @@ namespace Model.Tiles.Buildings
 			int maxY = Math.Max(y1, y2);
 
 			int lowerLimit = 0;
-			int upperLimit = SimEngine.Instance.GetSize();
+			int upperLimit = City.Instance.GetSize();
 
 			if (minX < lowerLimit || minY < lowerLimit || maxX > upperLimit || maxY > upperLimit)
 			{
@@ -123,7 +145,7 @@ namespace Model.Tiles.Buildings
 			{
 				for (int j = minY; j < maxY; ++j)
 				{
-					if (SimEngine.Instance.GetTile(i, j) is not EmptyTile)
+					if (City.Instance.GetTile(i, j) is not EmptyTile)
 					{
 						return false;
 					}
@@ -166,7 +188,6 @@ namespace Model.Tiles.Buildings
 				for (int j = minY; j < maxY; ++j)
 				{
 					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
-					Tile oldTile = SimEngine.Instance.GetTile(i, j);
 					ExpandCommand ec = new(i, j, this);
 					ec.Execute();
 				}

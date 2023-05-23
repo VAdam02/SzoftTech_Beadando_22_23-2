@@ -87,12 +87,15 @@ namespace View
 					Tile oldGhostTile = _ghostTile;
 					_ghostTile = value;
 
-					MainThreadDispatcher.Instance.Enqueue(() =>
+					if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 					{
-						if (oldGhostTile != null) { Destroy(oldGhostTile.gameObject); }
-						if (_ghostTile != null) { _ghostTile.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); }
-						if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
-					});
+						mainThread.Enqueue(() =>
+						{
+							if (oldGhostTile != null) { Destroy(oldGhostTile.gameObject); }
+							if (_ghostTile != null) { _ghostTile.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); }
+							if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
+						});
+					}
 				}
 			}
 		}
@@ -130,7 +133,7 @@ namespace View
 		public void MarkZone(ZoneType zoneType)
 		{
 			if (_selectedTiles.Count >= 2)
-				SimEngine.Instance.ZoneManager.MarkZone(_selectedTiles[0].TileModel, _selectedTiles[1].TileModel, zoneType);
+				ZoneManager.Instance.MarkZone(_selectedTiles[0].TileModel, _selectedTiles[1].TileModel, zoneType);
 		}
 
 		public Tile GenerateFromModel(Model.Tile tileModel)
@@ -154,19 +157,13 @@ namespace View
 		{
 			_instance = this;
 
-			_tiles = new Tile[SimEngine.Instance.GetSize(), SimEngine.Instance.GetSize()];
+			_tiles = new Tile[City.Instance.GetSize(), City.Instance.GetSize()];
 
-			for (int i = 0; i < SimEngine.Instance.GetSize(); i++)
-			for (int j = 0; j < SimEngine.Instance.GetSize(); j++)
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			for (int j = 0; j < City.Instance.GetSize(); j++)
 			{
-				CloneTileFromModel(SimEngine.Instance.GetTile(i, j));
+				CloneTileFromModel(City.Instance.GetTile(i, j));
 			}
-		}
-
-		// Update is called once per frame
-		void Update()
-		{
-			
 		}
 	}
 }
