@@ -63,8 +63,6 @@ namespace Model.Tiles
 			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
 			if (building == null) { throw new ArgumentNullException(nameof(building) + " can't be null"); }
 
-			Vector3 delta = building.Coordinates - Coordinates;
-
 			float weight = Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
 
 			//decrease weight by transparency of the sight

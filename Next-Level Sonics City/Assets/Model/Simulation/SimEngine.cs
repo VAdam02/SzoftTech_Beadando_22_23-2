@@ -34,6 +34,14 @@ namespace Model.Simulation
 		private void Start()
 		{
 			StartSimulation();
+
+			for (int i = 0; i < City.Instance.GetSize() / 2; i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize() / 2; j++)
+				{
+					City.Instance.SetTile(new ForestTile(i, j, 0));
+				}
+			}
 		}
 
 		/// <summary>

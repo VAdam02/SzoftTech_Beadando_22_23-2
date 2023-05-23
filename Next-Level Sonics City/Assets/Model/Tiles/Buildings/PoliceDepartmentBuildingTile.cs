@@ -39,29 +39,7 @@ namespace Model.Tiles.Buildings
 			//TODO implement  workplace limit
 			WorkplaceLimit = 10;
 
-			for (int i = 0; i <= GetRegisterRadius(); i++)
-			for (int j = 0; Mathf.Sqrt(i * i + j * j) <= GetRegisterRadius(); j++)
-			{
-				if (i == 0 && j == 0) { continue; }
-
-				//register at the residentials
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IResidential residentialTopRight) { residentialTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IResidential residentialBottomRight && j != 0) { residentialBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft && j != 0) { residentialBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft) { residentialTopLeft.RegisterHappinessChangerTile(this); }
-
-				//register at the workplaces
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight) { workplaceTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0) { workplaceBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0) { workplaceBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft) { workplaceTopLeft.RegisterHappinessChangerTile(this); }
-
-				//register to the destroy event to be notified about a new tile
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is Tile aboveTile) { aboveTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is Tile rightTile && j != 0) { rightTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is Tile bottomTile && j != 0) { bottomTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is Tile leftTile) { leftTile.OnTileDelete += TileDestroyedInRadius; }
-			}
+			IHappyZone.RegisterHappinessChangerTileToRegisterRadius(this);
 		}
 
 		/// <summary>
@@ -142,16 +120,6 @@ namespace Model.Tiles.Buildings
 		//TODO implement electric pole maintainance cost
 		public override int MaintainanceCost => 100000;
 
-		private int GetRegisterRadius()
-		{
-			return 5;
-		}
-
-		public int GetEffectiveRadius()
-		{
-			return GetWorkersCount() > 0 ? GetRegisterRadius() : 0;
-		}
-
 		public (float happiness, float weight) GetHappinessModifierAtTile(Building building)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException(); }
@@ -165,13 +133,13 @@ namespace Model.Tiles.Buildings
 			if (RoadGridManager.GetRoadGrigElementByBuilding(building).RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(this).RoadGrid) { return (0, 0); }
 
 			//it is not reachable
-			int distance = GetDistanceOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(building), GetEffectiveRadius() - 1);
+			int distance = GetDistanceOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(building), ((IHappyZone)this).EffectiveRadius - 1);
 			if (distance == -1)
 			{
 				return (0, 0);
 			}
 
-			return (1, Mathf.Cos(distance * Mathf.PI / 2 / GetEffectiveRadius()));
+			return (1, Mathf.Cos(distance * Mathf.PI / 2 / ((IHappyZone)this).EffectiveRadius));
 		}
 
 		public int GetDistanceOnRoad(IRoadGridElement target, int maxDistance)
@@ -206,9 +174,9 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
-		int IHappyZone.RegisterRadius => throw new NotImplementedException();
+		int IHappyZone.RegisterRadius => 5;
 
-		int IHappyZone.EffectiveRadius => throw new NotImplementedException();
+		int IHappyZone.EffectiveRadius => GetWorkersCount() > 0 ? ((IHappyZone)this).RegisterRadius : 0;
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
@@ -237,12 +205,12 @@ namespace Model.Tiles.Buildings
 
 		(float happiness, float weight) IHappyZone.GetHappinessModifierAtTile(Building building)
 		{
-			throw new NotImplementedException();
+			return (0, 0); //TODO
 		}
 
 		Tile IHappyZone.GetTile()
 		{
-			throw new NotImplementedException();
+			return this;
 		}
 
 		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile)
