@@ -9,90 +9,8 @@ namespace Model.Tiles.Buildings
 {
 	public class HighSchool : Building, IWorkplace
 	{
-		private readonly List<Worker> _workers = new();
-		public int WorkplaceLimit { get; private set; }
-
-		/// <summary>
-		/// Construct a new road tile
-		/// </summary>
-		/// <param name="x">X coordinate of the tile</param>
-		/// <param name="y">Y coordinate of the tile</param>
-		/// <param name="designID">DesignID for the tile</param>
-		/// <param name="rotation">Rotation of the tile</param>
-		public HighSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
-		{
-
-		}
-
-		public override void FinalizeTile()
-		{
-			Finalizing();
-		}
-
-		/// <summary>
-		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
-		/// <para>Do the actual finalization</para>
-		/// </summary>
-		protected new void Finalizing()
-		{
-			base.Finalizing();
-			//TODO implement high school workplace limit
-			WorkplaceLimit = 10;
-		}
-
-		public override TileType GetTileType() { return TileType.HighSchool; }
-
-		public void RegisterWorkplace(RoadGrid roadGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			roadGrid?.AddWorkplace(this);
-		}
-
-		public void UnregisterWorkplace(RoadGrid roadGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			roadGrid?.RemoveWorkplace(this);
-		}
-
-		public void Employ(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
-			_workers.Add(worker);
-		}
-
-		public void Unemploy(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			_workers.Remove(worker);
-		}
-
-		public List<Worker> GetWorkers()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _workers;
-		}
-
-		public int GetWorkersCount()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _workers.Count;
-		}
-
-		//TODO implement electric pole build price
-		public override int BuildPrice => 100000;
-
-		//TODO implement electric pole destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement electric pole maintainance cost
-		public override int MaintainanceCost => 100000;
+		#region Tile implementation
+		public override TileType GetTileType() => TileType.HighSchool;
 
 		public override bool CanBuild()
 		{
@@ -123,9 +41,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (City.Instance.GetTile(i, j) is not EmptyTile)
 					{
@@ -137,6 +55,38 @@ namespace Model.Tiles.Buildings
 			return true;
 		}
 
+		public override void FinalizeTile() => Finalizing();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+			//TODO implement stadion workplace limit
+			WorkplaceLimit = 10;
+		}
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
+
+		//TODO implement stadion build price
+		public override int BuildPrice => 100000;
+
+		//TODO implement stadion destroy price
+		public override int DestroyIncome => 100000;
+
+		//TODO implement stadion maintainance cost
+		public override int MaintainanceCost => 100000;
+		#endregion
+
+		#region Building implementation
 		internal override void Expand()
 		{
 			int x1 = (int)Coordinates.x;
@@ -165,9 +115,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
 					ExpandCommand ec = new(i, j, this);
@@ -175,8 +125,53 @@ namespace Model.Tiles.Buildings
 				}
 			}
 		}
+		#endregion
 
-		public (float happiness, float weight) HappinessByBuilding
+		#region IWorkplace implementation
+		private readonly List<Worker> _workers = new();
+		public int WorkplaceLimit { get; private set; }
+
+		void IWorkplace.Employ(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to employ before tile is set"); }
+			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
+			_workers.Add(worker);
+		}
+
+		void IWorkplace.Unemploy(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unemploy before tile is set"); }
+			_workers.Remove(worker);
+		}
+
+		List<Worker> IWorkplace.GetWorkers()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers before tile is set"); }
+			return _workers;
+		}
+
+		int IWorkplace.GetWorkersCount()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers count before tile is set"); }
+			return _workers.Count;
+		}
+
+		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
+			roadGrid?.AddWorkplace(this);
+		}
+
+		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
+
+			roadGrid?.RemoveWorkplace(this);
+		}
+
+		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
+
+		(float happiness, float weight) IWorkplace.HappinessByBuilding
 		{
 			get
 			{
@@ -185,9 +180,8 @@ namespace Model.Tiles.Buildings
 				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
 			}
 		}
-		
-		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
-		public void RegisterHappinessChangerTile(IHappyZone happyZone)
+
+		void IWorkplace.RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
 			happyZone.GetTile().OnTileDelete += UnregisterHappinessChangerTile;
 			happyZone.GetTile().OnTileChange += UpdateHappiness;
@@ -210,13 +204,18 @@ namespace Model.Tiles.Buildings
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
-
-		public override void DeleteTile() => Deleting();
+		#endregion
 
 		/// <summary>
-		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
-		/// <para>Do the deletion administration</para>
+		/// Construct a new road tile
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		/// <param name="rotation">Rotation of the tile</param>
+		public HighSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		{
+
+		}
 	}
 }

@@ -44,16 +44,16 @@ namespace Model.Tiles.Buildings
 		{
 			var worker = new Worker(residential, highSchool, 25, Qualification.HIGH);
 
-			Assert.Contains(worker, highSchool.GetWorkers());
+			Assert.Contains(worker, ((IWorkplace)highSchool).GetWorkers());
 		}
 
 		[Test]
 		public void Unemploy_RemovesWorkerFromHighSchool()
 		{
 			var worker = new Worker(residential, highSchool, 25, Qualification.HIGH);
-			highSchool.Unemploy(worker); //TODO illegal way to move out
+			((IWorkplace)highSchool).Unemploy(worker); //TODO illegal way to move out
 
-			CollectionAssert.DoesNotContain(highSchool.GetWorkers(), worker);
+			CollectionAssert.DoesNotContain(((IWorkplace)highSchool).GetWorkers(), worker);
 		}
 
 		[Test]
@@ -62,7 +62,7 @@ namespace Model.Tiles.Buildings
 			var worker1 = new Worker(residential, highSchool, 25, Qualification.HIGH);
 			var worker2 = new Worker(residential, highSchool, 25, Qualification.HIGH);
 
-			var workers = highSchool.GetWorkers();
+			var workers = ((IWorkplace)highSchool).GetWorkers();
 
 			Assert.Contains(worker1, workers);
 			Assert.Contains(worker2, workers);
@@ -74,7 +74,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, highSchool, 25, Qualification.HIGH);
 			_ = new Worker(residential, highSchool, 25, Qualification.HIGH);
 
-			var count = highSchool.GetWorkersCount();
+			var count = ((IWorkplace)highSchool).GetWorkersCount();
 
 			Assert.AreEqual(2, count);
 		}
@@ -82,7 +82,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetTile_ReturnsSelf()
 		{
-			var tile = highSchool.GetTile();
+			var tile = ((IWorkplace)highSchool).GetTile();
 
 			Assert.AreEqual(highSchool, tile);
 		}
