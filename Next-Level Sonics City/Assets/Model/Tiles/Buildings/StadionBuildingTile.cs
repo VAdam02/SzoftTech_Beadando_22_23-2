@@ -221,6 +221,9 @@ namespace Model.Tiles.Buildings
 
 			float weight = 1;
 
+			//decrease weight by transparency of the sight
+			weight *= IHappyZone.SightToHappyZone(this, building);
+
 			//decrease weight by distance
 			weight *= 1 - IHappyZone.DistanceToHappyZone(this, building.GetTile());
 

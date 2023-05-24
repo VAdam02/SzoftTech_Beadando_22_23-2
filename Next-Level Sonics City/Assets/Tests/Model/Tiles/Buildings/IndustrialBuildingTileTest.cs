@@ -42,7 +42,7 @@ namespace Model.Tiles.Buildings
 			Industrial industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
-			industrial.RegisterWorkplace(roadGridElement.RoadGrid);
+			((IWorkplace)industrial).RegisterWorkplace(roadGridElement.RoadGrid);
 
 			CollectionAssert.Contains(roadGridElement.RoadGrid.Workplaces, industrial);
 		}
@@ -71,7 +71,7 @@ namespace Model.Tiles.Buildings
 			Industrial industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
-			ZoneType zoneType = industrial.GetZoneType();
+			ZoneType zoneType = ((IZoneBuilding)industrial).GetZoneType();
 
 			Assert.AreEqual(ZoneType.IndustrialZone, zoneType);
 		}
@@ -97,19 +97,19 @@ namespace Model.Tiles.Buildings
 			Assert.AreEqual(previousWorkplaceLimit, industrial.WorkplaceLimit);
 			previousWorkplaceLimit = industrial.WorkplaceLimit;
 
-			industrial.LevelUp();
+			((IZoneBuilding)industrial).LevelUp();
 
 			Assert.AreEqual(ZoneBuildingLevel.TWO, industrial.Level);
 			Assert.Less(previousWorkplaceLimit, industrial.WorkplaceLimit);
 			previousWorkplaceLimit = industrial.WorkplaceLimit;
 
-			industrial.LevelUp();
+			((IZoneBuilding)industrial).LevelUp();
 
 			Assert.AreEqual(ZoneBuildingLevel.THREE, industrial.Level);
 			Assert.Less(previousWorkplaceLimit, industrial.WorkplaceLimit);
 			previousWorkplaceLimit = industrial.WorkplaceLimit;
 
-			industrial.LevelUp();
+			((IZoneBuilding)industrial).LevelUp();
 
 			Assert.AreEqual(ZoneBuildingLevel.THREE, industrial.Level);
 			Assert.AreEqual(previousWorkplaceLimit, industrial.WorkplaceLimit);
@@ -129,7 +129,7 @@ namespace Model.Tiles.Buildings
 
 			Worker worker = new(residential, industrial, 40, Qualification.LOW);
 
-			List<Worker> workers = industrial.GetWorkers();
+			List<Worker> workers = ((IWorkplace)industrial).GetWorkers();
 
 			Assert.AreEqual(1, workers.Count);
 			CollectionAssert.Contains(workers, worker);
@@ -149,9 +149,9 @@ namespace Model.Tiles.Buildings
 
 			Worker worker = new(residential, industrial, 40, Qualification.LOW);
 
-			industrial.Unemploy(worker);
+			((IWorkplace)industrial).Unemploy(worker);
 
-			List<Worker> workers = industrial.GetWorkers();
+			List<Worker> workers = ((IWorkplace)industrial).GetWorkers();
 
 			Assert.AreEqual(0, workers.Count);
 			CollectionAssert.DoesNotContain(workers, worker);
@@ -172,7 +172,7 @@ namespace Model.Tiles.Buildings
 			Worker worker1 = new(residential, industrial, 40, Qualification.LOW);
 			Worker worker2 = new(residential, industrial, 50, Qualification.HIGH);
 
-			List<Worker> workers = industrial.GetWorkers();
+			List<Worker> workers = ((IWorkplace)industrial).GetWorkers();
 
 			Assert.AreEqual(2, workers.Count);
 			CollectionAssert.Contains(workers, worker1);
@@ -194,7 +194,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, industrial, 40, Qualification.LOW);
 			_ = new Worker(residential, industrial, 50, Qualification.HIGH);
 
-			int workersCount = industrial.GetWorkersCount();
+			int workersCount = ((IWorkplace)industrial).GetWorkersCount();
 
 			Assert.AreEqual(2, workersCount);
 		}

@@ -75,8 +75,8 @@ namespace Model.Tiles.Buildings
 		#endregion
 
 		#region IResidential implementation
-		public int ResidentLimit { get; private set; }
 		private readonly List<Person> _residents = new();
+		public int ResidentLimit { get; private set; }
 
 		void IResidential.MoveIn(Person person)
 		{
@@ -92,6 +92,8 @@ namespace Model.Tiles.Buildings
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to move out before tile is set"); }
 			_residents.Remove(person);
+
+			if (((IResidential)this).GetResidentsCount() == 0) { Level = ZoneBuildingLevel.ZERO; }
 		}
 
 		List<Person> IResidential.GetResidents()
