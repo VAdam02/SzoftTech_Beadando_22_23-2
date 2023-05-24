@@ -33,8 +33,6 @@ namespace Model.Simulation
 		private void Start()
 		{
 			StartSimulation();
-
-			City.Instance.SetTile(new ForestTile(0, 0, 0));
 		}
 
 		/// <summary>
