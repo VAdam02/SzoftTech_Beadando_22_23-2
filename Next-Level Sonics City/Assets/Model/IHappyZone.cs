@@ -1,4 +1,5 @@
 using Model.RoadGrids;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Model.Tiles
@@ -116,6 +117,37 @@ namespace Model.Tiles
 		{
 			Vector3 delta = happyZone.GetTile().Coordinates - tile.Coordinates;
 			return (delta.magnitude - 1) / happyZone.EffectiveRadius;
+		}
+
+		/// <summary>
+		/// Get the happiness modifier for the given tile based on distance on road
+		/// </summary>
+		/// <param name="from">Start road</param>
+		/// <param name="to">Finish road</param>
+		/// <param name="maxDistance">Max distance where it's effective</param>
+		/// <returns></returns>
+		protected static float DistanceOnRoad(IRoadGridElement from, IRoadGridElement to, int maxDistance)
+		{
+			if (from.RoadGrid != to.RoadGrid) { return 1; }
+
+			Queue<(IRoadGridElement, int)> queue = new();
+			queue.Enqueue((from, 0));
+			while (queue.Count > 0)
+			{
+				(IRoadGridElement roadGridElement, int distance) = queue.Dequeue();
+
+				if (roadGridElement == to) return (float)distance/maxDistance;
+
+				if (distance < maxDistance)
+				{
+					foreach (IRoadGridElement element in roadGridElement.ConnectsTo)
+					{
+						queue.Enqueue((element, distance + 1));
+					}
+				}
+			}
+
+			return 1;
 		}
 		#endregion
 	}

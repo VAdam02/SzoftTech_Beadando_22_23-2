@@ -76,13 +76,13 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement electric pole build price
+		//TODO implement power plant build price
 		public override int BuildPrice => 100000;
 
-		//TODO implement electric pole destroy price
+		//TODO implement power plant destroy price
 		public override int DestroyIncome => 100000;
 
-		//TODO implement electric pole maintainance cost
+		//TODO implement power plant maintainance cost
 		public override int MaintainanceCost => 100000;
 		#endregion
 
