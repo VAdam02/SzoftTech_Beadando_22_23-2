@@ -59,16 +59,16 @@ namespace Model.Tiles.Buildings
 		{
 			var worker = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 
-			Assert.Contains(worker, powerPlant.GetWorkers());
+			Assert.Contains(worker, ((IWorkplace)powerPlant).GetWorkers());
 		}
 
 		[Test]
 		public void Unemploy_RemovesWorkerFromPowerPlant()
 		{
 			var worker = new Worker(residential, powerPlant, 25, Qualification.HIGH);
-			powerPlant.Unemploy(worker); //TODO illegal way to move out
+			((IWorkplace)powerPlant).Unemploy(worker); //TODO illegal way to move out
 
-			CollectionAssert.DoesNotContain(powerPlant.GetWorkers(), worker);
+			CollectionAssert.DoesNotContain(((IWorkplace)powerPlant).GetWorkers(), worker);
 		}
 
 		[Test]
@@ -77,7 +77,7 @@ namespace Model.Tiles.Buildings
 			var worker1 = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 			var worker2 = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 
-			var workers = powerPlant.GetWorkers();
+			var workers = ((IWorkplace)powerPlant).GetWorkers();
 
 			Assert.Contains(worker1, workers);
 			Assert.Contains(worker2, workers);
@@ -89,7 +89,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 			_ = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 
-			var count = powerPlant.GetWorkersCount();
+			var count = ((IWorkplace)powerPlant).GetWorkersCount();
 
 			Assert.AreEqual(2, count);
 		}
