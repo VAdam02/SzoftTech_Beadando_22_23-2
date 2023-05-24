@@ -15,7 +15,6 @@ namespace View.GUI.Footer.BuildPanel
 			{
 				TileType.PoliceDepartment => TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero)),
 				TileType.Stadion => TileManager.Instance.GenerateFromModel(new StadionBuildingTile(0, 0, 0, Rotation.Zero)),
-				TileType.FireDepartment => TileManager.Instance.GenerateFromModel(new FireDepartment(0, 0, 0, Rotation.Zero)),
 				TileType.MiddleSchool => TileManager.Instance.GenerateFromModel(new MiddleSchool(0, 0, 0, Rotation.Zero)),
 				TileType.HighSchool => TileManager.Instance.GenerateFromModel(new HighSchool(0, 0, 0, Rotation.Zero)),
 				TileType.PowerPlant => TileManager.Instance.GenerateFromModel(new PowerPlant(0, 0, 0, Rotation.Zero)),

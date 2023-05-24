@@ -276,5 +276,15 @@ namespace Model.Tiles.Buildings
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
+
+		public Tile GetTile() => this;
 	}
 }

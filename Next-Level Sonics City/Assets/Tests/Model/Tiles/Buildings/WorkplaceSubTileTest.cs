@@ -54,7 +54,7 @@ namespace Model.Tiles.Buildings
 		public void Unemploy_RemovesWorkerFromBaseWorkplace()
 		{
 			var worker = new Worker(residential, workplaceSubTile, 25, Qualification.HIGH);
-			workplaceSubTile.Unemploy(worker); //TODO illegal way to move out
+			((IWorkplace)workplaceSubTile).Unemploy(worker); //TODO illegal way to move out
 
 			CollectionAssert.DoesNotContain(baseWorkplace.GetWorkers(), worker);
 		}
@@ -65,7 +65,7 @@ namespace Model.Tiles.Buildings
 			var worker1 = new Worker(residential, workplaceSubTile, 25, Qualification.HIGH);
 			var worker2 = new Worker(residential, workplaceSubTile, 25, Qualification.HIGH);
 
-			var workers = workplaceSubTile.GetWorkers();
+			var workers = ((IWorkplace)workplaceSubTile).GetWorkers();
 
 			Assert.Contains(worker1, workers);
 			Assert.Contains(worker2, workers);
@@ -77,7 +77,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, workplaceSubTile, 25, Qualification.HIGH);
 			_ = new Worker(residential, workplaceSubTile, 25, Qualification.HIGH);
 
-			var count = workplaceSubTile.GetWorkersCount();
+			var count = ((IWorkplace)workplaceSubTile).GetWorkersCount();
 
 			Assert.AreEqual(2, count);
 		}

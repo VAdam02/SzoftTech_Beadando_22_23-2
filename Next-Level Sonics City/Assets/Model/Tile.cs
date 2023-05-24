@@ -63,7 +63,7 @@ namespace Model
 		/// <param name="y"></param>
 		public void UpdateCoordinates(int x, int y)
 		{
-			if (_isFinalized) { throw new InvalidOperationException(); }
+			if (_isFinalized) { throw new InvalidOperationException("Not allowed to move the tile after finalized"); }
 
 			Coordinates = new Vector3(x, y, 0);
 		}

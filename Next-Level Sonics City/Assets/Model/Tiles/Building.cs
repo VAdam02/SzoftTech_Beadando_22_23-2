@@ -1,7 +1,6 @@
 using Model.RoadGrids;
 using Model.Tiles.Buildings;
 using System;
-using UnityEngine.Events;
 
 namespace Model.Tiles
 {
@@ -25,8 +24,6 @@ namespace Model.Tiles
 			Rotation = rotation;
 		}
 
-		public override void FinalizeTile() => Finalizing();
-
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
@@ -47,11 +44,6 @@ namespace Model.Tiles
 					residential.RegisterResidential(roadGrid);
 				}
 			}
-		}
-
-		public override void DeleteTile()
-		{
-			Deleting();
 		}
 
 		/// <summary>
@@ -78,15 +70,6 @@ namespace Model.Tiles
 		internal virtual void Expand()
 		{
 
-		}
-
-		/// <summary>
-		/// Get the tile of the building
-		/// </summary>
-		/// <returns>Tile of the building</returns>
-		public Tile GetTile()
-		{
-			return this;
 		}
 	}
 }
