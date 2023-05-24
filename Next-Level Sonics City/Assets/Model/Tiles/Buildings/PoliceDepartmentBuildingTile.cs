@@ -9,7 +9,7 @@ namespace Model.Tiles.Buildings
 	public class PoliceDepartmentBuildingTile : Building, IWorkplace, IHappyZone
 	{
 		#region Tile implementation
-		public override TileType GetTileType() => TileType.Stadion;
+		public override TileType GetTileType() => TileType.PoliceDepartment;
 
 		public override void FinalizeTile() => Finalizing();
 

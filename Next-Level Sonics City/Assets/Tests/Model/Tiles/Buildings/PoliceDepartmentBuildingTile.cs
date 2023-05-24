@@ -41,7 +41,7 @@ namespace Model.Tiles.Buildings
 		public void RegisterWorkplace_AddsPoliceDepartmentToRoadGrid()
 		{
 			var roadGrid = roadGridElement.RoadGrid;
-			policeDepartment.RegisterWorkplace(roadGrid);
+			((IWorkplace)policeDepartment).RegisterWorkplace(roadGrid);
 
 			Assert.IsTrue(roadGrid.Workplaces.Contains(policeDepartment));
 		}
