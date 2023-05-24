@@ -25,9 +25,7 @@ namespace Model.Tiles
 			{
 				if (StatEngine.Instance.Quarter == 0)
 				{
-					Debug.Log("Pre: " + DesignID);
 					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, MAINTANCENEEDEDFORYEAR);
-					Debug.Log("Post: " + DesignID);
 					TileChangeInvoke();
 				}
 			};
