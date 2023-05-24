@@ -43,7 +43,7 @@ namespace Model
 			{
 				if (Mathf.PerlinNoise(i * scale, j * scale) > 0.5f)
 				{
-					SetTile(new ForestTile(i, j, 10));
+					SetTile(new ForestTile(i, j, ForestTile.MAINTANCENEEDEDFORYEAR + 1));
 				}
 			}
 		}
