@@ -59,16 +59,16 @@ namespace Model.Tiles.Buildings
 		{
 			var worker = new Worker(residential, stadion, 25, Qualification.HIGH);
 
-			Assert.Contains(worker, stadion.GetWorkers());
+			Assert.Contains(worker, ((IWorkplace)stadion).GetWorkers());
 		}
 
 		[Test]
 		public void Unemploy_RemovesWorkerFromStadionBuildingTile()
 		{
 			var worker = new Worker(residential, stadion, 25, Qualification.HIGH);
-			stadion.Unemploy(worker); //TODO illegal way to move out
+			((IWorkplace)stadion).Unemploy(worker); //TODO illegal way to move out
 
-			CollectionAssert.DoesNotContain(stadion.GetWorkers(), worker);
+			CollectionAssert.DoesNotContain(((IWorkplace)stadion).GetWorkers(), worker);
 		}
 
 		[Test]
@@ -77,7 +77,7 @@ namespace Model.Tiles.Buildings
 			var worker1 = new Worker(residential, stadion, 25, Qualification.HIGH);
 			var worker2 = new Worker(residential, stadion, 25, Qualification.HIGH);
 
-			var workers = stadion.GetWorkers();
+			var workers = ((IWorkplace)stadion).GetWorkers();
 
 			Assert.Contains(worker1, workers);
 			Assert.Contains(worker2, workers);
@@ -89,7 +89,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, stadion, 25, Qualification.HIGH);
 			_ = new Worker(residential, stadion, 25, Qualification.HIGH);
 
-			var count = stadion.GetWorkersCount();
+			var count = ((IWorkplace)stadion).GetWorkersCount();
 
 			Assert.AreEqual(2, count);
 		}

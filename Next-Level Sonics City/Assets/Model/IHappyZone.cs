@@ -1,3 +1,4 @@
+using Model.RoadGrids;
 using UnityEngine;
 
 namespace Model.Tiles
@@ -22,16 +23,16 @@ namespace Model.Tiles
 		public (float happiness, float weight) GetHappinessModifierAtTile(Building building);
 
 		/// <summary>
-		/// Get the tile of the happy zone
-		/// </summary>
-		/// <returns>Tile of the happy zone</returns>
-		public Tile GetTile();
-
-		/// <summary>
 		/// Register at and to the new tile
 		/// </summary>
 		/// <param name="oldTile">Old tile that was deletetd</param>
 		protected void TileDestroyedInRadiusHandler(object sender, Tile oldTile);
+
+		/// <summary>
+		/// Get the tile of the happy zone
+		/// </summary>
+		/// <returns>Tile of the happy zone</returns>
+		public Tile GetTile();
 
 		protected static void RegisterHappinessChangerTileToRegisterRadius(IHappyZone happyZone)
 		{

@@ -75,13 +75,9 @@ namespace Model.Tiles.Buildings
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
 		}
 
-		public (float happiness, float weight) HappinessByBuilding { get => (0, 0); }
+		(float happiness, float weight) IWorkplace.HappinessByBuilding { get => (0, 0); }
 
-		public void RegisterHappinessChangerTile(IHappyZone happyZone) { }
-		#endregion
-
-		#region Common implementation
-		public Tile GetTile() => this;
+		void IWorkplace.RegisterHappinessChangerTile(IHappyZone happyZone) { }
 		#endregion
 
 		private readonly IWorkplace _baseWorkplace;

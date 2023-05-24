@@ -71,5 +71,7 @@ namespace Model.Tiles
 		{
 
 		}
+
+		public Tile GetTile() => this;
 	}
 }

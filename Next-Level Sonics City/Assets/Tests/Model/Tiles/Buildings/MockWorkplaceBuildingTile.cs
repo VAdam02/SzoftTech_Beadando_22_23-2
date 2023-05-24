@@ -108,7 +108,5 @@ namespace Model.Tiles.Buildings
 		/// <para>Do the deletion administration</para>
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
-
-		public Tile GetTile() => this;
 	}
 }
