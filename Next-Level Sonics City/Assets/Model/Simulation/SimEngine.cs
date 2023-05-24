@@ -1,4 +1,3 @@
-using Model.Persons;
 using Model.Statistics;
 using Model.Tiles;
 using Model.Tiles.Buildings;
@@ -35,13 +34,7 @@ namespace Model.Simulation
 		{
 			StartSimulation();
 
-			for (int i = 0; i < City.Instance.GetSize() / 2; i++)
-			{
-				for (int j = 0; j < City.Instance.GetSize() / 2; j++)
-				{
-					City.Instance.SetTile(new ForestTile(i, j, 0));
-				}
-			}
+			City.Instance.SetTile(new ForestTile(0, 0, 0));
 		}
 
 		/// <summary>

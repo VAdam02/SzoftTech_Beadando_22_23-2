@@ -1,7 +1,10 @@
+using Model.Statistics;
 using Model.Tiles;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Model
 {
@@ -25,13 +28,23 @@ namespace Model
 		private City()
 		{
 			_instance = this;
-			
-			int n = 10;
+
+			int n = 20;
 			_tiles = new Tile[n, n];
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
 			{
 				SetTile(new EmptyTile(i, j));
+			}
+
+			float scale = 0.25f;
+			for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+			{
+				if (Mathf.PerlinNoise(i * scale, j * scale) > 0.5f)
+				{
+					SetTile(new ForestTile(i, j, 10));
+				}
 			}
 		}
 

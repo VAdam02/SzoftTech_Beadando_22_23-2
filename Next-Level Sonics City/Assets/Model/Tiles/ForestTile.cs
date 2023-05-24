@@ -19,16 +19,18 @@ namespace Model.Tiles
 		{
 			base.Finalizing();
 
+			_plantedYear = (int)(StatEngine.Instance.Year - (DesignID & DESIGNID_AGE_MASK));
+
 			StatEngine.Instance.NextQuarterEvent += (object sender, EventArgs e) =>
 			{
 				if (StatEngine.Instance.Quarter == 0)
 				{
+					Debug.Log("Pre: " + DesignID);
 					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, MAINTANCENEEDEDFORYEAR);
+					Debug.Log("Post: " + DesignID);
 					TileChangeInvoke();
 				}
 			};
-
-			_plantedYear = StatEngine.Instance.Year;
 
 			IHappyZone.RegisterHappinessChangerTileToRegisterRadius(this);
 		}
@@ -84,7 +86,7 @@ namespace Model.Tiles
 		private int _plantedYear;
 
 		public const int MAINTANCENEEDEDFORYEAR = 10;
-		public const uint DESIGNID_AGE_MASK = 0x00000015; // 4 bits
+		public const uint DESIGNID_AGE_MASK = 0x000000F; // 4 bits
 
 		public int Age => StatEngine.Instance.Year - _plantedYear;
 
