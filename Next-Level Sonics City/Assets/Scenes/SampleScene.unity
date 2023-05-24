@@ -883,8 +883,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'BuildPanel '
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6817680831940438324, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
 --- !u!224 &1197496554 stripped
 RectTransform:
