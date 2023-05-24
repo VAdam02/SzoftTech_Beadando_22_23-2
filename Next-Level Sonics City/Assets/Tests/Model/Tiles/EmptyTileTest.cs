@@ -59,7 +59,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetLevelUpCost_ThrowsInvalidOperationException()
 		{
-			Assert.Throws<InvalidOperationException>(() => ((IZoneBuilding)emptyTile).GetLevelUpCost());
+			Assert.Throws<InvalidOperationException>(() => _ = ((IZoneBuilding)emptyTile).LevelUpCost);
 		}
 	}
 }

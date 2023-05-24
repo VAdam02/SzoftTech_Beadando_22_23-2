@@ -149,7 +149,6 @@ namespace Model.Tiles.Buildings
 		List<Worker> IWorkplace.GetWorkers()
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers before tile is set"); }
-
 			return _workers;
 		}
 

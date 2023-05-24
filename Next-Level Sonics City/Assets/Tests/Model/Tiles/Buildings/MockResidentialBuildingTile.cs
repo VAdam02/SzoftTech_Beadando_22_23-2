@@ -92,6 +92,8 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
+		int IZoneBuilding.LevelUpCost => throw new NotImplementedException();
+
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{

@@ -9,18 +9,6 @@ namespace Model
 		public int ResidentLimit { get; }
 
 		/// <summary>
-		/// Register a residential zone to the road grid
-		/// </summary>
-		/// <param name="roadGrid">Roadgrid where to register</param>
-		public void RegisterResidential(RoadGrid roadGrid);
-
-		/// <summary>
-		/// Unregister a residential zone from the road grid
-		/// </summary>
-		/// <param name="roadGrid">roadgrid where from unregister</param>
-		public void UnregisterResidential(RoadGrid roadGrid);
-
-		/// <summary>
 		/// Move in a person to the residential zone
 		/// </summary>
 		/// <param name="person">Person who will move in</param>
@@ -45,10 +33,16 @@ namespace Model
 		public int GetResidentsCount();
 
 		/// <summary>
-		/// Get the tile of the residential zone
+		/// Register a residential zone to the road grid
 		/// </summary>
-		/// <returns>Tile of the residential zone</returns>
-		public Tile GetTile();
+		/// <param name="roadGrid">Roadgrid where to register</param>
+		public void RegisterResidential(RoadGrid roadGrid);
+
+		/// <summary>
+		/// Unregister a residential zone from the road grid
+		/// </summary>
+		/// <param name="roadGrid">roadgrid where from unregister</param>
+		public void UnregisterResidential(RoadGrid roadGrid);
 
 		public (float happiness, float weight) HappinessByBuilding { get; }
 
@@ -57,5 +51,11 @@ namespace Model
 		/// </summary>
 		/// <param name="zone">Happy zone that should be calculated into happiness as a changer</param>
 		public void RegisterHappinessChangerTile(IHappyZone happyZone);
+
+		/// <summary>
+		/// Get the tile of the residential zone
+		/// </summary>
+		/// <returns>Tile of the residential zone</returns>
+		public Tile GetTile();
 	}
 }

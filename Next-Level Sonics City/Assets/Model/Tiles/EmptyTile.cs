@@ -38,7 +38,7 @@ namespace Model.Tiles
 
 		void IZoneBuilding.LevelUp() => throw new InvalidOperationException("Empty tile can't be level upped");
 
-		int IZoneBuilding.GetLevelUpCost() => throw new InvalidOperationException("Empty tile can't be level upped");
+		int IZoneBuilding.LevelUpCost => throw new InvalidOperationException("Empty tile can't be level upped");
 
 		ZoneBuildingLevel IZoneBuilding.Level => throw new InvalidOperationException("Empty tile do not have level");
 		#endregion

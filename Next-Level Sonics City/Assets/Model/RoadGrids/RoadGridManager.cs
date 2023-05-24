@@ -1,5 +1,6 @@
 using Model.Tiles;
 using Model.Tiles.Buildings;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -115,6 +116,14 @@ namespace Model.RoadGrids
 			if (City.Instance.GetTile(tile.Coordinates.x, tile.Coordinates.y + 1) is IRoadGridElement belowRoadGridElement) { roadGridElements.Add((belowRoadGridElement, Rotation.OneEighty));	}
 			if (City.Instance.GetTile(tile.Coordinates.x - 1, tile.Coordinates.y) is IRoadGridElement leftRoadGridElement)  { roadGridElements.Add((leftRoadGridElement, Rotation.TwoSeventy));	}
 			return roadGridElements;
+		}
+
+		internal static Rotation GetRandomRotationToLookAtRoadGridElement(int x, int y)
+		{
+			List<(IRoadGridElement roadGridElement, Rotation rotation)> roadGridElements = RoadGridManager.GetRoadGridElementsAroundTile(City.Instance.GetTile(x, y));
+			if (roadGridElements.Count == 0) { throw new InvalidOperationException("No road grid elements around tile"); }
+			System.Random rnd = new();
+			return roadGridElements[rnd.Next(roadGridElements.Count)].rotation;
 		}
 	}
 }

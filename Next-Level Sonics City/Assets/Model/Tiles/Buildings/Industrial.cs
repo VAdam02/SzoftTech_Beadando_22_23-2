@@ -211,6 +211,10 @@ namespace Model.Tiles.Buildings
 
 		int IHappyZone.EffectiveRadius => throw new NotImplementedException();
 
+		int IZoneBuilding.LevelUpCost => throw new NotImplementedException();
+
+		ZoneBuildingLevel IZoneBuilding.Level => throw new NotImplementedException();
+
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
@@ -283,6 +287,16 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		public Tile GetTile() => this;
+		ZoneType IZoneBuilding.GetZoneType() => ZoneType.IndustrialZone;
+
+		void IZoneBuilding.LevelUp()
+		{
+			throw new NotImplementedException();
+		}
+
+		Tile IZoneBuilding.GetTile()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
