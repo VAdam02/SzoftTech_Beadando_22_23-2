@@ -13,7 +13,7 @@ namespace Model.Persons
 		public IWorkplace WorkPlace { get; private set; }
 		public Qualification PersonQualification { get; private set; }
 
-		public override (float happiness, float weight) HappinessByPersonInheritance
+		protected override (float happiness, float weight) HappinessByPersonInheritance
 		{
 			get
 			{

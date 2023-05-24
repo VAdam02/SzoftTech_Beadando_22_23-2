@@ -1,4 +1,5 @@
 ﻿using Model.RoadGrids;
+using Model.Tiles;
 using Model.Tiles.Buildings;
 using NUnit.Framework;
 using System;
@@ -15,6 +16,13 @@ namespace Model.Persons
 		{
 			RoadGridManager.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
 			_home = new(0, 0, Rotation.Zero);
 			City.Instance.SetTile(_home);

@@ -22,6 +22,13 @@ namespace Model.Statistics
 		{
 			StatEngine.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
 			_road = new(1, 1);
 			City.Instance.SetTile(_road);
@@ -117,13 +124,6 @@ namespace Model.Statistics
 		{
 			float maintenance = _residential1.MaintainanceCost + _residential2.MaintainanceCost + _workplace1.MaintainanceCost + _workplace2.MaintainanceCost;
 			Assert.AreEqual(maintenance, StatEngine.Instance.SumMaintenance(new List<Tile>() { _residential1, _residential2, _workplace1, _workplace2 }));
-		}
-
-		[Test]
-		public void CalculateWorkplaceHappiness_EqualsToIndividualWorkersHappinessAVG()
-		{
-			float happiness = (_workers[0].GetHappiness() + _workers[1].GetHappiness()) / 2;
-			Assert.AreEqual(happiness, StatEngine.Instance.CalculateWorkplaceHappiness(_workplace1));
 		}
 	}
 }

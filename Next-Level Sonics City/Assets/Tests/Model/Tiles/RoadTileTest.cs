@@ -18,6 +18,13 @@ namespace Model.Tiles
 		public void Setup()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
 			roadTile = new RoadTile(1, 1);
 			City.Instance.SetTile(roadTile);

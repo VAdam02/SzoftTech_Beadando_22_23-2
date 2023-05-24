@@ -13,7 +13,7 @@ namespace Model
 		public IResidential Residential { get; protected set; }
 		public int Age { get; protected set; }
 		public Qualification Qualification { get; protected set; }
-		public abstract (float happiness, float weight) HappinessByPersonInheritance { get; }
+		protected abstract (float happiness, float weight) HappinessByPersonInheritance { get; }
 
 		/// <summary>
 		/// Creates a new person and moves him into the given residential
@@ -36,7 +36,7 @@ namespace Model
 		/// Get the happiness of the person
 		/// </summary>
 		/// <returns>Happiness of person</returns>
-		public virtual float GetHappiness()
+		public float GetHappiness()
 		{
 			float happiness = 0;
 			float happinessWeight = 0;

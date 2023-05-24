@@ -9,6 +9,15 @@ namespace Model.Tiles
 		[SetUp]
 		public void SetUp()
 		{
+			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
+
 			electricPole = new ElectricPole(0, 0, 123);
 		}
 
