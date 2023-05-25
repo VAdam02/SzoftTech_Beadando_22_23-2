@@ -18,12 +18,7 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
 		/// </summary>
-		protected new void Finalizing()
-		{
-			base.Finalizing();
-			//TODO implement residential residential limit
-			ResidentLimit = 10;
-		}
+		protected new void Finalizing() => base.Finalizing();
 
 		public override void DeleteTile() => Deleting();
 
@@ -56,19 +51,19 @@ namespace Model.Tiles.Buildings
 			if (Level == ZoneBuildingLevel.ZERO) { return; }
 			if (Level == ZoneBuildingLevel.THREE) { return; }
 			++Level;
-			ResidentLimit += (int)(5 * Mathf.Pow((int)Level, 2));
 		}
 
 		//TODO implement residential level up cost
 		int IZoneBuilding.LevelUpCost => 100000;
 
-		private ZoneBuildingLevel _level = ZoneBuildingLevel.ZERO;
+		private ZoneBuildingLevel _level;
 		public ZoneBuildingLevel Level
 		{
 			get => _level;
 			private set
 			{
 				_level = value;
+				ResidentLimit += (int)Mathf.Clamp(5 * Mathf.Pow((int)Level, 2), 1, int.MaxValue);
 				DesignID = (~RESIDENTIAL_LEVEL_COUNT_MASK & DesignID) | (RESIDENTIAL_LEVEL_COUNT_MASK & (uint)Mathf.Pow((int)_level, 1.3f));
 			}
 		}
@@ -76,12 +71,12 @@ namespace Model.Tiles.Buildings
 
 		#region IResidential implementation
 		private readonly List<Person> _residents = new();
-		public int ResidentLimit { get; private set; }
+		public int ResidentLimit { get; private set; } = 0;
 
 		void IResidential.MoveIn(Person person)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to move in before tile is set"); }
-			if (_residents.Count >= ResidentLimit) { throw new InvalidOperationException("The residential is full"); }
+			if (((IResidential)this).GetResidentsCount() >= ResidentLimit) { throw new InvalidOperationException("The residential is full"); }
 
 			if (Level == ZoneBuildingLevel.ZERO) { Level = ZoneBuildingLevel.ONE; }
 
@@ -165,7 +160,7 @@ namespace Model.Tiles.Buildings
 		/// <param name="rotation">Rotation of the tile</param>
 		public ResidentialBuildingTile(int x, int y, uint designID, Rotation rotation, ZoneBuildingLevel level) : base(x, y, designID, rotation)
 		{
-			_level = level;
+			Level = level;
 		}
 
 		/// <summary>
@@ -176,7 +171,7 @@ namespace Model.Tiles.Buildings
 		/// <param name="designID">DesignID for the tile</param>
 		public ResidentialBuildingTile(int x, int y, uint designID) : base(x, y, designID, RoadGridManager.GetRandomRotationToLookAtRoadGridElement(x, y))
 		{
-
+			Level = ZoneBuildingLevel.ZERO;
 		}
 
 		public const uint RESIDENTIAL_LEVEL_COUNT_MASK = 0x00000007; // 3 bits

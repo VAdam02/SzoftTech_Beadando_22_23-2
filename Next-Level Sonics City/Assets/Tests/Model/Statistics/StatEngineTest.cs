@@ -9,10 +9,10 @@ namespace Model.Statistics
 	public class StatEngineTests
 	{
 		RoadTile _road;
-		MockResidentialBuildingTile _residential1;
-		MockResidentialBuildingTile _residential2;
-		MockWorkplaceBuildingTile _workplace1;
-		MockWorkplaceBuildingTile _workplace2;
+		ResidentialBuildingTile _residential1;
+		ResidentialBuildingTile _residential2;
+		Commercial _workplace1;
+		Commercial _workplace2;
 
 		List<Worker> _workers;
 		List<Pensioner> _pensioners;
@@ -32,14 +32,14 @@ namespace Model.Statistics
 
 			_road = new(1, 1);
 			City.Instance.SetTile(_road);
-			_residential1 = new(1, 0, Rotation.OneEighty);
+			_residential1 = new(1, 0, 0, Rotation.OneEighty, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_residential1);
-			_residential2 = new(2, 1, Rotation.TwoSeventy);
+			_residential2 = new(2, 1, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_residential2);
 
-			_workplace1 = new(1, 2, Rotation.Zero);
+			_workplace1 = new(1, 2, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_workplace1);
-			_workplace2 = new(0, 1, Rotation.Ninety);
+			_workplace2 = new(0, 1, 0, Rotation.Ninety, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_workplace2);
 
 			_workers = new()

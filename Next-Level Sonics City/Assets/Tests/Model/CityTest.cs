@@ -70,7 +70,7 @@ namespace Model
 		[Test]
 		public void GetPopulation_ReturnsCorrectPopulation()
 		{
-			IResidential residential = new MockResidentialBuildingTile(0, 0, Rotation.Zero);
+			IResidential residential = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential.GetTile());
 			_ = new MockPerson(residential, 50);
 			_ = new MockPerson(residential, 60);

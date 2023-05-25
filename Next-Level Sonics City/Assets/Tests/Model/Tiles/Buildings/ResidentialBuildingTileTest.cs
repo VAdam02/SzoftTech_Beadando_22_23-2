@@ -30,6 +30,18 @@ namespace Model.Tiles.Buildings
 		}
 
 		[Test]
+		public void SetTile_SetsWorkplaceLimit()
+		{
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
+			City.Instance.SetTile(roadGridElement.GetTile());
+
+			ResidentialBuildingTile residential = new(0, 1, 123);
+			City.Instance.SetTile(residential);
+
+			Assert.AreEqual(1, residential.ResidentLimit);
+		}
+
+		[Test]
 		public void RegisterResidential_AddsResidentialToRoadGrid()
 		{
 			CollectionAssert.Contains(mockRoadGridElement.RoadGrid.Residentials, residential);
@@ -63,7 +75,7 @@ namespace Model.Tiles.Buildings
 			_ = new Pensioner(residential, 70, 50);
 
 			Assert.AreEqual(ZoneBuildingLevel.ONE, ((IZoneBuilding)residential).Level);
-			Assert.AreEqual(previousWorkplaceLimit, residential.ResidentLimit);
+			Assert.Less(previousWorkplaceLimit, residential.ResidentLimit);
 			previousWorkplaceLimit = residential.ResidentLimit;
 
 			((IZoneBuilding)residential).LevelUp();

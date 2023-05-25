@@ -11,7 +11,7 @@ namespace Model.Tiles.Buildings
 		{
 			private Commercial commercial;
 			private IRoadGridElement roadGridElement;
-			private MockResidentialBuildingTile mockResidential;
+			private ResidentialBuildingTile mockResidential;
 
 			[SetUp]
 			public void SetUp()
@@ -30,14 +30,26 @@ namespace Model.Tiles.Buildings
 
 				commercial = new Commercial(0, 1, 123);
 				City.Instance.SetTile(commercial);
-				mockResidential = new MockResidentialBuildingTile(1, 0, Rotation.TwoSeventy);
+				mockResidential = new ResidentialBuildingTile(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 				City.Instance.SetTile(mockResidential);
+			}
+
+			[Test]
+			public void SetTile_SetsWorkplaceLimit()
+			{
+				IRoadGridElement roadGridElement = new RoadTile(0, 0);
+				City.Instance.SetTile(roadGridElement.GetTile());
+
+				Industrial industrial = new(0, 1, 123);
+				City.Instance.SetTile(industrial);
+
+				Assert.AreEqual(1, industrial.WorkplaceLimit);
 			}
 
 			[Test]
 			public void RegisterWorkplace_AddsWorkplaceToRoadGrid()
 			{
-				commercial.RegisterWorkplace(roadGridElement.RoadGrid);
+				((IWorkplace)commercial).RegisterWorkplace(roadGridElement.RoadGrid);
 
 				CollectionAssert.Contains(roadGridElement.RoadGrid.Workplaces, commercial);
 			}
@@ -54,7 +66,7 @@ namespace Model.Tiles.Buildings
 			[Test]
 			public void GetZoneType_ReturnsCommercialZone()
 			{
-				var zoneType = commercial.GetZoneType();
+				var zoneType = ((IZoneBuilding)commercial).GetZoneType();
 
 				Assert.AreEqual(ZoneType.CommercialZone, zoneType);
 			}
@@ -62,7 +74,7 @@ namespace Model.Tiles.Buildings
 			[Test]
 			public void LevelUp_IncreasesLevelAndWorkplaceLimit()
 			{
-				commercial.LevelUp();
+				((IZoneBuilding)commercial).LevelUp();
 
 				Assert.AreEqual(ZoneBuildingLevel.ZERO, commercial.Level);
 				int previousWorkplaceLimit = commercial.WorkplaceLimit;
@@ -70,22 +82,22 @@ namespace Model.Tiles.Buildings
 				_ = new Worker(mockResidential, commercial, 40, Qualification.LOW);
 
 				Assert.AreEqual(ZoneBuildingLevel.ONE, commercial.Level);
-				Assert.AreEqual(previousWorkplaceLimit, commercial.WorkplaceLimit);
+				Assert.Less(previousWorkplaceLimit, commercial.WorkplaceLimit);
 				previousWorkplaceLimit = commercial.WorkplaceLimit;
 
-				commercial.LevelUp();
+				((IZoneBuilding)commercial).LevelUp();
 
 				Assert.AreEqual(ZoneBuildingLevel.TWO, commercial.Level);
 				Assert.Less(previousWorkplaceLimit, commercial.WorkplaceLimit);
 				previousWorkplaceLimit = commercial.WorkplaceLimit;
 
-				commercial.LevelUp();
+				((IZoneBuilding)commercial).LevelUp();
 
 				Assert.AreEqual(ZoneBuildingLevel.THREE, commercial.Level);
 				Assert.Less(previousWorkplaceLimit, commercial.WorkplaceLimit);
 				previousWorkplaceLimit = commercial.WorkplaceLimit;
 
-				commercial.LevelUp();
+				((IZoneBuilding)commercial).LevelUp();
 
 				Assert.AreEqual(ZoneBuildingLevel.THREE, commercial.Level);
 				Assert.AreEqual(previousWorkplaceLimit, commercial.WorkplaceLimit);

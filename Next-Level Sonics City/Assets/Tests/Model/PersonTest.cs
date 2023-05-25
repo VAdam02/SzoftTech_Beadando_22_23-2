@@ -8,7 +8,7 @@ namespace Model
 {
 	public class PersonTest
 	{
-		private MockResidentialBuildingTile _residential;
+		private ResidentialBuildingTile _residential;
 
 		[SetUp]
 		public void SetUp()
@@ -23,7 +23,7 @@ namespace Model
 				}
 			}
 
-			_residential = new(0, 0, Rotation.Zero);
+			_residential = new(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_residential);
 
 		}

@@ -8,8 +8,8 @@ namespace Model.Persons
 {
 	internal class WorkerTest
 	{
-		private MockResidentialBuildingTile _home;
-		private MockWorkplaceBuildingTile _workplace;
+		private ResidentialBuildingTile _home;
+		private Commercial _workplace;
 
 		[SetUp]
 		public void SetUp()
@@ -24,9 +24,9 @@ namespace Model.Persons
 				}
 			}
 
-			_home = new(0, 0, Rotation.Zero);
+			_home = new(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_home);
-			_workplace = new(0, 1, Rotation.Zero);
+			_workplace = new(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_workplace);
 		}
 

@@ -4,120 +4,30 @@ using Model.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
 	public class Commercial : Building, IWorkplace, IZoneBuilding
 	{
-		public ZoneBuildingLevel Level { get; private set; } = 0;
-		private readonly List<Worker> _workers = new();
-		public int WorkplaceLimit { get; private set; }
+		#region Tile implementation
+		public override TileType GetTileType() { throw new InvalidOperationException("IZoneBuilding is not a valid tile type"); }
 
-		/// <summary>
-		/// Construct a new commercial tile
-		/// </summary>
-		/// <param name="x">X coordinate of the tile</param>
-		/// <param name="y">Y coordinate of the tile</param>
-		/// <param name="designID">DesignID for the tile</param>
-		public Commercial(int x, int y, uint designID) : base(x, y, designID, GetRandomRotationToLookAtRoadGridElement(x, y))
-		{
-			
-		}
-
-		private static Rotation GetRandomRotationToLookAtRoadGridElement(int x, int y)
-		{
-			List<(IRoadGridElement roadGridElement, Rotation rotation)> roadGridElements = RoadGridManager.GetRoadGridElementsAroundTile(City.Instance.GetTile(x, y));
-			if (roadGridElements.Count == 0) { throw new InvalidOperationException("No road grid elements around tile"); }
-			Random rnd = new();
-			return roadGridElements[rnd.Next(roadGridElements.Count)].rotation;
-		}
-
-		public override void FinalizeTile()
-		{
-			Finalizing();
-		}
+		public override void FinalizeTile() => Finalizing();
 
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
 		/// </summary>
-		protected new void Finalizing()
-		{
-			base.Finalizing();
-			//TODO implement commercial workplace limit
-			WorkplaceLimit = 10;
-		}
+		protected new void Finalizing() => base.Finalizing();
 
-		public override TileType GetTileType() { throw new InvalidOperationException(); }
+		public override void DeleteTile() => Deleting();
 
-		public void RegisterWorkplace(RoadGrid roadGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			roadGrid?.AddWorkplace(this);
-		}
-
-		public void UnregisterWorkplace(RoadGrid roadGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			roadGrid?.RemoveWorkplace(this);
-		}
-
-		public ZoneType GetZoneType()
-		{
-			return ZoneType.CommercialZone;
-		}
-
-		public void LevelUp()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			//TODO implement commercial level up workplace amount
-			if (Level == ZoneBuildingLevel.ZERO) { return; }
-			if (Level == ZoneBuildingLevel.THREE) { return; }
-			StatEngine.Instance.RegisterCommercialLevelChange(WorkplaceLimit, WorkplaceLimit + 5);
-			++Level;
-			WorkplaceLimit += 5;
-		}
-
-		public int GetLevelUpCost()
-		{
-			//TODO implement commercial level up cost
-			return 100000;
-		}
-
-		public void Employ(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
-
-			if (Level == ZoneBuildingLevel.ZERO) { Level = ZoneBuildingLevel.ONE; }
-
-			_workers.Add(worker);
-		}
-
-		public void Unemploy(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			_workers.Remove(worker);
-		}
-
-		public List<Worker> GetWorkers()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _workers;
-		}
-
-		public int GetWorkersCount()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _workers.Count;
-		}
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
 
 		//TODO implement electric pole build price
 		public override int BuildPrice => 100000;
@@ -126,48 +36,93 @@ namespace Model.Tiles.Buildings
 		public override int DestroyIncome => 100000;
 
 		public override float Transparency => 1 - (float)(int)Level / 12;
+		#endregion
 
-		public override bool CanBuild()
+		#region Building implementation
+
+		#endregion
+
+		#region IZoneBuilding implementation
+		ZoneType IZoneBuilding.GetZoneType() => ZoneType.CommercialZone;
+
+		void IZoneBuilding.LevelUp()
 		{
-			int x1 = (int)Coordinates.x;
-			int y1 = (int)Coordinates.y;
-			int x2 = (int)Coordinates.x;
-			int y2 = (int)Coordinates.y;
+			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in city"); }
 
+			if (Level == ZoneBuildingLevel.ZERO) { return; }
+			if (Level == ZoneBuildingLevel.THREE) { return; }
+			++Level;
+		}
 
-			switch (Rotation)
+		//TODO implement residential level up cost
+		int IZoneBuilding.LevelUpCost => 100000;
+
+		private ZoneBuildingLevel _level = ZoneBuildingLevel.ZERO;
+		public ZoneBuildingLevel Level
+		{
+			get => _level;
+			private set
 			{
-				case Rotation.Zero:
-					x1 += 1; y1 += 1;
-					break;
-				case Rotation.Ninety:
-					x1 += -1; y1 += 1;
-					break;
-				case Rotation.OneEighty:
-					x1 += -1; y1 += 1;
-					break;
-				case Rotation.TwoSeventy:
-					x1 += 1; y1 += -1;
-					break;
+				_level = value;
+				WorkplaceLimit = (int)Mathf.Clamp(5 * Mathf.Pow((int)Level, 2), 1, int.MaxValue);
+				DesignID = (~COMMERCIAL_LEVEL_MASK & DesignID) | (COMMERCIAL_LEVEL_MASK & (uint)_level);
 			}
+		}
+		#endregion
 
-			int minX = Math.Min(x1, x2);
-			int maxX = Math.Max(x1, x2);
-			int minY = Math.Min(y1, y2);
-			int maxY = Math.Max(y1, y2);
-
-			for (int i = minX; i < maxX; ++i)
+		#region IWorkplace implementation
+		private readonly List<Worker> _workers = new();
+		private int _workplaceLimit = 0;
+		public int WorkplaceLimit
+		{
+			get => _workplaceLimit;
+			private set
 			{
-				for (int j = minY; j < maxY; ++j)
-				{
-					if (City.Instance.GetTile(i, j) is not EmptyTile)
-					{
-						return false;
-					}
-				}
+				StatEngine.Instance.RegisterCommercialLevelChange(_workplaceLimit, value);
+				_workplaceLimit = value;
 			}
+		}
 
-			return true;
+		void IWorkplace.Employ(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to employ before tile is set"); }
+			if (((IWorkplace)this).GetWorkersCount() >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
+
+			if (Level == ZoneBuildingLevel.ZERO) { Level = ZoneBuildingLevel.ONE; }
+
+			_workers.Add(worker);
+		}
+
+		void IWorkplace.Unemploy(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unemploy before tile is set"); }
+			_workers.Remove(worker);
+
+			if (((IWorkplace)this).GetWorkersCount() == 0) { Level = ZoneBuildingLevel.ZERO; }
+		}
+
+		List<Worker> IWorkplace.GetWorkers()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers before tile is set"); }
+			return _workers;
+		}
+
+		int IWorkplace.GetWorkersCount()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers count before tile is set"); }
+			return _workers.Count;
+		}
+
+		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
+			roadGrid?.AddWorkplace(this);
+		}
+
+		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
+			roadGrid?.RemoveWorkplace(this);
 		}
 
 		public (float happiness, float weight) HappinessByBuilding
@@ -179,10 +134,6 @@ namespace Model.Tiles.Buildings
 				return (happinessSum / (happinessWeight == 0 ? 1 : happinessWeight), happinessWeight);
 			}
 		}
-
-		int IZoneBuilding.LevelUpCost => throw new NotImplementedException();
-
-		ZoneBuildingLevel IZoneBuilding.Level => throw new NotImplementedException();
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
@@ -208,28 +159,31 @@ namespace Model.Tiles.Buildings
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
+		#endregion
 
-		public override void DeleteTile() => Deleting();
+		public const uint COMMERCIAL_LEVEL_MASK = 0x00000003; // 2 bits
 
 		/// <summary>
-		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
-		/// <para>Do the deletion administration</para>
+		/// Construct a new commercial tile
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
-
-		ZoneType IZoneBuilding.GetZoneType()
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		/// <param name="rotation">Rotation of the tile</param>
+		public Commercial(int x, int y, uint designID, Rotation rotation, ZoneBuildingLevel level) : base(x, y, designID, rotation)
 		{
-			throw new NotImplementedException();
+			Level = level;
 		}
 
-		void IZoneBuilding.LevelUp()
+		/// <summary>
+		/// Construct a new commercial tile
+		/// </summary>
+		/// <param name="x">X coordinate of the tile</param>
+		/// <param name="y">Y coordinate of the tile</param>
+		/// <param name="designID">DesignID for the tile</param>
+		public Commercial(int x, int y, uint designID) : base(x, y, designID, RoadGridManager.GetRandomRotationToLookAtRoadGridElement(x, y))
 		{
-			throw new NotImplementedException();
-		}
-
-		Tile IZoneBuilding.GetTile()
-		{
-			throw new NotImplementedException();
+			Level = ZoneBuildingLevel.ZERO;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using Model.Persons;
 using Model.RoadGrids;
+using Model.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,7 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
 		/// </summary>
-		protected new void Finalizing()
-		{
-			base.Finalizing();
-			//TODO implement residential residential limit
-			WorkplaceLimit = 10;
-		}
+		protected new void Finalizing() => base.Finalizing();
 
 		public override void DeleteTile() => Deleting();
 
@@ -56,7 +52,6 @@ namespace Model.Tiles.Buildings
 			if (Level == ZoneBuildingLevel.ZERO) { return; }
 			if (Level == ZoneBuildingLevel.THREE) { return; }
 			++Level;
-			WorkplaceLimit += (int)(5 * Mathf.Pow((int)Level, 2));
 		}
 
 		//TODO implement residential level up cost
@@ -69,6 +64,7 @@ namespace Model.Tiles.Buildings
 			private set
 			{
 				_level = value;
+				WorkplaceLimit = (int)Mathf.Clamp(5 * Mathf.Pow((int)Level, 2), 1, int.MaxValue);
 				DesignID = (~INDUSTRIAL_LEVEL_MASK & DesignID) | (INDUSTRIAL_LEVEL_MASK & (uint)_level);
 			}
 		}
@@ -76,12 +72,21 @@ namespace Model.Tiles.Buildings
 
 		#region IWorkplace implementation
 		private readonly List<Worker> _workers = new();
-		public int WorkplaceLimit { get; private set; }
+		private int _workplaceLimit = 0;
+		public int WorkplaceLimit
+		{
+			get => _workplaceLimit;
+			private set
+			{
+				StatEngine.Instance.RegisterIndustrialLevelChange(_workplaceLimit, value);
+				_workplaceLimit = value;
+			}
+		}
 
 		void IWorkplace.Employ(Worker worker)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to employ before tile is set"); }
-			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
+			if (((IWorkplace)this).GetWorkersCount() >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
 
 			if (Level == ZoneBuildingLevel.ZERO) { Level = ZoneBuildingLevel.ONE; }
 
@@ -117,7 +122,6 @@ namespace Model.Tiles.Buildings
 		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
-
 			roadGrid?.RemoveWorkplace(this);
 		}
 
@@ -190,9 +194,9 @@ namespace Model.Tiles.Buildings
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
 		/// <param name="rotation">Rotation of the tile</param>
-		public Industrial(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		public Industrial(int x, int y, uint designID, Rotation rotation, ZoneBuildingLevel level) : base(x, y, designID, rotation)
 		{
-
+			Level = level;
 		}
 
 		/// <summary>
@@ -203,7 +207,7 @@ namespace Model.Tiles.Buildings
 		/// <param name="designID">DesignID for the tile</param>
 		public Industrial(int x, int y, uint designID) : base(x, y, designID, RoadGridManager.GetRandomRotationToLookAtRoadGridElement(x, y))
 		{
-
+			Level = ZoneBuildingLevel.ZERO;
 		}
 	}
 }

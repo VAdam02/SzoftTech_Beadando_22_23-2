@@ -30,7 +30,7 @@ namespace Model.Tiles.Buildings
 			Industrial industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
-			Assert.AreEqual(10, industrial.WorkplaceLimit);
+			Assert.AreEqual(1, industrial.WorkplaceLimit);
 		}
 
 		[Test]
@@ -85,7 +85,7 @@ namespace Model.Tiles.Buildings
 			Industrial industrial = new(1, 0, 2);
 			City.Instance.SetTile(industrial);
 
-			MockResidentialBuildingTile residential = new(0, 1, Rotation.Zero);
+			ResidentialBuildingTile residential = new(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Assert.AreEqual(ZoneBuildingLevel.ZERO, industrial.Level);
@@ -94,7 +94,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, industrial, 40, Qualification.LOW);
 
 			Assert.AreEqual(ZoneBuildingLevel.ONE, industrial.Level);
-			Assert.AreEqual(previousWorkplaceLimit, industrial.WorkplaceLimit);
+			Assert.Less(previousWorkplaceLimit, industrial.WorkplaceLimit);
 			previousWorkplaceLimit = industrial.WorkplaceLimit;
 
 			((IZoneBuilding)industrial).LevelUp();
@@ -124,7 +124,7 @@ namespace Model.Tiles.Buildings
 			Industrial industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
-			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Worker worker = new(residential, industrial, 40, Qualification.LOW);
@@ -141,7 +141,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Industrial industrial = new(0, 1, 123);
@@ -163,7 +163,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Industrial industrial = new(0, 1, 123);
@@ -185,7 +185,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			MockResidentialBuildingTile residential = new(1, 0, Rotation.Zero);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Industrial industrial = new(0, 1, 123);
