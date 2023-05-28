@@ -32,7 +32,7 @@ namespace Model
 		[Test]
 		public void Constructor_WithValidArguments_SetsProperties()
 		{
-			int age = 30;
+			int age = 70;
 
 			Person person = new Pensioner(_residential, age, 100);
 
@@ -60,7 +60,7 @@ namespace Model
 		[Test]
 		public void IncreaseAge_IncrementsAgeByOne()
 		{
-			int initialAge = 25;
+			int initialAge = 75;
 			Person person = new Pensioner(_residential, initialAge, 100);
 
 			person.IncreaseAge();
