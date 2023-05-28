@@ -1,3 +1,5 @@
+using Model.RoadGrids;
+using Model.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace Model.Persons
 	{
 		public IWorkplace WorkPlace { get; private set; }
 		public Qualification PersonQualification { get; private set; }
+		public List<IRoadGridElement> PathToWork { get; private set; }
 
 		protected override (float happiness, float weight) HappinessByPersonInheritance
 		{
@@ -47,9 +50,43 @@ namespace Model.Persons
 		{
 			if (age < 18 || PENSION_AGE <= age) throw new ArgumentException("Worker cannot be younger than 18 and older than " + PENSION_AGE + " years old");
 			WorkPlace = workPlace ?? throw new ArgumentNullException("Worker must have a workplace");
+			PathToWork = RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential.GetTile()), RoadGridManager.GetRoadGrigElementByBuilding((Building)workPlace.GetTile()), int.MaxValue);
+			PersonQualification = qualification;
+			WorkPlace.Employ(this);
+		}
+
+		/// <summary>
+		/// Creates a new worker and move in to the residential and employ to the workplace
+		/// </summary>
+		/// <param name="residential">Residential where the worker will live</param>
+		/// <param name="workPlace">Workplace where the worker will work</param>
+		/// <param name="age">Age of the person</param>
+		/// <param name="qualification">Qualification of worker</param>
+		/// <param name="pathToWork">Prefered path to work</param>
+		public Worker(IResidential residential, IWorkplace workPlace, int age, Qualification qualification, List<IRoadGridElement> pathToWork) : base(residential, age)
+		{
+			if (age < 18 || PENSION_AGE <= age) throw new ArgumentException("Worker cannot be younger than 18 and older than " + PENSION_AGE + " years old");
+			WorkPlace = workPlace ?? throw new ArgumentNullException("Worker must have a workplace");
+
+			if (pathToWork == null || pathToWork[0] != RoadGridManager.GetRoadGrigElementByBuilding((Building)residential) || pathToWork[^1] != RoadGridManager.GetRoadGrigElementByBuilding((Building)workPlace))
+			{
+				throw new ArgumentException("Path to work must be started with residential and ended with workplace");
+			}
+			PathToWork = pathToWork;
+			foreach (IRoadGridElement element in pathToWork)
+			{
+				element.LockBy(this);
+				element.GetTile().OnTileDelete += RecalculatePathToWork;
+			}
+
 			PersonQualification = qualification;
 			
 			WorkPlace.Employ(this);
+		}
+
+		private void RecalculatePathToWork(object sender, Tile tile)
+		{
+			//TODO recalculate path
 		}
 
 		/// <summary>

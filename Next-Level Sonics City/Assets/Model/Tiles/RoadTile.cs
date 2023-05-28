@@ -198,6 +198,11 @@ namespace Model.Tiles
 				}
 			}
 		}
+
+		private readonly List<Person> _lockedBy = new();
+		public bool IsLocked { get => _lockedBy.Count != 0; }
+		public void LockBy(Person person) { _lockedBy.Add(person); }
+		public void UnlockBy(Person person) { _lockedBy.Remove(person); }
 		#endregion
 
 		#region Common implementation

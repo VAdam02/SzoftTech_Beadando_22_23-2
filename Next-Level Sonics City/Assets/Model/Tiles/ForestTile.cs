@@ -23,7 +23,7 @@ namespace Model.Tiles
 
 			StatEngine.Instance.NextQuarterEvent += (object sender, EventArgs e) =>
 			{
-				if (StatEngine.Instance.Quarter == 0)
+				if (StatEngine.Instance.Quarter == 3 && Age <= MAINTANCENEEDEDFORYEAR)
 				{
 					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, MAINTANCENEEDEDFORYEAR);
 					TileChangeInvoke();

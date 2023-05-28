@@ -25,8 +25,6 @@ namespace Model.Simulation
 			BuildingManager.Instance.BuildingDestroyed += (tile, building) => { StatEngine.Instance.AddDestroyIncome(tile, building); };
 		}
 
-		public IResidential residential;
-
 		/// <summary>
 		/// <para>MUST BE CALLED BY UNITY ONLY</para>
 		/// </summary>
@@ -136,30 +134,16 @@ namespace Model.Simulation
 			*/
 		}
 		
-		private bool MoveIn(int i)
-		{/*
-			bool move_in = true;
-			
-			foreach(Person p in _people)
-			{
-				if(p.GetHappiness() < 0.5)
-				{
-					p.MoveIn()
-				}
-			}*/
-			throw new NotImplementedException();
-			//TODO
-		}
 		private bool MoveOut(Person p)
 		{
-			if(p.GetHappiness() <= 0.5){
+			if(p.Happiness <= 0.5){
 				return(new System.Random().NextDouble()<0.9);//90% chance of moving out
 			}
-			else if(p.GetHappiness()>0.5 && p.GetHappiness() < 0.65){
+			else if(p.Happiness>0.5 && p.Happiness < 0.65){
 				return(new System.Random().NextDouble()<0.55);//55% chance of moving out
 
 			}
-			else if(p.GetHappiness()>= 0.65 && p.GetHappiness()<0.75) {
+			else if(p.Happiness >= 0.65 && p.Happiness <0.75) {
 				return(new System.Random().NextDouble()<0.25);//25% chance of moving out
 
 			}

@@ -2,6 +2,7 @@ using Model.Tiles;
 using Model.Tiles.Buildings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -120,10 +121,45 @@ namespace Model.RoadGrids
 
 		internal static Rotation GetRandomRotationToLookAtRoadGridElement(int x, int y)
 		{
-			List<(IRoadGridElement roadGridElement, Rotation rotation)> roadGridElements = RoadGridManager.GetRoadGridElementsAroundTile(City.Instance.GetTile(x, y));
+			List<(IRoadGridElement roadGridElement, Rotation rotation)> roadGridElements = GetRoadGridElementsAroundTile(City.Instance.GetTile(x, y));
 			if (roadGridElements.Count == 0) { throw new InvalidOperationException("No road grid elements around tile"); }
 			System.Random rnd = new();
 			return roadGridElements[rnd.Next(roadGridElements.Count)].rotation;
+		}
+
+		internal static List<IRoadGridElement> GetPathOnRoad(IRoadGridElement from, IRoadGridElement to)
+		{
+			return GetPathOnRoad(from, to, from.RoadGrid.RoadGridElements.Count);
+		}
+
+		internal static List<IRoadGridElement> GetPathOnRoad(IRoadGridElement from, IRoadGridElement to, int maxStep)
+		{
+			if (from == null || to == null) throw new ArgumentNullException(from + " or " + to + " is null");
+			if (from.RoadGrid != to.RoadGrid) throw new ArgumentException("Not in the same roadgrid");
+
+			maxStep = Mathf.Min(maxStep, from.RoadGrid.RoadGridElements.Count);
+
+			Queue<(IRoadGridElement, int, List<IRoadGridElement>)> queue = new();
+			queue.Enqueue((from, 0, new() { from }));
+			while (queue.Count > 0)
+			{
+				(IRoadGridElement roadGridElement, int distance, List<IRoadGridElement> path) = queue.Dequeue();
+
+				if (roadGridElement == to) return path;
+
+				if (maxStep > distance)
+				{
+					foreach (IRoadGridElement element in roadGridElement.ConnectsTo)
+					{
+						if (path.Contains(element)) { continue; }
+
+						List<IRoadGridElement> list = new(path) { element };
+						queue.Enqueue((element, distance + 1, list));
+					}
+				}
+			}
+
+			throw new Exception("It is in the same roadgrid but not found");
 		}
 	}
 }

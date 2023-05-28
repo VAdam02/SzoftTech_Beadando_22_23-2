@@ -124,7 +124,7 @@ namespace Model.Tiles.Buildings
 			Industrial industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
-			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Worker worker = new(residential, industrial, 40, Qualification.LOW);
@@ -141,7 +141,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Industrial industrial = new(0, 1, 123);
@@ -163,7 +163,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Industrial industrial = new(0, 1, 123);
@@ -185,7 +185,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			Industrial industrial = new(0, 1, 123);

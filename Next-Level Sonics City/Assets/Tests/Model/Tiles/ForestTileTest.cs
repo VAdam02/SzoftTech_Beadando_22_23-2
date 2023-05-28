@@ -1,4 +1,5 @@
-﻿using Model.Statistics;
+﻿using Model.RoadGrids;
+using Model.Statistics;
 using NUnit.Framework;
 
 namespace Model.Tiles
@@ -10,6 +11,7 @@ namespace Model.Tiles
 		[SetUp]
 		public void SetUp()
 		{
+			RoadGridManager.Reset();
 			StatEngine.Reset();
 			City.Reset();
 			for (int i = 0; i < City.Instance.GetSize(); i++)

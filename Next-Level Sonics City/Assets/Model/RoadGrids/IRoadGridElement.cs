@@ -44,6 +44,10 @@ namespace Model.RoadGrids
 		/// </summary>
 		public RoadGrid RoadGrid { get; set; }
 
+		public bool IsLocked { get; }
+		public void LockBy(Person person);
+		public void UnlockBy(Person person);
+
 		/// <summary>
 		/// Returns the tile this element is on
 		/// </summary>

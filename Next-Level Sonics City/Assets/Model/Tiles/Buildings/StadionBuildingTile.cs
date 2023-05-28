@@ -217,7 +217,7 @@ namespace Model.Tiles.Buildings
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
 			if (building == null) { throw new ArgumentNullException(nameof(building) + " can't be null"); }
-			if (RoadGridManager.GetRoadGrigElementByBuilding(this).RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(building).RoadGrid) { return (0, 0); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(this)?.RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(building)?.RoadGrid) { return (0, 0); }
 
 			float weight = 1;
 

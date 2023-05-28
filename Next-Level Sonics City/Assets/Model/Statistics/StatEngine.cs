@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Model.Statistics
 {
@@ -32,13 +31,7 @@ namespace Model.Statistics
 			{
 				if (_date.Date != value.Date)
 				{
-					if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-					{
-						mainThread.Enqueue(() =>
-						{
-							DateChanged.Invoke();
-						});
-					}
+					DateChanged?.Invoke(this, new EventArgs());
 
 					if (Quarter != (value.Month - 1) / 3)
 					{
@@ -63,26 +56,46 @@ namespace Model.Statistics
 				_budget = value;
 				if (_budget < 0 && _negativeBudgetSince == 0) { _negativeBudgetSince = Year; }
 				if (_budget >= 0) { _negativeBudgetSince = 0; }
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						BudgetChanged.Invoke();
-					});
-				}
+				BudgetChanged?.Invoke(this, new EventArgs());
 			}
 		}
 		public int NegativeBudgetSince { get { return _negativeBudgetSince == 0 ? 0 : Year - _negativeBudgetSince; } }
 
-		public float WorkplaceTaxRate { get; set; } = 0.1f;
-		public float ResidentialTaxRate { get; set; } = 0.1f;
+		public event EventHandler<(float oldVal, float newVal)> WorkplaceTaxChanged;
+		private float _workplaceTax = 0.2f;
+		public float WorkplaceTaxRate
+		{
+			get => _workplaceTax;
+			set
+			{
+				if (value < 0 || value > 1) { throw new ArgumentException("Tax rate must be between 0 and 1"); }
+				if (_workplaceTax == value) { return; }
+				WorkplaceTaxChanged?.Invoke(this, (_workplaceTax, value));
+				_workplaceTax = value;
+			}
+		}
+
+		public event EventHandler<(float oldVal, float newVal)> ResidentialTaxChanged;
+		private float _residentialTax = 0.1f;
+		public float ResidentialTaxRate
+		{
+			get => _residentialTax;
+			set
+			{
+				if (value < 0 || value > 1) { throw new ArgumentException("Tax rate must be between 0 and 1"); }
+				if (_residentialTax == value) { return; }
+				ResidentialTaxChanged?.Invoke(this, (_residentialTax, value));
+				_residentialTax = value;
+			}
+		}
+
 		private readonly object _workplaceCountLock = new();
 		private float _commercialWorkplaceCount = 0;
 		private float _industrialWorkplaceCount = 0;
 
 		private readonly List<StatReport> _statReports = new();
-		public UnityEvent BudgetChanged = new();
-		public UnityEvent DateChanged = new();
+		public event EventHandler BudgetChanged;
+		public event EventHandler DateChanged;
 
 		private StatEngine(int startYear, float startBudget)
 		{
@@ -353,7 +366,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(workers, worker =>
 			{
-				float happiness = worker.GetHappiness();
+				float happiness = worker.Happiness;
 				lock (happinessLock)
 				{
 					workplaceHappiness += happiness;
@@ -377,7 +390,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(persons, person =>
 			{
-				float happiness = person.GetHappiness();
+				float happiness = person.Happiness;
 				lock (happinessLock)
 				{
 					totalResidentialHappiness += happiness;
@@ -399,7 +412,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(persons, person =>
 			{
-				float happiness = person.GetHappiness();
+				float happiness = person.Happiness;
 				lock (happinessLock)
 				{
 					totalHappiness += happiness;
@@ -491,7 +504,7 @@ namespace Model.Statistics
 				tiles.Add(City.Instance.GetTile(i, j));
 			}
 
-			if (Quarter == 0)
+			if (Quarter == 3)
 			{
 				float residentialTax = CalculateResidentialTax(residentials, ResidentialTaxRate);
 				float workplaceTax = CalculateWorkplaceTax(workplaces, WorkplaceTaxRate);
@@ -547,7 +560,7 @@ namespace Model.Statistics
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{
-				residentials = Enumerable.Concat(residentials, roadGrid.Residentials).ToList();
+				residentials.AddRange(roadGrid.Residentials);
 			}
 
 			return residentials;
@@ -564,7 +577,7 @@ namespace Model.Statistics
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{
-				workplaces = Enumerable.Concat(workplaces, roadGrid.Workplaces).ToList();
+				workplaces.AddRange(roadGrid.Workplaces);
 			}
 
 			return workplaces;
@@ -585,7 +598,7 @@ namespace Model.Statistics
 
 			lock (_statReports)
 			{
-				_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
+				_statReports.Add(new StatReport(Year, Quarter, Budget, City.Instance.CityHappiness, City.Instance.GetPopulation()));
 			}
 
 			UpdateCurrentStatReport(false);

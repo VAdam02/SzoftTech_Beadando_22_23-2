@@ -29,13 +29,8 @@ namespace Model.Tiles.Buildings
 
 			baseWorkplace = new StadionBuildingTile(0, 1, 123, Rotation.Zero);
 			City.Instance.SetTile(baseWorkplace.GetTile());
-
-			workplaceSubTile = new WorkplaceSubTile(1, 1, 456, baseWorkplace);
-			City.Instance.SetTile(workplaceSubTile);
-			workplaceSubTile = new WorkplaceSubTile(0, 2, 456, baseWorkplace);
-			City.Instance.SetTile(workplaceSubTile);
-			workplaceSubTile = new WorkplaceSubTile(1, 2, 456, baseWorkplace);
-			City.Instance.SetTile(workplaceSubTile);
+			((Building)baseWorkplace).Expand();
+			workplaceSubTile = (WorkplaceSubTile)City.Instance.GetTile(1, 2);
 
 			residential = new ResidentialBuildingTile(1, 0, 789);
 			City.Instance.SetTile(residential.GetTile());

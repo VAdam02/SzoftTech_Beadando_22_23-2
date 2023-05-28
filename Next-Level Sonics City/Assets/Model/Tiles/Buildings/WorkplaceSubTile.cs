@@ -80,6 +80,10 @@ namespace Model.Tiles.Buildings
 		void IWorkplace.RegisterHappinessChangerTile(IHappyZone happyZone) { }
 		#endregion
 
+		#region Common implementation
+		public new Tile GetTile() => _baseWorkplace.GetTile();
+		#endregion
+
 		private readonly IWorkplace _baseWorkplace;
 
 		/// <summary>

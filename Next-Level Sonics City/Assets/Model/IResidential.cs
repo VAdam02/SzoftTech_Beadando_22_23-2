@@ -1,5 +1,6 @@
 using Model.RoadGrids;
 using Model.Tiles;
+using System;
 using System.Collections.Generic;
 
 namespace Model
@@ -44,6 +45,7 @@ namespace Model
 		/// <param name="roadGrid">roadgrid where from unregister</param>
 		public void UnregisterResidential(RoadGrid roadGrid);
 
+		public event EventHandler HappinessByBuildingChanged;
 		public (float happiness, float weight) HappinessByBuilding { get; }
 
 		/// <summary>

@@ -3,6 +3,7 @@ using Model.RoadGrids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
@@ -136,12 +137,19 @@ namespace Model.Tiles.Buildings
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
 			if (building == null) { throw new ArgumentNullException(nameof(building) + " can't be null"); }
-			if (RoadGridManager.GetRoadGrigElementByBuilding(this).RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(building).RoadGrid) { return (0, 0); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(this)?.RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(building)?.RoadGrid) { return (0, 0); }
 
 			float weight = 1;
 
 			//decrease weight by distance on road
-			weight *= 1 - IHappyZone.DistanceOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(this), RoadGridManager.GetRoadGrigElementByBuilding(building), ((IHappyZone)this).EffectiveRadius);
+			try
+			{
+				weight *= 1 - RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(this), RoadGridManager.GetRoadGrigElementByBuilding(building), ((IHappyZone)this).EffectiveRadius).Count / Mathf.Max(((IHappyZone)this).EffectiveRadius, 1);
+			}
+			catch
+			{
+				weight *= 0;
+			}
 
 			return (1, weight);
 		}

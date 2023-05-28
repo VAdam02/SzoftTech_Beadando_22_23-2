@@ -1,4 +1,5 @@
-﻿using Model.RoadGrids;
+﻿using Model.Persons;
+using Model.RoadGrids;
 using Model.Tiles;
 using Model.Tiles.Buildings;
 using NUnit.Framework;
@@ -33,7 +34,7 @@ namespace Model
 		{
 			int age = 30;
 
-			Person person = new MockPerson(_residential, age);
+			Person person = new Pensioner(_residential, age, 100);
 
 			Assert.AreEqual(_residential, person.Residential);
 			Assert.AreEqual(age, person.Age);
@@ -45,7 +46,7 @@ namespace Model
 			IResidential residential = null;
 			int age = 30;
 
-			Assert.Throws<ArgumentNullException>(() => new MockPerson(residential, age));
+			Assert.Throws<ArgumentNullException>(() => new Pensioner(residential, age, 100));
 		}
 
 		[Test]
@@ -53,14 +54,14 @@ namespace Model
 		{
 			int invalidAge = 10;
 
-			Assert.Throws<ArgumentException>(() => new MockPerson(_residential, invalidAge));
+			Assert.Throws<ArgumentException>(() => new Pensioner(_residential, invalidAge, 100));
 		}
 
 		[Test]
 		public void IncreaseAge_IncrementsAgeByOne()
 		{
 			int initialAge = 25;
-			Person person = new MockPerson(_residential, initialAge);
+			Person person = new Pensioner(_residential, initialAge, 100);
 
 			person.IncreaseAge();
 

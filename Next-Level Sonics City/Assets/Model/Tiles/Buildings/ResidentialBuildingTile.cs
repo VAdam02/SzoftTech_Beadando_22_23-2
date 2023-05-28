@@ -125,6 +125,7 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
+		public event EventHandler HappinessByBuildingChanged;
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
 		public void RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
@@ -133,12 +134,14 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
-		}
+			HappinessByBuildingChanged?.Invoke(this, EventArgs.Empty);
+	}
 
 		private void UnregisterHappinessChangerTile(object sender, Tile deletedTile)
 		{
 			IHappyZone happyZone = (IHappyZone)deletedTile;
 			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
+			HappinessByBuildingChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void UpdateHappiness(object sender, Tile changedTile)
@@ -148,6 +151,7 @@ namespace Model.Tiles.Buildings
 
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
+			HappinessByBuildingChanged?.Invoke(this, EventArgs.Empty);
 		}
 		#endregion
 
