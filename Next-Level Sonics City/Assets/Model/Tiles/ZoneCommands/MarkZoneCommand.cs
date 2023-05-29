@@ -54,6 +54,12 @@ namespace Model.Tiles.ZoneCommands
 					break;
 				case ZoneType.NoZone:
 					if (City.Instance.GetTile(_x, _y) is not Industrial && City.Instance.GetTile(_x, _y) is not Commercial && City.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
+					if (City.Instance.GetTile(_x, _y) is IZoneBuilding zoneBuilding && zoneBuilding.Level != ZoneBuildingLevel.ZERO) { break; }
+					ZoneManager.Instance.OnZoneUnMarked(City.Instance.GetTile(_x, _y));
+					City.Instance.SetTile(new EmptyTile(_x, _y));
+					break;
+				case ZoneType.VoidZone:
+					if (City.Instance.GetTile(_x, _y) is not Industrial && City.Instance.GetTile(_x, _y) is not Commercial && City.Instance.GetTile(_x, _y) is not ResidentialBuildingTile) { break; }
 					ZoneManager.Instance.OnZoneUnMarked(City.Instance.GetTile(_x, _y));
 					City.Instance.SetTile(new EmptyTile(_x, _y));
 					break;
