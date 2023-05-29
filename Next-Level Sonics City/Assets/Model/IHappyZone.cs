@@ -80,6 +80,8 @@ namespace Model.Tiles
 		/// <returns>Value of visibility</returns>
 		protected static float SightToHappyZone(IHappyZone happyZone, Tile tile)
 		{
+			if (happyZone == tile) { return 0; }
+
 			float sight = 1;
 
 			Vector3 delta = happyZone.GetTile().Coordinates - tile.Coordinates;

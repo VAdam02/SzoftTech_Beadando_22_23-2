@@ -25,6 +25,8 @@ namespace Model
 
 		public static void Reset() { _instance = null; }
 
+		public event EventHandler<Person> PopulationChanged;
+
 		/// <summary>
 		/// Create a city filled with empty tiles
 		/// </summary>
@@ -291,6 +293,7 @@ namespace Model
 				_cityHappiness.count++;
 			}
 			person.HappinessByPersonChanged += (sender, e) => PersonHappinessChangedHandler((Person)sender, e);
+			PopulationChanged?.Invoke(this, person); //TODO fix it to normal event
 		}
 	}
 }

@@ -30,17 +30,20 @@ namespace Model.Statistics
 			get { return _date; }
 			private set
 			{
-				if (_date.Date != value.Date)
+				bool changed = _date.Date != value.Date;
+				int oldQuarter = Quarter;
+
+				_date = value;
+
+				if (changed)
 				{
 					DateChanged?.Invoke(this, new EventArgs());
 
-					if (Quarter != (value.Month - 1) / 3)
+					if (Quarter != oldQuarter)
 					{
 						NextQuarter();
 					}
 				}
-				
-				_date = value;
 			}
 		}
 		public int Year { get { return Date.Year; } }
@@ -424,36 +427,17 @@ namespace Model.Statistics
 		}
 
 		/// <summary>
-		/// Return the currently active statreport with updated values
-		/// </summary>
-		/// <returns>Actual statreport</returns>
-		public StatReport GetLastStatisticsReport()
-		{
-			UpdateCurrentStatReport(false);
-			return _statReports[^1];
-		}
-
-		/// <summary>
 		/// Return the last given statreports or the maximum amount
 		/// </summary>
 		/// <param name="count">Count of requested statreports</param>
 		/// <returns>Requested count statreport if possible</returns>
-		public List<StatReport> GetLastGivenStatisticsReports(int count)
+		public StatReport GetLastNthStatisticsReports(int count)
 		{
 			UpdateCurrentStatReport(false);
 
-			List<StatReport> reports = new();
+			if (_statReports.Count - 1 - count < 0) { return _statReports[0]; }
 
-			int i = _statReports.Count - count;
-			if (i < 0) i = 0;
-
-			while (i < _statReports.Count)
-			{
-				reports.Add(_statReports[i]);
-				i++;
-			}
-
-			return reports;
+			return _statReports[_statReports.Count-1-count];
 		}
 
 		/// <summary>
@@ -507,7 +491,7 @@ namespace Model.Statistics
 				tiles.Add(City.Instance.GetTile(i, j));
 			}
 
-			if (Quarter == 3)
+			if (Quarter == 0 && withSideEffects)
 			{
 				float residentialTax = CalculateResidentialTax(residentials, ResidentialTaxRate);
 				float workplaceTax = CalculateWorkplaceTax(workplaces, WorkplaceTaxRate);
@@ -525,6 +509,11 @@ namespace Model.Statistics
 
 			float newIncome = _statReports[^1].ResidentialTax + _statReports[^1].WorkplaceTax;
 			float newExpenses = _statReports[^1].Pension + _statReports[^1].MaintainanceCosts;
+
+			_statReports[^1].Budget = Budget;
+			_statReports[^1].Incomes = newIncome;
+			_statReports[^1].Expenses = newExpenses;
+			_statReports[^1].Total = newIncome - newExpenses;
 			if (withSideEffects)
 			{
 				lock (_budgetLock)
@@ -532,11 +521,6 @@ namespace Model.Statistics
 					Budget += newIncome - newExpenses;
 				}
 			}
-
-			_statReports[^1].Budget = Budget;
-			_statReports[^1].Incomes = newIncome;
-			_statReports[^1].Expenses = newExpenses;
-			_statReports[^1].Profit = newIncome - newExpenses;
 
 			_statReports[^1].Population = City.Instance.GetPopulation();
 
