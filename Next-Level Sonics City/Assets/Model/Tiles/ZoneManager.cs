@@ -38,7 +38,7 @@ namespace Model.Tiles
 		{
 			CalculateSubMatrix(limit1, limit2, out int rowStart, out int rowEnd, out int columnStart, out int columnEnd);
 
-			if (zoneType is not ZoneType.NoZone)
+			if (zoneType is not ZoneType.NoZone && zoneType is not ZoneType.VoidZone)
 			{
 				int row =  rowEnd + 1 - rowStart;
 				int column = columnEnd + 1 - columnStart;

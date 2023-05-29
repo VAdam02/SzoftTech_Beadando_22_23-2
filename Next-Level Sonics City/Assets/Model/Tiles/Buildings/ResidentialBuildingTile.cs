@@ -18,7 +18,12 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
 		/// </summary>
-		protected new void Finalizing() => base.Finalizing();
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+
+			RoadGridManager.GetRoadGrigElementByBuilding(this).GetTile().OnTileDelete += (sender, e) => { ZoneManager.Instance.MarkZone(this, this, ZoneType.VoidZone); };
+		}
 
 		public override void DeleteTile() => Deleting();
 
