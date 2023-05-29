@@ -1,3 +1,5 @@
+using log4net.Core;
+using Model.Persons;
 using Model.RoadGrids;
 using Newtonsoft.Json.Linq;
 using System;
@@ -28,11 +30,9 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement electric pole build price
-		public override int BuildPrice => 100000;
+		public override int BuildPrice => 5000;
 
-		//TODO implement electric pole destroy price
-		public override int DestroyIncome => 100000;
+		public override int DestroyIncome { get => (int)(BuildPrice * 0.1f) - 100 * _residents.Count; }
 
 		public override float Transparency => 1 - (float)(int)Level / 12;
 		#endregion
@@ -53,8 +53,7 @@ namespace Model.Tiles.Buildings
 			++Level;
 		}
 
-		//TODO implement residential level up cost
-		int IZoneBuilding.LevelUpCost => 100000;
+		int IZoneBuilding.LevelUpCost => (int)Math.Pow((double)Level, 2) * 1000 + 5000;
 
 		private ZoneBuildingLevel _level;
 		public ZoneBuildingLevel Level

@@ -117,17 +117,17 @@ namespace Model
 		/// <summary>
 		/// Returns the price of building this tile
 		/// </summary>
-		public abstract int BuildPrice { get; }
+		public virtual int BuildPrice { get; }
 
 		/// <summary>
 		/// Returns the price of destroying this tile
 		/// </summary>
-		public abstract int DestroyIncome { get; }
+		public virtual int DestroyIncome { get => (int)(BuildPrice * 0.1f); }
 
 		/// <summary>
 		/// Returns the price of maintaining this tile
 		/// </summary>
-		public virtual int MaintainanceCost { get; } = 0;
+		public virtual int MaintainanceCost { get => (int)(BuildPrice * 0.05f); }
 
 		/// <summary>
 		/// Returns the tile transparency for the effects

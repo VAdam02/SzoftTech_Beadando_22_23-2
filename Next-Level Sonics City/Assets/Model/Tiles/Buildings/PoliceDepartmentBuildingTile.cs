@@ -35,14 +35,8 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement police build price
-		public override int BuildPrice => 100000;
+		public override int BuildPrice => 10000;
 
-		//TODO implement police destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement police maintainance cost
-		public override int MaintainanceCost => 100000;
 		#endregion
 
 		#region Building implementation

@@ -84,14 +84,8 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement moddle school build price
-		public override int BuildPrice => 100000;
+		public override int BuildPrice => 20000;
 
-		//TODO implement moddle school destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement moddle school maintainance cost
-		public override int MaintainanceCost => 100000;
 		#endregion
 
 		#region Building implementation

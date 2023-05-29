@@ -31,14 +31,7 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement road build price
-		public override int BuildPrice => 100000;
-
-		//TODO implement road destroy income
-		public override int DestroyIncome => 100000;
-
-		//TODO implement road maintainance cost
-		public override int MaintainanceCost => 100000;
+		public override int BuildPrice => 500;
 
 		public override float Transparency => 1;
 
