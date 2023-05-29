@@ -32,7 +32,41 @@ namespace View.GUI.StatPanel
 						break;
 					case "MaintainanceCosts":
 						textBox.text = "$" + (-statReport.MaintainanceCosts).ToString("N0");
-						textBox.color = statReport.MaintainanceCosts < 0 ? _great : _bad;
+						textBox.color = statReport.MaintainanceCosts < 0 ? _great : statReport.MaintainanceCosts == 0 ? Color.white : _bad;
+						break;
+					case "TaxIncome":
+						textBox.text = "$" + ((statReport.WorkplaceTax) + (statReport.ResidentialTax)).ToString("N0");
+						break;
+					case "Pension":
+						textBox.text ="$" + statReport.Pension.ToString("N0");
+						textBox.color = statReport.Pension == 0 ? Color.white : _bad;
+						break;
+					case "PopulationChange":
+						textBox.text = (statReport.PopulationChange) >= 0 ? statReport.PopulationChange.ToString("N0"): "-" + statReport.PopulationChange.ToString("N0");
+						textBox.color = statReport.PopulationChange > 0 ? _great : statReport.PopulationChange == 0 ? Color.white : _bad ;
+					break;
+					case "BudgetChange":
+						textBox.text = statReport.BudgetChange >= 0 ? "$" + statReport.BudgetChange.ToString("N0"): "$" + statReport.BudgetChange.ToString("N0");
+						textBox.color = statReport.BudgetChange > 0 ? _great : statReport.BudgetChange == 0 ? Color.white : _bad;
+						break;
+					case "DestroyIncomes":
+						textBox.text = "$" + statReport.DestroyIncomes.ToString("N0");
+						break;
+					case "BuildExpenses":
+						textBox.text = "$" + statReport.BuildExpenses.ToString("N0");
+						textBox.color = statReport.BuildExpenses == 0 ? Color.white : _bad;
+						break;
+					case "Incomes":
+						textBox.text = "$" + statReport.Incomes.ToString("N0");
+						textBox.color = statReport.Incomes == 0 ? Color.white : _great;
+						break;
+					case "Expenses":
+						textBox.text = "$" + statReport.Expenses.ToString("N0");
+						textBox.color = statReport.Expenses == 0? Color.white : _bad;
+						break;
+					case "Profit":
+						textBox.text = "$" + statReport.Profit.ToString("N0");
+						textBox.color = statReport.Profit > 0 ? _great : statReport.Profit == 0 ? Color.white : _bad;
 						break;
 					default:
 						throw new NotImplementedException("Unknown field found: " + child.name);

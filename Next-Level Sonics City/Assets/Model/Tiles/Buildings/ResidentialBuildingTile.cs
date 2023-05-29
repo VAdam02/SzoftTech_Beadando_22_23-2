@@ -1,5 +1,3 @@
-using log4net.Core;
-using Model.Persons;
 using Model.RoadGrids;
 using Newtonsoft.Json.Linq;
 using System;
