@@ -513,7 +513,7 @@ namespace Model.Statistics
 			_statReports[^1].Budget = Budget;
 			_statReports[^1].Incomes = newIncome;
 			_statReports[^1].Expenses = newExpenses;
-			_statReports[^1].Total = newIncome - newExpenses;
+			_statReports[^1].Profit = newIncome - newExpenses;
 			if (withSideEffects)
 			{
 				lock (_budgetLock)
