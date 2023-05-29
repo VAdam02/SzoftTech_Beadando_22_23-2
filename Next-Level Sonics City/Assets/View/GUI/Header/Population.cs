@@ -1,8 +1,6 @@
 using Model;
-using Model.Statistics;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.CullingGroup;
 
 public class Population : MonoBehaviour
 {
@@ -14,7 +12,7 @@ public class Population : MonoBehaviour
 			{
 				mainThread.Enqueue(() =>
 				{
-					GetComponent<TextMeshProUGUI>().text = "$" + StatEngine.Instance.Budget.ToString("N0");
+					GetComponent<TextMeshProUGUI>().text = City.Instance.GetPopulation().ToString("N0");
 				});
 			}
 		};
