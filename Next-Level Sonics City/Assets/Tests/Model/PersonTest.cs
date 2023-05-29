@@ -1,4 +1,6 @@
-﻿using Model.RoadGrids;
+﻿using Model.Persons;
+using Model.RoadGrids;
+using Model.Tiles;
 using Model.Tiles.Buildings;
 using NUnit.Framework;
 using System;
@@ -7,15 +9,22 @@ namespace Model
 {
 	public class PersonTest
 	{
-		private MockResidentialBuildingTile _residential;
+		private ResidentialBuildingTile _residential;
 
 		[SetUp]
 		public void SetUp()
 		{
 			RoadGridManager.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
-			_residential = new(0, 0, Rotation.Zero);
+			_residential = new(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_residential);
 
 		}
@@ -23,9 +32,9 @@ namespace Model
 		[Test]
 		public void Constructor_WithValidArguments_SetsProperties()
 		{
-			int age = 30;
+			int age = 70;
 
-			Person person = new MockPerson(_residential, age);
+			Person person = new Pensioner(_residential, age, 100);
 
 			Assert.AreEqual(_residential, person.Residential);
 			Assert.AreEqual(age, person.Age);
@@ -37,7 +46,7 @@ namespace Model
 			IResidential residential = null;
 			int age = 30;
 
-			Assert.Throws<ArgumentNullException>(() => new MockPerson(residential, age));
+			Assert.Throws<ArgumentNullException>(() => new Pensioner(residential, age, 100));
 		}
 
 		[Test]
@@ -45,14 +54,14 @@ namespace Model
 		{
 			int invalidAge = 10;
 
-			Assert.Throws<ArgumentException>(() => new MockPerson(_residential, invalidAge));
+			Assert.Throws<ArgumentException>(() => new Pensioner(_residential, invalidAge, 100));
 		}
 
 		[Test]
 		public void IncreaseAge_IncrementsAgeByOne()
 		{
-			int initialAge = 25;
-			Person person = new MockPerson(_residential, initialAge);
+			int initialAge = 75;
+			Person person = new Pensioner(_residential, initialAge, 100);
 
 			person.IncreaseAge();
 

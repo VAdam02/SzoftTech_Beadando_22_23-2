@@ -19,16 +19,16 @@ namespace Model.Tiles
 		{
 			base.Finalizing();
 
+			_plantedYear = (int)(StatEngine.Instance.Year - (DesignID & DESIGNID_AGE_MASK));
+
 			StatEngine.Instance.NextQuarterEvent += (object sender, EventArgs e) =>
 			{
-				if (StatEngine.Instance.Quarter == 0)
+				if (StatEngine.Instance.Quarter == 3 && Age <= MAINTANCENEEDEDFORYEAR)
 				{
 					DesignID = (DesignID & ~DESIGNID_AGE_MASK) | (uint)Mathf.Clamp(Age, 0, MAINTANCENEEDEDFORYEAR);
 					TileChangeInvoke();
 				}
 			};
-
-			_plantedYear = StatEngine.Instance.Year;
 
 			IHappyZone.RegisterHappinessChangerTileToRegisterRadius(this);
 		}
@@ -41,14 +41,9 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement forest build price
-		public override int BuildPrice => 100000;
+		public override int BuildPrice => 3000;
 
-		//TODO implement forest destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement forest maintainance cost
-		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : 100000;
+		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : BuildPrice;
 
 		public override float Transparency => 1 - Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR) / 4;
 		#endregion
@@ -62,8 +57,6 @@ namespace Model.Tiles
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
 			if (building == null) { throw new ArgumentNullException(nameof(building) + " can't be null"); }
-
-			Vector3 delta = building.Coordinates - Coordinates;
 
 			float weight = Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR);
 
@@ -86,7 +79,7 @@ namespace Model.Tiles
 		private int _plantedYear;
 
 		public const int MAINTANCENEEDEDFORYEAR = 10;
-		public const uint DESIGNID_AGE_MASK = 0x00000015; // 4 bits
+		public const uint DESIGNID_AGE_MASK = 0x000000F; // 4 bits
 
 		public int Age => StatEngine.Instance.Year - _plantedYear;
 

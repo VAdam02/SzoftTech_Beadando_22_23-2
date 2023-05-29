@@ -14,12 +14,31 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
 			mockRoadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(mockRoadGridElement.GetTile());
 
 			residential = new ResidentialBuildingTile(0, 1, 0);
 			City.Instance.SetTile(residential.GetTile());
+		}
+
+		[Test]
+		public void SetTile_SetsWorkplaceLimit()
+		{
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
+			City.Instance.SetTile(roadGridElement.GetTile());
+
+			ResidentialBuildingTile residential = new(0, 1, 123);
+			City.Instance.SetTile(residential);
+
+			Assert.AreEqual(1, residential.ResidentLimit);
 		}
 
 		[Test]
@@ -56,7 +75,7 @@ namespace Model.Tiles.Buildings
 			_ = new Pensioner(residential, 70, 50);
 
 			Assert.AreEqual(ZoneBuildingLevel.ONE, ((IZoneBuilding)residential).Level);
-			Assert.AreEqual(previousWorkplaceLimit, residential.ResidentLimit);
+			Assert.Less(previousWorkplaceLimit, residential.ResidentLimit);
 			previousWorkplaceLimit = residential.ResidentLimit;
 
 			((IZoneBuilding)residential).LevelUp();

@@ -13,7 +13,7 @@ namespace Model
 		public IResidential Residential { get; protected set; }
 		public int Age { get; protected set; }
 		public Qualification Qualification { get; protected set; }
-		public abstract (float happiness, float weight) HappinessByPersonInheritance { get; }
+		protected abstract (float happiness, float weight) HappinessByPersonInheritance { get; }
 
 		/// <summary>
 		/// Creates a new person and moves him into the given residential
@@ -28,27 +28,28 @@ namespace Model
 			if (Age < 18) throw new ArgumentException("Person cannot be younger than 18 years old");
 
 			Residential.MoveIn(this);
+			Residential.HappinessByBuildingChanged += (sender, e) => UpdateHappiness();
 
 			City.Instance.AddPerson(this);
+			City.Instance.HappinessByCityChanged += (sender, e) => UpdateHappiness();
 		}
 
-		/// <summary>
-		/// Get the happiness of the person
-		/// </summary>
-		/// <returns>Happiness of person</returns>
-		public virtual float GetHappiness()
+		public event EventHandler<float> HappinessByPersonChanged;
+
+		public float Happiness { get; private set; }
+
+		protected void UpdateHappiness()
 		{
+			float oldHappiness = Happiness;
+
 			float happiness = 0;
 			float happinessWeight = 0;
 
-			//happiness by tax //TODO make it as a city thing
-			happiness += Mathf.Clamp(Mathf.Cos(StatEngine.Instance.ResidentialTaxRate * Mathf.PI * 1.5f), 0, 1) * 10;
-			happinessWeight += 10;
+			//happiness by city
+			(float happiness, float weight) cityHappiness = City.Instance.HappinessByCity;
+			happiness += cityHappiness.happiness * cityHappiness.weight;
+			happinessWeight += cityHappiness.weight;
 
-			//happiness weight by negative budget //TODO make it as a city thing
-			happiness += 0;
-			happinessWeight += StatEngine.Instance.NegativeBudgetSince;
-			
 			//happiness and weight by residential
 			(float happiness, float weight) residentialHappiness = Residential.HappinessByBuilding;
 			happiness += residentialHappiness.happiness * residentialHappiness.weight;
@@ -59,7 +60,9 @@ namespace Model
 			happiness += inheritanceHappiness.happiness * inheritanceHappiness.weight;
 			happinessWeight += inheritanceHappiness.weight;
 
-			return happiness / (happinessWeight == 0 ? 1 : happinessWeight); 
+			Happiness = happiness / (happinessWeight == 0 ? 1 : happinessWeight);
+
+			HappinessByPersonChanged?.Invoke(this, oldHappiness);
 		}
 
 		/// <summary>

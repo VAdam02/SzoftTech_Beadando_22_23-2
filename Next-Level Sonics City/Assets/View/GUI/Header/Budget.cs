@@ -1,16 +1,26 @@
+using Model;
 using Model.Statistics;
 using TMPro;
 using UnityEngine;
 
-public class Budget : MonoBehaviour
+namespace View.GUI.Header
 {
-	private void Awake()
+	public class Budget : MonoBehaviour
 	{
-		StatEngine.Instance.BudgetChanged.AddListener(RefreshMoney);
-	}
+		private void Awake()
+		{
+			GetComponent<TextMeshProUGUI>().text = "$" + StatEngine.Instance.Budget.ToString("N0");
 
-	private void RefreshMoney()
-	{
-		GetComponent<TextMeshProUGUI>().text = "$" + StatEngine.Instance.Budget.ToString("N0");
+			StatEngine.Instance.BudgetChanged += (sender, args) =>
+			{
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						GetComponent<TextMeshProUGUI>().text = "$" + StatEngine.Instance.Budget.ToString("N0");
+					});
+				}
+			};
+		}
 	}
 }

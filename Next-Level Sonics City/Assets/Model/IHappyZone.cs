@@ -1,4 +1,5 @@
-using System.Threading;
+using Model.RoadGrids;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Model.Tiles
@@ -23,16 +24,16 @@ namespace Model.Tiles
 		public (float happiness, float weight) GetHappinessModifierAtTile(Building building);
 
 		/// <summary>
-		/// Get the tile of the happy zone
-		/// </summary>
-		/// <returns>Tile of the happy zone</returns>
-		public Tile GetTile();
-
-		/// <summary>
 		/// Register at and to the new tile
 		/// </summary>
 		/// <param name="oldTile">Old tile that was deletetd</param>
 		protected void TileDestroyedInRadiusHandler(object sender, Tile oldTile);
+
+		/// <summary>
+		/// Get the tile of the happy zone
+		/// </summary>
+		/// <returns>Tile of the happy zone</returns>
+		public Tile GetTile();
 
 		protected static void RegisterHappinessChangerTileToRegisterRadius(IHappyZone happyZone)
 		{
@@ -42,22 +43,22 @@ namespace Model.Tiles
 				if (i == 0 && j == 0) { continue; }
 
 				//register at the residentials
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y - j) is IResidential residentialTopRight)			  { residentialTopRight.RegisterHappinessChangerTile(happyZone);	}
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y + j) is IResidential residentialBottomRight && j != 0) { residentialBottomRight.RegisterHappinessChangerTile(happyZone); }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y + j) is IResidential residentialBottomLeft  && j != 0) { residentialBottomLeft.RegisterHappinessChangerTile(happyZone);  }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y - j) is IResidential residentialTopLeft)				  { residentialTopLeft.RegisterHappinessChangerTile(happyZone);		}
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y - j) is IResidential residentialTopRight    && i != 0)			{ residentialTopRight.RegisterHappinessChangerTile(happyZone);	}
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y + j) is IResidential residentialBottomRight && i != 0 && j != 0)	{ residentialBottomRight.RegisterHappinessChangerTile(happyZone); }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y + j) is IResidential residentialBottomLeft  && j != 0)			{ residentialBottomLeft.RegisterHappinessChangerTile(happyZone);  }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y - j) is IResidential residentialTopLeft)							{ residentialTopLeft.RegisterHappinessChangerTile(happyZone);		}
 
 				//register at the workplaces
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y - j) is IWorkplace workplaceTopRight)			  { workplaceTopRight.RegisterHappinessChangerTile(happyZone);	  }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0) { workplaceBottomRight.RegisterHappinessChangerTile(happyZone); }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0)  { workplaceBottomLeft.RegisterHappinessChangerTile(happyZone);  }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y - j) is IWorkplace workplaceTopLeft)				  { workplaceTopLeft.RegisterHappinessChangerTile(happyZone);	  }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y - j) is IWorkplace workplaceTopRight		&& i != 0)				{ workplaceTopRight.RegisterHappinessChangerTile(happyZone);	  }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y + j) is IWorkplace workplaceBottomRight	&& i != 0 && j != 0)	{ workplaceBottomRight.RegisterHappinessChangerTile(happyZone); }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y + j) is IWorkplace workplaceBottomLeft	&& j != 0)				{ workplaceBottomLeft.RegisterHappinessChangerTile(happyZone);  }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y - j) is IWorkplace workplaceTopLeft)								{ workplaceTopLeft.RegisterHappinessChangerTile(happyZone);	  }
 
 				//register to the destroy event to be notified about a new tile
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y - j) is Tile aboveTile)			  { aboveTile.OnTileDelete  += happyZone.TileDestroyedInRadiusHandler; }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y + j) is Tile rightTile && j != 0)  { rightTile.OnTileDelete  += happyZone.TileDestroyedInRadiusHandler; }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y + j) is Tile bottomTile && j != 0) { bottomTile.OnTileDelete += happyZone.TileDestroyedInRadiusHandler; }
-				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y - j) is Tile leftTile)			  { leftTile.OnTileDelete	+= happyZone.TileDestroyedInRadiusHandler; }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y - j) is Tile aboveTile	&& i != 0)				{ aboveTile.OnTileDelete  += happyZone.TileDestroyedInRadiusHandler; }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x + i, happyZone.GetTile().Coordinates.y + j) is Tile rightTile	&& i != 0 && j != 0)	{ rightTile.OnTileDelete  += happyZone.TileDestroyedInRadiusHandler; }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y + j) is Tile bottomTile	&& j != 0)				{ bottomTile.OnTileDelete += happyZone.TileDestroyedInRadiusHandler; }
+				if (City.Instance.GetTile(happyZone.GetTile().Coordinates.x - i, happyZone.GetTile().Coordinates.y - j) is Tile leftTile)							{ leftTile.OnTileDelete   += happyZone.TileDestroyedInRadiusHandler; }
 			}
 		}
 
@@ -71,33 +72,49 @@ namespace Model.Tiles
 		}
 
 		#region HappinessModifier modules
+		/// <summary>
+		/// Get the happiness modifier for the given tile based on sight
+		/// </summary>
+		/// <param name="happyZone">HappyZone where the ray finish</param>
+		/// <param name="tile">Tile where from the ray start</param>
+		/// <returns>Value of visibility</returns>
 		protected static float SightToHappyZone(IHappyZone happyZone, Tile tile)
 		{
+			if (happyZone == tile) { return 0; }
+
 			float sight = 1;
 
 			Vector3 delta = happyZone.GetTile().Coordinates - tile.Coordinates;
+			Vector3 absDelta = new(Mathf.Abs(delta.x), Mathf.Abs(delta.y), 0);
 
-			//decrease sight by transparency
-			if (delta.x > delta.y) //run on normal function
+			if (absDelta.x > absDelta.y)
 			{
-				for (int i = (int)Mathf.Min(happyZone.GetTile().Coordinates.x, tile.Coordinates.x) + 1; i < Mathf.Max(happyZone.GetTile().Coordinates.x, tile.Coordinates.x); i++)
+				for (int i = 1; i < absDelta.x; i++)
 				{
-					Tile checkTile = City.Instance.GetTile(i, (happyZone.GetTile().Coordinates.x < tile.Coordinates.x ? (Tile)happyZone : tile).Coordinates.y + Mathf.RoundToInt(i * delta.y / delta.x));
-					sight *= checkTile.Transparency;
+					float t = i / absDelta.x;
+					Vector3 position = Vector3.Lerp(happyZone.GetTile().Coordinates, tile.Coordinates, t);
+					sight *= City.Instance.GetTile(position).Transparency;
 				}
 			}
-			else //run on inverted function
+			else //run on inverted
 			{
-				for (int i = (int)Mathf.Min(happyZone.GetTile().Coordinates.y, tile.Coordinates.y) + 1; i < Mathf.Max(happyZone.GetTile().Coordinates.y, happyZone.GetTile().Coordinates.y); i++)
+				for (int i = 1; i < absDelta.y; i++)
 				{
-					Tile checkTile = City.Instance.GetTile((happyZone.GetTile().Coordinates.y < tile.Coordinates.y ? (Tile)happyZone : tile).Coordinates.x + Mathf.RoundToInt(i * delta.x / delta.y), i);
-					sight *= checkTile.Transparency;
+					float t = i / absDelta.y;
+					Vector3 position = Vector3.Lerp(happyZone.GetTile().Coordinates, tile.Coordinates, t);
+					sight *= City.Instance.GetTile(position).Transparency;
 				}
 			}
 
 			return sight;
 		}
 
+		/// <summary>
+		/// Get the happiness modifier for the given tile based on distance in air
+		/// </summary>
+		/// <param name="happyZone">HappyZone where the ray finish</param>
+		/// <param name="tile">Tile where from the ray start</param>
+		/// <returns>Value of distance</returns>
 		protected static float DistanceToHappyZone(IHappyZone happyZone, Tile tile)
 		{
 			Vector3 delta = happyZone.GetTile().Coordinates - tile.Coordinates;

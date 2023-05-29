@@ -1,3 +1,4 @@
+using Model.Tiles.Buildings;
 using System.Collections.Generic;
 
 namespace Model.RoadGrids
@@ -21,6 +22,7 @@ namespace Model.RoadGrids
 		/// <param name="roadGridElement">Element that should be added</param>
 		public void AddRoadGridElement(IRoadGridElement roadGridElement)
 		{
+			lock (_roadGridElements)
 			_roadGridElements.Add(roadGridElement);
 		}
 
@@ -30,12 +32,37 @@ namespace Model.RoadGrids
 		/// <param name="roadGridElement">Element that should be removed</param>
 		public void RemoveRoadGridElement(IRoadGridElement roadGridElement)
 		{
+			lock (_roadGridElements)
 			_roadGridElements.Remove(roadGridElement);
 		}
 
-		private readonly List<IWorkplace> _workplaces = new();
-		public List<IWorkplace> Workplaces { get { return _workplaces; } }
-		public List<IWorkplace> FreeWorkplaces { get { return _workplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
+		private readonly List<IWorkplace> _commercialWorkplaces = new();
+		private readonly List<IWorkplace> _industrialWorkplaces = new();
+		private readonly List<IWorkplace> _otherWorkplaces = new();
+		public List<IWorkplace> Workplaces
+		{
+			get
+			{
+				List<IWorkplace> workplaces = new();
+				workplaces.AddRange(_commercialWorkplaces);
+				workplaces.AddRange(_industrialWorkplaces);
+				workplaces.AddRange(_otherWorkplaces);
+				return workplaces;
+			}
+		}
+		public List<IWorkplace> FreeWorkplaces
+		{
+			get
+			{
+				return Workplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount());
+			}
+		}
+		public List<IWorkplace> CommercialWorkplaces { get { return _commercialWorkplaces; } }
+		public List<IWorkplace> FreeCommercialWorkplaces { get { return _commercialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
+		public List<IWorkplace> IndustrialWorkplaces { get { return _industrialWorkplaces; } }
+		public List<IWorkplace> FreeIndustrialWorkplaces { get { return _industrialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
+		public List<IWorkplace> OtherWorkplaces { get { return _otherWorkplaces; } }
+		public List<IWorkplace> FreeOtherWorkplaces { get { return _otherWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
 
 		/// <summary>
 		/// Add workplace to this
@@ -43,7 +70,9 @@ namespace Model.RoadGrids
 		/// <param name="workplace">Workplace that should be added</param>
 		public void AddWorkplace(IWorkplace workplace)
 		{
-			_workplaces.Add(workplace);
+			if		(workplace is Commercial) lock (_commercialWorkplaces) _commercialWorkplaces.Add(workplace);
+			else if (workplace is Industrial) lock (_industrialWorkplaces) _industrialWorkplaces.Add(workplace);
+			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Add(workplace);
 		}
 
 		/// <summary>
@@ -52,12 +81,20 @@ namespace Model.RoadGrids
 		/// <param name="workplace">Workplace that should be removed</param>
 		public void RemoveWorkplace(IWorkplace workplace)
 		{
-			_workplaces.Remove(workplace);
+			if		(workplace is Commercial) lock (_commercialWorkplaces) _commercialWorkplaces.Remove(workplace);
+			else if (workplace is Industrial) lock (_industrialWorkplaces) _industrialWorkplaces.Remove(workplace);
+			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Remove(workplace);
 		}
 
 		private readonly List<IResidential> _residential = new();
 		public List<IResidential> Residentials { get { return _residential; } }
-		public List<IResidential> FreeResidentials { get { return _residential.FindAll(residential => residential.ResidentLimit > residential.GetResidentsCount()); } }
+		public List<IResidential> FreeResidentials
+		{
+			get
+			{
+				return _residential.FindAll(residential => residential.ResidentLimit > residential.GetResidentsCount());
+			}
+		}
 
 		/// <summary>
 		/// Add residential to this
@@ -65,7 +102,7 @@ namespace Model.RoadGrids
 		/// <param name="residential">Residential that should be added</param>
 		public void AddResidential(IResidential residential)
 		{
-			_residential.Add(residential);
+			lock (_residential) _residential.Add(residential);
 		}
 
 		/// <summary>
@@ -74,7 +111,7 @@ namespace Model.RoadGrids
 		/// <param name="residential">Residential that should be removed</param>
 		public void RemoveResidential(IResidential residential)
 		{
-			_residential.Remove(residential);
+			lock (_residential) _residential.Remove(residential);
 		}
 
 		/// <summary>

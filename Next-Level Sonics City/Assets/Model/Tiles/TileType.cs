@@ -1,7 +1,6 @@
 public enum TileType
 {
 	PoliceDepartment,
-	FireDepartment,
 	MiddleSchool,
 	HighSchool,
 	Stadion,

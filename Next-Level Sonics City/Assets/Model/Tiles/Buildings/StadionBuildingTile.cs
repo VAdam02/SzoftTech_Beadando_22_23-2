@@ -4,126 +4,13 @@ using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
 	public class StadionBuildingTile : Building, IWorkplace, IHappyZone
 	{
-		private readonly List<Worker> _workers = new();
-		public int WorkplaceLimit { get; private set; }
-
-		public StadionBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
-		{
-
-		}
-
-		public override void FinalizeTile()
-		{
-			Finalizing();
-		}
-
-		/// <summary>
-		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
-		/// <para>Do the actual finalization</para>
-		/// </summary>
-		protected new void Finalizing()
-		{
-			base.Finalizing();
-			//TODO implement stadion workplace limit
-			WorkplaceLimit = 10;
-
-			for (int i = 0; i <= GetRegisterRadius(); i++)
-			for (int j = 0; Mathf.Sqrt(i * i + j * j) <= GetRegisterRadius(); j++)
-			{
-				if (i == 0 && j == 0) { continue; }
-
-				//register at the residentials
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IResidential residentialTopRight) { residentialTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IResidential residentialBottomRight && j != 0) { residentialBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IResidential residentialBottomLeft && j != 0) { residentialBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IResidential residentialTopLeft) { residentialTopLeft.RegisterHappinessChangerTile(this); }
-
-				//register at the workplaces
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is IWorkplace workplaceTopRight) { workplaceTopRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is IWorkplace workplaceBottomRight && j != 0) { workplaceBottomRight.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is IWorkplace workplaceBottomLeft && j != 0) { workplaceBottomLeft.RegisterHappinessChangerTile(this); }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is IWorkplace workplaceTopLeft) { workplaceTopLeft.RegisterHappinessChangerTile(this); }
-
-				//register to the destroy event to be notified about a new tile
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y - j) is Tile aboveTile) { aboveTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x + i, Coordinates.y + j) is Tile rightTile && j != 0) { rightTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y + j) is Tile bottomTile && j != 0) { bottomTile.OnTileDelete += TileDestroyedInRadius; }
-				if (City.Instance.GetTile(Coordinates.x - i, Coordinates.y - j) is Tile leftTile) { leftTile.OnTileDelete += TileDestroyedInRadius; }
-			}
-		}
-
-		/// <summary>
-		/// Register at and to the new tile
-		/// </summary>
-		/// <param name="oldTile">Old tile that was deletetd</param>
-		private void TileDestroyedInRadius(object sender, Tile oldTile)
-		{
-			Tile newTile = City.Instance.GetTile(oldTile);
-
-			if (newTile is IResidential residential) { residential.RegisterHappinessChangerTile(this); }
-			if (newTile is IWorkplace workplace) { workplace.RegisterHappinessChangerTile(this); } //TODO
-			newTile.OnTileDelete += TileDestroyedInRadius;
-		}
-
-		public override TileType GetTileType() { return TileType.Stadion; }
-
-		public void RegisterWorkplace(RoadGrid roadGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			roadGrid?.AddWorkplace(this);
-		}
-
-		public void UnregisterWorkplace(RoadGrid roadGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			roadGrid?.RemoveWorkplace(this);
-		}
-
-		public void Employ(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
-			_workers.Add(worker);
-		}
-
-		public void Unemploy(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			_workers.Remove(worker);
-		}
-
-		public List<Worker> GetWorkers()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _workers;
-		}
-
-		public int GetWorkersCount()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _workers.Count;
-		}
-
-		//TODO implement electric pole build price
-		public override int BuildPrice => 100000;
-
-		//TODO implement electric pole destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement electric pole maintainance cost
-		public override int MaintainanceCost => 100000;
+		#region Tile implementation
+		public override TileType GetTileType() => TileType.Stadion;
 
 		public override bool CanBuild()
 		{
@@ -168,6 +55,34 @@ namespace Model.Tiles.Buildings
 			return true;
 		}
 
+		public override void FinalizeTile() => Finalizing();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+			//TODO implement stadion workplace limit
+			WorkplaceLimit = 10;
+
+			IHappyZone.RegisterHappinessChangerTileToRegisterRadius(this);
+		}
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
+
+		public override int BuildPrice => 50000;
+
+		#endregion
+
+		#region Building implementation
 		internal override void Expand()
 		{
 			int x1 = (int)Coordinates.x;
@@ -206,8 +121,53 @@ namespace Model.Tiles.Buildings
 				}
 			}
 		}
+		#endregion
 
-		public (float happiness, float weight) HappinessByBuilding
+		#region IWorkplace implementation
+		private readonly List<Worker> _workers = new();
+		public int WorkplaceLimit { get; private set; }
+
+		void IWorkplace.Employ(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to employ before tile is set"); }
+			if (_workers.Count >= WorkplaceLimit) { throw new InvalidOperationException("The workplace is full"); }
+			_workers.Add(worker);
+		}
+
+		void IWorkplace.Unemploy(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unemploy before tile is set"); }
+			_workers.Remove(worker);
+		}
+
+		List<Worker> IWorkplace.GetWorkers()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers before tile is set"); }
+			return _workers;
+		}
+
+		int IWorkplace.GetWorkersCount()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers count before tile is set"); }
+			return _workers.Count;
+		}
+
+		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
+			roadGrid?.AddWorkplace(this);
+		}
+
+		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
+
+			roadGrid?.RemoveWorkplace(this);
+		}
+
+		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
+
+		(float happiness, float weight) IWorkplace.HappinessByBuilding
 		{
 			get
 			{
@@ -217,12 +177,7 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
-		int IHappyZone.RegisterRadius => throw new NotImplementedException();
-
-		int IHappyZone.EffectiveRadius => throw new NotImplementedException();
-
-		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
-		public void RegisterHappinessChangerTile(IHappyZone happyZone)
+		void IWorkplace.RegisterHappinessChangerTile(IHappyZone happyZone)
 		{
 			happyZone.GetTile().OnTileDelete += UnregisterHappinessChangerTile;
 			happyZone.GetTile().OnTileChange += UpdateHappiness;
@@ -231,7 +186,7 @@ namespace Model.Tiles.Buildings
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
 
-		private void UnregisterHappinessChangerTile(object sender,Tile deletedTile)
+		private void UnregisterHappinessChangerTile(object sender, Tile deletedTile)
 		{
 			IHappyZone happyZone = (IHappyZone)deletedTile;
 			_happinessChangers.RemoveAll((values) => values.happyZone == happyZone);
@@ -245,36 +200,36 @@ namespace Model.Tiles.Buildings
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
+		#endregion
 
-		private int GetRegisterRadius()
-		{
-			return 5;
-		}
+		#region IHappyZone implementation
+		int IHappyZone.RegisterRadius => 5;
 
-		public int GetEffectiveRadius()
-		{
-			return GetWorkersCount() > 0 ? GetRegisterRadius() : 0;
-		}
+		int IHappyZone.EffectiveRadius => ((IWorkplace)this).GetWorkersCount() > 0 ? ((IHappyZone)this).RegisterRadius : 0;
 
 		(float happiness, float weight) IHappyZone.GetHappinessModifierAtTile(Building building)
 		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			if (building == null) { throw new ArgumentNullException(); }
-
-			Vector3 delta = building.Coordinates - Coordinates;
+			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
+			if (building == null) { throw new ArgumentNullException(nameof(building) + " can't be null"); }
+			if (RoadGridManager.GetRoadGrigElementByBuilding(this)?.RoadGrid != RoadGridManager.GetRoadGrigElementByBuilding(building)?.RoadGrid) { return (0, 0); }
 
 			float weight = 1;
 
-			//decrease weight by distance
-			weight *= 1 - ((delta.magnitude - 1) / GetEffectiveRadius());
+			//decrease weight by transparency of the sight
+			weight *= IHappyZone.SightToHappyZone(this, building);
 
-			return (0, weight);
+			//decrease weight by distance
+			weight *= 1 - IHappyZone.DistanceToHappyZone(this, building.GetTile());
+
+			return (1, weight);
 		}
 
-		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile)
+		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile) => IHappyZone.TileDestroyedInRadius(this, oldTile);
+		#endregion
+
+		public StadionBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
-			throw new NotImplementedException();
+
 		}
 	}
 }

@@ -7,8 +7,8 @@ namespace View.GUI.Date
 	public enum TimeSpeed
 	{
 		NORMAL = 1,
-		FAST = 2,
-		SONIC = 8
+		FAST = 4,
+		SONIC = 64
 	}
 	public class SpeedSelectorButton : MonoBehaviour, IClickable
 	{

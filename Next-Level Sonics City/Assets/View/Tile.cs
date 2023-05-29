@@ -41,7 +41,7 @@ namespace View
 				}
 			};
 
-			TileModel.OnDesignIDChange += (sender, args) =>
+			TileModel.OnTileChange += (sender, args) =>
 			{
 				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 				{

@@ -15,6 +15,13 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
 			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
@@ -37,16 +44,16 @@ namespace Model.Tiles.Buildings
 		{
 			var worker = new Worker(residential, middleSchool, 25, Qualification.HIGH);
 
-			Assert.Contains(worker, middleSchool.GetWorkers());
+			Assert.Contains(worker, ((IWorkplace)middleSchool).GetWorkers());
 		}
 
 		[Test]
 		public void Unemploy_RemovesWorkerFromMiddleSchool()
 		{
 			var worker = new Worker(residential, middleSchool, 25, Qualification.HIGH);
-			middleSchool.Unemploy(worker); //TODO illegal way to move out
+			((IWorkplace)middleSchool).Unemploy(worker); //TODO illegal way to move out
 
-			CollectionAssert.DoesNotContain(middleSchool.GetWorkers(), worker);
+			CollectionAssert.DoesNotContain(((IWorkplace)middleSchool).GetWorkers(), worker);
 		}
 
 		[Test]
@@ -54,10 +61,10 @@ namespace Model.Tiles.Buildings
 		{
 			var worker1 = new Worker(residential, middleSchool, 25, Qualification.HIGH);
 			var worker2 = new Worker(residential, middleSchool, 25, Qualification.HIGH);
-			middleSchool.Employ(worker1);
-			middleSchool.Employ(worker2);
+			((IWorkplace)middleSchool).Employ(worker1);
+			((IWorkplace)middleSchool).Employ(worker2);
 
-			var workers = middleSchool.GetWorkers();
+			var workers = ((IWorkplace)middleSchool).GetWorkers();
 
 			Assert.Contains(worker1, workers);
 			Assert.Contains(worker2, workers);
@@ -69,7 +76,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, middleSchool, 25, Qualification.HIGH);
 			_ = new Worker(residential, middleSchool, 25, Qualification.HIGH);
 
-			var count = middleSchool.GetWorkersCount();
+			var count = ((IWorkplace)middleSchool)			.GetWorkersCount();
 
 			Assert.AreEqual(2, count);
 		}
@@ -77,7 +84,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetTile_ReturnsSelf()
 		{
-			var tile = middleSchool.GetTile();
+			var tile = ((IWorkplace)middleSchool).GetTile();
 
 			Assert.AreEqual(middleSchool, tile);
 		}

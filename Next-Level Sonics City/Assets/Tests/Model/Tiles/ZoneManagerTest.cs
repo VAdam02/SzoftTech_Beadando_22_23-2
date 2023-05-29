@@ -10,6 +10,13 @@ namespace Model.Tiles
 		{
 			ZoneManager.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 		}
 
 		[Test]

@@ -8,9 +8,83 @@ namespace Model.Tiles.Buildings
 {
 	public class WorkplaceSubTile : Building, IWorkplace
 	{
-		private readonly IWorkplace _baseWorkplace;
+		#region Tile implementation
+		public override TileType GetTileType() => _baseWorkplace.GetTile().GetTileType();
 
-		public int WorkplaceLimit { get { return _baseWorkplace.WorkplaceLimit; } }
+		public override bool CanBuild() => throw new InvalidOperationException("Can't check because it's the base task");
+
+		public override void FinalizeTile() => Finalizing();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing() => base.Finalizing();
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
+
+		public override int BuildPrice => 0;
+
+		public override int DestroyIncome => 0;
+		#endregion
+
+		#region Building implementation
+		internal override void Expand() => throw new InvalidOperationException("Not valid to expand the subtile");
+		#endregion
+
+		#region IWorkplace implementation
+		int IWorkplace.WorkplaceLimit { get { return _baseWorkplace.WorkplaceLimit; } }
+
+		void IWorkplace.Employ(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to employ before tile is set"); }
+			_baseWorkplace.Employ(worker);
+		}
+
+		void IWorkplace.Unemploy(Worker worker)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unemploy before tile is set"); }
+			_baseWorkplace.Unemploy(worker);
+		}
+
+		List<Worker> IWorkplace.GetWorkers()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers before tile is set"); }
+			return _baseWorkplace.GetWorkers();
+		}
+
+		int IWorkplace.GetWorkersCount()
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to get the employers count before tile is set"); }
+			return _baseWorkplace.GetWorkersCount();
+		}
+
+		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
+		}
+
+		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
+		}
+
+		(float happiness, float weight) IWorkplace.HappinessByBuilding { get => (0, 0); }
+
+		void IWorkplace.RegisterHappinessChangerTile(IHappyZone happyZone) { }
+		#endregion
+
+		#region Common implementation
+		public new Tile GetTile() => _baseWorkplace.GetTile();
+		#endregion
+
+		private readonly IWorkplace _baseWorkplace;
 
 		/// <summary>
 		/// Construct a new workplace sub tile
@@ -24,12 +98,6 @@ namespace Model.Tiles.Buildings
 			_baseWorkplace = baseBuilding;
 		}
 
-		public override TileType GetTileType() { return ((Tile)_baseWorkplace).GetTileType(); }
-
-		public void RegisterWorkplace(RoadGrid roadGrid) { if (!_isFinalized) { throw new InvalidOperationException(); } }
-
-		public void UnregisterWorkplace(RoadGrid roadGrid) { if (!_isFinalized) { throw new InvalidOperationException(); } }
-
 		/// <summary>
 		/// This method is called when the parent building is destroyed
 		/// </summary>
@@ -41,75 +109,12 @@ namespace Model.Tiles.Buildings
 		}
 
 		/// <summary>
-		/// Return the real coordinates of the subtile
-		/// </summary>
-		/// <returns>Coordinates of subtile</returns>
-		public Vector2 GetRealCoordinates()
-		{
-			return Coordinates;
-		}
-
-		/// <summary>
 		/// Return the coordinates of the base building
 		/// </summary>
 		/// <returns>Coordinates of base building</returns>
 		public Vector2 GetBaseCoordinates()
 		{
 			return ((Building)_baseWorkplace).Coordinates;
-		}
-
-		public void Employ(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-			_baseWorkplace.Employ(worker);
-		}
-
-		public void Unemploy(Worker worker)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			_baseWorkplace.Unemploy(worker);
-		}
-
-		public List<Worker> GetWorkers()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _baseWorkplace.GetWorkers();
-		}
-
-		public int GetWorkersCount()
-		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
-
-			return _baseWorkplace.GetWorkersCount();
-		}
-
-		public override bool CanBuild()
-		{
-			throw new InvalidOperationException();
-		}
-
-		internal override void Expand()
-		{
-			throw new InvalidOperationException();
-		}
-
-		public override int BuildPrice => 0;
-
-		public override int DestroyIncome => 0;
-
-		public (float happiness, float weight) HappinessByBuilding
-		{
-			get
-			{
-				return (0, 0);
-			}
-		}
-
-		public void RegisterHappinessChangerTile(IHappyZone happyZone)
-		{
-			
 		}
 	}
 }

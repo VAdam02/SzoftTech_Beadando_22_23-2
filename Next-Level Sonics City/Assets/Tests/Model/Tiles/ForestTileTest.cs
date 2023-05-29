@@ -1,4 +1,5 @@
-﻿using Model.Statistics;
+﻿using Model.RoadGrids;
+using Model.Statistics;
 using NUnit.Framework;
 
 namespace Model.Tiles
@@ -10,9 +11,18 @@ namespace Model.Tiles
 		[SetUp]
 		public void SetUp()
 		{
+			RoadGridManager.Reset();
+			StatEngine.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
-			forest = new ForestTile(0, 0, 123);
+			forest = new ForestTile(0, 0, 0);
 			City.Instance.SetTile(forest);
 		}
 

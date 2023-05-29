@@ -11,6 +11,14 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
+
 			emptyTile = new EmptyTile(0, 0);
 			City.Instance.SetTile(emptyTile);
 		}
@@ -51,7 +59,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetLevelUpCost_ThrowsInvalidOperationException()
 		{
-			Assert.Throws<InvalidOperationException>(() => ((IZoneBuilding)emptyTile).GetLevelUpCost());
+			Assert.Throws<InvalidOperationException>(() => _ = ((IZoneBuilding)emptyTile).LevelUpCost);
 		}
 	}
 }

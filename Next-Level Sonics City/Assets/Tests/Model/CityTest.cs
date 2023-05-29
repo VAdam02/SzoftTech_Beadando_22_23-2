@@ -1,4 +1,5 @@
-﻿using Model.Tiles;
+﻿using Model.Persons;
+using Model.Tiles;
 using Model.Tiles.Buildings;
 using NUnit.Framework;
 
@@ -10,6 +11,13 @@ namespace Model
 		public void Setup()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 		}
 
 		[Test]
@@ -63,10 +71,10 @@ namespace Model
 		[Test]
 		public void GetPopulation_ReturnsCorrectPopulation()
 		{
-			IResidential residential = new MockResidentialBuildingTile(0, 0, Rotation.Zero);
+			IResidential residential = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential.GetTile());
-			_ = new MockPerson(residential, 50);
-			_ = new MockPerson(residential, 60);
+			_ = new Pensioner(residential, 70, 100);
+			_ = new Pensioner(residential, 80, 100);
 
 			int population = City.Instance.GetPopulation();
 

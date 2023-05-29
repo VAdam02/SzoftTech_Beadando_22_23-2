@@ -10,6 +10,14 @@ namespace Model.RoadGrids
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
+
 			RoadGridManager.Reset();
 		}
 
@@ -71,7 +79,7 @@ namespace Model.RoadGrids
 		{
 			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
-			var building = new MockResidentialBuildingTile(0, 1, Rotation.Zero);
+			var building = new ResidentialBuildingTile(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(building);
 
 			var result = RoadGridManager.GetRoadGrigElementByBuilding(building);
@@ -82,7 +90,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void GetRoadGrigElementByBuilding_BuildingHasNoAdjacentRoadGridElement_ReturnsNull()
 		{
-			var building = new MockResidentialBuildingTile(0, 0, Rotation.Zero);
+			var building = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(building);
 
 			var result = RoadGridManager.GetRoadGrigElementByBuilding(building);
@@ -96,9 +104,9 @@ namespace Model.RoadGrids
 		{
 			var roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement);
-			var residential1 = new MockResidentialBuildingTile(0, 1, Rotation.Zero);
+			var residential1 = new ResidentialBuildingTile(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential1);
-			var residential2 = new MockResidentialBuildingTile(1, 0, Rotation.TwoSeventy);
+			var residential2 = new ResidentialBuildingTile(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential2);
 
 			var result = RoadGridManager.GetBuildingsByRoadGridElement(roadGridElement);

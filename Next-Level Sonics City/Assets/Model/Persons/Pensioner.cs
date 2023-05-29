@@ -6,7 +6,7 @@ namespace Model.Persons
 	{
 		public float Pension { get; private set; }
 
-		public override (float happiness, float weight) HappinessByPersonInheritance
+		protected override (float happiness, float weight) HappinessByPersonInheritance
 		{
 			get => (0.0f, 0.0f);
 		}
@@ -22,6 +22,8 @@ namespace Model.Persons
 			Pension = pension;
 			if (Pension < 0) throw new ArgumentException("Pension cannot be negative");
 			if (Age < Worker.PENSION_AGE) throw new ArgumentException("Pensioner cannot be younger than " + Worker.PENSION_AGE + " years old");
+
+			UpdateHappiness();
 		}
 
 		public override float PayTax(float taxRate)

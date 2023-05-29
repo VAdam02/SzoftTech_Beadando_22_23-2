@@ -28,6 +28,12 @@ namespace Model
 		public List<Worker> GetWorkers();
 
 		/// <summary>
+		/// Get count of workers
+		/// </summary>
+		/// <returns>Count of workers</returns>
+		public int GetWorkersCount();
+
+		/// <summary>
 		/// Register workplace to road grid
 		/// </summary>
 		/// <param name="roadGrid">Roadgrid where should be registered</param>
@@ -38,12 +44,6 @@ namespace Model
 		/// </summary>
 		/// <param name="roadGrid">Roadgrid where should be unregistered</param>
 		public void UnregisterWorkplace(RoadGrid roadGrid);
-
-		/// <summary>
-		/// Get count of workers
-		/// </summary>
-		/// <returns>Count of workers</returns>
-		public int GetWorkersCount();
 
 		/// <summary>
 		/// Get the tile of the workplace

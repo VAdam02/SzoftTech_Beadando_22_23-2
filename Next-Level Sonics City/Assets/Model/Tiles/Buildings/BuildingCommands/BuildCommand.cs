@@ -47,7 +47,6 @@ namespace Model.Tiles.Buildings.BuildingCommands
 			Tile tile = _tileType switch
 			{
 				TileType.PoliceDepartment => new PoliceDepartmentBuildingTile(_x, _y, _designID, _rotation),
-				TileType.FireDepartment => new FireDepartment(_x, _y, _designID, _rotation),
 				TileType.MiddleSchool => new MiddleSchool(_x, _y, _designID, _rotation),
 				TileType.HighSchool => new HighSchool(_x, _y, _designID, _rotation),
 				TileType.Stadion => new StadionBuildingTile(_x, _y, _designID, _rotation),

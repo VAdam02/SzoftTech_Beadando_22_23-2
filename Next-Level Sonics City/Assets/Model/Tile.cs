@@ -13,18 +13,18 @@ namespace Model
 			get { return _designID; }
 			protected set
 			{
-				if (value != _designID) { OnDesignIDChange?.Invoke(this, EventArgs.Empty); }
+				if (value != _designID) { OnTileChange?.Invoke(this, this); }
 				_designID = value;
 			}
 		}
 
 		public Vector3 Coordinates { get; protected set; }
 
-		public event EventHandler<Tile> OnTileDelete;
 		private void TileDeleteInvoke() => OnTileDelete?.Invoke(this, this);
-		public event EventHandler<Tile> OnTileChange;
+		public event EventHandler<Tile> OnTileDelete;
+
 		protected void TileChangeInvoke() => OnTileChange?.Invoke(this, this);
-		public event EventHandler OnDesignIDChange;
+		public event EventHandler<Tile> OnTileChange;
 
 		/// <summary>
 		/// Constructor for Tile
@@ -63,9 +63,10 @@ namespace Model
 		/// <param name="y"></param>
 		public void UpdateCoordinates(int x, int y)
 		{
-			if (_isFinalized) { throw new InvalidOperationException(); }
+			if (_isFinalized) { throw new InvalidOperationException("Not allowed to move the tile after finalized"); }
 
 			Coordinates = new Vector3(x, y, 0);
+			OnTileChange.Invoke(this, this);
 		}
 
 		protected bool _isFinalized = false;
@@ -116,17 +117,17 @@ namespace Model
 		/// <summary>
 		/// Returns the price of building this tile
 		/// </summary>
-		public abstract int BuildPrice { get; }
+		public virtual int BuildPrice { get; }
 
 		/// <summary>
 		/// Returns the price of destroying this tile
 		/// </summary>
-		public abstract int DestroyIncome { get; }
+		public virtual int DestroyIncome { get => (int)(BuildPrice * 0.1f); }
 
 		/// <summary>
 		/// Returns the price of maintaining this tile
 		/// </summary>
-		public virtual int MaintainanceCost { get; } = 0;
+		public virtual int MaintainanceCost { get => (int)(BuildPrice * 0.05f); }
 
 		/// <summary>
 		/// Returns the tile transparency for the effects

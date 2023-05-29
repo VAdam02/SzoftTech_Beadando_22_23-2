@@ -1,3 +1,5 @@
+using System;
+
 namespace Model.Tiles.Buildings
 {
 	public interface IZoneBuilding
@@ -16,7 +18,7 @@ namespace Model.Tiles.Buildings
 		/// <summary>
 		/// Returns the cost of leveling up the building
 		/// </summary>
-		public int GetLevelUpCost();
+		public int LevelUpCost { get; }
 
 		/// <summary>
 		/// Returns the current level of the building
