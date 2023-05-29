@@ -2,6 +2,7 @@ using Model.Persons;
 using Model.RoadGrids;
 using Model.Statistics;
 using Model.Tiles;
+using Model.Tiles.Buildings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace Model
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
 			{
-				if (Mathf.PerlinNoise(i * scale, j * scale) > 0.5f)
+				if (Mathf.PerlinNoise(i * scale, j * scale) > 0.6f)
 				{
 					SetTile(new ForestTile(i, j, ForestTile.MAINTANCENEEDEDFORYEAR + 1));
 				}
