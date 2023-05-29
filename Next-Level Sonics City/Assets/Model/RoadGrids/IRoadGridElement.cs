@@ -17,21 +17,36 @@ namespace Model.RoadGrids
 		/// <summary>
 		/// Returns a list of elements this element connects to
 		/// </summary>
-		/// <returns>List of elements this connects to</returns>
-		public List<IRoadGridElement> ConnectsTo();
+		public List<IRoadGridElement> ConnectsTo { get; }
+
+		/// <summary>
+		/// Returns the IRoadGridElement from above
+		/// </summary>
+		public IRoadGridElement ConnectsFromAbove { get; }
+		
+		/// <summary>
+		/// Returns the IRoadGridElement from right
+		/// </summary>
+		public IRoadGridElement ConnectsFromRight { get; }
+
+		/// <summary>
+		/// Returns the IRoadGridElement from below
+		/// </summary>
+		public IRoadGridElement ConnectsFromBelow { get; }
+
+		/// <summary>
+		/// Returns the IRoadGridElement from left
+		/// </summary>
+		public IRoadGridElement ConnectsFromLeft { get; }
 
 		/// <summary>
 		/// Returns the road grid this belongs to
 		/// </summary>
-		/// <returns>Current road grid</returns>
-		public RoadGrid GetRoadGrid();
+		public RoadGrid RoadGrid { get; set; }
 
-		/// <summary>
-		/// Sets the road grid this belongs to
-		/// This also contains the logic to register and unregister this element and other types depending on this
-		/// </summary>
-		/// <param name="roadGrid">New road grid</param>
-		public void SetRoadGrid(RoadGrid roadGrid);
+		public bool IsLocked { get; }
+		public void LockBy(Person person);
+		public void UnlockBy(Person person);
 
 		/// <summary>
 		/// Returns the tile this element is on

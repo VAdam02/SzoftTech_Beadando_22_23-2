@@ -1,5 +1,6 @@
 using Model.Persons;
 using Model.RoadGrids;
+using Model.Tiles;
 using System.Collections.Generic;
 
 namespace Model
@@ -27,6 +28,12 @@ namespace Model
 		public List<Worker> GetWorkers();
 
 		/// <summary>
+		/// Get count of workers
+		/// </summary>
+		/// <returns>Count of workers</returns>
+		public int GetWorkersCount();
+
+		/// <summary>
 		/// Register workplace to road grid
 		/// </summary>
 		/// <param name="roadGrid">Roadgrid where should be registered</param>
@@ -39,15 +46,17 @@ namespace Model
 		public void UnregisterWorkplace(RoadGrid roadGrid);
 
 		/// <summary>
-		/// Get count of workers
-		/// </summary>
-		/// <returns>Count of workers</returns>
-		public int GetWorkersCount();
-
-		/// <summary>
 		/// Get the tile of the workplace
 		/// </summary>
 		/// <returns>Tile of the workplace</returns>
 		public Tile GetTile();
+
+		public (float happiness, float weight) HappinessByBuilding { get; }
+
+		/// <summary>
+		/// Register happy zone as a possible happiness changer
+		/// </summary>
+		/// <param name="zone">Zone that should be calculated into happiness as a changer</param>
+		public void RegisterHappinessChangerTile(IHappyZone zone);
 	}
 }

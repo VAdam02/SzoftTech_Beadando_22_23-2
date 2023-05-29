@@ -10,6 +10,13 @@ namespace Model.Tiles.ZoneCommands
 		public void Setup()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 		}
 
 		[Test]
@@ -19,7 +26,7 @@ namespace Model.Tiles.ZoneCommands
 			int y = 4;
 			ZoneType zoneType = ZoneType.IndustrialZone;
 
-			City.Instance.SetTile(new RoadTile(x, y-1, 123));
+			City.Instance.SetTile(new RoadTile(x, y-1));
 			MarkZoneCommand command = new(x, y, zoneType);
 			command.Execute();
 
@@ -50,7 +57,7 @@ namespace Model.Tiles.ZoneCommands
 			int y = 4;
 			ZoneType zoneType = ZoneType.NoZone;
 
-			IRoadGridElement roadGridElement = new MockRoadGridElement(3, 3);
+			IRoadGridElement roadGridElement = new RoadTile(3, 3);
 			City.Instance.SetTile(roadGridElement.GetTile());
 			City.Instance.SetTile(new Industrial(x, y, 123));
 

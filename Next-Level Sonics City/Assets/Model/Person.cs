@@ -1,5 +1,7 @@
-using System;
 using Model.Persons;
+using Model.Statistics;
+using System;
+using UnityEngine;
 
 namespace Model
 {
@@ -7,10 +9,11 @@ namespace Model
 	{
 		private static ulong s_id;
 
-		private readonly ulong _id;
-        public IResidential LiveAt { get; protected set; }
+		public readonly ulong ID;
+		public IResidential Residential { get; protected set; }
 		public int Age { get; protected set; }
-        public Qualification Qualification { get; protected set; }
+		public Qualification Qualification { get; protected set; }
+		protected abstract (float happiness, float weight) HappinessByPersonInheritance { get; }
 
 		/// <summary>
 		/// Creates a new person and moves him into the given residential
@@ -19,24 +22,47 @@ namespace Model
 		/// <param name="age">Age of person</param>
 		public Person(IResidential residential, int age)
 		{
-			_id = s_id++;
-			LiveAt = residential ?? throw new ArgumentNullException("Person must have a home");
+			ID = s_id++;
+			Residential = residential ?? throw new ArgumentNullException("Person must have a home");
 			Age = age;
 			if (Age < 18) throw new ArgumentException("Person cannot be younger than 18 years old");
 
-			LiveAt.MoveIn(this);
+			Residential.MoveIn(this);
+			Residential.HappinessByBuildingChanged += (sender, e) => UpdateHappiness();
 
-			City.Instance.AddPerson(_id, this);
+			City.Instance.AddPerson(this);
+			City.Instance.HappinessByCityChanged += (sender, e) => UpdateHappiness();
 		}
 
-		/// <summary>
-		/// Get the happiness of the person
-		/// </summary>
-		/// <returns>Happiness of person</returns>
-		public virtual float GetHappiness()
+		public event EventHandler<float> HappinessByPersonChanged;
+
+		public float Happiness { get; private set; }
+
+		protected void UpdateHappiness()
 		{
-			//TODO calculate happiness
-			return 0.5f;
+			float oldHappiness = Happiness;
+
+			float happiness = 0;
+			float happinessWeight = 0;
+
+			//happiness by city
+			(float happiness, float weight) cityHappiness = City.Instance.HappinessByCity;
+			happiness += cityHappiness.happiness * cityHappiness.weight;
+			happinessWeight += cityHappiness.weight;
+
+			//happiness and weight by residential
+			(float happiness, float weight) residentialHappiness = Residential.HappinessByBuilding;
+			happiness += residentialHappiness.happiness * residentialHappiness.weight;
+			happinessWeight += residentialHappiness.weight;
+
+			//happiness and weight by inheritance
+			(float happiness, float weight) inheritanceHappiness = HappinessByPersonInheritance;
+			happiness += inheritanceHappiness.happiness * inheritanceHappiness.weight;
+			happinessWeight += inheritanceHappiness.weight;
+
+			Happiness = happiness / (happinessWeight == 0 ? 1 : happinessWeight);
+
+			HappinessByPersonChanged?.Invoke(this, oldHappiness);
 		}
 
 		/// <summary>

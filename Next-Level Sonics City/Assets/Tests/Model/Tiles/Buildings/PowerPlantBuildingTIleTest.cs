@@ -15,8 +15,15 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
-			roadGridElement = new MockRoadGridElement(0, 0);
+			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 			powerPlant = new PowerPlant(0, 1, 123, Rotation.Zero);
 			City.Instance.SetTile(powerPlant.GetTile());
@@ -35,7 +42,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void RegisterWorkplace_AddsPowerPlantToRoadGrid()
 		{
-			Assert.Contains(powerPlant, roadGridElement.GetRoadGrid().Workplaces);
+			Assert.Contains(powerPlant, roadGridElement.RoadGrid.Workplaces);
 		}
 
 		[Test]
@@ -44,7 +51,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)powerPlant.Coordinates.x, (int)powerPlant.Coordinates.y);
 			destroy.Execute();
 
-			CollectionAssert.DoesNotContain(roadGridElement.GetRoadGrid().Workplaces, powerPlant);
+			CollectionAssert.DoesNotContain(roadGridElement.RoadGrid.Workplaces, powerPlant);
 		}
 
 		[Test]
@@ -52,16 +59,16 @@ namespace Model.Tiles.Buildings
 		{
 			var worker = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 
-			Assert.Contains(worker, powerPlant.GetWorkers());
+			Assert.Contains(worker, ((IWorkplace)powerPlant).GetWorkers());
 		}
 
 		[Test]
 		public void Unemploy_RemovesWorkerFromPowerPlant()
 		{
 			var worker = new Worker(residential, powerPlant, 25, Qualification.HIGH);
-			powerPlant.Unemploy(worker); //TODO illegal way to move out
+			((IWorkplace)powerPlant).Unemploy(worker); //TODO illegal way to move out
 
-			CollectionAssert.DoesNotContain(powerPlant.GetWorkers(), worker);
+			CollectionAssert.DoesNotContain(((IWorkplace)powerPlant).GetWorkers(), worker);
 		}
 
 		[Test]
@@ -70,7 +77,7 @@ namespace Model.Tiles.Buildings
 			var worker1 = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 			var worker2 = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 
-			var workers = powerPlant.GetWorkers();
+			var workers = ((IWorkplace)powerPlant).GetWorkers();
 
 			Assert.Contains(worker1, workers);
 			Assert.Contains(worker2, workers);
@@ -82,7 +89,7 @@ namespace Model.Tiles.Buildings
 			_ = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 			_ = new Worker(residential, powerPlant, 25, Qualification.HIGH);
 
-			var count = powerPlant.GetWorkersCount();
+			var count = ((IWorkplace)powerPlant).GetWorkersCount();
 
 			Assert.AreEqual(2, count);
 		}

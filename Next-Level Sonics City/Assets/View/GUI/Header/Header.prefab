@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1718428890472378147}
   - component: {fileID: 8453202338828771289}
   - component: {fileID: 2579000700029089493}
+  - component: {fileID: 748844133216017832}
   m_Layer: 5
   m_Name: HappinessImage
   m_TagString: Untagged
@@ -76,6 +77,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &748844133216017832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4801536909811028583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437b43c25b596e3449c312bff8257a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  happinessSprites:
+  - {fileID: 21300000, guid: 6b11451d21666214ca7e05ecd311d4e7, type: 3}
+  - {fileID: 21300000, guid: ed08e4fbcd207ba4b9f74400174f2bfc, type: 3}
+  - {fileID: 21300000, guid: 72f396abc6ccc8148b4c1458816644d0, type: 3}
+  happinessThresholds:
+  - 0.75
+  - 0.9
 --- !u!1 &6583561310713923841
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,6 +621,7 @@ GameObject:
   - component: {fileID: 6583561311770767838}
   - component: {fileID: 6583561311770767836}
   - component: {fileID: 6583561311770767839}
+  - component: {fileID: 8961722199373967710}
   m_Layer: 5
   m_Name: PopulationTextBox
   m_TagString: Untagged
@@ -725,6 +746,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8961722199373967710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6583561311770767777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e3e7b0a0f4e714897bc60b5ae8a024, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6583561312174738651
 GameObject:
   m_ObjectHideFlags: 0

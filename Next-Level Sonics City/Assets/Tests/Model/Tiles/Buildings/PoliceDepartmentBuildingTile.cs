@@ -14,8 +14,15 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
-			roadGridElement = new MockRoadGridElement(0, 0);
+			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
 			policeDepartment = new PoliceDepartmentBuildingTile(0, 1, 123, Rotation.Zero);
@@ -33,8 +40,8 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void RegisterWorkplace_AddsPoliceDepartmentToRoadGrid()
 		{
-			var roadGrid = roadGridElement.GetRoadGrid();
-			policeDepartment.RegisterWorkplace(roadGrid);
+			var roadGrid = roadGridElement.RoadGrid;
+			((IWorkplace)policeDepartment).RegisterWorkplace(roadGrid);
 
 			Assert.IsTrue(roadGrid.Workplaces.Contains(policeDepartment));
 		}
@@ -45,7 +52,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)policeDepartment.Coordinates.x, (int)policeDepartment.Coordinates.y);
 			destroy.Execute();
 
-			Assert.IsFalse(roadGridElement.GetRoadGrid().Workplaces.Contains(policeDepartment));
+			Assert.IsFalse(roadGridElement.RoadGrid.Workplaces.Contains(policeDepartment));
 		}
 
 		[Test]

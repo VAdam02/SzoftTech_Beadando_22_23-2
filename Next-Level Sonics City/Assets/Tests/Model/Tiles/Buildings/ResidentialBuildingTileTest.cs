@@ -14,8 +14,15 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
-			mockRoadGridElement = new MockRoadGridElement(0, 0);
+			mockRoadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(mockRoadGridElement.GetTile());
 
 			residential = new ResidentialBuildingTile(0, 1, 0);
@@ -23,9 +30,21 @@ namespace Model.Tiles.Buildings
 		}
 
 		[Test]
+		public void SetTile_SetsWorkplaceLimit()
+		{
+			IRoadGridElement roadGridElement = new RoadTile(0, 0);
+			City.Instance.SetTile(roadGridElement.GetTile());
+
+			ResidentialBuildingTile residential = new(0, 1, 123);
+			City.Instance.SetTile(residential);
+
+			Assert.AreEqual(1, residential.ResidentLimit);
+		}
+
+		[Test]
 		public void RegisterResidential_AddsResidentialToRoadGrid()
 		{
-			CollectionAssert.Contains(mockRoadGridElement.GetRoadGrid().Residentials, residential);
+			CollectionAssert.Contains(mockRoadGridElement.RoadGrid.Residentials, residential);
 		}
 
 		[Test]
@@ -34,7 +53,7 @@ namespace Model.Tiles.Buildings
 			DestroyCommand destroy = new((int)residential.GetTile().Coordinates.x, (int)residential.GetTile().Coordinates.y);
 			destroy.Execute();
 
-			CollectionAssert.DoesNotContain(mockRoadGridElement.GetRoadGrid().Residentials, residential);
+			CollectionAssert.DoesNotContain(mockRoadGridElement.RoadGrid.Residentials, residential);
 		}
 
 		[Test]
@@ -56,7 +75,7 @@ namespace Model.Tiles.Buildings
 			_ = new Pensioner(residential, 70, 50);
 
 			Assert.AreEqual(ZoneBuildingLevel.ONE, ((IZoneBuilding)residential).Level);
-			Assert.AreEqual(previousWorkplaceLimit, residential.ResidentLimit);
+			Assert.Less(previousWorkplaceLimit, residential.ResidentLimit);
 			previousWorkplaceLimit = residential.ResidentLimit;
 
 			((IZoneBuilding)residential).LevelUp();

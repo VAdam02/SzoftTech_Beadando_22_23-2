@@ -1,4 +1,6 @@
 using Model.RoadGrids;
+using Model.Tiles;
+using System;
 using System.Collections.Generic;
 
 namespace Model
@@ -6,18 +8,6 @@ namespace Model
 	public interface IResidential
 	{
 		public int ResidentLimit { get; }
-
-		/// <summary>
-		/// Register a residential zone to the road grid
-		/// </summary>
-		/// <param name="roadGrid">Roadgrid where to register</param>
-		public void RegisterResidential(RoadGrid roadGrid);
-
-		/// <summary>
-		/// Unregister a residential zone from the road grid
-		/// </summary>
-		/// <param name="roadGrid">roadgrid where from unregister</param>
-		public void UnregisterResidential(RoadGrid roadGrid);
 
 		/// <summary>
 		/// Move in a person to the residential zone
@@ -42,6 +32,27 @@ namespace Model
 		/// </summary>
 		/// <returns>Count of residents</returns>
 		public int GetResidentsCount();
+
+		/// <summary>
+		/// Register a residential zone to the road grid
+		/// </summary>
+		/// <param name="roadGrid">Roadgrid where to register</param>
+		public void RegisterResidential(RoadGrid roadGrid);
+
+		/// <summary>
+		/// Unregister a residential zone from the road grid
+		/// </summary>
+		/// <param name="roadGrid">roadgrid where from unregister</param>
+		public void UnregisterResidential(RoadGrid roadGrid);
+
+		public event EventHandler HappinessByBuildingChanged;
+		public (float happiness, float weight) HappinessByBuilding { get; }
+
+		/// <summary>
+		/// Register happy zone as a possible happiness changer
+		/// </summary>
+		/// <param name="zone">Happy zone that should be calculated into happiness as a changer</param>
+		public void RegisterHappinessChangerTile(IHappyZone happyZone);
 
 		/// <summary>
 		/// Get the tile of the residential zone

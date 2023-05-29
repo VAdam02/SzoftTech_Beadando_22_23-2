@@ -15,12 +15,19 @@ namespace Model.RoadGrids
 			_roadGrid = new RoadGrid();
 
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 		}
 
 		[Test]
 		public void AddRoadGridElement_AddsElementToList()
 		{
-			var element = new MockRoadGridElement(0, 0);
+			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
 
 			_roadGrid.AddRoadGridElement(element);
@@ -32,7 +39,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void RemoveRoadGridElement_RemovesElementFromList()
 		{
-			var element = new MockRoadGridElement(0, 0);
+			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
 
 			_roadGrid.AddRoadGridElement(element);
@@ -45,7 +52,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void AddWorkplace_AddsWorkplaceToList()
 		{
-			var workplace = new MockWorkplaceBuildingTile(0, 0, Rotation.Zero);
+			var workplace = new Commercial(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
 			_roadGrid.AddWorkplace(workplace);
@@ -57,7 +64,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void RemoveWorkplace_RemovesWorkplaceFromList()
 		{
-			var workplace = new MockWorkplaceBuildingTile(0, 0, Rotation.Zero);
+			var workplace = new Commercial(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
 			_roadGrid.AddWorkplace(workplace);
@@ -70,7 +77,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void AddResidential_AddsResidentialToList()
 		{
-			var residential = new MockResidentialBuildingTile(0, 0, Rotation.Zero);
+			var residential = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			_roadGrid.AddResidential(residential);
@@ -82,7 +89,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void RemoveResidential_RemovesResidentialFromList()
 		{
-			var residential = new MockResidentialBuildingTile(0, 0, Rotation.Zero);
+			var residential = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
 			_roadGrid.AddResidential(residential);
@@ -107,11 +114,11 @@ namespace Model.RoadGrids
 		[Test]
 		public void Merge_EmptyRoadGridIntoNonEmptyRoadGrid_RoadGridElementsMerged()
 		{
-			MockRoadGridElement element = new(0, 0);
+			RoadTile element = new(0, 0);
 			City.Instance.SetTile(element);
 
 			var roadGrid1 = new RoadGrid();
-			var roadGrid2 = ((IRoadGridElement)element).GetRoadGrid();
+			var roadGrid2 = ((IRoadGridElement)element).RoadGrid;
 
 			roadGrid1.Merge(roadGrid2);
 
@@ -123,10 +130,10 @@ namespace Model.RoadGrids
 		[Test]
 		public void Merge_NonEmptyRoadGridIntoEmptyRoadGrid_RoadGridElementsMerged()
 		{
-			MockRoadGridElement element = new(0, 0);
+			RoadTile element = new(0, 0);
 			City.Instance.SetTile(element);
 
-			var roadGrid1 = ((IRoadGridElement)element).GetRoadGrid();
+			var roadGrid1 = ((IRoadGridElement)element).RoadGrid;
 			var roadGrid2 = new RoadGrid();
 
 			roadGrid1.Merge(roadGrid2);
@@ -139,13 +146,13 @@ namespace Model.RoadGrids
 		[Test]
 		public void Merge_TwoNonEmptyRoadGridsWithNoCommonElements_RoadGridElementsMerged()
 		{
-			MockRoadGridElement element1 = new(0, 0);
+			RoadTile element1 = new(0, 0);
 			City.Instance.SetTile(element1);
-			MockRoadGridElement element2 = new(0, 2);
+			RoadTile element2 = new(0, 2);
 			City.Instance.SetTile(element2);
 
-			var roadGrid1 = ((IRoadGridElement)element1).GetRoadGrid();
-			var roadGrid2 = ((IRoadGridElement)element2).GetRoadGrid();
+			var roadGrid1 = ((IRoadGridElement)element1).RoadGrid;
+			var roadGrid2 = ((IRoadGridElement)element2).RoadGrid;
 
 			roadGrid1.Merge(roadGrid2);
 

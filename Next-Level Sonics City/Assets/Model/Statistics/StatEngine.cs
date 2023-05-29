@@ -1,13 +1,12 @@
 using Model.Persons;
 using Model.RoadGrids;
-using Model.Simulation;
 using Model.Tiles;
+using Model.Tiles.Buildings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Model.Statistics
 {
@@ -31,23 +30,20 @@ namespace Model.Statistics
 			get { return _date; }
 			private set
 			{
-				if (_date.Date != value.Date)
-				{
-					if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-					{
-						mainThread.Enqueue(() =>
-						{
-							DateChanged.Invoke();
-						});
-					}
+				bool changed = _date.Date != value.Date;
+				int oldQuarter = Quarter;
 
-					if (Quarter != (value.Month - 1) / 3)
+				_date = value;
+
+				if (changed)
+				{
+					DateChanged?.Invoke(this, new EventArgs());
+
+					if (Quarter != oldQuarter)
 					{
 						NextQuarter();
 					}
 				}
-				
-				_date = value;
 			}
 		}
 		public int Year { get { return Date.Year; } }
@@ -55,38 +51,64 @@ namespace Model.Statistics
 
 		private readonly object _budgetLock = new();
 		private float _budget = 0;
+		private int _negativeBudgetSince = 0;
 		public float Budget
 		{
 			get { return _budget; }
 			private set
 			{
 				_budget = value;
-				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
-				{
-					mainThread.Enqueue(() =>
-					{
-						BudgetChanged.Invoke();
-					});
-				}
+				if (_budget < 0 && _negativeBudgetSince == 0) { _negativeBudgetSince = Year; }
+				if (_budget >= 0) { _negativeBudgetSince = 0; }
+				BudgetChanged?.Invoke(this, new EventArgs());
 			}
 		}
-		public float WorkplaceTaxRate { get; set; } = 0.1f;
-		public float ResidentialTaxRate { get; set; } = 0.1f;
-		private readonly object _workplaceCountLock = new();
-		private float _commercialWorkplaceCount = 0;
-		private float _industrialWorkplaceCount = 0;
+		public int NegativeBudgetSince { get { return _negativeBudgetSince == 0 ? 0 : Year - _negativeBudgetSince; } }
+
+		public event EventHandler<(float oldVal, float newVal)> WorkplaceTaxChanged;
+		private float _workplaceTax = 0.2f;
+		public float WorkplaceTaxRate
+		{
+			get => _workplaceTax;
+			set
+			{
+				if (value < 0 || value > 1) { throw new ArgumentException("Tax rate must be between 0 and 1"); }
+				if (_workplaceTax == value) { return; }
+				WorkplaceTaxChanged?.Invoke(this, (_workplaceTax, value));
+				_workplaceTax = value;
+			}
+		}
+
+		public event EventHandler<(float oldVal, float newVal)> ResidentialTaxChanged;
+		private float _residentialTax = 0.1f;
+		public float ResidentialTaxRate
+		{
+			get => _residentialTax;
+			set
+			{
+				if (value < 0 || value > 1) { throw new ArgumentException("Tax rate must be between 0 and 1"); }
+				if (_residentialTax == value) { return; }
+				ResidentialTaxChanged?.Invoke(this, (_residentialTax, value));
+				_residentialTax = value;
+			}
+		}
+
+		private readonly object _workerCountLock = new();
+		private int _commercialWorkerCount = 0;
+		private int _industrialWorkerCount = 0;
 
 		private readonly List<StatReport> _statReports = new();
-		public UnityEvent BudgetChanged = new();
-		public UnityEvent DateChanged = new();
+		public event EventHandler BudgetChanged;
+		public event EventHandler DateChanged;
 
 		private StatEngine(int startYear, float startBudget)
 		{
 			_date = new DateTime(startYear, 1, 1);
 
-			_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
+			_statReports.Add(new StatReport(Year, Quarter, Budget, 1, City.Instance.GetPopulation()));
 
 			Budget = startBudget;
+
 		}
 
 		/// <summary>
@@ -282,7 +304,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(tiles, tile =>
 			{
-				float maintainanceCost = tile.GetMaintainanceCost();
+				float maintainanceCost = tile.MaintainanceCost;
 				lock (maintainanceLock)
 				{
 					totalMaintainanceCost += maintainanceCost;
@@ -300,7 +322,7 @@ namespace Model.Statistics
 		/// <param name="e"></param>
 		public void AddDestroyIncome(object sender, TileEventArgs e)
 		{
-			int destroyIncome = e.Tile.GetDestroyIncome();
+			int destroyIncome = e.Tile.DestroyIncome;
 
 			lock (_statReports)
 			{
@@ -321,7 +343,7 @@ namespace Model.Statistics
 		/// <param name="e"></param>
 		public void AddBuildExpense(object sender, TileEventArgs e)
 		{
-			int buildExpense = e.Tile.GetBuildPrice();
+			int buildExpense = City.Instance.GetTile(e.Tile).BuildPrice;
 
 			lock (_statReports)
 			{
@@ -348,7 +370,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(workers, worker =>
 			{
-				float happiness = worker.GetHappiness();
+				float happiness = worker.Happiness;
 				lock (happinessLock)
 				{
 					workplaceHappiness += happiness;
@@ -372,7 +394,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(persons, person =>
 			{
-				float happiness = person.GetHappiness();
+				float happiness = person.Happiness;
 				lock (happinessLock)
 				{
 					totalResidentialHappiness += happiness;
@@ -394,7 +416,7 @@ namespace Model.Statistics
 
 			Parallel.ForEach(persons, person =>
 			{
-				float happiness = person.GetHappiness();
+				float happiness = person.Happiness;
 				lock (happinessLock)
 				{
 					totalHappiness += happiness;
@@ -405,23 +427,13 @@ namespace Model.Statistics
 		}
 
 		/// <summary>
-		/// Return the currently active statreport with updated values
-		/// </summary>
-		/// <returns>Actual statreport</returns>
-		public StatReport GetLastStatisticsReport()
-		{
-			UpdateCurrentStatReportWithoutSideEffects();
-			return _statReports[^1];
-		}
-
-		/// <summary>
 		/// Return the last given statreports or the maximum amount
 		/// </summary>
 		/// <param name="count">Count of requested statreports</param>
 		/// <returns>Requested count statreport if possible</returns>
 		public StatReport GetLastNthStatisticsReports(int count)
 		{
-			UpdateCurrentStatReportWithoutSideEffects();
+			UpdateCurrentStatReport(false);
 
 			if (_statReports.Count - 1 - count < 0) { return _statReports[0]; }
 
@@ -429,44 +441,46 @@ namespace Model.Statistics
 		}
 
 		/// <summary>
-		/// Register change in workplace count for commercial buildings
+		/// Register change in worker count for commercial buildings
 		/// </summary>
-		/// <param name="oldWorkersLimit">Old limit for workers in workplace</param>
-		/// <param name="newWorkersLimit">New limit for workers in workplace</param>
-		internal void RegisterCommercialLevelChange(int oldWorkersLimit, int newWorkersLimit)
+		/// <param name="oldWorkersLimit">Old count for workers in workplace</param>
+		/// <param name="newWorkersLimit">New count for workers in workplace</param>
+		internal void RegisterCommercialWorkerChange(int oldWorkersCount, int newWorkersCount)
 		{
-			lock (_workplaceCountLock)
+			lock (_workerCountLock)
 			{
-				_commercialWorkplaceCount += newWorkersLimit - oldWorkersLimit;
+				_commercialWorkerCount += newWorkersCount - oldWorkersCount;
 			}
 		}
 
 		/// <summary>
-		/// Register change in workplace count for industrial buildings
+		/// Register change in worker count for industrial buildings
 		/// </summary>
-		/// <param name="oldWorkersLimit">Old limit for workers in workplace</param>
-		/// <param name="newWorkersLimit">New limit for workers in workplace</param>
-		internal void RegisterIndustrialLevelChange(int oldWorkersLimit, int newWorkersLimit)
+		/// <param name="oldWorkersLimit">Old count for workers in workplace</param>
+		/// <param name="newWorkersLimit">New count for workers in workplace</param>
+		internal void RegisterIndustrialWorkerChange(int oldWorkersCount, int newWorkersCount)
 		{
-			lock (_workplaceCountLock)
+			lock (_workerCountLock)
 			{
-				_industrialWorkplaceCount += newWorkersLimit - oldWorkersLimit;
+				_industrialWorkerCount += newWorkersCount - oldWorkersCount;
 			}
 		}
 
 		/// <summary>
-		/// Calculate the rate of commercial to industrial workplaces
+		/// Calculate the rate of commercial to industrial workers
 		/// </summary>
-		/// <returns>Rate of commercial to industial workplace count</returns>
-		public float GetCommercialToIndustrialRate()
+		/// <returns>Rate of commercial to industial workers count</returns>
+		public float GetCommercialWorkersPercentToCommercialAndIndustrialWorkers()
 		{
-			return _commercialWorkplaceCount / _industrialWorkplaceCount;
+			int allWorkers = (_commercialWorkerCount == 0 ? 1 :	_commercialWorkerCount) + (_industrialWorkerCount == 0 ? 1 : _industrialWorkerCount);
+			
+			return (float)(_commercialWorkerCount == 0 ? 1 : _commercialWorkerCount) / allWorkers;
 		}
 
 		/// <summary>
 		/// Update the current statreport without side effects
 		/// </summary>
-		private void UpdateCurrentStatReportWithoutSideEffects()
+		private void UpdateCurrentStatReport(bool withSideEffects)
 		{
 			List<IWorkplace> workplaces = ConcatenateWorkplaces();
 			List<IResidential> residentials = ConcatenateResidentials();
@@ -477,7 +491,7 @@ namespace Model.Statistics
 				tiles.Add(City.Instance.GetTile(i, j));
 			}
 
-			if (Quarter == 0)
+			if (Quarter == 0 && withSideEffects)
 			{
 				float residentialTax = CalculateResidentialTax(residentials, ResidentialTaxRate);
 				float workplaceTax = CalculateWorkplaceTax(workplaces, WorkplaceTaxRate);
@@ -495,15 +509,18 @@ namespace Model.Statistics
 
 			float newIncome = _statReports[^1].ResidentialTax + _statReports[^1].WorkplaceTax;
 			float newExpenses = _statReports[^1].Pension + _statReports[^1].MaintainanceCosts;
-			lock (_budgetLock)
-			{
-				Budget += newIncome - newExpenses;
-			}
 
 			_statReports[^1].Budget = Budget;
 			_statReports[^1].Incomes = newIncome;
 			_statReports[^1].Expenses = newExpenses;
-			_statReports[^1].Profit = newIncome - newExpenses;
+			_statReports[^1].Total = newIncome - newExpenses;
+			if (withSideEffects)
+			{
+				lock (_budgetLock)
+				{
+					Budget += newIncome - newExpenses;
+				}
+			}
 
 			_statReports[^1].Population = City.Instance.GetPopulation();
 
@@ -530,7 +547,7 @@ namespace Model.Statistics
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{
-				residentials = Enumerable.Concat(residentials, roadGrid.Residentials).ToList();
+				residentials.AddRange(roadGrid.Residentials);
 			}
 
 			return residentials;
@@ -547,11 +564,14 @@ namespace Model.Statistics
 
 			foreach (RoadGrid roadGrid in roadGrids)
 			{
-				workplaces = Enumerable.Concat(workplaces, roadGrid.Workplaces).ToList();
+				workplaces.AddRange(roadGrid.Workplaces);
 			}
 
 			return workplaces;
 		}
+
+		public event EventHandler NextQuarterEvent;
+		public event EventHandler NegativeBudgetYearElapsed;
 
 		/// <summary>
 		/// Close the current statreport and create a new one
@@ -560,14 +580,29 @@ namespace Model.Statistics
 		{
 			Debug.Log("Next quarter");
 
-			UpdateCurrentStatReportWithoutSideEffects();
+			if (Quarter == 0 && (NegativeBudgetSince != 0 || Budget < 0))
+			{
+				NegativeBudgetYearElapsed?.Invoke(this, new EventArgs());
+			}
+
+			NextQuarterEvent?.Invoke(this, EventArgs.Empty);
+
+			UpdateCurrentStatReport(true);
 
 			lock (_statReports)
 			{
-				_statReports.Add(new StatReport(Year, Quarter, Budget, CalculateHappiness(new List<Person>(City.Instance.GetPersons().Values)), City.Instance.GetPopulation()));
+				_statReports.Add(new StatReport(Year, Quarter, Budget, City.Instance.CityHappiness, City.Instance.GetPopulation()));
 			}
 
-			UpdateCurrentStatReportWithoutSideEffects();
+			UpdateCurrentStatReport(false);
+
+			//TODO debug
+			string msg = City.Instance.CityHappiness + " - ";
+			foreach (KeyValuePair<ulong, Person> person in City.Instance.GetPersons())
+			{
+				msg += person.Value.Happiness + " ";
+			}
+			Debug.Log(msg);
 		}
 
 		/// <summary>
@@ -576,8 +611,7 @@ namespace Model.Statistics
 		/// </summary>
 		public void TimeElapsed()
 		{
-			Date = Date.AddMinutes(30);
-			Date = Date.AddHours(12);
+			Date = Date.AddHours(2);
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 		{
 			int x = 3;
 			int y = 4;
-			City.Instance.SetTile(new MockRoadGridElement(x, y));
+			City.Instance.SetTile(new RoadTile(x, y));
 
 			Assert.IsNotInstanceOf<EmptyTile>(City.Instance.GetTile(x, y));
 

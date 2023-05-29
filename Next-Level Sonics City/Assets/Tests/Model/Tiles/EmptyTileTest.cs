@@ -11,14 +11,22 @@ namespace Model.Tiles.Buildings
 		public void SetUp()
 		{
 			City.Reset();
-			emptyTile = new EmptyTile(0, 0, 123);
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
+
+			emptyTile = new EmptyTile(0, 0);
 			City.Instance.SetTile(emptyTile);
 		}
 
 		[Test]
 		public void CanBuild_ReturnsFalseIfAdjacentTileIsNotEmptyTile()
 		{
-			var adjacentTile = new EmptyTile(0, 1, 456);
+			var adjacentTile = new EmptyTile(0, 1);
 			City.Instance.SetTile(adjacentTile);
 
 			var canBuild = emptyTile.CanBuild();
@@ -51,7 +59,7 @@ namespace Model.Tiles.Buildings
 		[Test]
 		public void GetLevelUpCost_ThrowsInvalidOperationException()
 		{
-			Assert.Throws<InvalidOperationException>(() => ((IZoneBuilding)emptyTile).GetLevelUpCost());
+			Assert.Throws<InvalidOperationException>(() => _ = ((IZoneBuilding)emptyTile).LevelUpCost);
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 		/// </summary>
 		public void Execute()
 		{
-			City.Instance.SetTile(new EmptyTile(_x, _y, 0));
+			City.Instance.SetTile(new EmptyTile(_x, _y));
 		}
 	}
 }

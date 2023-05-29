@@ -1,18 +1,28 @@
-﻿using Model.Statistics;
+﻿using Model.RoadGrids;
+using Model.Statistics;
 using NUnit.Framework;
 
 namespace Model.Tiles
 {
 	public class ForestTileTest
 	{
-		private Forest forest;
+		private ForestTile forest;
 
 		[SetUp]
 		public void SetUp()
 		{
+			RoadGridManager.Reset();
+			StatEngine.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
-			forest = new Forest(0, 0, 123);
+			forest = new ForestTile(0, 0, 0);
 			City.Instance.SetTile(forest);
 		}
 
@@ -41,14 +51,14 @@ namespace Model.Tiles
 				StatEngine.Instance.TimeElapsed();
 			}
 
-			var maintainanceCost = forest.GetMaintainanceCost();
+			var maintainanceCost = forest.MaintainanceCost;
 			Assert.AreEqual(0, maintainanceCost);
 		}
 
 		// Helper method to access the private field _plantedYear
-		private int GetPlantedYear(Forest forest)
+		private int GetPlantedYear(ForestTile forest)
 		{
-			return (int)typeof(Forest)
+			return (int)typeof(ForestTile)
 				.GetField("_plantedYear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
 				.GetValue(forest);
 		}

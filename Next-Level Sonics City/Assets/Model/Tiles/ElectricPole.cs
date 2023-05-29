@@ -1,9 +1,35 @@
-using Model.Service;
-
 namespace Model.Tiles
 {
-	public class ElectricPole : Tile, IPowerGridElement
+	public class ElectricPole : Tile
 	{
+		#region Tile implementation
+		public override TileType GetTileType() { return TileType.ElectricPole; }
+
+		public override void FinalizeTile() => Finalizing();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
+		/// <para>Do the actual finalization</para>
+		/// </summary>
+		protected new void Finalizing() => base.Finalizing();
+
+		public override void DeleteTile() => Deleting();
+
+		/// <summary>
+		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
+		/// <para>Do the deletion administration</para>
+		/// </summary>
+		protected new void Deleting() => base.Deleting();
+
+		public override int BuildPrice => 500;
+
+		public override float Transparency => 1;
+		#endregion
+
+		#region Common implementation
+		public Tile GetTile() => this;
+		#endregion
+
 		/// <summary>
 		/// Construct a new electric pole
 		/// </summary>
@@ -13,26 +39,6 @@ namespace Model.Tiles
 		public ElectricPole(int x, int y, uint designID) : base(x, y, designID)
 		{
 
-		}
-
-		public override TileType GetTileType() { return TileType.ElectricPole; }
-
-		public override int GetBuildPrice()
-		{
-			//TODO implement electric pole build price
-			return 100000;
-		}
-
-		public override int GetDestroyIncome()
-		{
-			//TODO implement electric pole destroy price
-			return 100000;
-		}
-
-		public override int GetMaintainanceCost()
-		{
-			//TODO implement electric pole maintainance cost
-			return 100000;
 		}
 	}
 }

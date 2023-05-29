@@ -8,11 +8,11 @@ namespace Model.Statistics
 {
 	public class StatEngineTests
 	{
-		MockRoadGridElement _road;
-		MockResidentialBuildingTile _residential1;
-		MockResidentialBuildingTile _residential2;
-		MockWorkplaceBuildingTile _workplace1;
-		MockWorkplaceBuildingTile _workplace2;
+		RoadTile _road;
+		ResidentialBuildingTile _residential1;
+		ResidentialBuildingTile _residential2;
+		Commercial _workplace1;
+		Commercial _workplace2;
 
 		List<Worker> _workers;
 		List<Pensioner> _pensioners;
@@ -22,17 +22,24 @@ namespace Model.Statistics
 		{
 			StatEngine.Reset();
 			City.Reset();
+			for (int i = 0; i < City.Instance.GetSize(); i++)
+			{
+				for (int j = 0; j < City.Instance.GetSize(); j++)
+				{
+					City.Instance.SetTile(new EmptyTile(i, j));
+				}
+			}
 
 			_road = new(1, 1);
 			City.Instance.SetTile(_road);
-			_residential1 = new(1, 0, Rotation.OneEighty);
+			_residential1 = new(1, 0, 0, Rotation.OneEighty, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_residential1);
-			_residential2 = new(2, 1, Rotation.TwoSeventy);
+			_residential2 = new(2, 1, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_residential2);
 
-			_workplace1 = new(1, 2, Rotation.Zero);
+			_workplace1 = new(1, 2, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_workplace1);
-			_workplace2 = new(0, 1, Rotation.Ninety);
+			_workplace2 = new(0, 1, 0, Rotation.Ninety, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_workplace2);
 
 			_workers = new()
@@ -115,43 +122,8 @@ namespace Model.Statistics
 		[Test]
 		public void SumMaintenance_EqualsToIndividualTilesMaintenanceSum()
 		{
-			float maintenance = _residential1.GetMaintainanceCost() + _residential2.GetMaintainanceCost() + _workplace1.GetMaintainanceCost() + _workplace2.GetMaintainanceCost();
+			float maintenance = _residential1.MaintainanceCost + _residential2.MaintainanceCost + _workplace1.MaintainanceCost + _workplace2.MaintainanceCost;
 			Assert.AreEqual(maintenance, StatEngine.Instance.SumMaintenance(new List<Tile>() { _residential1, _residential2, _workplace1, _workplace2 }));
-		}
-
-		[Test]
-		public void CalculateWorkplaceHappiness_EqualsToIndividualWorkersHappinessAVG()
-		{
-			float happiness = (_workers[0].GetHappiness() + _workers[1].GetHappiness()) / 2;
-			Assert.AreEqual(happiness, StatEngine.Instance.CalculateWorkplaceHappiness(_workplace1));
-		}
-
-		[Test]
-		public void CalculateResidentialHappiness_EqualsToIndividualPersonsHappinessAVG()
-		{
-			float happiness = (_workers[0].GetHappiness() + _workers[1].GetHappiness() + _pensioners[0].GetHappiness() + _pensioners[1].GetHappiness()) / 4;
-			Assert.AreEqual(happiness, StatEngine.Instance.CalculateResidentialHappiness(_residential1));
-		}
-
-		[Test]
-		public void CalculateHappiness_EqualsToIndividualPersonsHappinessAVG()
-		{
-			float happiness = 0;
-			foreach (Worker worker in _workers)
-			{
-				happiness += worker.GetHappiness();
-			}
-			foreach (Pensioner pensioner in _pensioners)
-			{
-				happiness += pensioner.GetHappiness();
-			}
-			happiness /= _workers.Count + _pensioners.Count;
-
-			List<Person> persons = new();
-			persons.AddRange(_workers);
-			persons.AddRange(_pensioners);
-
-			Assert.AreEqual(happiness, StatEngine.Instance.CalculateHappiness(persons));
 		}
 	}
 }

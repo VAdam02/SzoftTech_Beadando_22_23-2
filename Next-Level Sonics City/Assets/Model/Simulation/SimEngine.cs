@@ -39,6 +39,134 @@ namespace Model.Simulation
 		private static void Tick()
 		{
 			StatEngine.Instance.TimeElapsed();
+
+			//kill who needed
+
+
+
+			/*
+			//mandatory continuous move-in
+			int startindex = City.Instance.GetPersons().Keys.Last();
+			if(SimEngine._instance.freeResidentals.Count !=0 && SimEngine._instance.freeWorkplaces.Count != 0){
+				if(_instance.freeResidentals.Count>=2 && _instance.freeWorkplaces.Count>=2){
+					for(int i = startindex+1;i < startindex+3;i++){	
+
+						if(SimEngine._instance.FindHomeWithoutIndustrial(SimEngine._instance.freeResidentals) is null){			
+							int age = rand.Next(18,65);
+							Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+							int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+							ResidentialBuildingTile home = SimEngine._instance.FindClosestHomeToWorkplace(SimEngine._instance.RoadGridManager.RoadGrids);
+							int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+							IWorkplace workPlace = SimEngine._instance.FindClosestWorkplaceToResidential(SimEngine._instance.RoadGridManager.RoadGrids,home);
+							Worker w = new Worker(home,workPlace,age,randomq);
+							_instance.Personslist.Add(i,w);
+						}
+						else{
+							
+							int age = rand.Next(18,65);
+							Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+							int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+							ResidentialBuildingTile home = SimEngine._instance.FindHomeWithoutIndustrial(SimEngine._instance.freeResidentals);
+							int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+							IWorkplace workPlace = SimEngine._instance.FindClosestWorkplaceToResidential(SimEngine._instance.RoadGridManager.RoadGrids,home);
+							Worker w = new Worker(home,workPlace,age,randomq);
+							_instance.Personslist.Add(i,w);
+						}
+					}
+				}
+			}
+					  
+			// temporary solution
+			//happiness move-in or move-out
+			foreach(RoadGrid roadGrid in SimEngine.Instance.RoadGridManager.RoadGrids){
+				SimEngine._instance.freeResidentals = (List<ResidentialBuildingTile>)roadGrid.Residentials.Where(current => current.GetResidentsCount() < current.GetResidentsLimit());
+				SimEngine._instance.freeWorkplaces = (List<IWorkplace>)roadGrid.Workplaces.Where(current => current.GetWorkersCount() < current.GetWorkersLimit());
+				SimEngine._instance.ResidentialsList = roadGrid.Residentials;
+			}
+			for(int i = 1; i < SimEngine._instance.Personslist.Count+1;i++){
+				Person person = SimEngine._instance.Personslist[i];
+				if(SimEngine._instance.MoveOut(person)){
+					SimEngine._instance.MoveOutList.Add(person);
+					//remove the person from the Personlist
+					SimEngine._instance.Personslist.Remove(i);
+				}
+			}
+			startindex = _instance.Personslist.Keys.Last();
+			if(SimEngine._instance.StatEngine.CalculateHappiness(SimEngine._instance.ResidentialsList) > 0.65){
+			int be = (int)(SimEngine._instance.Personslist.Count * SimEngine._instance.StatEngine.CalculateHappiness(SimEngine._instance.ResidentialsList)/10);
+
+				if(SimEngine._instance.freeResidentals.Count >=be && SimEngine._instance.freeWorkplaces.Count >=be){
+					for(int i = startindex+1;i< startindex+be+1;i++){
+						if(SimEngine._instance.FindHomeWithoutIndustrial(SimEngine._instance.freeResidentals) is null){			
+							int age = rand.Next(18,65);
+							Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+							int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+							ResidentialBuildingTile home = SimEngine._instance.FindClosestHomeToWorkplace(SimEngine._instance.RoadGridManager.RoadGrids);
+							int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+							IWorkplace workPlace = SimEngine._instance.FindClosestWorkplaceToResidential(SimEngine._instance.RoadGridManager.RoadGrids,home);
+							Worker w = new Worker(home,workPlace,age,randomq);
+							_instance.Personslist.Add(i,w);
+						}
+						else{
+							
+							int age = rand.Next(18,65);
+							Qualification randomq = (Qualification)new System.Random().Next(0,Enum.GetValues(typeof(Qualification)).Length);
+							int randResidental = rand.Next(0,_instance.freeResidentals.Count);
+							ResidentialBuildingTile home = SimEngine._instance.FindHomeWithoutIndustrial(SimEngine._instance.freeResidentals);
+							int randWorkplace = rand.Next(0,_instance.freeWorkplaces.Count);
+							IWorkplace workPlace = SimEngine._instance.FindClosestWorkplaceToResidential(SimEngine._instance.RoadGridManager.RoadGrids,home);
+							Worker w = new Worker(home,workPlace,age,randomq);
+							_instance.Personslist.Add(i,w);
+						}
+					}
+				}				
+			}
+			//moving the persons out
+			foreach (Person residentToRemove in SimEngine._instance.MoveOutList)
+			{
+				residentToRemove.Residential.MoveOut(residentToRemove);
+
+				if (residentToRemove is Worker worker)
+				{
+					worker.WorkPlace.Unemploy(worker);
+				}
+			}
+			*/
+		}
+		
+		private bool MoveOut(Person p)
+		{
+			if(p.Happiness <= 0.5){
+				return(new System.Random().NextDouble()<0.9);//90% chance of moving out
+			}
+			else if(p.Happiness>0.5 && p.Happiness < 0.65){
+				return(new System.Random().NextDouble()<0.55);//55% chance of moving out
+
+			}
+			else if(p.Happiness >= 0.65 && p.Happiness <0.75) {
+				return(new System.Random().NextDouble()<0.25);//25% chance of moving out
+
+			}
+			else{
+				return(new System.Random().NextDouble()<0.05);//5% chance of moving out
+
+			}
+			//TODO
+		}
+
+		private void Die(Person person)
+		{
+			/*
+			Person toKill = person;
+			
+			foreach(KeyValuePair<int,Person> kvp in Personslist){
+				if(kvp.Value == toKill){
+					Personslist.Remove(kvp.Key);
+					break;
+				}
+			}
+			//TODO
+			*/
 		}
 
 		/// <summary>
@@ -49,6 +177,69 @@ namespace Model.Simulation
 		{
 			_timeSpeed = speed;
 		}
+
+		/*
+		public ResidentialBuildingTile FindHomeWithoutIndustrial(List<ResidentialBuildingTile> freeResidential){
+			foreach(ResidentialBuildingTile residential in freeResidential){
+				if(!IsIndustrialNearby(residential)){
+					return residential;
+				}
+			}
+			return null;
+		}
+		public IResidential FindClosestHomeToWorkplace(List<RoadGrid> roadGrids)
+		{
+			IResidential closestHome = null;
+			float distance = float.MaxValue;
+			foreach (RoadGrid roadGrid in roadGrids)
+			foreach (IResidential residential in roadGrid.Residentials.FindAll((IResidential residential) => residential.ResidentLimit > residential.GetResidentsCount()))
+			foreach (IWorkplace workplace in roadGrid.Workplaces.FindAll((IWorkplace workplace) => workplace.WorkplaceLimit > workplace.GetWorkersCount()))
+			{
+				float currentDistance = Vector3.Distance(residential.GetTile().Coordinates, workplace.GetTile().Coordinates);
+				if (currentDistance < distance)
+				{
+					distance = currentDistance;
+					closestHome = residential;
+				}
+			}
+
+			return closestHome;
+		}
+
+		public bool IsIndustrialNearby(ResidentialBuildingTile residentialBuilding){
+			foreach(IWorkplace industrial  in SimEngine._instance.RoadGridManager.RoadGrids){
+				if(industrial is Industrial){
+					float distance = Vector3.Distance(industrial.GetTile().Coordinates, residentialBuilding.Coordinates);
+					
+					if(distance < 10){
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		public IWorkplace FindClosestWorkplaceToResidential(List<RoadGrid> roadGrids, ResidentialBuildingTile residentialBuilding){
+			
+			IWorkplace closestWorkplace = null;
+			float distance = float.MaxValue;
+			
+				foreach (RoadGrid roadGrid in roadGrids)
+				{
+					foreach (IWorkplace workplace in freeWorkplaces)
+					{
+						float current = Vector3.Distance(workplace.GetTile().Coordinates, residentialBuilding.Coordinates);
+						
+						if (current < distance)
+						{
+							distance = current;
+							closestWorkplace = workplace;
+						}
+					}
+				}
+
+			return closestWorkplace;
+		}
+		*/
 
 		#region Thread
 		private static float _timeSpeed = 1;							//multiplier for tps
@@ -88,15 +279,24 @@ namespace Model.Simulation
 				//TICKING DELAY
 				long timeNeeded = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 				if (!_isPaused ) { sumTickTime += timeNeeded; tickCount++; }
-				long sleepTime = (long)(1000 / (TPS * _timeSpeed) - timeNeeded);
-				if (sleepTime > 0) { Thread.Sleep((int)sleepTime); }
-				else { Debug.LogWarning("Last tick took " + timeNeeded + "ms thats " + (-sleepTime) + "ms longer than the maximum allowed tick process time"); }
-				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+				long timeAllowed = (long)(1000 / (TPS * _timeSpeed));
+				long sleepTime = timeAllowed - timeNeeded;
+				if (sleepTime > 0)
+				{
+					Thread.Sleep((int)sleepTime);
+					startTime += timeAllowed;
+				}
+				else
+				{
+					startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+					Debug.LogWarning("Last tick took " + timeNeeded + "ms thats " + (-sleepTime) + "ms longer than the maximum allowed tick process time");
+				}
 
 				if (!_isDebugPrinted)
 				{
 					_isDebugPrinted = true;
-					Debug.Log((sumTickTime / tickCount) + "ms average tick time");
+					Debug.Log((sumTickTime / (tickCount == 0 ? 1 : tickCount)) + "ms average tick time");
 				}
 			}
 
