@@ -76,14 +76,8 @@ namespace Model.Tiles.Buildings
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement stadion build price
-		public override int BuildPrice => 100000;
+		public override int BuildPrice => 30000;
 
-		//TODO implement stadion destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement stadion maintainance cost
-		public override int MaintainanceCost => 100000;
 		#endregion
 
 		#region Building implementation

@@ -21,14 +21,7 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement electric pole build price
-		public override int BuildPrice => 100000;
-
-		//TODO implement electric pole destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement electric pole maintainance cost
-		public override int MaintainanceCost => 100000;
+		public override int BuildPrice => 500;
 
 		public override float Transparency => 1;
 		#endregion

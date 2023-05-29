@@ -41,14 +41,9 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Deleting() => base.Deleting();
 
-		//TODO implement forest build price
-		public override int BuildPrice => 100000;
+		public override int BuildPrice => 3000;
 
-		//TODO implement forest destroy price
-		public override int DestroyIncome => 100000;
-
-		//TODO implement forest maintainance cost
-		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : 100000;
+		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : BuildPrice;
 
 		public override float Transparency => 1 - Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR) / 4;
 		#endregion

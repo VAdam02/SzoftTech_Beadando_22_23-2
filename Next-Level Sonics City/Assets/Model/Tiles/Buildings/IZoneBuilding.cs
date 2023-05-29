@@ -1,3 +1,5 @@
+using System;
+
 namespace Model.Tiles.Buildings
 {
 	public interface IZoneBuilding
