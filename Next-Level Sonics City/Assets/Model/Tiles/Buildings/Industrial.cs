@@ -72,16 +72,7 @@ namespace Model.Tiles.Buildings
 
 		#region IWorkplace implementation
 		private readonly List<Worker> _workers = new();
-		private int _workplaceLimit = 0;
-		public int WorkplaceLimit
-		{
-			get => _workplaceLimit;
-			private set
-			{
-				StatEngine.Instance.RegisterIndustrialLevelChange(_workplaceLimit, value);
-				_workplaceLimit = value;
-			}
-		}
+		public int WorkplaceLimit { get; private set; }
 
 		void IWorkplace.Employ(Worker worker)
 		{
@@ -90,13 +81,17 @@ namespace Model.Tiles.Buildings
 
 			if (Level == ZoneBuildingLevel.ZERO) { Level = ZoneBuildingLevel.ONE; }
 
+			int oldWorkersCount = ((IWorkplace)this).GetWorkersCount();
 			_workers.Add(worker);
+			StatEngine.Instance.RegisterIndustrialWorkerChange(oldWorkersCount, ((IWorkplace)this).GetWorkersCount());
 		}
 
 		void IWorkplace.Unemploy(Worker worker)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unemploy before tile is set"); }
+			int oldWorkersCount = ((IWorkplace)this).GetWorkersCount();
 			_workers.Remove(worker);
+			StatEngine.Instance.RegisterIndustrialWorkerChange(oldWorkersCount, ((IWorkplace)this).GetWorkersCount());
 
 			if (((IWorkplace)this).GetWorkersCount() == 0) { Level = ZoneBuildingLevel.ZERO; }
 		}

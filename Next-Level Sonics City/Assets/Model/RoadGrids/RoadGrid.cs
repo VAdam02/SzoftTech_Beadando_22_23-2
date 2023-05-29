@@ -22,6 +22,7 @@ namespace Model.RoadGrids
 		/// <param name="roadGridElement">Element that should be added</param>
 		public void AddRoadGridElement(IRoadGridElement roadGridElement)
 		{
+			lock (_roadGridElements)
 			_roadGridElements.Add(roadGridElement);
 		}
 
@@ -31,6 +32,7 @@ namespace Model.RoadGrids
 		/// <param name="roadGridElement">Element that should be removed</param>
 		public void RemoveRoadGridElement(IRoadGridElement roadGridElement)
 		{
+			lock (_roadGridElements)
 			_roadGridElements.Remove(roadGridElement);
 		}
 
@@ -68,9 +70,9 @@ namespace Model.RoadGrids
 		/// <param name="workplace">Workplace that should be added</param>
 		public void AddWorkplace(IWorkplace workplace)
 		{
-			if		(workplace is Commercial) _commercialWorkplaces.Add(workplace);
-			else if (workplace is Industrial) _industrialWorkplaces.Add(workplace);
-			else							  _otherWorkplaces.Add(workplace);
+			if		(workplace is Commercial) lock (_commercialWorkplaces) _commercialWorkplaces.Add(workplace);
+			else if (workplace is Industrial) lock (_industrialWorkplaces) _industrialWorkplaces.Add(workplace);
+			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Add(workplace);
 		}
 
 		/// <summary>
@@ -79,9 +81,9 @@ namespace Model.RoadGrids
 		/// <param name="workplace">Workplace that should be removed</param>
 		public void RemoveWorkplace(IWorkplace workplace)
 		{
-			if		(workplace is Commercial) _commercialWorkplaces.Remove(workplace);
-			else if (workplace is Industrial) _industrialWorkplaces.Remove(workplace);
-			else							  _otherWorkplaces.Remove(workplace);
+			if		(workplace is Commercial) lock (_commercialWorkplaces) _commercialWorkplaces.Remove(workplace);
+			else if (workplace is Industrial) lock (_industrialWorkplaces) _industrialWorkplaces.Remove(workplace);
+			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Remove(workplace);
 		}
 
 		private readonly List<IResidential> _residential = new();
@@ -100,7 +102,7 @@ namespace Model.RoadGrids
 		/// <param name="residential">Residential that should be added</param>
 		public void AddResidential(IResidential residential)
 		{
-			_residential.Add(residential);
+			lock (_residential) _residential.Add(residential);
 		}
 
 		/// <summary>
@@ -109,7 +111,7 @@ namespace Model.RoadGrids
 		/// <param name="residential">Residential that should be removed</param>
 		public void RemoveResidential(IResidential residential)
 		{
-			_residential.Remove(residential);
+			lock (_residential) _residential.Remove(residential);
 		}
 
 		/// <summary>

@@ -38,7 +38,7 @@ namespace Model
 
 		public float Happiness { get; private set; }
 
-		private void UpdateHappiness()
+		protected void UpdateHappiness()
 		{
 			float oldHappiness = Happiness;
 

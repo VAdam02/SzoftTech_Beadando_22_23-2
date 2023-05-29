@@ -22,7 +22,7 @@ namespace View.GUI.Header
 					mainThread.Enqueue(() =>
 					{
 						int i = 0;
-						while (i < happinessThresholds.Length && City.Instance.CityHappiness < happinessThresholds[i]) { i++; }
+						while (i < happinessThresholds.Length && City.Instance.CityHappiness > happinessThresholds[i]) { i++; }
 						GetComponent<Image>().sprite = happinessSprites[i];
 					});
 				}

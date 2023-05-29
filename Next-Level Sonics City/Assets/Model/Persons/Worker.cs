@@ -53,6 +53,8 @@ namespace Model.Persons
 			PathToWork = RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential.GetTile()), RoadGridManager.GetRoadGrigElementByBuilding((Building)workPlace.GetTile()), int.MaxValue);
 			PersonQualification = qualification;
 			WorkPlace.Employ(this);
+
+			UpdateHappiness();
 		}
 
 		/// <summary>
@@ -82,6 +84,8 @@ namespace Model.Persons
 			PersonQualification = qualification;
 			
 			WorkPlace.Employ(this);
+
+			UpdateHappiness();
 		}
 
 		private void RecalculatePathToWork(object sender, Tile tile)

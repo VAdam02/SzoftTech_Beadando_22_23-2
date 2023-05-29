@@ -51,6 +51,7 @@ namespace Model
 
 			StatEngine.Instance.ResidentialTaxChanged += ResidentialTaxChangeHandler;
 			StatEngine.Instance.NextQuarterEvent += NextQuarter;
+			StatEngine.Instance.NegativeBudgetYearElapsed += NegativeBudgetYearElapsedHandler;
 		}
 
 
@@ -83,9 +84,29 @@ namespace Model
 						}
 
 						IWorkplace canBeOther = target.FreeOtherWorkplaces.Count > 0 ? target.FreeOtherWorkplaces[rnd.Next(0, target.FreeOtherWorkplaces.Count)] : null;
-						IWorkplace canBeComOrInd = rnd.NextDouble() < StatEngine.Instance.GetCommercialToIndustrialRate() ? 
+						IWorkplace canBeComOrInd;
+						if (target.FreeIndustrialWorkplaces.Count > 0 && target.FreeCommercialWorkplaces.Count > 0)
+						{
+							canBeComOrInd = rnd.NextDouble() < StatEngine.Instance.GetCommercialWorkersPercentToCommercialAndIndustrialWorkers() ?
 												(target.FreeIndustrialWorkplaces.Count > 0 ? target.FreeIndustrialWorkplaces[rnd.Next(0, target.FreeIndustrialWorkplaces.Count)] : null) :
 												(target.FreeCommercialWorkplaces.Count > 0 ? target.FreeCommercialWorkplaces[rnd.Next(0, target.FreeCommercialWorkplaces.Count)] : null);
+						}
+						else
+						{
+							if (target.FreeIndustrialWorkplaces.Count > 0)
+							{
+								canBeComOrInd = target.FreeIndustrialWorkplaces[rnd.Next(0, target.FreeIndustrialWorkplaces.Count)];
+							}
+							else if (target.FreeCommercialWorkplaces.Count > 0)
+							{
+								canBeComOrInd = target.FreeCommercialWorkplaces[rnd.Next(0, target.FreeCommercialWorkplaces.Count)];
+							}
+							else
+							{
+								canBeComOrInd = null;
+							}
+						}
+
 						if (canBeOther != null && canBeComOrInd != null)
 						{
 							workplace = rnd.Next(0, 2) == 0 ? canBeOther : canBeComOrInd;
@@ -167,16 +188,13 @@ namespace Model
 			HappinessByCityChanged?.Invoke(this, new EventArgs());
 		}
 
-		private void NegativeBudgetYearEllapsedHandler(object sender, EventArgs e)
+		private void NegativeBudgetYearElapsedHandler(object sender, EventArgs e)
 		{
-			if (StatEngine.Instance.Quarter == 3)
+			_happinessChangers.RemoveAll(item => item.type == "NegativeBudget");
+			if (StatEngine.Instance.NegativeBudgetSince != 0)
 			{
-				_happinessChangers.RemoveAll(item => item.type == "NegativeBudget");
-				if (StatEngine.Instance.NegativeBudgetSince != 0)
-				{
-					_happinessChangers.Add(("NegativeBudget", 0, Mathf.Tan(StatEngine.Instance.NegativeBudgetSince * MathF.PI / 20) * 10));
-					HappinessByCityChanged?.Invoke(this, new EventArgs());
-				}
+				_happinessChangers.Add(("NegativeBudget", 0, Mathf.Tan(StatEngine.Instance.NegativeBudgetSince * MathF.PI / 20) * 10));
+				HappinessByCityChanged?.Invoke(this, new EventArgs());
 			}
 		}
 

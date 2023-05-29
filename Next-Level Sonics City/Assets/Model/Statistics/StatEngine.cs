@@ -89,9 +89,9 @@ namespace Model.Statistics
 			}
 		}
 
-		private readonly object _workplaceCountLock = new();
-		private float _commercialWorkplaceCount = 0;
-		private float _industrialWorkplaceCount = 0;
+		private readonly object _workerCountLock = new();
+		private int _commercialWorkerCount = 0;
+		private int _industrialWorkerCount = 0;
 
 		private readonly List<StatReport> _statReports = new();
 		public event EventHandler BudgetChanged;
@@ -456,38 +456,40 @@ namespace Model.Statistics
 		}
 
 		/// <summary>
-		/// Register change in workplace count for commercial buildings
+		/// Register change in worker count for commercial buildings
 		/// </summary>
-		/// <param name="oldWorkersLimit">Old limit for workers in workplace</param>
-		/// <param name="newWorkersLimit">New limit for workers in workplace</param>
-		internal void RegisterCommercialLevelChange(int oldWorkersLimit, int newWorkersLimit)
+		/// <param name="oldWorkersLimit">Old count for workers in workplace</param>
+		/// <param name="newWorkersLimit">New count for workers in workplace</param>
+		internal void RegisterCommercialWorkerChange(int oldWorkersCount, int newWorkersCount)
 		{
-			lock (_workplaceCountLock)
+			lock (_workerCountLock)
 			{
-				_commercialWorkplaceCount += newWorkersLimit - oldWorkersLimit;
+				_commercialWorkerCount += newWorkersCount - oldWorkersCount;
 			}
 		}
 
 		/// <summary>
-		/// Register change in workplace count for industrial buildings
+		/// Register change in worker count for industrial buildings
 		/// </summary>
-		/// <param name="oldWorkersLimit">Old limit for workers in workplace</param>
-		/// <param name="newWorkersLimit">New limit for workers in workplace</param>
-		internal void RegisterIndustrialLevelChange(int oldWorkersLimit, int newWorkersLimit)
+		/// <param name="oldWorkersLimit">Old count for workers in workplace</param>
+		/// <param name="newWorkersLimit">New count for workers in workplace</param>
+		internal void RegisterIndustrialWorkerChange(int oldWorkersCount, int newWorkersCount)
 		{
-			lock (_workplaceCountLock)
+			lock (_workerCountLock)
 			{
-				_industrialWorkplaceCount += newWorkersLimit - oldWorkersLimit;
+				_industrialWorkerCount += newWorkersCount - oldWorkersCount;
 			}
 		}
 
 		/// <summary>
-		/// Calculate the rate of commercial to industrial workplaces
+		/// Calculate the rate of commercial to industrial workers
 		/// </summary>
-		/// <returns>Rate of commercial to industial workplace count</returns>
-		public float GetCommercialToIndustrialRate()
+		/// <returns>Rate of commercial to industial workers count</returns>
+		public float GetCommercialWorkersPercentToCommercialAndIndustrialWorkers()
 		{
-			return _commercialWorkplaceCount / _industrialWorkplaceCount;
+			int allWorkers = (_commercialWorkerCount == 0 ? 1 :	_commercialWorkerCount) + (_industrialWorkerCount == 0 ? 1 : _industrialWorkerCount);
+			
+			return (float)(_commercialWorkerCount == 0 ? 1 : _commercialWorkerCount) / allWorkers;
 		}
 
 		/// <summary>
@@ -584,6 +586,7 @@ namespace Model.Statistics
 		}
 
 		public event EventHandler NextQuarterEvent;
+		public event EventHandler NegativeBudgetYearElapsed;
 
 		/// <summary>
 		/// Close the current statreport and create a new one
@@ -591,6 +594,11 @@ namespace Model.Statistics
 		private void NextQuarter()
 		{
 			Debug.Log("Next quarter");
+
+			if (Quarter == 0 && (NegativeBudgetSince != 0 || Budget < 0))
+			{
+				NegativeBudgetYearElapsed?.Invoke(this, new EventArgs());
+			}
 
 			NextQuarterEvent?.Invoke(this, EventArgs.Empty);
 
@@ -602,6 +610,14 @@ namespace Model.Statistics
 			}
 
 			UpdateCurrentStatReport(false);
+
+			//TODO debug
+			string msg = City.Instance.CityHappiness + " - ";
+			foreach (KeyValuePair<ulong, Person> person in City.Instance.GetPersons())
+			{
+				msg += person.Value.Happiness + " ";
+			}
+			Debug.Log(msg);
 		}
 
 		/// <summary>
