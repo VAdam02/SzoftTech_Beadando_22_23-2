@@ -51,8 +51,10 @@ namespace Model
 				}
 			}
 
+			ResidentialTaxChangeHandler(this, (StatEngine.Instance.ResidentialTaxRate, StatEngine.Instance.ResidentialTaxRate));
 			StatEngine.Instance.ResidentialTaxChanged += ResidentialTaxChangeHandler;
 			StatEngine.Instance.NextQuarterEvent += NextQuarter;
+			NegativeBudgetYearElapsedHandler(this, new EventArgs());
 			StatEngine.Instance.NegativeBudgetYearElapsed += NegativeBudgetYearElapsedHandler;
 		}
 
