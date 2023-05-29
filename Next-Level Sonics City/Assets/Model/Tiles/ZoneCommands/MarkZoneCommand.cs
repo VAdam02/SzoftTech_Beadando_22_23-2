@@ -1,5 +1,6 @@
 using Model.RoadGrids;
 using Model.Tiles.Buildings;
+using System;
 
 namespace Model.Tiles.ZoneCommands
 {
@@ -53,7 +54,7 @@ namespace Model.Tiles.ZoneCommands
 					City.Instance.SetTile(new EmptyTile(_x, _y));
 					break;
 				default:
-					break;
+					throw new NotImplementedException("Not implemented zone type");
 			}
 		}
 	}
