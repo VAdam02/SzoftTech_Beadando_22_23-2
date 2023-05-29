@@ -340,7 +340,7 @@ namespace Model.Statistics
 		/// <param name="e"></param>
 		public void AddBuildExpense(object sender, TileEventArgs e)
 		{
-			int buildExpense = e.Tile.BuildPrice;
+			int buildExpense = City.Instance.GetTile(e.Tile).BuildPrice;
 
 			lock (_statReports)
 			{
@@ -628,8 +628,8 @@ namespace Model.Statistics
 		public void TimeElapsed()
 		{
 			//TODO debug
-			//Date = Date.AddMinutes(30);
-			Date = Date.AddHours(24);
+			Date = Date.AddMinutes(30);
+			//Date = Date.AddHours(24);
 		}
 	}
 }

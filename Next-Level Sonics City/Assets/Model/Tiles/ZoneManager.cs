@@ -17,16 +17,16 @@ namespace Model.Tiles
 			}
 		}
 
+		public delegate void ZoneMarkedOrUnmarkedEventHandler(object sender, TileEventArgs e);
+		public event ZoneMarkedOrUnmarkedEventHandler ZoneMarked;
+		public event ZoneMarkedOrUnmarkedEventHandler ZoneUnMarked;
+
 		public static void Reset()
 		{
 			_instance = null;
 		}
 
 		private ZoneManager() { }
-
-		public delegate void ZoneMarkedOrUnmarkedEventHandler(object sender, TileEventArgs e);
-		public event ZoneMarkedOrUnmarkedEventHandler ZoneMarked;
-		public event ZoneMarkedOrUnmarkedEventHandler ZoneUnMarked;
 		
 		/// <summary>
 		/// Mark a zone area
@@ -50,19 +50,8 @@ namespace Model.Tiles
 			{
 				for (int y = columnStart; y < columnEnd + 1; ++y)
 				{
-					IZoneBuilding oldZoneBuilding = (City.Instance.GetTile(x, y) is IZoneBuilding building && building.GetZoneType() != ZoneType.NoZone) ? building : null;
-
 					MarkZoneCommand markZoneCommand = new (x, y, zoneType);
 					markZoneCommand.Execute();
-
-					if (oldZoneBuilding is not null)
-					{
-						OnZoneUnMarked(oldZoneBuilding.GetTile());
-					}
-					else
-					{
-						OnZoneMarked(City.Instance.GetTile(x, y));
-					}
 				}
 			});
 		}
@@ -88,7 +77,7 @@ namespace Model.Tiles
 		/// Invoke the ZoneMarked event
 		/// </summary>
 		/// <param name="tile">Tile which markerd</param>
-		protected void OnZoneMarked(Tile tile)
+		public void OnZoneMarked(Tile tile)
 		{
 			ZoneMarked?.Invoke(this, new TileEventArgs(tile));
 		}
@@ -97,7 +86,7 @@ namespace Model.Tiles
 		/// Invoke the ZoneUnMarked event
 		/// </summary>
 		/// <param name="tile">Tile which unmarked</param>
-		protected void OnZoneUnMarked(Tile tile)
+		public void OnZoneUnMarked(Tile tile)
 		{
 			ZoneUnMarked?.Invoke(this, new TileEventArgs(tile));
 		}
