@@ -611,9 +611,7 @@ namespace Model.Statistics
 		/// </summary>
 		public void TimeElapsed()
 		{
-			//TODO debug
-			Date = Date.AddMinutes(30);
-			//Date = Date.AddHours(24);
+			Date = Date.AddHours(2);
 		}
 	}
 }
