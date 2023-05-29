@@ -15,9 +15,9 @@ namespace Model.Statistics
 
 		public float DestroyIncomes { get; internal set; } = 0;
 		public float BuildExpenses { get; internal set; } = 0;
-		public float Incomes { get; internal set; } = 0;
-		public float Expenses { get; internal set; } = 0;
-		public float Profit { get; internal set; } = 0;
+		public float Incomes { get; internal set; } = 0;//this
+		public float Expenses { get; internal set; } = 0;//this
+		public float Profit { get; internal set; } = 0;//this
 
 		public int Population { get; internal set; }
 		public int PopulationChange { get; internal set; } = 0;
