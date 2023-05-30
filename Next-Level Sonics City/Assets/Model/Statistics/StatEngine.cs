@@ -439,6 +439,8 @@ namespace Model.Statistics
 			return _statReports[_statReports.Count-1-count];
 		}
 
+		public event EventHandler CommercialToIndustrialWorkerRateChanged;
+
 		/// <summary>
 		/// Register change in worker count for commercial buildings
 		/// </summary>
@@ -450,6 +452,7 @@ namespace Model.Statistics
 			{
 				_commercialWorkerCount += newWorkersCount - oldWorkersCount;
 			}
+			CommercialToIndustrialWorkerRateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -463,6 +466,7 @@ namespace Model.Statistics
 			{
 				_industrialWorkerCount += newWorkersCount - oldWorkersCount;
 			}
+			CommercialToIndustrialWorkerRateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>

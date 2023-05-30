@@ -61,6 +61,8 @@ namespace Model
 			StatEngine.Instance.NextQuarterEvent += NextQuarter;
 			NegativeBudgetYearElapsedHandler(this, new EventArgs());
 			StatEngine.Instance.NegativeBudgetYearElapsed += NegativeBudgetYearElapsedHandler;
+			CommercialToIndustrialWorkersRatioHandler(this, new EventArgs());
+			StatEngine.Instance.CommercialToIndustrialWorkerRateChanged += CommercialToIndustrialWorkersRatioHandler;
 		}
 
 
@@ -138,12 +140,21 @@ namespace Model
 
 		private void NegativeBudgetYearElapsedHandler(object sender, EventArgs e)
 		{
-			_happinessChangers.RemoveAll(item => item.type == "NegativeBudget");
+			_happinessChangers.RemoveAll(item => item.type == "NegativeBudgetTime");
+			_happinessChangers.RemoveAll(item => item.type == "NegativeBudgetVolume");
 			if (StatEngine.Instance.NegativeBudgetSince != 0)
 			{
-				_happinessChangers.Add(("NegativeBudget", 0, Mathf.Tan(Mathf.Clamp(StatEngine.Instance.NegativeBudgetSince, 0, 9.99f) * MathF.PI / 20) * 10));
+				_happinessChangers.Add(("NegativeBudgetTime", 0, Mathf.Tan(Mathf.Clamp(StatEngine.Instance.NegativeBudgetSince, 0, 9.99f) * MathF.PI / 20) * 10));
+				_happinessChangers.Add(("NegativeBudgetVolume", 0, MathF.Tan(Mathf.Clamp(-StatEngine.Instance.Budget, 0, 99999) * MathF.PI / 200000)));
 				HappinessByCityChanged?.Invoke(this, new EventArgs());
 			}
+		}
+
+		private void CommercialToIndustrialWorkersRatioHandler(object sender, EventArgs e)
+		{
+			_happinessChangers.RemoveAll(item => item.type == "CommercialToIndustrialWorkersRatio");
+			_happinessChangers.Add(("CommercialToIndustrialWorkersRatio", 0, Mathf.Pow(Mathf.Sin((StatEngine.Instance.GetCommercialWorkersPercentToCommercialAndIndustrialWorkers() - 1) * Mathf.PI) + 2, 3)));
+			HappinessByCityChanged?.Invoke(this, new EventArgs());
 		}
 
 		private readonly Tile[,] _tiles;
