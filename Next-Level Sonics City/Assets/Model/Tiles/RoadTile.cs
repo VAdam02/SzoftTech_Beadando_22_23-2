@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.RoadGrids;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,15 @@ namespace Model.Tiles
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		protected new void Deleting()
+		{
+			base.Deleting();
+
+			while (_lockedBy.Count > 0)
+			{
+				_lockedBy[0].ForcedLockedRoadDestroy();
+			}
+		}
 
 		public override int BuildPrice => 500;
 

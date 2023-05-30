@@ -94,8 +94,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ed08e4fbcd207ba4b9f74400174f2bfc, type: 3}
   - {fileID: 21300000, guid: 72f396abc6ccc8148b4c1458816644d0, type: 3}
   happinessThresholds:
+  - 0.5
   - 0.75
-  - 0.9
 --- !u!1 &6583561310713923841
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,6 +408,7 @@ GameObject:
   - component: {fileID: 6583561311021736175}
   - component: {fileID: 6583561311021736173}
   - component: {fileID: 6583561311021736172}
+  - component: {fileID: 1040273492478658426}
   m_Layer: 5
   m_Name: MoneyChangeTextBox
   m_TagString: Untagged
@@ -532,6 +533,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1040273492478658426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6583561311021736174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776957f89cdb7ca49839c145d2ee8c91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6583561311315810039
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,7 +861,6 @@ GameObject:
   - component: {fileID: 6583561312547647174}
   - component: {fileID: 6583561312547647172}
   - component: {fileID: 6583561312547647175}
-  - component: {fileID: 54706847057660278}
   m_Layer: 5
   m_Name: Notch
   m_TagString: Untagged
@@ -917,29 +929,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 10
---- !u!114 &54706847057660278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6583561312547647177}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d6e3e3e4babaf448adda99d7d03b04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moneyChange: 0
-  populationChange: 0
-  happiness: 1
-  happinessSprites:
-  - {fileID: 21300000, guid: 6b11451d21666214ca7e05ecd311d4e7, type: 3}
-  - {fileID: 21300000, guid: ed08e4fbcd207ba4b9f74400174f2bfc, type: 3}
-  - {fileID: 21300000, guid: 72f396abc6ccc8148b4c1458816644d0, type: 3}
-  happinessThresholds:
-  - 0.5
-  - 0.75
-  - 0.9
 --- !u!1 &6583561312780060406
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,6 +940,7 @@ GameObject:
   - component: {fileID: 6583561312780060407}
   - component: {fileID: 6583561312780060405}
   - component: {fileID: 6583561312780060404}
+  - component: {fileID: 6869766804147050976}
   m_Layer: 5
   m_Name: PopulationChangeTextBox
   m_TagString: Untagged
@@ -1075,3 +1065,15 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6869766804147050976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6583561312780060406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdb77c118e21f247b124f5bd68f4f90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,3 +1,4 @@
+using Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -191,7 +192,7 @@ namespace View.Tiles
 
 		float GetPerlinNoiseValue(Vector3 position, float scale)
 		{
-			return Mathf.PerlinNoise(position.x * scale, position.z * scale);
+			return Mathf.PerlinNoise(City.Instance.PERLINNOISEDELTA.x + position.x * scale, City.Instance.PERLINNOISEDELTA.y + position.z * scale);
 		}
 	}
 }

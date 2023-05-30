@@ -31,7 +31,15 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		protected new void Deleting()
+		{
+			base.Deleting();
+
+			while (_residents.Count > 0)
+			{
+				_residents[0].ForcedMoveOut();
+			}
+		}
 
 		public override int BuildPrice => 5000;
 

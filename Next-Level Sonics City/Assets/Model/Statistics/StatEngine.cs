@@ -102,7 +102,7 @@ namespace Model.Statistics
 
 		private StatEngine(int startYear, float startBudget)
 		{
-			_date = new DateTime(startYear, 1, 1);
+			_date = new DateTime(startYear-1, 12, 31);
 
 			_statReports.Add(new StatReport(Year, Quarter, Budget, 1, City.Instance.GetPopulation()));
 
@@ -430,7 +430,7 @@ namespace Model.Statistics
 		/// </summary>
 		/// <param name="count">Count of requested statreports</param>
 		/// <returns>Requested count statreport if possible</returns>
-		public StatReport GetLastNthStatisticsReports(int count)
+		public StatReport GetLastNthStatisticsReport(int count)
 		{
 			UpdateCurrentStatReport(false);
 

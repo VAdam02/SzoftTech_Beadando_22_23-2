@@ -12,6 +12,8 @@ namespace Model
 {
 	public class City
 	{
+		public readonly Vector2 PERLINNOISEDELTA;
+
 		private static City _instance;
 		public static City Instance
 		{
@@ -33,7 +35,7 @@ namespace Model
 		{
 			_instance = this;
 
-			int n = 20;
+			int n = 50;
 			_tiles = new Tile[n, n];
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
@@ -41,11 +43,14 @@ namespace Model
 				SetTile(new EmptyTile(i, j));
 			}
 
+            System.Random rnd = new();
+			PERLINNOISEDELTA = new Vector2(rnd.Next(0, (int)((float)int.MaxValue / 1000 / n)), rnd.Next(0, (int)((float)int.MaxValue / 1000 / n)));
+
 			float scale = 0.25f;
 			for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
 			{
-				if (Mathf.PerlinNoise(i * scale, j * scale) > 0.6f)
+				if (Mathf.PerlinNoise(PERLINNOISEDELTA.x + i * scale, PERLINNOISEDELTA.y + j * scale) > 0.6f)
 				{
 					SetTile(new ForestTile(i, j, ForestTile.MAINTANCENEEDEDFORYEAR + 1));
 				}
@@ -66,7 +71,6 @@ namespace Model
 
 			object newPersonShouldMoveInLock = new();	
 			int newPersonShouldMoveIn = Mathf.RoundToInt(GetPopulation() * Mathf.Min(newPersonMultiplier, 0.1f) + minNewPersonCount);
-			System.Random rnd = new();
 
 			List<RoadGrid> roadGrids = RoadGridManager.Instance.RoadGrids.FindAll((item) =>
 			{
@@ -79,74 +83,17 @@ namespace Model
 				{
 					RoadGrid target = roadGrids[index];
 
-					IWorkplace workplace;
-					if (target.FreeOtherWorkplaces.Count > 0 && rnd.Next(0, 3) == 0)
-					{
-						workplace = target.FreeOtherWorkplaces[rnd.Next(0, target.FreeOtherWorkplaces.Count)];
-					}
-
-					IWorkplace canBeOther = target.FreeOtherWorkplaces.Count > 0 ? target.FreeOtherWorkplaces[rnd.Next(0, target.FreeOtherWorkplaces.Count)] : null;
-					IWorkplace canBeComOrInd;
-					if (target.FreeIndustrialWorkplaces.Count > 0 && target.FreeCommercialWorkplaces.Count > 0)
-					{
-						canBeComOrInd = rnd.NextDouble() < StatEngine.Instance.GetCommercialWorkersPercentToCommercialAndIndustrialWorkers() ?
-											(target.FreeIndustrialWorkplaces.Count > 0 ? target.FreeIndustrialWorkplaces[rnd.Next(0, target.FreeIndustrialWorkplaces.Count)] : null) :
-											(target.FreeCommercialWorkplaces.Count > 0 ? target.FreeCommercialWorkplaces[rnd.Next(0, target.FreeCommercialWorkplaces.Count)] : null);
-					}
-					else
-					{
-						if (target.FreeIndustrialWorkplaces.Count > 0)
-						{
-							canBeComOrInd = target.FreeIndustrialWorkplaces[rnd.Next(0, target.FreeIndustrialWorkplaces.Count)];
-						}
-						else if (target.FreeCommercialWorkplaces.Count > 0)
-						{
-							canBeComOrInd = target.FreeCommercialWorkplaces[rnd.Next(0, target.FreeCommercialWorkplaces.Count)];
-						}
-						else
-						{
-							canBeComOrInd = null;
-						}
-					}
-
-					if (canBeOther != null && canBeComOrInd != null)
-					{
-						workplace = rnd.Next(0, 2) == 0 ? canBeOther : canBeComOrInd;
-					}
-					else
-					{
-						workplace = canBeOther ?? canBeComOrInd;
-					}
-
-					IRoadGridElement workplaceroad = RoadGridManager.GetRoadGrigElementByBuilding((Building)workplace);
-
-					IResidential residential = null;
-					List<IRoadGridElement> shortestPath = new();
-					float interestValue = -1;
-					foreach (IResidential curResidential in target.FreeResidentials)
-					{
-						try
-						{
-							List<IRoadGridElement> curPath = RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding((Building)curResidential), workplaceroad);
-							float curInterestValue = CalculateInterestValue(curResidential, curPath);
-							if (curInterestValue > interestValue)
-							{
-								shortestPath = curPath;
-								residential = curResidential;
-								interestValue = curInterestValue;
-							}
-						}
-						catch { }
-					}
+					IWorkplace workplace = Person.LookForWorkplaceInRoadGrid(target);
+					IResidential residential = Person.LookForResidentialByWorkplace(workplace, out List<IRoadGridElement> shortestPath);
 
 					if (workplace == null || residential == null) { return; }
 
+					System.Random rnd = new();
 					Worker worker = new(residential, workplace, rnd.Next(18, 60), Qualification.LOW, shortestPath);
 					lock (newPersonShouldMoveInLock)
 					{
 						newPersonShouldMoveIn--;
 					}
-					Debug.Log(worker.ID + " moved in to " + residential.GetTile().Coordinates + " and works at " + workplace.GetTile().Coordinates + " and path is " + shortestPath.Count);
 				});
 
 				roadGrids = RoadGridManager.Instance.RoadGrids.FindAll((item) =>
@@ -154,14 +101,6 @@ namespace Model
 					return item.FreeWorkplaces.Count > 0 && item.FreeResidentials.Count > 0;
 				}) ?? new();
 			}
-		}
-
-		private float CalculateInterestValue(IResidential residential, List<IRoadGridElement> path)
-		{
-			float multiplierByHappiness = residential.HappinessByBuilding.weight == 0 ? 1 : Mathf.Tan(residential.HappinessByBuilding.happiness * 0.9f * Mathf.PI / 2);
-			float multiplierByPath = 5 / (float)path.Count;
-			float multiplierByResidents = (residential.ResidentLimit == 1 ? 1 : 0.25f / Mathf.Tan((residential.GetResidentsCount() / (float)residential.ResidentLimit * 0.9f + 0.1f) * Mathf.PI / 2));
-			return multiplierByHappiness * multiplierByPath * multiplierByResidents;
 		}
 
 		public event EventHandler CityHappinessChanged;
@@ -288,8 +227,7 @@ namespace Model
 		/// <summary>
 		/// Add person to the city
 		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="person"></param>
+		/// <param name="person">Person to add to the city</param>
 		internal void AddPerson(Person person)
 		{
 			_persons.Add(person.ID, person);
@@ -299,7 +237,23 @@ namespace Model
 				_cityHappiness.count++;
 			}
 			person.HappinessByPersonChanged += (sender, e) => PersonHappinessChangedHandler((Person)sender, e);
-			PopulationChanged?.Invoke(this, person); //TODO fix it to normal event
+			PopulationChanged?.Invoke(this, person);
+		}
+
+		/// <summary>
+		/// Remove person to the city
+		/// </summary>
+		/// <param name="person">Person to remove from the city</param>
+		internal void RemovePerson(Person person)
+		{
+			_persons.Remove(person.ID);
+			lock (_cityHappinessLock)
+			{
+				_cityHappiness.sumHappiness -= person.Happiness;
+				_cityHappiness.count--;
+			}
+			person.HappinessByPersonChanged += (sender, e) => PersonHappinessChangedHandler((Person)sender, e);
+			PopulationChanged?.Invoke(this, person);
 		}
 	}
 }

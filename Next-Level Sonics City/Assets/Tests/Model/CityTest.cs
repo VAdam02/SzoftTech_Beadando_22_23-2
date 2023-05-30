@@ -18,6 +18,7 @@ namespace Model
 					City.Instance.SetTile(new EmptyTile(i, j));
 				}
 			}
+			City.Instance.SetTile(new RoadTile(0, 0));
 		}
 
 		[Test]
@@ -71,7 +72,7 @@ namespace Model
 		[Test]
 		public void GetPopulation_ReturnsCorrectPopulation()
 		{
-			IResidential residential = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			IResidential residential = new ResidentialBuildingTile(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential.GetTile());
 			_ = new Pensioner(residential, 70, 100);
 			_ = new Pensioner(residential, 80, 100);

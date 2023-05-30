@@ -88,18 +88,6 @@ namespace Model.RoadGrids
 		}
 
 		[Test]
-		public void GetRoadGrigElementByBuilding_BuildingHasNoAdjacentRoadGridElement_ReturnsNull()
-		{
-			var building = new ResidentialBuildingTile(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
-			City.Instance.SetTile(building);
-
-			var result = RoadGridManager.GetRoadGrigElementByBuilding(building);
-
-			Assert.That(result, Is.Null);
-		}
-
-
-		[Test]
 		public void GetBuildingsByRoadGridElement_RoadGridElementHasAdjacentBuildings_ReturnsListOfBuildings()
 		{
 			var roadGridElement = new RoadTile(0, 0);

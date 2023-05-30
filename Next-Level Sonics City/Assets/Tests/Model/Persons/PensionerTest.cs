@@ -23,7 +23,8 @@ namespace Model.Persons
 				}
 			}
 
-			_home = new(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			City.Instance.SetTile(new RoadTile(0, 0));
+			_home = new(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(_home);
 		}
 

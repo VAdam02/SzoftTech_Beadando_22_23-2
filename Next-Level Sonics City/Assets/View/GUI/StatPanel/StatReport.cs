@@ -13,7 +13,7 @@ namespace View.GUI.StatPanel
 
 		void OnEnable()
 		{
-			Model.Statistics.StatReport statReport = StatEngine.Instance.GetLastNthStatisticsReports(NthStatReport);
+			Model.Statistics.StatReport statReport = StatEngine.Instance.GetLastNthStatisticsReport(NthStatReport);
 
 			foreach (Transform child in gameObject.transform)
 			{
@@ -25,7 +25,7 @@ namespace View.GUI.StatPanel
 						break;
 					case "Happiness":
 						textBox.text = Mathf.Round(statReport.Happiness * 100) + "%";
-						textBox.color = statReport.Happiness >= 0.75 ? _great : _bad;
+						textBox.color = statReport.Happiness >= 0.5 ? _great : _bad;
 						break;
 					case "Population":
 						textBox.text = statReport.Population.ToString("N0");
@@ -42,13 +42,9 @@ namespace View.GUI.StatPanel
 						textBox.color = statReport.Pension == 0 ? Color.white : _bad;
 						break;
 					case "PopulationChange":
-						textBox.text = (statReport.PopulationChange) >= 0 ? statReport.PopulationChange.ToString("N0"): "-" + statReport.PopulationChange.ToString("N0");
+						textBox.text = statReport.PopulationChange.ToString("N0");
 						textBox.color = statReport.PopulationChange > 0 ? _great : statReport.PopulationChange == 0 ? Color.white : _bad ;
 					break;
-					case "BudgetChange":
-						textBox.text = statReport.BudgetChange >= 0 ? "$" + statReport.BudgetChange.ToString("N0"): "$" + statReport.BudgetChange.ToString("N0");
-						textBox.color = statReport.BudgetChange > 0 ? _great : statReport.BudgetChange == 0 ? Color.white : _bad;
-						break;
 					case "DestroyIncomes":
 						textBox.text = "$" + statReport.DestroyIncomes.ToString("N0");
 						break;
