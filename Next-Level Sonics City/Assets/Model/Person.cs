@@ -94,6 +94,8 @@ namespace Model
 
 		private void DieByChance()
 		{
+			if (Happiness < 0.2f) { Die(); return; }
+
 			float happiness = Math.Max(0, Math.Min(1, Happiness));
 			double mortalityRate = (1 - happiness) * (Age / 100.0);
 			mortalityRate = Math.Max(0, Math.Min(1, mortalityRate));
