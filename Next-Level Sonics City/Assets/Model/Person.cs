@@ -78,6 +78,7 @@ namespace Model
 		public void IncreaseAge()
 		{
 			++Age;
+			DieByChance();
 		}
 
 		/// <summary>
@@ -91,13 +92,19 @@ namespace Model
 
 		public abstract void ForcedLockedRoadDestroy();
 
+		private void DieByChance()
+		{
+			float happiness = Math.Max(0, Math.Min(1, Happiness));
+			double mortalityRate = (1 - happiness) * (Age / 100.0);
+			mortalityRate = Math.Max(0, Math.Min(1, mortalityRate));
 
-
+			System.Random rnd = new();
+			if (rnd.NextDouble() < mortalityRate) { Die(); }
+		}
 
 		public abstract void Die();
 		protected void Dying()
 		{
-			Debug.Log(ID + " died");
 			UpdateHappiness();
 			City.Instance.RemovePerson(this);
 			Residential?.MoveOut(this);
