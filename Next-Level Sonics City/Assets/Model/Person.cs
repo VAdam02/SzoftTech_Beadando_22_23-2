@@ -80,5 +80,15 @@ namespace Model
 		/// <param name="taxRate">Tax rate which should be included in calculations</param>
 		/// <returns></returns>
 		public abstract float PayTax(float taxRate);
+
+		public bool Die()
+		{
+			float happiness = Math.Max(0, Math.Min(1, Happiness));
+			double mortalityRate = (1 - happiness) * (Age / 100.0);
+			mortalityRate = Math.Max(0, Math.Min(1, mortalityRate));
+
+			System.Random rnd = new();
+			return rnd.NextDouble() < mortalityRate;
+		}
 	}
 }
