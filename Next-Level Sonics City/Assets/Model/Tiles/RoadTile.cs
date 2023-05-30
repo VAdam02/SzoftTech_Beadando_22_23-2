@@ -80,18 +80,18 @@ namespace Model.Tiles
 		private void TileDeleteHandler(object sender, Tile oldTile)
 		{
 			Tile newTile = City.Instance.GetTile(oldTile);
-			newTile.OnTileDelete += TileDeleteHandler;
+			newTile.OnPreTileDelete += TileDeleteHandler;
 
 			if (newTile is RoadTile road)
 			{
-				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft = road; }
+				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft  = road; }
 				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = road; }
 				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = road; }
 				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = road; }
 			}
 			else
 			{
-				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft = null; }
+				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft  = null; }
 				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = null; }
 				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = null; }
 				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = null; }

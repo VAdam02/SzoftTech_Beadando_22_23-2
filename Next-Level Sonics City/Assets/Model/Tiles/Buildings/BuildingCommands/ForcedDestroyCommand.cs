@@ -1,8 +1,5 @@
 using Model;
 using Model.Tiles;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class ForcedDestroyCommand : IExecutionCommand
 {
