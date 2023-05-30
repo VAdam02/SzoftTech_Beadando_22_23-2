@@ -929,9 +929,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d6e3e3e4babaf448adda99d7d03b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  money: 0
   moneyChange: 0
-  population: 0
   populationChange: 0
   happiness: 1
   happinessSprites:

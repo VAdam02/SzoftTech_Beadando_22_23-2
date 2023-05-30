@@ -1,6 +1,7 @@
 using Model;
 using Model.Tiles;
 using Model.Tiles.Buildings;
+using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -104,6 +105,14 @@ namespace View
 					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);
 				}
 			}
+			if (TileManager.Instance.CurrentAction == Action.SOFTDESTROY)
+			{
+				BuildingManager.Instance.Destroy(City.Instance.GetTile(TileModel));
+			}
+			if (TileManager.Instance.CurrentAction == Action.FORCEDESTROY)
+			{
+				BuildingManager.Instance.ForcedDestroy(City.Instance.GetTile(TileModel));
+			}
 		}
 
 		public void OnDragStart(bool isLeftMouseButton, Vector3 location) { }
@@ -124,20 +133,22 @@ namespace View
 
 		public void OnHoverStart(Vector3 location)
 		{
-			//Debug.Log("HoverStart\t" + location);
-		}
-
-		public void OnHover(Vector3 location)
-		{
-			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST
+			 || TileManager.Instance.CurrentAction == Action.SOFTDESTROY
+			 || TileManager.Instance.CurrentAction == Action.FORCEDESTROY)
 			{
 				TileManager.Instance.HoveredTile = this;
 			}
 		}
 
+		public void OnHover(Vector3 location)
+		{
+			
+		}
+
 		public void OnHoverEnd()
 		{
-			//Debug.Log("HoverEnd" + "\t" + this);
+			
 		}
 
 		public void OnScroll(float delta) { }

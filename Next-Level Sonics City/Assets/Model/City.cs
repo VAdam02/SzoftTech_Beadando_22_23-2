@@ -2,7 +2,6 @@ using Model.Persons;
 using Model.RoadGrids;
 using Model.Statistics;
 using Model.Tiles;
-using Model.Tiles.Buildings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,8 +51,10 @@ namespace Model
 				}
 			}
 
+			ResidentialTaxChangeHandler(this, (StatEngine.Instance.ResidentialTaxRate, StatEngine.Instance.ResidentialTaxRate));
 			StatEngine.Instance.ResidentialTaxChanged += ResidentialTaxChangeHandler;
 			StatEngine.Instance.NextQuarterEvent += NextQuarter;
+			NegativeBudgetYearElapsedHandler(this, new EventArgs());
 			StatEngine.Instance.NegativeBudgetYearElapsed += NegativeBudgetYearElapsedHandler;
 		}
 
@@ -201,7 +202,7 @@ namespace Model
 			_happinessChangers.RemoveAll(item => item.type == "NegativeBudget");
 			if (StatEngine.Instance.NegativeBudgetSince != 0)
 			{
-				_happinessChangers.Add(("NegativeBudget", 0, Mathf.Tan(StatEngine.Instance.NegativeBudgetSince * MathF.PI / 20) * 10));
+				_happinessChangers.Add(("NegativeBudget", 0, Mathf.Tan(Mathf.Clamp(StatEngine.Instance.NegativeBudgetSince, 0, 9.99f) * MathF.PI / 20) * 10));
 				HappinessByCityChanged?.Invoke(this, new EventArgs());
 			}
 		}

@@ -57,6 +57,31 @@ namespace Model.Tiles.Buildings
 
 			DestroyCommand dc = new (x, y);
 			dc.Execute();
+
+			if (City.Instance.GetTile(x, y) is EmptyTile)
+			{
+				OnBuildingDestroyed(tile);
+			}
+		}
+
+		/// <summary>
+		/// Force destroys the given tile.
+		/// </summary>
+		/// <param name="tile">Tile that will be destroyed</param>
+		public void ForcedDestroy(Tile tile)
+		{
+			if (tile is EmptyTile)
+			{
+				return;
+			}
+
+			int x = (int)tile.Coordinates.x;
+			int y = (int)tile.Coordinates.y;
+
+			ForcedDestroyCommand fdc = new(x, y);
+			fdc.Execute();
+
+			OnBuildingDestroyed(tile);
 		}
 
 		/// <summary>
