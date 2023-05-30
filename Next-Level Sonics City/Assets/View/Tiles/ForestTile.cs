@@ -189,6 +189,14 @@ namespace View.Tiles
 			return localExtrema;
 		}
 
+		public override GameObject DisplayPopUp()
+		{
+			GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/ForestTile/ForestTilePopUp"));
+			popup.transform.SetParent(GameObject.Find("Canvas").transform);
+			popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+			return popup;
+		}
+
 		float GetPerlinNoiseValue(Vector3 position, float scale)
 		{
 			return Mathf.PerlinNoise(position.x * scale, position.z * scale);
