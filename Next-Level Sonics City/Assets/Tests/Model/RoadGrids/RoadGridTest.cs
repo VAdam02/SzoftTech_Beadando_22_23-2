@@ -52,8 +52,9 @@ namespace Model.RoadGrids
 			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
 
+			City.Instance.SetTile(new EmptyTile(0, 0));
+
 			Assert.That(((IRoadGridElement)element).RoadGrid.RoadGridElements, Is.Empty);
-			Assert.That(!((IRoadGridElement)element).RoadGrid.RoadGridElements.Contains(element));
 		}
 
 		[Test]
@@ -76,7 +77,9 @@ namespace Model.RoadGrids
 			var workplace = new Commercial(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
-			Assert.That(((IRoadGridElement)element).RoadGrid.Workplaces, Is.Empty);
+			City.Instance.SetTile(new EmptyTile(0, 1));
+
+			Assert.AreEqual(((IRoadGridElement)element).RoadGrid.Workplaces.Count, 0);
 			Assert.That(!((IRoadGridElement)element).RoadGrid.Workplaces.Contains(workplace));
 		}
 
@@ -115,15 +118,15 @@ namespace Model.RoadGrids
 			RoadTile element2 = new(0, 2);
 			City.Instance.SetTile(element2);
 
+			City.Instance.SetTile(new RoadTile(0, 1));
+
 			var roadGrid1 = ((IRoadGridElement)element1).RoadGrid;
 			var roadGrid2 = ((IRoadGridElement)element2).RoadGrid;
 
-			City.Instance.SetTile(new RoadTile(0, 1));
-
-			Assert.That(roadGrid1.RoadGridElements, Has.Count.EqualTo(2));
+			Assert.That(roadGrid1.RoadGridElements, Has.Count.EqualTo(3));
 			Assert.That(roadGrid1.RoadGridElements, Does.Contain(element1));
 			Assert.That(roadGrid1.RoadGridElements, Does.Contain(element2));
-			Assert.That(roadGrid2.RoadGridElements, Is.Empty);
+			Assert.AreEqual(roadGrid2, roadGrid1);
 		}
 	}
 }
