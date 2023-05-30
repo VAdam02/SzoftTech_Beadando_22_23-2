@@ -191,8 +191,7 @@ namespace View.Tiles
 
 		public override GameObject DisplayPopUp()
 		{
-			GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/ForestTile/ForestTilePopUp"));
-			popup.transform.SetParent(GameObject.Find("Canvas").transform);
+			GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/ForestTile/ForestTilePopUp"), GameObject.Find("Canvas").transform);
 			popup.GetComponent<PopUpWindow>().TileModel = TileModel;
 			return popup;
 		}

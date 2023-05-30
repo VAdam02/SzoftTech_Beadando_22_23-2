@@ -44,6 +44,13 @@ namespace View.Tiles.Buildings
 			get { return TileModel.DesignID & Model.Tiles.Buildings.ResidentialBuildingTile.RESIDENTIAL_LEVEL_COUNT_MASK; }
 		}
 
+		public override GameObject DisplayPopUp()
+		{
+			GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/ResidentialBuildingTile/ResidentialBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+			popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+			return popup;
+		}
+
 		#region Gradients and materials
 		private static Material _grassMaterial;
 		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
