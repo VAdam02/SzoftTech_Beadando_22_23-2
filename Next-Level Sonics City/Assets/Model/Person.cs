@@ -138,7 +138,7 @@ namespace Model
 			}
 
 			if (canBeOther.Count != 0 && canBeComOrInd.Count != 0) { workplaces = rnd.Next(0, 2) == 0 ? canBeOther : canBeComOrInd; }
-			else { workplaces = canBeOther ?? canBeComOrInd; }
+			else { workplaces = canBeOther.Count == 0 ? canBeComOrInd : canBeOther; }
 
 			return workplaces;
 		}
