@@ -48,7 +48,7 @@ namespace Model.Tiles.Buildings.BuildingCommands
 			{
 				TileType.PoliceDepartment => new PoliceDepartmentBuildingTile(_x, _y, _designID, _rotation),
 				TileType.MiddleSchool => new MiddleSchool(_x, _y, _designID, _rotation),
-				TileType.HighSchool => new HighSchool(_x, _y, _designID, _rotation),
+				TileType.HighSchool => new HighSchoolBuildingTile(_x, _y, _designID, _rotation),
 				TileType.Stadion => new StadionBuildingTile(_x, _y, _designID, _rotation),
 				TileType.PowerPlant => new PowerPlant(_x, _y, _designID, _rotation),
 				TileType.Forest => new ForestTile(_x, _y, _designID),
