@@ -11,8 +11,8 @@ namespace Model.Statistics
 		RoadTile _road;
 		ResidentialBuildingTile _residential1;
 		ResidentialBuildingTile _residential2;
-		Commercial _workplace1;
-		Commercial _workplace2;
+		CommercialBuildingTIle _workplace1;
+		CommercialBuildingTIle _workplace2;
 
 		List<Worker> _workers;
 		List<Pensioner> _pensioners;

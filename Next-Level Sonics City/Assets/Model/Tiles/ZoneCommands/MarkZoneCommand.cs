@@ -40,12 +40,12 @@ namespace Model.Tiles.ZoneCommands
 			{
 				case ZoneType.IndustrialZone:
 					if (tile is not EmptyTile) { break; }
-					City.Instance.SetTile(new Industrial(_x, _y, _designID));
+					City.Instance.SetTile(new IndustrialBuildingTile(_x, _y, _designID));
 					ZoneManager.Instance.OnZoneMarked(tile);
 					break;
 				case ZoneType.CommercialZone:
 					if (tile is not EmptyTile) { break; }
-					City.Instance.SetTile(new Commercial(_x, _y, _designID));
+					City.Instance.SetTile(new CommercialBuildingTIle(_x, _y, _designID));
 					ZoneManager.Instance.OnZoneMarked(tile);
 					break;
 				case ZoneType.ResidentialZone:
@@ -54,13 +54,13 @@ namespace Model.Tiles.ZoneCommands
 					ZoneManager.Instance.OnZoneMarked(tile);
 					break;
 				case ZoneType.NoZone:
-					if (tile is not Industrial && tile is not Commercial && tile is not ResidentialBuildingTile) { break; }
+					if (tile is not IndustrialBuildingTile && tile is not CommercialBuildingTIle && tile is not ResidentialBuildingTile) { break; }
 					if (tile is IZoneBuilding zoneBuilding && zoneBuilding.Level != ZoneBuildingLevel.ZERO) { break; }
 					City.Instance.SetTile(new EmptyTile(_x, _y));
 					ZoneManager.Instance.OnZoneUnMarked(tile);
 					break;
 				case ZoneType.VoidZone:
-					if (tile is not Industrial && tile is not Commercial && tile is not ResidentialBuildingTile) { break; }
+					if (tile is not IndustrialBuildingTile && tile is not CommercialBuildingTIle && tile is not ResidentialBuildingTile) { break; }
 					City.Instance.SetTile(new EmptyTile(_x, _y));
 					ZoneManager.Instance.OnZoneUnMarked(tile);
 					break;

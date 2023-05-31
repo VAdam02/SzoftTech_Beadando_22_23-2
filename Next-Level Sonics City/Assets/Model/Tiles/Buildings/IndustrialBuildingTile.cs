@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Model.Tiles.Buildings
 {
-	public class Industrial : Building, IWorkplace, IZoneBuilding, IHappyZone
+	public class IndustrialBuildingTile : Building, IWorkplace, IZoneBuilding, IHappyZone
 	{
 		#region Tile implementation
 		public override TileType GetTileType() { throw new InvalidOperationException("IZoneBuilding is not a valid tile type"); }
@@ -44,6 +44,8 @@ namespace Model.Tiles.Buildings
 		public override int BuildPrice => 5000;
 
 		public override int DestroyIncome { get => (int)(BuildPrice * 0.1f) - 100 * _workers.Count; }
+
+		public override int MaintainanceCost { get => 0; }
 
 		public override float Transparency => 1 - (float)(int)Level / 12;
 		#endregion
@@ -198,7 +200,7 @@ namespace Model.Tiles.Buildings
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
 		/// <param name="rotation">Rotation of the tile</param>
-		public Industrial(int x, int y, uint designID, Rotation rotation, ZoneBuildingLevel level) : base(x, y, designID, rotation)
+		public IndustrialBuildingTile(int x, int y, uint designID, Rotation rotation, ZoneBuildingLevel level) : base(x, y, designID, rotation)
 		{
 			Level = level;
 		}
@@ -209,7 +211,7 @@ namespace Model.Tiles.Buildings
 		/// <param name="x">X coordinate of the tile</param>
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
-		public Industrial(int x, int y, uint designID) : base(x, y, designID, RoadGridManager.GetRandomRotationToLookAtRoadGridElement(x, y))
+		public IndustrialBuildingTile(int x, int y, uint designID) : base(x, y, designID, RoadGridManager.GetRandomRotationToLookAtRoadGridElement(x, y))
 		{
 			Level = ZoneBuildingLevel.ZERO;
 		}

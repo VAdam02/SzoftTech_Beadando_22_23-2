@@ -45,6 +45,8 @@ namespace Model.Tiles.Buildings
 
 		public override int DestroyIncome { get => (int)(BuildPrice * 0.1f) - 100 * _residents.Count; }
 
+		public override int MaintainanceCost { get => 0; }
+
 		public override float Transparency => 1 - (float)(int)Level / 12;
 		#endregion
 

@@ -27,7 +27,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			Assert.AreEqual(1, industrial.WorkplaceLimit);
@@ -39,7 +39,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			((IWorkplace)industrial).RegisterWorkplace(roadGridElement.RoadGrid);
@@ -53,7 +53,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			DestroyCommand destroy = new((int)industrial.Coordinates.x, (int)industrial.Coordinates.y);
@@ -68,7 +68,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			ZoneType zoneType = ((IZoneBuilding)industrial).GetZoneType();
@@ -82,7 +82,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(1, 0, 2);
+			IndustrialBuildingTile industrial = new(1, 0, 2);
 			City.Instance.SetTile(industrial);
 
 			ResidentialBuildingTile residential = new(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
@@ -121,7 +121,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
@@ -144,7 +144,7 @@ namespace Model.Tiles.Buildings
 			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			Worker worker = new(residential, industrial, 40, Qualification.LOW);
@@ -166,7 +166,7 @@ namespace Model.Tiles.Buildings
 			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			Worker worker1 = new(residential, industrial, 40, Qualification.LOW);
@@ -188,7 +188,7 @@ namespace Model.Tiles.Buildings
 			ResidentialBuildingTile residential = new(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(residential);
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 			City.Instance.SetTile(industrial);
 
 			_ = new Worker(residential, industrial, 40, Qualification.LOW);
@@ -205,7 +205,7 @@ namespace Model.Tiles.Buildings
 			IRoadGridElement roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
 
-			Industrial industrial = new(0, 1, 123);
+			IndustrialBuildingTile industrial = new(0, 1, 123);
 
 			Tile tile = industrial.GetTile();
 

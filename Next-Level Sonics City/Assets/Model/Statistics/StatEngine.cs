@@ -400,7 +400,7 @@ namespace Model.Statistics
 				}
 			});
 
-			return totalResidentialHappiness / persons.Count;
+			return totalResidentialHappiness / (persons.Count == 0 ? 1 : persons.Count);
 		}
 
 		/// <summary>

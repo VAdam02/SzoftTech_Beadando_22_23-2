@@ -1,7 +1,6 @@
 using Model;
 using Model.Tiles;
 using Model.Tiles.Buildings;
-using Model.Tiles.Buildings.BuildingCommands;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -86,8 +85,23 @@ namespace View
 
 		public virtual Vector3 GetPivot() { return Vector3.zero; }
 
+		private GameObject _popUp;
+		public virtual GameObject DisplayPopUp()
+		{
+			return null;
+		}
+
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
+			if (TileManager.Instance.CurrentAction == Action.NONE)
+			{
+				if (_popUp != null)
+				{
+					Destroy(_popUp);
+					_popUp = null;
+				}
+				_popUp = DisplayPopUp();
+			}
 			if (TileManager.Instance.CurrentAction == Action.SELECTAREA)
 			{
 				if (TileManager.Instance.SelectedTiles.Count == 0)
@@ -123,6 +137,12 @@ namespace View
 
 		public void OnSecondClick(List<IClickable> clicked)
 		{
+			if (_popUp != null)
+			{
+				Destroy(_popUp);
+				_popUp = null;
+			}
+
 			if (TileManager.Instance.CurrentAction != Action.SELECTAREA) { return; }
 
 			Tile tile = (Tile)clicked.Find(item => item is Tile);

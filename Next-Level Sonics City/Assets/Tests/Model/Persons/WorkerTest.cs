@@ -9,7 +9,7 @@ namespace Model.Persons
 	internal class WorkerTest
 	{
 		private ResidentialBuildingTile _home;
-		private Commercial _workplace;
+		private CommercialBuildingTIle _workplace;
 
 		[SetUp]
 		public void SetUp()

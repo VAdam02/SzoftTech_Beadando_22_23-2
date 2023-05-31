@@ -9,7 +9,7 @@ namespace Model.Tiles.Buildings
 	{
 		public class CommercialTests
 		{
-			private Commercial commercial;
+			private CommercialBuildingTIle commercial;
 			private IRoadGridElement roadGridElement;
 			private ResidentialBuildingTile mockResidential;
 
@@ -28,7 +28,7 @@ namespace Model.Tiles.Buildings
 				roadGridElement = new RoadTile(0, 0);
 				City.Instance.SetTile(roadGridElement.GetTile());
 
-				commercial = new Commercial(0, 1, 123);
+				commercial = new CommercialBuildingTIle(0, 1, 123);
 				City.Instance.SetTile(commercial);
 				mockResidential = new ResidentialBuildingTile(1, 0, 0, Rotation.TwoSeventy, ZoneBuildingLevel.ZERO);
 				City.Instance.SetTile(mockResidential);
@@ -40,7 +40,7 @@ namespace Model.Tiles.Buildings
 				IRoadGridElement roadGridElement = new RoadTile(0, 0);
 				City.Instance.SetTile(roadGridElement.GetTile());
 
-				Industrial industrial = new(0, 1, 123);
+				IndustrialBuildingTile industrial = new(0, 1, 123);
 				City.Instance.SetTile(industrial);
 
 				Assert.AreEqual(1, industrial.WorkplaceLimit);

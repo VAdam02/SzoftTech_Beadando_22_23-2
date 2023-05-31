@@ -59,7 +59,7 @@ namespace Model.Tiles.ZoneCommands
 
 			IRoadGridElement roadGridElement = new RoadTile(3, 3);
 			City.Instance.SetTile(roadGridElement.GetTile());
-			City.Instance.SetTile(new Industrial(x, y, 123));
+			City.Instance.SetTile(new IndustrialBuildingTile(x, y, 123));
 
 			MarkZoneCommand command = new(x, y, zoneType);
 			command.Execute();

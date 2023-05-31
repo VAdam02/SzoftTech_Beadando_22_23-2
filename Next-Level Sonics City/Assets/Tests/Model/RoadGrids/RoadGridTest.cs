@@ -62,7 +62,7 @@ namespace Model.RoadGrids
 		{
 			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
-			var workplace = new Commercial(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			var workplace = new CommercialBuildingTIle(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
 			Assert.That(((IRoadGridElement)element).RoadGrid.Workplaces, Has.Count.EqualTo(1));
@@ -74,7 +74,7 @@ namespace Model.RoadGrids
 		{
 			var element = new RoadTile(0, 0);
 			City.Instance.SetTile(element);
-			var workplace = new Commercial(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			var workplace = new CommercialBuildingTIle(0, 1, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
 			City.Instance.SetTile(new EmptyTile(0, 1));

@@ -34,6 +34,8 @@ namespace View.GUI.VirtualMouse
 					Mathf.Clamp(_mousePosition.y, 0, Screen.height),
 					0);
 				_mouseRectTransform.transform.position = _mousePosition;
+
+				_mouseRectTransform.transform.SetSiblingIndex(transform.childCount - 1);
 			}
 		}
 
