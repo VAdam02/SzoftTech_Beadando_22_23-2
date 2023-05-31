@@ -144,5 +144,11 @@ namespace View.Tiles.Buildings
 			}
 			
 		}
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/PoliceDepartmentBuildingTile/PoliceDepartmentBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
 	}
 }

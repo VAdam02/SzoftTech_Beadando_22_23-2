@@ -90,6 +90,12 @@ namespace View.Tiles
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 		}
 
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/RoadTile/RoadTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
 		private void Display()
 		{
 			foreach (Transform child in transform)
