@@ -39,6 +39,8 @@ namespace Model.RoadGrids
 		private readonly List<IWorkplace> _commercialWorkplaces = new();
 		private readonly List<IWorkplace> _industrialWorkplaces = new();
 		private readonly List<IWorkplace> _otherWorkplaces = new();
+		private readonly List<IWorkplace> _middleSchools = new();
+		private readonly List<IWorkplace> _highSchools = new();
 		public List<IWorkplace> Workplaces
 		{
 			get
@@ -63,6 +65,8 @@ namespace Model.RoadGrids
 		public List<IWorkplace> FreeIndustrialWorkplaces { get { return _industrialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
 		public List<IWorkplace> OtherWorkplaces { get { return _otherWorkplaces; } }
 		public List<IWorkplace> FreeOtherWorkplaces { get { return _otherWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
+		public List<IWorkplace> MiddleSchools { get { return _middleSchools; } }
+		public List<IWorkplace> HighSchools { get { return _highSchools; } }
 
 		/// <summary>
 		/// Add workplace to this
@@ -85,6 +89,43 @@ namespace Model.RoadGrids
 			else if (workplace is IndustrialBuildingTile) lock (_industrialWorkplaces) _industrialWorkplaces.Remove(workplace);
 			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Remove(workplace);
 		}
+
+		/// <summary>
+		/// Add middle school to this
+		/// </summary>
+		/// <param name="middleSchool">Residential that should be added</param>
+		public void AddMiddleSchool(MiddleSchool middleSchool)
+		{
+			lock(_middleSchools) _middleSchools.Add(middleSchool);
+		}
+
+		/// <summary>
+		/// Remove middle school to this
+		/// </summary>
+		/// <param name="middleSchool">Residential that should be added</param>
+		public void RemoveMiddleSchool(MiddleSchool middleSchool)
+		{
+			lock(_middleSchools) _middleSchools.Remove(middleSchool);
+		}
+
+		/// <summary>
+		/// Add highschool to this
+		/// </summary>
+		/// <param name="highSchool">Residential that should be added</param>
+		public void AddHighSchool(HighSchool highSchool)
+		{
+			lock (_highSchools) _middleSchools.Add(highSchool);
+		}
+
+		/// <summary>
+		/// Remove highschool to this
+		/// </summary>
+		/// <param name="highSchool">Residential that should be added</param>
+		public void RemoveHighSchool(HighSchool highSchool)
+		{
+			lock (_highSchools) _middleSchools.Remove(highSchool);
+		}
+
 
 		private readonly List<IResidential> _residential = new();
 		public List<IResidential> Residentials { get { return _residential; } }
