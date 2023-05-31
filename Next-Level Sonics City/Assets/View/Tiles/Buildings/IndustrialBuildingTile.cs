@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using Model.Tiles;
-using UnityEngine;
 using Model.Tiles.Buildings;
-
+using UnityEngine;
 
 namespace View.Tiles.Buildings
 {
-    public class IndustrialBuildingTile : Tile
+	public class IndustrialBuildingTile : Tile
     {
         private static Material _grassMaterial;
         public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
-        private static Material _sharedGrassMaterial;
+        private Material _sharedGrassMaterial;
         private Material SharedGrassMaterial
 		{
 			get
@@ -26,7 +23,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _windowMaterial;
 		public static Material WindowMaterial { get { if (_windowMaterial == null) _windowMaterial = LoadMaterialByName("WindowMaterial"); return _windowMaterial; } }
-        private static Material _sharedWindowMaterial;
+        private Material _sharedWindowMaterial;
         private Material SharedWindowMaterial
 		{
 			get
@@ -41,7 +38,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _doorMaterial;
 		public static Material DoorMaterial { get { if (_doorMaterial == null) _doorMaterial = LoadMaterialByName("DoorMaterial"); return _doorMaterial; } }
-        private static Material _sharedDoorMaterial;
+        private Material _sharedDoorMaterial;
         private Material SharedDoorMaterial
 		{
 			get
@@ -56,7 +53,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _baseMaterial;
 		public static Material BaseMaterial { get { if (_baseMaterial == null) _baseMaterial = LoadMaterialByName("BaseMaterial"); return _baseMaterial; } }
-        private static Material _sharedBaseMaterial;
+        private Material _sharedBaseMaterial;
         		private Material SharedBaseMaterial
 		{
 			get
@@ -71,7 +68,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _floorMaterial;
 		public static Material FloorMaterial { get { if (_floorMaterial == null) _floorMaterial = LoadMaterialByName("FloorMaterial"); return _floorMaterial; } }
-        private static Material _sharedFloorMaterial;
+        private Material _sharedFloorMaterial;
         private Material SharedFloorMaterial
 		{
 			get
@@ -86,7 +83,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _garageBaseMaterial;
 		public static Material GarageBaseMaterial { get { if (_garageBaseMaterial == null) _garageBaseMaterial = LoadMaterialByName("GarageBaseMaterial"); return _garageBaseMaterial; } }
-        private static Material _sharedGarageBaseMaterial;
+        private Material _sharedGarageBaseMaterial;
         private Material SharedGarageBaseMaterial
 		{
 			get
@@ -102,7 +99,7 @@ namespace View.Tiles.Buildings
         
         private static Material _groundMaterial;
 		public static Material GroundMaterial { get { if (_groundMaterial == null) _groundMaterial = LoadMaterialByName("GroundMaterial"); return _groundMaterial; } }
-        private static Material _sharedGroundMaterial;
+        private Material _sharedGroundMaterial;
         private Material SharedGroundMaterial
 		{
 			get
@@ -117,7 +114,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _roofMaterial;
 		public static Material RoofMaterial { get { if (_roofMaterial == null) _roofMaterial = LoadMaterialByName("RoofMaterial"); return _roofMaterial; } }
-        private static Material _sharedRoofMaterial;
+        private Material _sharedRoofMaterial;
         private Material SharedRoofMaterial
 		{
 			get
@@ -132,7 +129,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _topMaterial;
 		public static Material TopMaterial { get { if (_topMaterial == null) _topMaterial = LoadMaterialByName("TopMaterial"); return _topMaterial; } }
-        private static Material _sharedTopMaterial;
+        private Material _sharedTopMaterial;
         private Material SharedTopMaterial
 		{
 			get
@@ -147,7 +144,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _wallMaterial;
 		public static Material WallMaterial { get { if (_wallMaterial == null) _wallMaterial = LoadMaterialByName("WallMaterial"); return _wallMaterial; } }
-        private static Material _sharedWallMaterial;
+        private Material _sharedWallMaterial;
         private Material SharedWallMaterial
 		{
 			get
@@ -163,7 +160,7 @@ namespace View.Tiles.Buildings
 
         private static Material LoadMaterialByName(string name)
 		{
-			return Resources.Load<Material>("Tiles/Industrial/Material/" + name);
+			return Resources.Load<Material>("Tiles/IndustrialBuildingTile/Material/" + name);
 		}
         private void SetSharedMaterials(Renderer renderer)
 		{
@@ -215,15 +212,15 @@ namespace View.Tiles.Buildings
 			}
 
             GameObject industrial;
-            if((TileModel.DesignID & (Commercial.COMMERCIAL_LEVEL_MASK )) == 0)
+            if((TileModel.DesignID & (CommercialBuildingTIle.COMMERCIAL_LEVEL_MASK )) == 0)
             {
                 industrial = Instantiate(LoadModelByName("EmptyObject"));
             }
-            else if((TileModel.DesignID & (Commercial.COMMERCIAL_LEVEL_MASK )) == 1)
+            else if((TileModel.DesignID & (CommercialBuildingTIle.COMMERCIAL_LEVEL_MASK )) == 1)
             {
                 industrial = Instantiate(LoadModelByName("Industrial1"));
             }
-            else if((TileModel.DesignID & (Commercial.COMMERCIAL_LEVEL_MASK )) == 2)
+            else if((TileModel.DesignID & (CommercialBuildingTIle.COMMERCIAL_LEVEL_MASK )) == 2)
             {
                 industrial = Instantiate(LoadModelByName("Industrial2"));
             }
@@ -240,7 +237,7 @@ namespace View.Tiles.Buildings
         }
         private static GameObject LoadModelByName(string name)
 		{
-			return Resources.Load<GameObject>("Tiles/Industrial/Model/" + name);
+			return Resources.Load<GameObject>("Tiles/IndustrialBuildingTile/Model/" + name);
 		}
     }
 }

@@ -94,8 +94,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ed08e4fbcd207ba4b9f74400174f2bfc, type: 3}
   - {fileID: 21300000, guid: 72f396abc6ccc8148b4c1458816644d0, type: 3}
   happinessThresholds:
+  - 0.5
   - 0.75
-  - 0.9
 --- !u!1 &6583561310713923841
 GameObject:
   m_ObjectHideFlags: 0

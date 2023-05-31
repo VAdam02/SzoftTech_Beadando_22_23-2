@@ -1,17 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using Model.Tiles;
-using UnityEngine;
 using Model.Tiles.Buildings;
-
+using UnityEngine;
 
 namespace View.Tiles.Buildings
 {
-    public class CommercialBuildingTile : Tile
+	public class CommercialBuildingTile : Tile
     {
         private static Material _grassMaterial;
         public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
-        private static Material _sharedGrassMaterial;
+        private Material _sharedGrassMaterial;
         private Material SharedGrassMaterial
 		{
 			get
@@ -26,7 +23,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _windowMaterial;
 		public static Material WindowMaterial { get { if (_windowMaterial == null) _windowMaterial = LoadMaterialByName("WindowMaterial"); return _windowMaterial; } }
-        private static Material _sharedWindowMaterial;
+        private Material _sharedWindowMaterial;
         private Material SharedWindowMaterial
 		{
 			get
@@ -41,7 +38,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _asphaltMaterial;
 		public static Material AsphaltMaterial { get { if (_asphaltMaterial == null) _asphaltMaterial = LoadMaterialByName("AsphaltMaterial"); return _asphaltMaterial; } }
-        private static Material _sharedAsphaltMaterial;
+        private Material _sharedAsphaltMaterial;
         private Material SharedAsphaltMaterial
 		{
 			get
@@ -56,7 +53,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _baseMaterial;
 		public static Material BaseMaterial { get { if (_baseMaterial == null) _baseMaterial = LoadMaterialByName("BaseMaterial"); return _baseMaterial; } }
-        private static Material _sharedBaseMaterial;
+        private Material _sharedBaseMaterial;
         		private Material SharedBaseMaterial
 		{
 			get
@@ -71,7 +68,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _blackMaterial;
 		public static Material BlackMaterial { get { if (_blackMaterial == null) _blackMaterial = LoadMaterialByName("BlackMaterial"); return _blackMaterial; } }
-        private static Material _sharedBlackMaterial;
+        private Material _sharedBlackMaterial;
         private Material SharedBlackMaterial
 		{
 			get
@@ -86,7 +83,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _whiteMaterial;
 		public static Material WhiteMaterial { get { if (_whiteMaterial == null) _whiteMaterial = LoadMaterialByName("WhiteMaterial"); return _whiteMaterial; } }
-        private static Material _sharedWhiteMaterial;
+        private Material _sharedWhiteMaterial;
         private Material SharedWhiteMaterial
 		{
 			get
@@ -102,7 +99,7 @@ namespace View.Tiles.Buildings
         
         private static Material _houseColor;
 		public static Material HouseColor { get { if (_houseColor == null) _houseColor = LoadMaterialByName("HouseColor"); return _houseColor; } }
-        private static Material _sharedHouseColor;
+        private Material _sharedHouseColor;
         private Material SharedHouseColor
 		{
 			get
@@ -117,7 +114,7 @@ namespace View.Tiles.Buildings
 		}
         private static Material _sidewalkMaterial;
 		public static Material SidewalkMaterial { get { if (_sidewalkMaterial == null) _sidewalkMaterial = LoadMaterialByName("SidewalkMaterial"); return _sidewalkMaterial; } }
-        private static Material _sharedSidewalkMaterial;
+        private Material _sharedSidewalkMaterial;
         private Material SharedSidewalkMaterial
 		{
 			get
@@ -133,7 +130,7 @@ namespace View.Tiles.Buildings
 
         private static Material LoadMaterialByName(string name)
 		{
-			return Resources.Load<Material>("Tiles/Commercial/Material/" + name);
+			return Resources.Load<Material>("Tiles/CommercialBuildingTile/Material/" + name);
 		}
         private void SetSharedMaterials(Renderer renderer)
 		{
@@ -183,15 +180,15 @@ namespace View.Tiles.Buildings
 			}
 
             GameObject commercial;
-            if((TileModel.DesignID & (Commercial.COMMERCIAL_LEVEL_MASK )) == 0)
+            if((TileModel.DesignID & (CommercialBuildingTIle.COMMERCIAL_LEVEL_MASK )) == 0)
             {
                 commercial = Instantiate(LoadModelByName("EmptyObject"));
             }
-            else if((TileModel.DesignID & (Commercial.COMMERCIAL_LEVEL_MASK )) == 1)
+            else if((TileModel.DesignID & (CommercialBuildingTIle.COMMERCIAL_LEVEL_MASK )) == 1)
             {
                 commercial = Instantiate(LoadModelByName("Commercial1"));
             }
-            else if((TileModel.DesignID & (Commercial.COMMERCIAL_LEVEL_MASK )) == 2)
+            else if((TileModel.DesignID & (CommercialBuildingTIle.COMMERCIAL_LEVEL_MASK )) == 2)
             {
                 commercial = Instantiate(LoadModelByName("Commercial2"));
             }
@@ -208,7 +205,7 @@ namespace View.Tiles.Buildings
         }
         private static GameObject LoadModelByName(string name)
 		{
-			return Resources.Load<GameObject>("Tiles/Commercial/Model/" + name);
+			return Resources.Load<GameObject>("Tiles/CommercialBuildingTile/Model/" + name);
 		}
     }
 }

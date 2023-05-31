@@ -52,7 +52,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void AddWorkplace_AddsWorkplaceToList()
 		{
-			var workplace = new Commercial(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			var workplace = new CommercialBuildingTIle(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
 			_roadGrid.AddWorkplace(workplace);
@@ -64,7 +64,7 @@ namespace Model.RoadGrids
 		[Test]
 		public void RemoveWorkplace_RemovesWorkplaceFromList()
 		{
-			var workplace = new Commercial(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
+			var workplace = new CommercialBuildingTIle(0, 0, 0, Rotation.Zero, ZoneBuildingLevel.ZERO);
 			City.Instance.SetTile(workplace);
 
 			_roadGrid.AddWorkplace(workplace);
