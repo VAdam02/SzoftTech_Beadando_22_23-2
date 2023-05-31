@@ -243,11 +243,11 @@ namespace Model.Persons
 
 		public override void ForcedLockedRoadDestroy()
 		{
-			if (RoadGridManager.GetRoadGrigElementByBuilding((Building)Residential).RoadGrid.FreeWorkplaces.Count > 0)
+			if (RoadGridManager.GetRoadGrigElementByBuilding((Building)Residential)?.RoadGrid.FreeWorkplaces.Count > 0)
 			{
 				ForcedUnemploy();
 			}
-			else if (RoadGridManager.GetRoadGrigElementByBuilding((Building)WorkPlace).RoadGrid.FreeResidentials.Count > 0)
+			else if (RoadGridManager.GetRoadGrigElementByBuilding((Building)WorkPlace)?.RoadGrid.FreeResidentials.Count > 0)
 			{
 				ForcedMoveOut();
 			}
