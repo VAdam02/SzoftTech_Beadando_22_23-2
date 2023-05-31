@@ -172,6 +172,12 @@ namespace View.Tiles.Buildings
 				SetSharedMaterials(renderer);
 			}
         }
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/CommercialBuildingTile/CommercialBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
         private void Display()
         {
             foreach (Transform child in transform)

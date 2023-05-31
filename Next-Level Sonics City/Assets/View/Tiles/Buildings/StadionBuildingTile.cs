@@ -80,6 +80,12 @@ namespace View.Tiles.Buildings
 				SetSharedMaterials(renderer);
 			}
 		}
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/StadionBuildingTile/StadionBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
 
 		// Update is called once per frame
 		void Update()
