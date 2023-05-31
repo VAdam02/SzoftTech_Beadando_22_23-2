@@ -43,7 +43,7 @@ namespace Model.Tiles
 
 		public override int BuildPrice => 3000;
 
-		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : BuildPrice;
+		public override int MaintainanceCost => (_plantedYear + MAINTANCENEEDEDFORYEAR < StatEngine.Instance.Year) ? 0 : BuildPrice / 5;
 
 		public override float Transparency => 1 - Mathf.Sin(Mathf.Clamp(StatEngine.Instance.Year - _plantedYear, 0, 10) * Mathf.PI / 2 / MAINTANCENEEDEDFORYEAR) / 4;
 		#endregion

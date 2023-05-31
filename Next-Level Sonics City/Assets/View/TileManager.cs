@@ -1,9 +1,8 @@
-using UnityEngine;
-using Model.Simulation;
-using Model.Tiles;
-using System.Collections.Generic;
-using Model.Tiles.Buildings;
 using Model;
+using Model.Tiles;
+using Model.Tiles.Buildings;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace View
 {
@@ -11,7 +10,9 @@ namespace View
 	{
 		NONE,
 		SELECTAREA,
-		BUILDGHOST
+		BUILDGHOST,
+		SOFTDESTROY,
+		FORCEDESTROY
 	}
 
 	public class TileManager : MonoBehaviour
@@ -25,17 +26,12 @@ namespace View
 			get { return _currentAction; }
 			set
 			{
+				SelectedTiles = new List<Tile>();
+				HoveredTile = null;
+				GhostTile = null;
+				Rotation = Rotation.Zero;
+
 				_currentAction = value;
-				if (_currentAction != Action.SELECTAREA)
-				{
-					SelectedTiles = new List<Tile>();
-				}
-				if (_currentAction != Action.BUILDGHOST)
-				{
-					HoveredTile = null;
-					GhostTile = null;
-					Rotation = Rotation.Zero;
-				}
 			}
 		}
 
@@ -65,17 +61,26 @@ namespace View
 			get { return _hoveredTile; }
 			set
 			{
-				lock (_ghostTileLock)
+				if (CurrentAction == Action.BUILDGHOST)
 				{
-					_hoveredTile = value;
-					if (_ghostTile != null && _hoveredTile != null)
+					lock (_ghostTileLock)
 					{
-						_ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + _ghostTile.GetPivot() + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0));
-						_ghostTile.TileModel.UpdateCoordinates((int)_hoveredTile.TileModel.Coordinates.x, (int)_hoveredTile.TileModel.Coordinates.y);
-						_ghostTile.Highlight(_ghostTile.TileModel.CanBuild() ? Color.green : Color.red);
+						_hoveredTile = value;
+						if (_ghostTile != null && _hoveredTile != null)
+						{
+							_ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + _ghostTile.GetPivot() + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0));
+							_ghostTile.TileModel.UpdateCoordinates((int)_hoveredTile.TileModel.Coordinates.x, (int)_hoveredTile.TileModel.Coordinates.y);
+							_ghostTile.Highlight(_ghostTile.TileModel.CanBuild() ? Color.green : Color.red);
+						}
 					}
 				}
-			}
+                else if (CurrentAction == Action.SOFTDESTROY || CurrentAction == Action.FORCEDESTROY)
+                {
+					if (_hoveredTile != null) { _hoveredTile.Unhighlight(); }
+					_hoveredTile = value;
+					if (_hoveredTile != null) { _hoveredTile.Highlight(Color.red); }
+                }
+            }
 		}
 		public Tile GhostTile
 		{

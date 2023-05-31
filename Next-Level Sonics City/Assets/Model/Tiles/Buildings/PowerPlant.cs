@@ -74,7 +74,14 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		protected new void Deleting()
+		{
+			base.Deleting();
+			while (_workers.Count > 0)
+			{
+				_workers[0].ForcedUnemploy();
+			}
+		}
 
 		public override int BuildPrice => 20000;
 

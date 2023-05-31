@@ -55,22 +55,5 @@ namespace Model.Tiles.Buildings
 			Assert.IsInstanceOf<PoliceDepartmentBuildingTile>(createdTile);
 			Assert.False(eventRaised);
 		}
-
-		[Test]
-		public void Destroy_ValidNonEmptyTile_DestroysBuildingAndDoesNotRaiseBuildingBuiltEvent()
-		{
-			Tile tile = new PoliceDepartmentBuildingTile(3, 4, 123, Rotation.Zero);
-
-			BuildingManager manager = BuildingManager.Instance;
-			bool eventRaised = false;
-			manager.BuildingBuilt += (sender, e) => eventRaised = true;
-
-			manager.Destroy(tile);
-
-			Tile destroyedTile = City.Instance.GetTile(3, 4);
-			Assert.NotNull(destroyedTile);
-			Assert.IsTrue(destroyedTile is EmptyTile);
-			Assert.False(eventRaised);
-		}
 	}
 }

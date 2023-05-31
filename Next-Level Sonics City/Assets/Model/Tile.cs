@@ -20,7 +20,8 @@ namespace Model
 
 		public Vector3 Coordinates { get; protected set; }
 
-		private void TileDeleteInvoke() => OnTileDelete?.Invoke(this, this);
+		private void TileDeleteInvoke() { OnPreTileDelete?.Invoke(this, this); OnTileDelete?.Invoke(this, this); }
+		public event EventHandler<Tile> OnPreTileDelete;
 		public event EventHandler<Tile> OnTileDelete;
 
 		protected void TileChangeInvoke() => OnTileChange?.Invoke(this, this);
@@ -106,12 +107,12 @@ namespace Model
 		{
 			if (!_isFinalized) { throw new InvalidOperationException(); }
 
+			TileDeleteInvoke();
+
 			if (this is IRoadGridElement roadGridElement)
 			{
 				roadGridElement.UnregisterRoadGridElement();
 			}
-
-			TileDeleteInvoke();
 		}
 
 		/// <summary>

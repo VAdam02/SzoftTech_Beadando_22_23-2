@@ -70,8 +70,8 @@ namespace Model.RoadGrids
 		/// <param name="workplace">Workplace that should be added</param>
 		public void AddWorkplace(IWorkplace workplace)
 		{
-			if		(workplace is Commercial) lock (_commercialWorkplaces) _commercialWorkplaces.Add(workplace);
-			else if (workplace is Industrial) lock (_industrialWorkplaces) _industrialWorkplaces.Add(workplace);
+			if		(workplace is CommercialBuildingTIle) lock (_commercialWorkplaces) _commercialWorkplaces.Add(workplace);
+			else if (workplace is IndustrialBuildingTile) lock (_industrialWorkplaces) _industrialWorkplaces.Add(workplace);
 			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Add(workplace);
 		}
 
@@ -81,8 +81,8 @@ namespace Model.RoadGrids
 		/// <param name="workplace">Workplace that should be removed</param>
 		public void RemoveWorkplace(IWorkplace workplace)
 		{
-			if		(workplace is Commercial) lock (_commercialWorkplaces) _commercialWorkplaces.Remove(workplace);
-			else if (workplace is Industrial) lock (_industrialWorkplaces) _industrialWorkplaces.Remove(workplace);
+			if		(workplace is CommercialBuildingTIle) lock (_commercialWorkplaces) _commercialWorkplaces.Remove(workplace);
+			else if (workplace is IndustrialBuildingTile) lock (_industrialWorkplaces) _industrialWorkplaces.Remove(workplace);
 			else							  lock (_otherWorkplaces)	   _otherWorkplaces.Remove(workplace);
 		}
 

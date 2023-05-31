@@ -1,3 +1,4 @@
+using Model.Persons;
 using Model.RoadGrids;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,15 @@ namespace Model.Tiles
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		protected new void Deleting()
+		{
+			base.Deleting();
+
+			while (_lockedBy.Count > 0)
+			{
+				_lockedBy[0].ForcedLockedRoadDestroy();
+			}
+		}
 
 		public override int BuildPrice => 500;
 
@@ -71,18 +80,18 @@ namespace Model.Tiles
 		private void TileDeleteHandler(object sender, Tile oldTile)
 		{
 			Tile newTile = City.Instance.GetTile(oldTile);
-			newTile.OnTileDelete += TileDeleteHandler;
+			newTile.OnPreTileDelete += TileDeleteHandler;
 
 			if (newTile is RoadTile road)
 			{
-				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft = road; }
+				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft  = road; }
 				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = road; }
 				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = road; }
 				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = road; }
 			}
 			else
 			{
-				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft = null; }
+				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft  = null; }
 				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = null; }
 				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = null; }
 				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = null; }

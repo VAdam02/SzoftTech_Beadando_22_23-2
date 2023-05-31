@@ -33,7 +33,14 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		protected new void Deleting()
+		{
+			base.Deleting();
+			while (_workers.Count > 0)
+			{
+				_workers[0].ForcedUnemploy();
+			}
+		}
 
 		public override int BuildPrice => 10000;
 
@@ -136,14 +143,12 @@ namespace Model.Tiles.Buildings
 			float weight = 1;
 
 			//decrease weight by distance on road
-			try
-			{
-				weight *= 1 - RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(this), RoadGridManager.GetRoadGrigElementByBuilding(building), ((IHappyZone)this).EffectiveRadius).Count / Mathf.Max(((IHappyZone)this).EffectiveRadius, 1);
-			}
-			catch
-			{
-				weight *= 0;
-			}
+			try { weight *= 1 - RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding(this), RoadGridManager.GetRoadGrigElementByBuilding(building), ((IHappyZone)this).EffectiveRadius).Count / Mathf.Max(((IHappyZone)this).EffectiveRadius, 1); }
+			catch { weight *= 0; }
+
+			//increase weight by population
+			weight *= Mathf.Pow(City.Instance.GetPopulation(), 2f) / 1000.0f;
+			weight *= (float)((IWorkplace)this).GetWorkersCount() / WorkplaceLimit + 0.5f;
 
 			return (1, weight);
 		}

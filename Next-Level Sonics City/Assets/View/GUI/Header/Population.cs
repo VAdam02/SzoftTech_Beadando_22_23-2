@@ -2,19 +2,23 @@ using Model;
 using TMPro;
 using UnityEngine;
 
-public class Population : MonoBehaviour
+namespace View.GUI.Header
 {
-	private void Awake()
+	public class Population : MonoBehaviour
 	{
-		City.Instance.PopulationChanged += (sender, person) =>
+		private void Awake()
 		{
-			if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+			GetComponent<TextMeshProUGUI>().text = City.Instance.GetPopulation().ToString("N0");
+			City.Instance.PopulationChanged += (sender, person) =>
 			{
-				mainThread.Enqueue(() =>
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
 				{
-					GetComponent<TextMeshProUGUI>().text = City.Instance.GetPopulation().ToString("N0");
-				});
-			}
-		};
+					mainThread.Enqueue(() =>
+					{
+						GetComponent<TextMeshProUGUI>().text = City.Instance.GetPopulation().ToString("N0");
+					});
+				}
+			};
+		}
 	}
 }

@@ -30,5 +30,18 @@ namespace Model.Persons
 		{
 			return 0f;
 		}
+
+		public override void ForcedMoveOut()
+		{
+			Die();
+		}
+
+		public override void Die() => Dying();
+		protected new void Dying() => base.Dying();
+
+		public override void ForcedLockedRoadDestroy()
+		{
+			Die();
+		}
 	}
 }

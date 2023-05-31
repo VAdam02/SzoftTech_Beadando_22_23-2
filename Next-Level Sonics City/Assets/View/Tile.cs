@@ -85,8 +85,23 @@ namespace View
 
 		public virtual Vector3 GetPivot() { return Vector3.zero; }
 
+		private GameObject _popUp;
+		public virtual GameObject DisplayPopUp()
+		{
+			return null;
+		}
+
 		public void OnClick(bool isLeftMouseButton, Vector3 location)
 		{
+			if (TileManager.Instance.CurrentAction == Action.NONE)
+			{
+				if (_popUp != null)
+				{
+					Destroy(_popUp);
+					_popUp = null;
+				}
+				_popUp = DisplayPopUp();
+			}
 			if (TileManager.Instance.CurrentAction == Action.SELECTAREA)
 			{
 				if (TileManager.Instance.SelectedTiles.Count == 0)
@@ -104,6 +119,14 @@ namespace View
 					TileManager.Instance.GhostTile.TileModel is Building building ? building.Rotation : Rotation.Zero);
 				}
 			}
+			if (TileManager.Instance.CurrentAction == Action.SOFTDESTROY)
+			{
+				BuildingManager.Instance.Destroy(City.Instance.GetTile(TileModel));
+			}
+			if (TileManager.Instance.CurrentAction == Action.FORCEDESTROY)
+			{
+				BuildingManager.Instance.ForcedDestroy(City.Instance.GetTile(TileModel));
+			}
 		}
 
 		public void OnDragStart(bool isLeftMouseButton, Vector3 location) { }
@@ -114,6 +137,12 @@ namespace View
 
 		public void OnSecondClick(List<IClickable> clicked)
 		{
+			if (_popUp != null)
+			{
+				Destroy(_popUp);
+				_popUp = null;
+			}
+
 			if (TileManager.Instance.CurrentAction != Action.SELECTAREA) { return; }
 
 			Tile tile = (Tile)clicked.Find(item => item is Tile);
@@ -124,20 +153,22 @@ namespace View
 
 		public void OnHoverStart(Vector3 location)
 		{
-			//Debug.Log("HoverStart\t" + location);
-		}
-
-		public void OnHover(Vector3 location)
-		{
-			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST)
+			if (TileManager.Instance.CurrentAction == Action.BUILDGHOST
+			 || TileManager.Instance.CurrentAction == Action.SOFTDESTROY
+			 || TileManager.Instance.CurrentAction == Action.FORCEDESTROY)
 			{
 				TileManager.Instance.HoveredTile = this;
 			}
 		}
 
+		public void OnHover(Vector3 location)
+		{
+			
+		}
+
 		public void OnHoverEnd()
 		{
-			//Debug.Log("HoverEnd" + "\t" + this);
+			
 		}
 
 		public void OnScroll(float delta) { }

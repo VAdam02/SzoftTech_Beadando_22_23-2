@@ -22,7 +22,7 @@ namespace View.Tiles.Buildings
 		private static readonly UnityEvent gradientAndMaterialReloadEvent = new();
 
 		//2^32-1        / MAXELEMENTID / MAXLEVELCOUNT = MAXELEMENTCOUNT
-		//4 294 967 295 / 211           / 8            = 2 544 411
+		//4 294 967 295 / 211           / 8            = 2ï¿½544ï¿½411
 		private const uint COLORMULTIPLIER = 101;
 		private const uint ELEMENTMULTIPLIER = 211;
 
@@ -42,6 +42,13 @@ namespace View.Tiles.Buildings
 		public uint LevelCount
 		{
 			get { return TileModel.DesignID & Model.Tiles.Buildings.ResidentialBuildingTile.RESIDENTIAL_LEVEL_COUNT_MASK; }
+		}
+
+		public override GameObject DisplayPopUp()
+		{
+			GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/ResidentialBuildingTile/ResidentialBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+			popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+			return popup;
 		}
 
 		#region Gradients and materials
@@ -259,8 +266,10 @@ namespace View.Tiles.Buildings
 
 				attachPoint += new Vector3(0, 7, 0);
 			}
-
-			DisplayRoof(LevelCount, attachPoint, gameObject, bottomNeedForeSmallNextLevel, bottomNeedBackSmallNextLevel, bottomNeedForeBigNextLevel, bottomNeedBackBigNextLevel);
+			if(LevelCount > 0)
+			{
+				DisplayRoof(LevelCount, attachPoint, gameObject, bottomNeedForeSmallNextLevel, bottomNeedBackSmallNextLevel, bottomNeedForeBigNextLevel, bottomNeedBackBigNextLevel);
+			}
 		}
 
 		private void DisplayLevelElement(bool bottomNeedForeSmallNextLevel, bool bottomNeedBackSmallNextLevel, uint levelIndex, Vector3 attachPoint, GameObject core, ref bool needForeSmallNextLevel, ref bool needForeBigNextLevel, ref bool needBackSmallNextLevel, ref bool needBackBigNextLevel)

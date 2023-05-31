@@ -18,7 +18,12 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
 		/// </summary>
-		protected new void Finalizing() => base.Finalizing();
+		protected new void Finalizing()
+		{
+			base.Finalizing();
+
+			RoadGridManager.GetRoadGrigElementByBuilding(this).GetTile().OnTileDelete += (sender, e) => { ZoneManager.Instance.MarkZone(this, this, ZoneType.VoidZone); };
+		}
 
 		public override void DeleteTile() => Deleting();
 
@@ -26,11 +31,21 @@ namespace Model.Tiles.Buildings
 		/// <para>MUST BE STARTED WITH <code>base.Deleting()</code></para>
 		/// <para>Do the deletion administration</para>
 		/// </summary>
-		protected new void Deleting() => base.Deleting();
+		protected new void Deleting()
+		{
+			base.Deleting();
+
+			while (_residents.Count > 0)
+			{
+				_residents[0].ForcedMoveOut();
+			}
+		}
 
 		public override int BuildPrice => 5000;
 
 		public override int DestroyIncome { get => (int)(BuildPrice * 0.1f) - 100 * _residents.Count; }
+
+		public override int MaintainanceCost { get => 0; }
 
 		public override float Transparency => 1 - (float)(int)Level / 12;
 		#endregion

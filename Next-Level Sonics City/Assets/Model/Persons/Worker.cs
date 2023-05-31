@@ -20,6 +20,8 @@ namespace Model.Persons
 		{
 			get
 			{
+				if (WorkPlace == null || Residential == null) return (0.0f, 0.0f);
+
 				List<(float happiness, float weight)> happinessChangers = new()
 				{
 					(1, 5f - Mathf.Atan(Mathf.Sqrt(Mathf.Pow(WorkPlace.GetTile().Coordinates.x - Residential.GetTile().Coordinates.x, 2) + Mathf.Pow(WorkPlace.GetTile().Coordinates.y - Residential.GetTile().Coordinates.y, 2))) * Mathf.PI),
@@ -50,7 +52,14 @@ namespace Model.Persons
 		{
 			if (age < 18 || PENSION_AGE <= age) throw new ArgumentException("Worker cannot be younger than 18 and older than " + PENSION_AGE + " years old");
 			WorkPlace = workPlace ?? throw new ArgumentNullException("Worker must have a workplace");
+
 			PathToWork = RoadGridManager.GetPathOnRoad(RoadGridManager.GetRoadGrigElementByBuilding((Building)residential.GetTile()), RoadGridManager.GetRoadGrigElementByBuilding((Building)workPlace.GetTile()), int.MaxValue);
+			foreach (IRoadGridElement element in PathToWork)
+			{
+				element.LockBy(this);
+				element.GetTile().OnTileDelete += RecalculatePathToWork;
+			}
+
 			PersonQualification = qualification;
 			WorkPlace.Employ(this);
 
@@ -75,7 +84,7 @@ namespace Model.Persons
 				throw new ArgumentException("Path to work must be started with residential and ended with workplace");
 			}
 			PathToWork = pathToWork;
-			foreach (IRoadGridElement element in pathToWork)
+			foreach (IRoadGridElement element in PathToWork)
 			{
 				element.LockBy(this);
 				element.GetTile().OnTileDelete += RecalculatePathToWork;
@@ -171,6 +180,98 @@ namespace Model.Persons
 			//TODO add more parameters to calculate salary
 
 			return BASE_SALARY * multiplier;
+		}
+
+		public void ForcedUnemploy()
+		{
+			IWorkplace _old = WorkPlace; //TODO debug
+			WorkPlace?.Unemploy(this);
+			lock (PathToWork)
+			{
+				while (PathToWork.Count > 0)
+				{
+					PathToWork[0].UnlockBy(this);
+					PathToWork.RemoveAt(0);
+				}
+			}
+
+			WorkPlace = LookForWorkplaceByResidential(Residential, out List<IRoadGridElement> shortestPath);
+			if (WorkPlace == null) { Die(); return; }
+
+			PathToWork = shortestPath;
+			foreach (IRoadGridElement element in PathToWork)
+			{
+				element.LockBy(this);
+				element.GetTile().OnTileDelete += RecalculatePathToWork;
+			}
+			WorkPlace.Employ(this);
+
+			UpdateHappiness();
+
+			Debug.Log(ID + " change workplace from " + _old?.GetTile().Coordinates + " to " + WorkPlace?.GetTile().Coordinates);
+		}
+
+		public override void ForcedMoveOut()
+		{
+			IResidential _old = Residential; //TODO debug
+
+			Residential?.MoveOut(this);
+			lock (PathToWork)
+			{
+				while (PathToWork.Count > 0)
+				{
+					PathToWork[0].UnlockBy(this);
+					PathToWork.RemoveAt(0);
+				}
+			}
+
+			Residential = LookForResidentialByWorkplace(WorkPlace, out List<IRoadGridElement> shortestPath);
+			if (Residential == null) { Die(); return; }
+
+			PathToWork = shortestPath;
+			foreach (IRoadGridElement element in PathToWork)
+			{
+				element.LockBy(this);
+				element.GetTile().OnTileDelete += RecalculatePathToWork;
+			}
+			Residential.MoveIn(this);
+			
+			UpdateHappiness();
+
+			Debug.Log(ID + " change residential from " + _old?.GetTile().Coordinates + " to " + Residential?.GetTile().Coordinates);
+		}
+
+		public override void ForcedLockedRoadDestroy()
+		{
+			if (RoadGridManager.GetRoadGrigElementByBuilding((Building)Residential)?.RoadGrid.FreeWorkplaces.Count > 0)
+			{
+				ForcedUnemploy();
+			}
+			else if (RoadGridManager.GetRoadGrigElementByBuilding((Building)WorkPlace)?.RoadGrid.FreeResidentials.Count > 0)
+			{
+				ForcedMoveOut();
+			}
+			else
+			{
+				Die();
+			}
+		}
+
+		public override void Die() => Dying();
+		protected new void Dying()
+		{
+			base.Dying();
+
+			WorkPlace?.Unemploy(this);
+
+			lock (PathToWork)
+			{
+				while (PathToWork.Count > 0)
+				{
+					PathToWork[0].UnlockBy(this);
+					PathToWork.RemoveAt(0);
+				}
+			}
 		}
 	}
 }
