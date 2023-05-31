@@ -4,7 +4,7 @@ using UnityEngine;
 namespace View.Tiles.Buildings
 {
 	public class PoliceDepartmentBuidingTile : Tile
-    {
+	{
 		private static Material _grassMaterial;
 		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
 		private Material _sharedGrassMaterial;
