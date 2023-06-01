@@ -84,6 +84,10 @@ namespace Model.Tiles.Buildings
 		public new Tile GetTile() => _baseWorkplace.GetTile();
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 0;
+		#endregion
+
 		private readonly IWorkplace _baseWorkplace;
 
 		/// <summary>

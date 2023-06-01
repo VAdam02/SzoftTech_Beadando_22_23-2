@@ -215,6 +215,10 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 15;
+		#endregion
+
 		/// <summary>
 		/// Construct a new middle school tile
 		/// </summary>

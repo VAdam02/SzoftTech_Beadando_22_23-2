@@ -207,6 +207,10 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 0;
+		#endregion
+
 		/// <summary>
 		/// Construct a new power plant tile
 		/// </summary>

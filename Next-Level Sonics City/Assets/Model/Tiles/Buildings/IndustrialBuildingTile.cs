@@ -191,6 +191,10 @@ namespace Model.Tiles.Buildings
 		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile) => IHappyZone.TileDestroyedInRadius(this, oldTile);
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => (int)Level * 5;
+		#endregion
+
 		public const uint INDUSTRIAL_LEVEL_MASK = 0x00000003; // 2 bits
 
 		/// <summary>

@@ -234,6 +234,10 @@ namespace Model.Tiles.Buildings
 		void IHappyZone.TileDestroyedInRadiusHandler(object sender, Tile oldTile) => IHappyZone.TileDestroyedInRadius(this, oldTile);
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 40;
+		#endregion
+
 		public StadionBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
