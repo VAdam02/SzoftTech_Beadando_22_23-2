@@ -209,6 +209,8 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Finalizing()
 		{
+			RegisterNeighbourTileDeleteListeners();
+
 			base.Finalizing();
 
 			RoadGrid roadGrid = RoadGridManager.GetRoadGrigElementByBuilding(this)?.RoadGrid;

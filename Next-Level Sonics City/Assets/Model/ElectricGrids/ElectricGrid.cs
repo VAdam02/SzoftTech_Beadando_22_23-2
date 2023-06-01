@@ -63,7 +63,7 @@ namespace Model.ElectricGrids
 		/// Remove producer from this
 		/// </summary>
 		/// <param name="producer">Producer that should be removed</param>
-		public void RemoveProduce(IPowerProducer producer)
+		public void RemoveProducer(IPowerProducer producer)
 		{
 			bool prev = GetPowerState();
 			lock (_producers) _producers.Remove(producer);
