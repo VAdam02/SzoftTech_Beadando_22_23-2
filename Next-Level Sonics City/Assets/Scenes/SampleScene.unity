@@ -830,7 +830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4436027784238243639, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 250
+      value: 510
       objectReference: {fileID: 0}
     - target: {fileID: 4436027784238243639, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
       propertyPath: m_SizeDelta.y
@@ -887,6 +887,10 @@ PrefabInstance:
     - target: {fileID: 6009579593780685542, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
       propertyPath: m_Name
       value: 'BuildPanel '
+      objectReference: {fileID: 0}
+    - target: {fileID: 6009579593780685542, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
