@@ -101,8 +101,15 @@ namespace Model.Tiles
 			get => _electricGrid;
 			set
 			{
+				if (_electricGrid != null) _electricGrid.PowerStateChanged -= PowerStateChangedHandler;
 				SetElectricGrid(value);
+				if (_electricGrid != null) _electricGrid.PowerStateChanged += PowerStateChangedHandler;
 			}
+		}
+
+		private void PowerStateChangedHandler(object sender, EventArgs e)
+		{
+
 		}
 
 		/// <summary>
@@ -115,6 +122,7 @@ namespace Model.Tiles
 
 			if (_electricGrid == electricGrid) { return; }
 
+			//it's completly okey that there is nothing
 			{
 				if (this is IPowerProducer producer)
 				{
