@@ -115,14 +115,12 @@ namespace Model.Tiles
 
 			if (_electricGrid == electricGrid) { return; }
 
-			List<Building> buildings = ElectricGridManager.GetBuildingsByElectricGridElement(this);
-			foreach (Building building in buildings)
 			{
-				if (building is IPowerProducer producer)
+				if (this is IPowerProducer producer)
 				{
 					producer.UnregisterPowerProducer(_electricGrid);
 				}
-				if (building is IPowerConsumer consumer)
+				if (this is IPowerConsumer consumer)
 				{
 					consumer.UnregisterPowerConsumer(_electricGrid);
 				}
@@ -142,16 +140,13 @@ namespace Model.Tiles
 
 			if (_electricGrid != null)
 			{
-				foreach (Building building in buildings)
+				if (this is IPowerProducer producer)
 				{
-					if (building is IPowerProducer producer)
-					{
-						producer.RegisterPowerProducer(_electricGrid);
-					}
-					if (building is IPowerConsumer consumer)
-					{
-						consumer.RegisterPowerConsumer(_electricGrid);
-					}
+					producer.RegisterPowerProducer(_electricGrid);
+				}
+				if (this is IPowerConsumer consumer)
+				{
+					consumer.RegisterPowerConsumer(_electricGrid);
 				}
 			}
 		}

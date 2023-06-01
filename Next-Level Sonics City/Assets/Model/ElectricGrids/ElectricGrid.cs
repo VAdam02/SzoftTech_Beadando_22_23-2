@@ -1,10 +1,15 @@
-using Model.Tiles.Buildings;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.ElectricGrids
 {
 	public class ElectricGrid
 	{
+		public event EventHandler PowerStateChanged;
+
+		public bool GetPowerState() => PowerProduction - PowerConsumption >= 0;
+
 		/// <summary>
 		/// It is also register itself in ElectricGridManager
 		/// </summary>
@@ -36,6 +41,8 @@ namespace Model.ElectricGrids
 				_electricGridElements.Remove(electricGridElement);
 		}
 
+		public int PowerConsumption { get => _consumers.Aggregate(0, (sum, current) => sum + current.GetPowerConsumption()); }
+		public int PowerProduction { get => _producers.Aggregate(0, (sum, current) => sum + current.GetPowerProduction()); }
 		private readonly List<IPowerConsumer> _consumers = new();
 		private readonly List<IPowerProducer> _producers = new();
 		public List<IPowerConsumer> Consumers { get { return _consumers; } }
@@ -47,7 +54,9 @@ namespace Model.ElectricGrids
 		/// <param name="producer">Producer that should be added</param>
 		public void AddProducer(IPowerProducer producer)
 		{
+			bool prev = GetPowerState();
 			lock (_producers) _producers.Add(producer);
+			if (prev != GetPowerState()) PowerStateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -56,7 +65,9 @@ namespace Model.ElectricGrids
 		/// <param name="producer">Producer that should be removed</param>
 		public void RemoveProduce(IPowerProducer producer)
 		{
+			bool prev = GetPowerState();
 			lock (_producers) _producers.Remove(producer);
+			if (prev != GetPowerState()) PowerStateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -65,7 +76,9 @@ namespace Model.ElectricGrids
 		/// <param name="consumer">Consumer that should be added</param>
 		public void AddConsumer(IPowerConsumer consumer)
 		{
+			bool prev = GetPowerState();
 			lock (_consumers) _consumers.Add(consumer);
+			if (prev != GetPowerState()) PowerStateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -74,7 +87,9 @@ namespace Model.ElectricGrids
 		/// <param name="consumer">Consumer that should be removed</param>
 		public void RemoveConsumer(IPowerConsumer consumer)
 		{
+			bool prev = GetPowerState();
 			lock (_consumers) _consumers.Remove(consumer);
+			if (prev != GetPowerState()) PowerStateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
