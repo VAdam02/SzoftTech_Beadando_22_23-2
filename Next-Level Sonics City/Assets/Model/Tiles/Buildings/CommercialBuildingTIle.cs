@@ -167,6 +167,10 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 10; //TODO implement power consumption
+		#endregion
+
 		public const uint COMMERCIAL_LEVEL_MASK = 0x00000003; // 2 bits
 
 		/// <summary>

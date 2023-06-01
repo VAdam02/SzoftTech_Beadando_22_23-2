@@ -57,7 +57,6 @@ namespace Model.Persons
 			foreach (IRoadGridElement element in PathToWork)
 			{
 				element.LockBy(this);
-				element.GetTile().OnTileDelete += RecalculatePathToWork;
 			}
 
 			PersonQualification = qualification;
@@ -87,7 +86,6 @@ namespace Model.Persons
 			foreach (IRoadGridElement element in PathToWork)
 			{
 				element.LockBy(this);
-				element.GetTile().OnTileDelete += RecalculatePathToWork;
 			}
 
 			PersonQualification = qualification;
@@ -95,11 +93,6 @@ namespace Model.Persons
 			WorkPlace.Employ(this);
 
 			UpdateHappiness();
-		}
-
-		private void RecalculatePathToWork(object sender, Tile tile)
-		{
-			//TODO recalculate path
 		}
 
 		/// <summary>
@@ -184,7 +177,6 @@ namespace Model.Persons
 
 		public void ForcedUnemploy()
 		{
-			IWorkplace _old = WorkPlace; //TODO debug
 			WorkPlace?.Unemploy(this);
 			lock (PathToWork)
 			{
@@ -202,19 +194,14 @@ namespace Model.Persons
 			foreach (IRoadGridElement element in PathToWork)
 			{
 				element.LockBy(this);
-				element.GetTile().OnTileDelete += RecalculatePathToWork;
 			}
 			WorkPlace.Employ(this);
 
 			UpdateHappiness();
-
-			Debug.Log(ID + " change workplace from " + _old?.GetTile().Coordinates + " to " + WorkPlace?.GetTile().Coordinates);
 		}
 
 		public override void ForcedMoveOut()
 		{
-			IResidential _old = Residential; //TODO debug
-
 			Residential?.MoveOut(this);
 			lock (PathToWork)
 			{
@@ -232,13 +219,10 @@ namespace Model.Persons
 			foreach (IRoadGridElement element in PathToWork)
 			{
 				element.LockBy(this);
-				element.GetTile().OnTileDelete += RecalculatePathToWork;
 			}
 			Residential.MoveIn(this);
 			
 			UpdateHappiness();
-
-			Debug.Log(ID + " change residential from " + _old?.GetTile().Coordinates + " to " + Residential?.GetTile().Coordinates);
 		}
 
 		public override void ForcedLockedRoadDestroy()
