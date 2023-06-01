@@ -590,6 +590,11 @@ namespace Model.Statistics
 
 			NextQuarterEvent?.Invoke(this, EventArgs.Empty);
 
+			City.Instance.LoseMiddleSchoolEducation();
+			City.Instance.LoseHighSchoolEducation();
+			City.Instance.MiddleSchoolEducatePersons();
+			City.Instance.HighSchoolEducatePersons();
+
 			UpdateCurrentStatReport(true);
 
 			lock (_statReports)
