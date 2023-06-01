@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3042134821474612476}
   - component: {fileID: 3286663231438068568}
   m_Layer: 0
-  m_Name: UpgradedRoadTile
+  m_Name: ElectricRoadTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

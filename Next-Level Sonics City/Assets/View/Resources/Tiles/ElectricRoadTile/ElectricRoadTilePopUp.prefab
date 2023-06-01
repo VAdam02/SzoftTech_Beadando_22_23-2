@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 4378738378461393582}
   - component: {fileID: 4500708491873690102}
   m_Layer: 5
-  m_Name: UpgradedRoadTilePopUp
+  m_Name: ElectricRoadTilePopUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
