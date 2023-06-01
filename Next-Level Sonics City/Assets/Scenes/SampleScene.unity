@@ -888,10 +888,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'BuildPanel '
       objectReference: {fileID: 0}
-    - target: {fileID: 6009579593780685542, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82f93820d17b63d43b5408bf0b516037, type: 3}
 --- !u!224 &1197496554 stripped
@@ -1158,10 +1154,6 @@ PrefabInstance:
     - target: {fileID: 1721627966220330822, guid: a42acad8ceb2307459f8a8c1ea61705c, type: 3}
       propertyPath: m_Name
       value: DestroyPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 1721627966220330822, guid: a42acad8ceb2307459f8a8c1ea61705c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2967338278543631525, guid: a42acad8ceb2307459f8a8c1ea61705c, type: 3}
       propertyPath: m_Pivot.x
