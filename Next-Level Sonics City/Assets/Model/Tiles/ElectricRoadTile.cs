@@ -1,10 +1,8 @@
 using Model.ElectricGrids;
 using Model.RoadGrids;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Model.Tiles
 {
@@ -21,9 +19,9 @@ namespace Model.Tiles
 		/// </summary>
 		protected new void Finalizing()
 		{
-			RegisterNeighbourTileDeleteListeners();
-
 			base.Finalizing();
+
+			RegisterNeighbourTileDeleteListeners();
 		}
 
 		public override void DeleteTile() => Deleting();
@@ -66,74 +64,52 @@ namespace Model.Tiles
 		private readonly IRoadGridElement[] _roads = new IRoadGridElement[4];
 		List<IRoadGridElement> IRoadGridElement.ConnectsTo { get => _roads.Where(x => x != null).ToList(); }
 
-		private void RegisterNeighbourTileDeleteListeners()
-		{
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IRoadGridElement aboveRoad) { ConnectsFromAbove = aboveRoad; }
-			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IRoadGridElement rightRoad) { ConnectsFromRight = rightRoad; }
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IRoadGridElement belowRoad) { ConnectsFromBelow = belowRoad; }
-			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IRoadGridElement leftRoad) { ConnectsFromLeft = leftRoad; }
-
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
-			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is Tile belowTile) { belowTile.OnTileDelete += TileDeleteHandler; }
-			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is Tile leftTile) { leftTile.OnTileDelete += TileDeleteHandler; }
-		}
-
-		private void TileDeleteHandler(object sender, Tile oldTile)
-		{
-			Tile newTile = City.Instance.GetTile(oldTile);
-			newTile.OnPreTileDelete += TileDeleteHandler;
-
-			if (newTile is IRoadGridElement road)
-			{
-				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeft = road; }
-				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = road; }
-				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = road; }
-				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = road; }
-			}
-			else
-			{
-				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeft = null; }
-				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = null; }
-				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = null; }
-				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = null; }
-			}
-		}
-
-		public IRoadGridElement ConnectsFromAbove
+		IRoadGridElement IRoadGridElement.ConnectsFromAbove
 		{
 			get { return _roads[0]; }
-			private set
+		}
+		private IRoadGridElement ConnectsFromAboveRoad
+		{
+			set
 			{
 				_roads[0] = value;
 				if (value == null) { DesignID &= ~ABOVEROADMASK; }
 				else { DesignID |= ABOVEROADMASK; }
 			}
 		}
-		public IRoadGridElement ConnectsFromRight
+		IRoadGridElement IRoadGridElement.ConnectsFromRight
 		{
 			get { return _roads[1]; }
-			private set
+		}
+		private IRoadGridElement ConnectsFromRightRoad
+		{
+			set
 			{
 				_roads[1] = value;
 				if (value == null) { DesignID &= ~RIGHTROADMASK; }
 				else { DesignID |= RIGHTROADMASK; }
 			}
 		}
-		public IRoadGridElement ConnectsFromBelow
+		IRoadGridElement IRoadGridElement.ConnectsFromBelow
 		{
 			get { return _roads[2]; }
-			private set
+		}
+		private IRoadGridElement ConnectsFromBelowRoad
+		{
+			set
 			{
 				_roads[2] = value;
 				if (value == null) { DesignID &= ~BELOWROADMASK; }
 				else { DesignID |= BELOWROADMASK; }
 			}
 		}
-		public IRoadGridElement ConnectsFromLeft
+		IRoadGridElement IRoadGridElement.ConnectsFromLeft
 		{
 			get { return _roads[3]; }
-			private set
+		}
+		private IRoadGridElement ConnectsFromLeftRoad
+		{
+			set
 			{
 				_roads[3] = value;
 				if (value == null) { DesignID &= ~LEFTROADMASK; }
@@ -209,10 +185,6 @@ namespace Model.Tiles
 		public void UnlockBy(Person person) { _lockedBy.Remove(person); }
 		#endregion
 
-		#region Common implementation
-		public Tile GetTile() => this;
-		#endregion
-
 		#region IElectricGridElement implementation
 		void IElectricGridElement.RegisterElectricGridElement()
 		{
@@ -231,72 +203,26 @@ namespace Model.Tiles
 		private readonly IElectricGridElement[] _electrics = new IElectricGridElement[4];
 		List<IElectricGridElement> IElectricGridElement.ConnectsTo { get => _electrics.Where(x => x != null).ToList(); }
 
-		private void RegisterNeighbourTileDeleteListeners()
-		{
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IElectricGridElement aboveElectric) { ConnectsFromAbove = aboveElectric; }
-			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IElectricGridElement rightElectric) { ConnectsFromRight = rightElectric; }
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IElectricGridElement belowElectric) { ConnectsFromBelow = belowElectric; }
-			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IElectricGridElement leftElectric) { ConnectsFromLeft = leftElectric; }
-
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
-			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is Tile belowTile) { belowTile.OnTileDelete += TileDeleteHandler; }
-			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is Tile leftTile) { leftTile.OnTileDelete += TileDeleteHandler; }
-		}
-
-		private void TileDeleteHandler(object sender, Tile oldTile)
-		{
-			Tile newTile = City.Instance.GetTile(oldTile);
-			newTile.OnPreTileDelete += TileDeleteHandler;
-
-			if (newTile is IElectricGridElement electric)
-			{
-				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeft = electric; }
-				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = electric; }
-				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = electric; }
-				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = electric; }
-			}
-			else
-			{
-				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeft = null; }
-				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = null; }
-				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelow = null; }
-				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAbove = null; }
-			}
-		}
-
-		public IElectricGridElement ConnectsFromAbove
+		IElectricGridElement IElectricGridElement.ConnectsFromAbove
 		{
 			get { return _electrics[0]; }
-			private set
-			{
-				_electrics[0] = value;
-			}
 		}
-		public IElectricGridElement ConnectsFromRight
+		private IElectricGridElement ConnectsFromAboveElectric { set => _electrics[0] = value; }
+		IElectricGridElement IElectricGridElement.ConnectsFromRight
 		{
 			get { return _electrics[1]; }
-			private set
-			{
-				_electrics[1] = value;
-			}
 		}
-		public IElectricGridElement ConnectsFromBelow
+		private IElectricGridElement ConnectsFromRightElectric { set => _electrics[1] = value; }
+		IElectricGridElement IElectricGridElement.ConnectsFromBelow
 		{
 			get { return _electrics[2]; }
-			private set
-			{
-				_electrics[2] = value;
-			}
 		}
-		public IElectricGridElement ConnectsFromLeft
+		private IElectricGridElement ConnectsFromBelowElectric { set => _electrics[2] = value; }
+		IElectricGridElement IElectricGridElement.ConnectsFromLeft
 		{
 			get { return _electrics[3]; }
-			private set
-			{
-				_electrics[3] = value;
-			}
 		}
+		private IElectricGridElement ConnectsFromLeftElectric { set => _electrics[3] = value; }
 
 		private ElectricGrid _electricGrid = null;
 
@@ -352,6 +278,64 @@ namespace Model.Tiles
 				{
 					consumer.RegisterPowerConsumer(_electricGrid);
 				}
+			}
+		}
+		#endregion
+
+		#region Common implementation
+		public Tile GetTile() => this;
+
+		private void RegisterNeighbourTileDeleteListeners()
+		{
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IRoadGridElement aboveRoad) { ConnectsFromAboveRoad = aboveRoad; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IRoadGridElement rightRoad) { ConnectsFromRightRoad = rightRoad; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IRoadGridElement belowRoad) { ConnectsFromBelowRoad = belowRoad; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IRoadGridElement leftRoad) { ConnectsFromLeftRoad = leftRoad; }
+
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IElectricGridElement aboveElectric) { ConnectsFromAboveElectric = aboveElectric; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IElectricGridElement rightElectric) { ConnectsFromRightElectric = rightElectric; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IElectricGridElement belowElectric) { ConnectsFromBelowElectric = belowElectric; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IElectricGridElement leftElectric) { ConnectsFromLeftElectric = leftElectric; }
+
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is Tile belowTile) { belowTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is Tile leftTile) { leftTile.OnTileDelete += TileDeleteHandler; }
+		}
+
+		private void TileDeleteHandler(object sender, Tile oldTile)
+		{
+			Tile newTile = City.Instance.GetTile(oldTile);
+			newTile.OnPreTileDelete += TileDeleteHandler;
+
+			if (newTile is IElectricGridElement electric)
+			{
+				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeftElectric = electric; }
+				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRightElectric = electric; }
+				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelowElectric = electric; }
+				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAboveElectric = electric; }
+			}
+			else
+			{
+				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeftElectric = null; }
+				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRightElectric = null; }
+				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelowElectric = null; }
+				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAboveElectric = null; }
+			}
+
+			if (newTile is IRoadGridElement road)
+			{
+				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeftRoad = road; }
+				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRightRoad = road; }
+				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelowRoad = road; }
+				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAboveRoad = road; }
+			}
+			else
+			{
+				if (oldTile.Coordinates.x < Coordinates.x) { ConnectsFromLeftRoad = null; }
+				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRightRoad = null; }
+				else if (oldTile.Coordinates.y > Coordinates.y) { ConnectsFromBelowRoad = null; }
+				else if (oldTile.Coordinates.y < Coordinates.y) { ConnectsFromAboveRoad = null; }
 			}
 		}
 		#endregion
