@@ -16,7 +16,11 @@ namespace Model.Tiles
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
 		/// </summary>
-		protected new void Finalizing() => base.Finalizing();
+		protected new void Finalizing()
+		{
+			RegisterNeighbourTileDeleteListeners();
+			base.Finalizing();
+		}
 
 		public override void DeleteTile() => Deleting();
 
@@ -53,18 +57,18 @@ namespace Model.Tiles
 		private readonly IElectricGridElement[] _poles = new IElectricGridElement[4];
 		List<IElectricGridElement> IElectricGridElement.ConnectsTo { get => _poles.Where(x => x != null).ToList(); }
 
-		//private void RegisterNeighbourTileDeleteListeners() TODO
-		//{
-		//	if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IElectricGridElement aboveGrid) { ConnectsFromAbove = aboveGrid; }
-		//	if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IElectricGridElement rightGrid) { ConnectsFromRight = rightGrid; }
-		//	if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IElectricGridElement belowGrid) { ConnectsFromBelow = belowGrid; }
-		//	if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IElectricGridElement leftGrid) { ConnectsFromLeft = leftGrid; }
+		private void RegisterNeighbourTileDeleteListeners()
+		{
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IElectricGridElement aboveGrid) { ConnectsFromAbove = aboveGrid; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IElectricGridElement rightGrid) { ConnectsFromRight = rightGrid; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IElectricGridElement belowGrid) { ConnectsFromBelow = belowGrid; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IElectricGridElement leftGrid) { ConnectsFromLeft = leftGrid; }
 
-		//	if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
-		//	if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
-		//	if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is Tile belowTile) { belowTile.OnTileDelete += TileDeleteHandler; }
-		//	if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is Tile leftTile) { leftTile.OnTileDelete += TileDeleteHandler; }
-		//}
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is Tile belowTile) { belowTile.OnTileDelete += TileDeleteHandler; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is Tile leftTile) { leftTile.OnTileDelete += TileDeleteHandler; }
+		}
 
 		private void TileDeleteHandler(object sender, Tile oldTile)
 		{
