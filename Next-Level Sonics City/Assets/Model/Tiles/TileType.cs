@@ -7,5 +7,6 @@ public enum TileType
 	PowerPlant,
 	Forest,
 	Road,
+	ElectricRoad,
 	ElectricPole,
 }
