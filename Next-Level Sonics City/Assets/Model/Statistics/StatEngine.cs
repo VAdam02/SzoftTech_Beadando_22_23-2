@@ -607,7 +607,13 @@ namespace Model.Statistics
 
 			if (City.Instance.CityHappiness < 0.2 && City.Instance.GetPopulation() > 0)
 			{
-				SceneManager.LoadScene(1);
+				if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+				{
+					mainThread.Enqueue(() =>
+					{
+						SceneManager.LoadScene(1);
+					});
+				}
 			}
 		}
 
