@@ -53,9 +53,10 @@ namespace Model.Tiles.Buildings.BuildingCommands
 				TileType.PowerPlant => new PowerPlantBuildingTile(_x, _y, _designID, _rotation),
 				TileType.Forest => new ForestTile(_x, _y, _designID),
 				TileType.Road => new RoadTile(_x, _y),
+				TileType.ElectricRoad => new ElectricRoadTile(_x, _y),
 				TileType.ElectricPole => new ElectricPoleTile(_x, _y, _designID),
 				_ => throw new NotImplementedException("TileType \'" + _tileType + "\' not implemented"),
-			};
+			}; ; ;
 
 			if (!tile.CanBuild()) { throw new System.Exception("Not ennough space to build"); }
 

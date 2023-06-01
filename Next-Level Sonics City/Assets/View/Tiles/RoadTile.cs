@@ -51,21 +51,6 @@ namespace View.Tiles
 				return _sharedWhitelineMaterial;
 			}
 		}
-		        private static Material _grassMaterial;
-		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
-		private Material _sharedGrassMaterial;
-		private Material SharedGrassMaterial
-		{
-			get
-			{
-				if (_sharedGrassMaterial == null)
-				{
-					_sharedGrassMaterial = new Material(GrassMaterial);
-					_materials.Add(_sharedGrassMaterial);
-				}
-				return _sharedGrassMaterial;
-			}
-		}
 
 		private static Material LoadMaterialByName(string name)
 		{

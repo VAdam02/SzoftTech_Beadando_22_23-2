@@ -89,12 +89,6 @@ namespace View.Tiles.Buildings
             return popup;
         }
 
-		// Update is called once per frame
-		void Update()
-		{
-
-		}
-
 		private static Material LoadMaterialByName(string name)
 		{
 			return Resources.Load<Material>("Tiles/StadionBuildingTile/Material/" + name);

@@ -175,7 +175,6 @@ namespace Model.Persons
 
 		public void ForcedUnemploy()
 		{
-			IWorkplace _old = WorkPlace;
 			WorkPlace?.Unemploy(this);
 			lock (PathToWork)
 			{
@@ -201,8 +200,6 @@ namespace Model.Persons
 
 		public override void ForcedMoveOut()
 		{
-			IResidential _old = Residential;
-
 			Residential?.MoveOut(this);
 			lock (PathToWork)
 			{

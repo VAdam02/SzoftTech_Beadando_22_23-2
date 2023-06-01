@@ -160,6 +160,10 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 10;
+		#endregion
+
 		/// <summary>
 		/// Construct a new police department tile
 		/// </summary>

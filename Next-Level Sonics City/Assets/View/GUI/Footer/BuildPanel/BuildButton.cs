@@ -21,6 +21,7 @@ namespace View.GUI.Footer.BuildPanel
 				TileType.Forest => TileManager.Instance.GenerateFromModel(new ForestTile(0, 0, 0)),
 				TileType.ElectricPole => TileManager.Instance.GenerateFromModel(new ElectricPoleTile(0, 0, 0)),
 				TileType.Road => TileManager.Instance.GenerateFromModel(new RoadTile(0, 0)),
+				TileType.ElectricRoad => TileManager.Instance.GenerateFromModel(new ElectricRoadTile(0, 0)),
 				_ => throw new InvalidOperationException(),
 			};
 		}

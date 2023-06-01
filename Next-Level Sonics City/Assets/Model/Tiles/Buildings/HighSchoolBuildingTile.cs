@@ -207,6 +207,10 @@ namespace Model.Tiles.Buildings
 		}
 		#endregion
 
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 20;
+		#endregion
+
 		/// <summary>
 		/// Construct a new road tile
 		/// </summary>

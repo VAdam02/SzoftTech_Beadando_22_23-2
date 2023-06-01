@@ -1,3 +1,4 @@
+using Model.ElectricGrids;
 using Model.Tiles.Buildings;
 using System.Collections.Generic;
 
@@ -56,17 +57,17 @@ namespace Model.RoadGrids
 		{
 			get
 			{
-				return Workplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount());
+				return Workplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()).FindAll(workplace => workplace is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); ;
 			}
 		}
 		public List<IWorkplace> CommercialWorkplaces { get { return _commercialWorkplaces; } }
-		public List<IWorkplace> FreeCommercialWorkplaces { get { return _commercialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
+		public List<IWorkplace> FreeCommercialWorkplaces { get { return _commercialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()).FindAll(workplace => workplace is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); } }
 		public List<IWorkplace> IndustrialWorkplaces { get { return _industrialWorkplaces; } }
-		public List<IWorkplace> FreeIndustrialWorkplaces { get { return _industrialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
+		public List<IWorkplace> FreeIndustrialWorkplaces { get { return _industrialWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()).FindAll(workplace => workplace is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); ; } }
 		public List<IWorkplace> OtherWorkplaces { get { return _otherWorkplaces; } }
-		public List<IWorkplace> FreeOtherWorkplaces { get { return _otherWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()); } }
-		public List<IWorkplace> MiddleSchools { get { return _middleSchools; } }
-		public List<IWorkplace> HighSchools { get { return _highSchools; } }
+		public List<IWorkplace> FreeOtherWorkplaces { get { return _otherWorkplaces.FindAll(workplace => workplace.WorkplaceLimit > workplace.GetWorkersCount()).FindAll(workplace => workplace is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); ; } }
+		public List<IWorkplace> MiddleSchools { get { return _middleSchools.FindAll(midschool => midschool is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); ; } }
+		public List<IWorkplace> HighSchools { get { return _highSchools.FindAll(highschool => highschool is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); ; } }
 
 		/// <summary>
 		/// Add workplace to this
@@ -133,7 +134,7 @@ namespace Model.RoadGrids
 		{
 			get
 			{
-				return _residential.FindAll(residential => residential.ResidentLimit > residential.GetResidentsCount());
+				return _residential.FindAll(residential => residential.ResidentLimit > residential.GetResidentsCount()).FindAll(residential => residential is IPowerConsumer consumer && ((IElectricGridElement)consumer).ElectricGrid.GetPowerState()); ;
 			}
 		}
 

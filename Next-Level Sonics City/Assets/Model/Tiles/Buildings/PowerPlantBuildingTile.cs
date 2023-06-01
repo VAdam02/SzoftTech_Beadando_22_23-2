@@ -1,3 +1,4 @@
+using Model.ElectricGrids;
 using Model.Persons;
 using Model.RoadGrids;
 using Model.Tiles.Buildings.BuildingCommands;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
-	public class PowerPlantBuildingTile : Building, IWorkplace
+	public class PowerPlantBuildingTile : Building, IWorkplace, IPowerProducer
 	{
 		#region Tile implementation
 		public override TileType GetTileType() { return TileType.PowerPlant; }
@@ -165,7 +166,6 @@ namespace Model.Tiles.Buildings
 		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
-
 			roadGrid?.RemoveWorkplace(this);
 		}
 
@@ -204,6 +204,26 @@ namespace Model.Tiles.Buildings
 			(float happiness, float weight) = happyZone.GetHappinessModifierAtTile(this);
 			_happinessChangers.Add((happyZone, happiness, weight));
 		}
+		#endregion
+
+		#region IPowerConsumer implementation
+		public override int GetPowerConsumption() => 0;
+		#endregion
+
+		#region IPowerProducer implementation
+		void IPowerProducer.RegisterPowerProducer(ElectricGrid electricGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register power producer at electricgrid before tile is set"); }
+			electricGrid?.AddProducer(this);
+		}
+
+		void IPowerProducer.UnregisterPowerProducer(ElectricGrid electricGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister power producer at electric grid before tile is set"); }
+			electricGrid?.RemoveProducer(this);
+		}
+
+		int IPowerProducer.GetPowerProduction() => 100;
 		#endregion
 
 		/// <summary>

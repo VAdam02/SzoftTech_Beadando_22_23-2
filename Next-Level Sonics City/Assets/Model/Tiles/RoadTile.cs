@@ -66,10 +66,10 @@ namespace Model.Tiles
 
 		private void RegisterNeighbourTileDeleteListeners()
 		{
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is RoadTile aboveRoad) { ConnectsFromAbove = aboveRoad; }
-			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is RoadTile rightRoad) { ConnectsFromRight = rightRoad; }
-			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is RoadTile belowRoad) { ConnectsFromBelow = belowRoad; }
-			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is RoadTile leftRoad)  { ConnectsFromLeft  = leftRoad;  }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is IRoadGridElement aboveRoad) { ConnectsFromAbove = aboveRoad; }
+			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is IRoadGridElement rightRoad) { ConnectsFromRight = rightRoad; }
+			if (City.Instance.GetTile(Coordinates.x, Coordinates.y + 1) is IRoadGridElement belowRoad) { ConnectsFromBelow = belowRoad; }
+			if (City.Instance.GetTile(Coordinates.x - 1, Coordinates.y) is IRoadGridElement leftRoad)  { ConnectsFromLeft  = leftRoad;  }
 
 			if (City.Instance.GetTile(Coordinates.x, Coordinates.y - 1) is Tile aboveTile) { aboveTile.OnTileDelete += TileDeleteHandler; }
 			if (City.Instance.GetTile(Coordinates.x + 1, Coordinates.y) is Tile rightTile) { rightTile.OnTileDelete += TileDeleteHandler; }
@@ -82,7 +82,7 @@ namespace Model.Tiles
 			Tile newTile = City.Instance.GetTile(oldTile);
 			newTile.OnPreTileDelete += TileDeleteHandler;
 
-			if (newTile is RoadTile road)
+			if (newTile is IRoadGridElement road)
 			{
 				if (oldTile.Coordinates.x < Coordinates.x)		{ ConnectsFromLeft  = road; }
 				else if (oldTile.Coordinates.x > Coordinates.x) { ConnectsFromRight = road; }
