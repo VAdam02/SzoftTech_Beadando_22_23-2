@@ -145,19 +145,19 @@ namespace View.Tiles
 			else if (dirCount == 3)
 			{
 				pole = Instantiate(LoadModelByName("3direction"));
-				if (TileModel.DesignID == (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.BELOWROADMASK))
+				if (TileModel.DesignID == (Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK | Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK | Model.Tiles.ElectricPoleTile.BELOWPOLEMASK))
 				{
 					rotation = new(0, 0, 90);
 				}
-				else if (TileModel.DesignID == (Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.LEFTROADMASK))
+				else if (TileModel.DesignID == (Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK | Model.Tiles.ElectricPoleTile.BELOWPOLEMASK | Model.Tiles.ElectricPoleTile.LEFTPOLEMASK))
 				{
 					rotation = new(0, 0, 180);
 				}
-				else if (TileModel.DesignID == (Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.LEFTROADMASK | Model.Tiles.RoadTile.ABOVEROADMASK))
+				else if (TileModel.DesignID == (Model.Tiles.ElectricPoleTile.BELOWPOLEMASK | Model.Tiles.ElectricPoleTile.LEFTPOLEMASK | Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK))
 				{
 					rotation = new(0, 0, 270);
 				}
-				else if (TileModel.DesignID == (Model.Tiles.RoadTile.LEFTROADMASK | Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK))
+				else if (TileModel.DesignID == (Model.Tiles.ElectricPoleTile.LEFTPOLEMASK | Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK | Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK))
 				{
 					rotation = new(0, 0, 0);
 				}
