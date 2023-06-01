@@ -156,56 +156,56 @@ namespace Model.Tiles
 		/// <param name="roadGrid">New roadgrid</param>
 		private void SetRoadGrid(RoadGrid roadGrid)
 		{
-			if (!_isFinalized) { throw new InvalidOperationException(); }
+		if (!_isFinalized) { throw new InvalidOperationException(); }
 
-			if (_roadGrid == roadGrid) { return; }
+		if (_roadGrid == roadGrid) { return; }
 
-			List<Building> buildings = RoadGridManager.GetBuildingsByRoadGridElement(this);
+		List<Building> buildings = RoadGridManager.GetBuildingsByRoadGridElement(this);
+		foreach (Building building in buildings)
+		{
+			if (building is IWorkplace workplace)
+			{
+				workplace.UnregisterWorkplace(_roadGrid);
+			}
+			if (building is IResidential residential)
+			{
+				residential.UnregisterResidential(_roadGrid);
+			}
+		}
+
+		if (roadGrid == null)
+		{
+			_roadGrid?.RemoveRoadGridElement(this);
+			_roadGrid?.Reinit();
+		}
+		else
+		{
+			_roadGrid?.RemoveRoadGridElement(this);
+			_roadGrid = roadGrid;
+			_roadGrid?.AddRoadGridElement(this);
+		}
+
+		if (_roadGrid != null)
+		{
 			foreach (Building building in buildings)
 			{
 				if (building is IWorkplace workplace)
 				{
-					workplace.UnregisterWorkplace(_roadGrid);
+					workplace.RegisterWorkplace(_roadGrid);
 				}
 				if (building is IResidential residential)
 				{
-					residential.UnregisterResidential(_roadGrid);
-				}
-			}
-
-			if (roadGrid == null)
-			{
-				_roadGrid?.RemoveRoadGridElement(this);
-				_roadGrid?.Reinit();
-			}
-			else
-			{
-				_roadGrid?.RemoveRoadGridElement(this);
-				_roadGrid = roadGrid;
-				_roadGrid?.AddRoadGridElement(this);
-			}
-
-			if (_roadGrid != null)
-			{
-				foreach (Building building in buildings)
-				{
-					if (building is IWorkplace workplace)
-					{
-						workplace.RegisterWorkplace(_roadGrid);
-					}
-					if (building is IResidential residential)
-					{
-						residential.RegisterResidential(_roadGrid);
-					}
+					residential.RegisterResidential(_roadGrid);
 				}
 			}
 		}
+	}
 
-		private readonly List<Person> _lockedBy = new();
-		public bool IsLocked { get => _lockedBy.Count != 0; }
-		public void LockBy(Person person) { _lockedBy.Add(person); }
-		public void UnlockBy(Person person) { _lockedBy.Remove(person); }
-		#endregion
+	private readonly List<Person> _lockedBy = new();
+	public bool IsLocked { get => _lockedBy.Count != 0; }
+	public void LockBy(Person person) { _lockedBy.Add(person); }
+	public void UnlockBy(Person person) { _lockedBy.Remove(person); }
+	#endregion
 
 		#region Common implementation
 		public Tile GetTile() => this;
