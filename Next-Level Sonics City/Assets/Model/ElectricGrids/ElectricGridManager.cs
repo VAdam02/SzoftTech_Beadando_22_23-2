@@ -63,7 +63,7 @@ namespace Model.ElectricGrids
 				}
 				else
 				{
-					adjacentElectricGridElements[i].ElectricGrid.Merge(electricGridElement.ElectricGrid);
+					adjacentElectricGridElements[i].ElectricGrid.Merge(electricGridElement?.ElectricGrid);
 				}
 			}
 
