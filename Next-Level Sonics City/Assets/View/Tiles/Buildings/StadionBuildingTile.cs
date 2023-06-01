@@ -1,3 +1,5 @@
+using Model.Tiles;
+using Model.Tiles.Buildings;
 using UnityEngine;
 
 namespace View.Tiles.Buildings
@@ -71,7 +73,7 @@ namespace View.Tiles.Buildings
 		// Start is called before the first frame update
 		void Start()
 		{
-			transform.localPosition = new Vector3(TileModel.Coordinates.x +0.5f, 0, -TileModel.Coordinates.y-0.5f) * 10;
+			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, -TileModel.Coordinates.y) * 10 + GetPivot();
 			transform.localScale = Vector3.one * 2;
 
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
@@ -80,6 +82,12 @@ namespace View.Tiles.Buildings
 				SetSharedMaterials(renderer);
 			}
 		}
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/StadionBuildingTile/StadionBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
 
 		// Update is called once per frame
 		void Update()
@@ -116,7 +124,11 @@ namespace View.Tiles.Buildings
 
 		public override Vector3 GetPivot()
 		{
-			return new Vector3(25f, 0, -25f);
+			Vector3 pivot = new(5f, 0, -5f);
+			if (((Building)TileModel).Rotation == Rotation.Zero) return pivot;
+			else if (((Building)TileModel).Rotation == Rotation.Ninety) return new(pivot.z, 0, -pivot.x);
+			else if (((Building)TileModel).Rotation == Rotation.OneEighty) return new(-pivot.x, 0, pivot.z);
+			else return new(-pivot.z, 0, pivot.x);
 		}
 	}
 }

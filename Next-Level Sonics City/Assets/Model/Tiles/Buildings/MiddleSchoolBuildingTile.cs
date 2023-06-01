@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
-	public class PowerPlant : Building, IWorkplace
+	public class MiddleSchoolBuildingTile : Building, IWorkplace
 	{
 		#region Tile implementation
-		public override TileType GetTileType() { return TileType.PowerPlant; }
+		public override TileType GetTileType() { return TileType.MiddleSchool; }
 
 		public override bool CanBuild()
 		{
@@ -23,16 +23,16 @@ namespace Model.Tiles.Buildings
 			switch (Rotation)
 			{
 				case Rotation.Zero:
-					x1 += 1; y1 += 1;
+					x1 += 1;
 					break;
 				case Rotation.Ninety:
-					x1 += -1; y1 += 1;
+					y1 += 1;
 					break;
 				case Rotation.OneEighty:
-					x1 += -1; y1 += 1;
+					x1 += -1;
 					break;
 				case Rotation.TwoSeventy:
-					x1 += 1; y1 += -1;
+					y1 += -1;
 					break;
 			}
 
@@ -40,6 +40,14 @@ namespace Model.Tiles.Buildings
 			int maxX = Math.Max(x1, x2);
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
+
+			int lowerLimit = 0;
+			int upperLimit = City.Instance.GetSize();
+
+			if (minX < lowerLimit || minY < lowerLimit || maxX > upperLimit || maxY > upperLimit)
+			{
+				return false;
+			}
 
 			for (int i = minX; i < maxX; ++i)
 			{
@@ -64,7 +72,7 @@ namespace Model.Tiles.Buildings
 		protected new void Finalizing()
 		{
 			base.Finalizing();
-			//TODO implement power plant workplace limit
+			//TODO implement middle school workplace limit
 			WorkplaceLimit = 10;
 		}
 
@@ -98,16 +106,16 @@ namespace Model.Tiles.Buildings
 			switch (Rotation)
 			{
 				case Rotation.Zero:
-					x1 += 1; y1 += 1;
+					x1 += 1;
 					break;
 				case Rotation.Ninety:
-					x1 += -1; y1 += 1;
+					y1 += 1;
 					break;
 				case Rotation.OneEighty:
-					x1 += -1; y1 += 1;
+					x1 += -1;
 					break;
 				case Rotation.TwoSeventy:
-					x1 += 1; y1 += -1;
+					y1 += -1;
 					break;
 			}
 
@@ -160,14 +168,14 @@ namespace Model.Tiles.Buildings
 		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
-			roadGrid?.AddWorkplace(this);
+			roadGrid?.AddMiddleSchool(this);
 		}
 
 		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
 
-			roadGrid?.RemoveWorkplace(this);
+			roadGrid?.RemoveMiddleSchool(this);
 		}
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
@@ -208,13 +216,13 @@ namespace Model.Tiles.Buildings
 		#endregion
 
 		/// <summary>
-		/// Construct a new power plant tile
+		/// Construct a new middle school tile
 		/// </summary>
 		/// <param name="x">X coordinate of the tile</param>
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
 		/// <param name="rotation">Rotation of the tile</param>
-		public PowerPlant(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		public MiddleSchoolBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
 		}

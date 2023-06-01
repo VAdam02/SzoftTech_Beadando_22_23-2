@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
-	public class MiddleSchool : Building, IWorkplace
+	public class HighSchoolBuildingTile : Building, IWorkplace
 	{
 		#region Tile implementation
-		public override TileType GetTileType() { return TileType.MiddleSchool; }
+		public override TileType GetTileType() => TileType.HighSchool;
 
 		public override bool CanBuild()
 		{
@@ -23,16 +23,16 @@ namespace Model.Tiles.Buildings
 			switch (Rotation)
 			{
 				case Rotation.Zero:
-					x1 += 1;
+					x1 += 1; y1 += 1;
 					break;
 				case Rotation.Ninety:
-					y1 += 1;
+					x1 += -1; y1 += 1;
 					break;
 				case Rotation.OneEighty:
-					x1 += -1;
+					x1 += -1; y1 += 1;
 					break;
 				case Rotation.TwoSeventy:
-					y1 += -1;
+					x1 += 1; y1 += -1;
 					break;
 			}
 
@@ -41,17 +41,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			int lowerLimit = 0;
-			int upperLimit = City.Instance.GetSize();
-
-			if (minX < lowerLimit || minY < lowerLimit || maxX > upperLimit || maxY > upperLimit)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				return false;
-			}
-
-			for (int i = minX; i < maxX; ++i)
-			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (City.Instance.GetTile(i, j) is not EmptyTile)
 					{
@@ -72,7 +64,7 @@ namespace Model.Tiles.Buildings
 		protected new void Finalizing()
 		{
 			base.Finalizing();
-			//TODO implement middle school workplace limit
+			//TODO implement stadion workplace limit
 			WorkplaceLimit = 10;
 		}
 
@@ -91,7 +83,7 @@ namespace Model.Tiles.Buildings
 			}
 		}
 
-		public override int BuildPrice => 20000;
+		public override int BuildPrice => 30000;
 
 		#endregion
 
@@ -106,16 +98,16 @@ namespace Model.Tiles.Buildings
 			switch (Rotation)
 			{
 				case Rotation.Zero:
-					x1 += 1;
+					x1 += 1; y1 += 1;
 					break;
 				case Rotation.Ninety:
-					y1 += 1;
+					x1 += -1; y1 += 1;
 					break;
 				case Rotation.OneEighty:
-					x1 += -1;
+					x1 += -1; y1 += 1;
 					break;
 				case Rotation.TwoSeventy:
-					y1 += -1;
+					x1 += 1; y1 += -1;
 					break;
 			}
 
@@ -124,9 +116,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
 					ExpandCommand ec = new(i, j, this);
@@ -168,14 +160,14 @@ namespace Model.Tiles.Buildings
 		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
-			roadGrid?.AddMiddleSchool(this);
+			roadGrid?.AddHighSchool(this);
 		}
 
 		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
 
-			roadGrid?.RemoveMiddleSchool(this);
+			roadGrid?.RemoveHighSchool(this);
 		}
 
 		private readonly List<(IHappyZone happyZone, float happiness, float weight)> _happinessChangers = new();
@@ -216,13 +208,13 @@ namespace Model.Tiles.Buildings
 		#endregion
 
 		/// <summary>
-		/// Construct a new middle school tile
+		/// Construct a new road tile
 		/// </summary>
 		/// <param name="x">X coordinate of the tile</param>
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
 		/// <param name="rotation">Rotation of the tile</param>
-		public MiddleSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		public HighSchoolBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
 		}

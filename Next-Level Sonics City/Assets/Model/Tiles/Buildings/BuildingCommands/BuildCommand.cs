@@ -47,13 +47,13 @@ namespace Model.Tiles.Buildings.BuildingCommands
 			Tile tile = _tileType switch
 			{
 				TileType.PoliceDepartment => new PoliceDepartmentBuildingTile(_x, _y, _designID, _rotation),
-				TileType.MiddleSchool => new MiddleSchool(_x, _y, _designID, _rotation),
-				TileType.HighSchool => new HighSchool(_x, _y, _designID, _rotation),
+				TileType.MiddleSchool => new MiddleSchoolBuildingTile(_x, _y, _designID, _rotation),
+				TileType.HighSchool => new HighSchoolBuildingTile(_x, _y, _designID, _rotation),
 				TileType.Stadion => new StadionBuildingTile(_x, _y, _designID, _rotation),
-				TileType.PowerPlant => new PowerPlant(_x, _y, _designID, _rotation),
+				TileType.PowerPlant => new PowerPlantBuildingTile(_x, _y, _designID, _rotation),
 				TileType.Forest => new ForestTile(_x, _y, _designID),
 				TileType.Road => new RoadTile(_x, _y),
-				TileType.ElectricPole => new ElectricPole(_x, _y, _designID),
+				TileType.ElectricPole => new ElectricPoleTile(_x, _y, _designID),
 				_ => throw new NotImplementedException("TileType \'" + _tileType + "\' not implemented"),
 			};
 

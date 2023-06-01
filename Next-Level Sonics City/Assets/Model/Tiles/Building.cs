@@ -24,6 +24,13 @@ namespace Model.Tiles
 			Rotation = rotation;
 		}
 
+		public void Rotate()
+		{
+			if (_isFinalized) { throw new InvalidOperationException("Not allowed to rotate the tile after finalized"); }
+
+			Rotation = (Rotation)(((int)Rotation + 1) % Enum.GetValues(typeof(Rotation)).Length);
+		}
+
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
