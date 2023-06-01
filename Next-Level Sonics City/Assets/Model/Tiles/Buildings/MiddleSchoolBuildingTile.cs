@@ -167,13 +167,14 @@ namespace Model.Tiles.Buildings
 		void IWorkplace.RegisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to register workplace at roadgrid before tile is set"); }
+			roadGrid?.AddWorkplace(this);
 			roadGrid?.AddMiddleSchool(this);
 		}
 
 		void IWorkplace.UnregisterWorkplace(RoadGrid roadGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Not allowed to unregister workplace at roadgrid before tile is set"); }
-
+			roadGrid?.RemoveWorkplace(this);
 			roadGrid?.RemoveMiddleSchool(this);
 		}
 
