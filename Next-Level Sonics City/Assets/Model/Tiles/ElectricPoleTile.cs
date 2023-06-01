@@ -153,19 +153,6 @@ namespace Model.Tiles
 
 			if (_electricGrid == electricGrid) { return; }
 
-			//List<Building> buildings = ElectricGridManager.GetBuildingsByElectricGridElement(this); TODO
-			//foreach (Building building in buildings)
-			//{
-			//	if (building is IWorkplace workplace)
-			//	{
-			//		workplace.UnregisterWorkplace(_electricGrid);
-			//	}
-			//	if (building is IResidential residential)
-			//	{
-			//		residential.UnregisterResidential(_electricGrid);
-			//	}
-			//}
-
 			if (electricGrid == null)
 			{
 				_electricGrid?.RemoveElectricGridElement(this);
@@ -177,34 +164,13 @@ namespace Model.Tiles
 				_electricGrid = electricGrid;
 				_electricGrid?.AddElectricGridElement(this);
 			}
-
-			//if (_electricGrid != null)
-			//{
-			//	foreach (Building building in buildings)
-			//	{
-			//		if (building is IWorkplace workplace)
-			//		{
-			//			workplace.RegisterWorkplace(_electricGrid);
-			//		}
-			//		if (building is IResidential residential)
-			//		{
-			//			residential.RegisterResidential(_electricGrid);
-			//		}
-			//	}
-			//}
 		}
+		#endregion
 
 		public const uint ABOVEPOLEMASK = 1;
 		public const uint RIGHTPOLEMASK = 2;
 		public const uint BELOWPOLEMASK = 4;
 		public const uint LEFTPOLEMASK = 8;
-		
-		//private readonly List<Person> _lockedBy = new();
-		//public bool IsLocked { get => _lockedBy.Count != 0; }
-		//public void LockBy(Person person) { _lockedBy.Add(person); }
-		//public void UnlockBy(Person person) { _lockedBy.Remove(person); }
-		#endregion
-
 
 		/// <summary>
 		/// Construct a new electric pole
