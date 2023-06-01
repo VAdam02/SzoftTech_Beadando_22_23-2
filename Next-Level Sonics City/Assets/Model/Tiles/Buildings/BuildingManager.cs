@@ -27,15 +27,16 @@ namespace Model.Tiles.Buildings
 		/// <param name="rotation">Rotation of tile</param>
 		public void Build(Tile tile, TileType tileType, Rotation rotation)
 		{
-			if (tile is not EmptyTile/* || tile is not RoadTile*/)
+			bool isRoad = false;
+			if (tile is RoadTile && tileType is TileType.ElectricRoad)
+			{
+				isRoad = true;
+			}
+
+			if (tile is not EmptyTile && !isRoad)
 			{
 				return;
 			}
-
-			//if (tile is RoadTile && tileType is not TileType.ElectricRoad)
-			//{
-			//	return;
-			//}
 
 			int x = (int)tile.Coordinates.x;
 			int y = (int)tile.Coordinates.y;
