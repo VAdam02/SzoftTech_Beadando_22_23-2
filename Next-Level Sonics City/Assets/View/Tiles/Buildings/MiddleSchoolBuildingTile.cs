@@ -140,7 +140,7 @@ namespace View.Tiles.Buildings
 
 		public override Vector3 GetPivot()
 		{
-			Vector3 pivot = new(5f, 0, -5f);
+			Vector3 pivot = new(5f, 0, 0);
 			if (((Building)TileModel).Rotation == Rotation.Zero) return pivot;
 			else if (((Building)TileModel).Rotation == Rotation.Ninety) return new(pivot.z, 0, -pivot.x);
 			else if (((Building)TileModel).Rotation == Rotation.OneEighty) return new(-pivot.x, 0, pivot.z);
