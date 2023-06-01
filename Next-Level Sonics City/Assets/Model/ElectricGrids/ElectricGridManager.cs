@@ -1,9 +1,5 @@
-using Model.Tiles;
-using Model.Tiles.Buildings;
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using UnityEngine;
 
 [assembly: InternalsVisibleTo("Tests")]
 
@@ -71,7 +67,7 @@ namespace Model.ElectricGrids
 				}
 			}
 
-			electricGridElement.ElectricGrid ??= new();
+			electricGridElement.ElectricGrid = new();
 		}
 	}
 }

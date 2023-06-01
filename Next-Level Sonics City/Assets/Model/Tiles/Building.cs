@@ -122,18 +122,6 @@ namespace Model.Tiles
 
 			if (_electricGrid == electricGrid) { return; }
 
-			//it's completly okey that there is nothing
-			{
-				if (this is IPowerProducer producer)
-				{
-					producer.UnregisterPowerProducer(_electricGrid);
-				}
-				if (this is IPowerConsumer consumer)
-				{
-					consumer.UnregisterPowerConsumer(_electricGrid);
-				}
-			}
-
 			if (electricGrid == null)
 			{
 				_electricGrid?.RemoveElectricGridElement(this);
@@ -145,6 +133,13 @@ namespace Model.Tiles
 				_electricGrid = electricGrid;
 				_electricGrid?.AddElectricGridElement(this);
 			}
+		}
+		#endregion
+
+		#region IPowerConsumer
+		void IPowerConsumer.RegisterPowerConsumer(ElectricGrid elctricGrid)
+		{
+			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
 
 			if (_electricGrid != null)
 			{
@@ -157,13 +152,6 @@ namespace Model.Tiles
 					consumer.RegisterPowerConsumer(_electricGrid);
 				}
 			}
-		}
-		#endregion
-
-		#region IPowerConsumer
-		void IPowerConsumer.RegisterPowerConsumer(ElectricGrid elctricGrid)
-		{
-			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
 
 			ElectricGridManager.Instance.AddElectricGridElement(this);
 		}
@@ -171,6 +159,15 @@ namespace Model.Tiles
 		void IPowerConsumer.UnregisterPowerConsumer(ElectricGrid electricGrid)
 		{
 			if (!_isFinalized) { throw new InvalidOperationException("Tile is not set in the city"); }
+
+			if (this is IPowerProducer producer)
+			{
+				producer.UnregisterPowerProducer(_electricGrid);
+			}
+			if (this is IPowerConsumer consumer)
+			{
+				consumer.UnregisterPowerConsumer(_electricGrid);
+			}
 
 			SetElectricGrid(null);
 		}
