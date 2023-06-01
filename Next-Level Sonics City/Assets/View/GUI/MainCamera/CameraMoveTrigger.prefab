@@ -94,9 +94,9 @@ MonoBehaviour:
   MouseZoomMultiplier: 20
   KeyboardTransMultiplier: 100
   KeyboardRotateMultiplier: 100
-  KeyboardZoomMultiplier: 10
+  KeyboardZoomMultiplier: 20
   Camera: {fileID: 0}
-  LookAtMinLimit: {x: -25, y: 0, z: -4975}
-  LookAtMaxLimit: {x: 4975, y: 10, z: 25}
+  LookAtMinLimit: {x: -25, y: 0, z: -1225}
+  LookAtMaxLimit: {x: 1225, y: 10, z: 25}
   LookFromMinLimit: {x: 0, y: 30, z: 2}
   LookFromMaxLimit: {x: 360, y: 90, z: 200}
