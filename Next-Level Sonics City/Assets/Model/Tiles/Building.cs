@@ -164,10 +164,7 @@ namespace Model.Tiles
 			{
 				producer.UnregisterPowerProducer(_electricGrid);
 			}
-			if (this is IPowerConsumer consumer)
-			{
-				consumer.UnregisterPowerConsumer(_electricGrid);
-			}
+
 
 			SetElectricGrid(null);
 		}
