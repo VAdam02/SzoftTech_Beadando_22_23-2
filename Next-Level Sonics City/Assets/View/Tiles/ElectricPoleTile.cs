@@ -103,18 +103,18 @@ namespace View.Tiles
 			}
 
 			int dirCount = 0;
-			if ((TileModel.DesignID & Model.Tiles.RoadTile.ABOVEROADMASK) != 0) { dirCount++; }
-			if ((TileModel.DesignID & Model.Tiles.RoadTile.RIGHTROADMASK) != 0) { dirCount++; }
-			if ((TileModel.DesignID & Model.Tiles.RoadTile.BELOWROADMASK) != 0) { dirCount++; }
-			if ((TileModel.DesignID & Model.Tiles.RoadTile.LEFTROADMASK)  != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK) != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK) != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.BELOWPOLEMASK) != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.LEFTPOLEMASK)  != 0) { dirCount++; }
 
 			GameObject pole;
 			Vector3 rotation = new(0, 0, 0);
 
-			if ((TileModel.DesignID & Model.Tiles.RoadTile.ABOVEROADMASK) != 0) { rotation = new(0, 0, 0); }
-			else if ((TileModel.DesignID & Model.Tiles.RoadTile.RIGHTROADMASK) != 0) { rotation = new(0, 0, 90); }
-			else if ((TileModel.DesignID & Model.Tiles.RoadTile.BELOWROADMASK) != 0) { rotation = new(0, 0, 180); }
-			else if ((TileModel.DesignID & Model.Tiles.RoadTile.LEFTROADMASK) != 0) { rotation = new(0, 0, 270); }
+			if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK) != 0) { rotation = new(0, 0, 0); }
+			else if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK) != 0) { rotation = new(0, 0, 90); }
+			else if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.BELOWPOLEMASK) != 0) { rotation = new(0, 0, 180); }
+			else if ((TileModel.DesignID & Model.Tiles.ElectricPoleTile.LEFTPOLEMASK) != 0) { rotation = new(0, 0, 270); }
 
 			if (dirCount == 0)
 			{
@@ -126,17 +126,17 @@ namespace View.Tiles
 			}
 			else if (dirCount == 2)
 			{
-				if (((TileModel.DesignID & Model.Tiles.RoadTile.ABOVEROADMASK) != 0 &&
-					(TileModel.DesignID & Model.Tiles.RoadTile.BELOWROADMASK) != 0) ||
-					((TileModel.DesignID & Model.Tiles.RoadTile.RIGHTROADMASK) != 0 &&
-					(TileModel.DesignID & Model.Tiles.RoadTile.LEFTROADMASK) != 0))
+				if (((TileModel.DesignID & Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK) != 0 &&
+					(TileModel.DesignID & Model.Tiles.ElectricPoleTile.BELOWPOLEMASK) != 0) ||
+					((TileModel.DesignID & Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK) != 0 &&
+					(TileModel.DesignID & Model.Tiles.ElectricPoleTile.LEFTPOLEMASK) != 0))
 				{
 					pole = Instantiate(LoadModelByName("2direction"));
 				}
 				else
 				{
 					pole = Instantiate(LoadModelByName("2directionTurn"));
-					if ((TileModel.DesignID & (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.LEFTROADMASK) & 0b1001) == 0b1001)
+					if ((TileModel.DesignID & (Model.Tiles.ElectricPoleTile.ABOVEPOLEMASK | Model.Tiles.ElectricPoleTile.BELOWPOLEMASK | Model.Tiles.ElectricPoleTile.RIGHTPOLEMASK | Model.Tiles.ElectricPoleTile.LEFTPOLEMASK) & 0b1001) == 0b1001)
 					{
 						rotation = new(0, 0, 270);
 					}
