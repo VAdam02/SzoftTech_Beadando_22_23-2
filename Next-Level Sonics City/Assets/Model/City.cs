@@ -1,7 +1,9 @@
 using Model.Persons;
 using Model.RoadGrids;
+using Model.Simulation;
 using Model.Statistics;
 using Model.Tiles;
+using Model.Tiles.Buildings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -265,6 +267,105 @@ namespace Model
 			}
 			person.HappinessByPersonChanged += (sender, e) => PersonHappinessChangedHandler((Person)sender, e);
 			PopulationChanged?.Invoke(this, person);
+		}
+
+		private int _middleSchoolEducatedCount = 0;
+		private int _highSchoolEducatedCount = 0;
+		private float _maxMiddleSchoolEducatedPercentage = 0.4f;
+		private float _maxHighSchoolEducatedPercentage = 0.2f;
+
+		internal void MiddleSchoolEducatePersons()
+		{
+			int populationCount = GetPopulation();
+			float currentEducatedPercentage = _middleSchoolEducatedCount / ((float)populationCount);
+			
+			if (currentEducatedPercentage >= _maxMiddleSchoolEducatedPercentage)
+			{
+				return;
+			}
+
+			List<RoadGrid> roadGrids = RoadGridManager.Instance.RoadGrids;
+			int schoolCount = 0;
+
+			foreach (RoadGrid roadGrid in roadGrids)
+			{
+				schoolCount += roadGrid.MiddleSchools.Count;
+			}
+
+			int canBeEducatedCount = (int)(populationCount * _maxMiddleSchoolEducatedPercentage) - (int)(populationCount * currentEducatedPercentage);
+			int toBeEducatedCount = Math.Min(canBeEducatedCount, schoolCount * 10);
+
+			foreach (var person in GetPersons())
+			{
+				if (person.Value is Worker worker && worker.Qualification == Qualification.LOW && toBeEducatedCount == 0)
+				{
+					worker.IncreaseQualification();
+					++_middleSchoolEducatedCount;
+					--toBeEducatedCount;
+				}
+			}
+		}
+
+		internal void HighSchoolEducatePersons()
+		{
+			int populationCount = GetPopulation();
+			float currentEducatedPercentage = _highSchoolEducatedCount / ((float)populationCount);
+
+			if (currentEducatedPercentage >= _maxHighSchoolEducatedPercentage)
+			{
+				return;
+			}
+
+			List<RoadGrid> roadGrids = RoadGridManager.Instance.RoadGrids;
+			int schoolCount = 0;
+
+			foreach (RoadGrid roadGrid in roadGrids)
+			{
+				schoolCount += roadGrid.HighSchools.Count;
+			}
+
+			int canBeEducatedCount = (int)(populationCount * _maxHighSchoolEducatedPercentage) - (int)(populationCount * currentEducatedPercentage);
+			int toBeEducatedCount = Math.Min(canBeEducatedCount, schoolCount * 5);
+
+			foreach (var person in GetPersons())
+			{
+				if (person.Value is Worker worker && worker.Qualification == Qualification.MID && toBeEducatedCount == 0)
+				{
+					worker.IncreaseQualification();
+					++_highSchoolEducatedCount;
+					--toBeEducatedCount;
+				}
+			}
+		}
+
+		internal void LoseMiddleSchoolEducation()
+		{
+			int toBeDecreasedCount = _middleSchoolEducatedCount / 10;
+
+			foreach (var person in GetPersons())
+			{
+				if (person.Value is Worker worker && worker.Qualification == Qualification.MID && toBeDecreasedCount == 0)
+				{
+					worker.DecreaseQualification();
+					--_middleSchoolEducatedCount;
+					--toBeDecreasedCount;
+				}
+			}
+		}
+
+		internal void LoseHighSchoolEducation()
+		{
+			int toBeDecreasedCount = _highSchoolEducatedCount / 20;
+
+			foreach (var person in GetPersons())
+			{
+				if (person.Value is Worker worker && worker.Qualification == Qualification.HIGH && toBeDecreasedCount == 0)
+				{
+					worker.DecreaseQualification();
+					--_highSchoolEducatedCount;
+					--toBeDecreasedCount;
+				}
+			}
 		}
 	}
 }

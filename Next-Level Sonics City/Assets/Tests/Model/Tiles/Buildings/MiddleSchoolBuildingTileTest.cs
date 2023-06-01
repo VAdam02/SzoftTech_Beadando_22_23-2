@@ -7,7 +7,7 @@ namespace Model.Tiles.Buildings
 {
 	public class MiddleSchoolBuildingTileTest
 	{
-		private MiddleSchool middleSchool;
+		private MiddleSchoolBuildingTile middleSchool;
 		private ResidentialBuildingTile residential;
 		private IRoadGridElement roadGridElement;
 
@@ -25,7 +25,7 @@ namespace Model.Tiles.Buildings
 
 			roadGridElement = new RoadTile(0, 0);
 			City.Instance.SetTile(roadGridElement.GetTile());
-			middleSchool = new MiddleSchool(0, 1, 123, Rotation.Zero);
+			middleSchool = new MiddleSchoolBuildingTile(0, 1, 123, Rotation.Zero);
 			City.Instance.SetTile(middleSchool.GetTile());
 			residential = new ResidentialBuildingTile(1, 0, 456);
 			City.Instance.SetTile(residential.GetTile());

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace View.Tiles.Buildings
 {
 	public class PoliceDepartmentBuidingTile : Tile
-    {
+	{
 		private static Material _grassMaterial;
 		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
 		private Material _sharedGrassMaterial;
@@ -144,5 +144,11 @@ namespace View.Tiles.Buildings
 			}
 			
 		}
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/PoliceDepartmentBuildingTile/PoliceDepartmentBuildingTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
 	}
 }

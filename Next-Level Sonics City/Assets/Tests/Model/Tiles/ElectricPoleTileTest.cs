@@ -4,7 +4,7 @@ namespace Model.Tiles
 {
 	public class ElectricPoleTileTest
 	{
-		private ElectricPole electricPole;
+		private ElectricPoleTile electricPole;
 
 		[SetUp]
 		public void SetUp()
@@ -18,7 +18,7 @@ namespace Model.Tiles
 				}
 			}
 
-			electricPole = new ElectricPole(0, 0, 123);
+			electricPole = new ElectricPoleTile(0, 0, 123);
 		}
 
 		[Test]

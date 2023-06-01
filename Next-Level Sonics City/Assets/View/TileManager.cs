@@ -29,7 +29,6 @@ namespace View
 				SelectedTiles = new List<Tile>();
 				HoveredTile = null;
 				GhostTile = null;
-				Rotation = Rotation.Zero;
 
 				_currentAction = value;
 			}
@@ -55,7 +54,6 @@ namespace View
 		private readonly object _ghostTileLock = new();
 		private Tile _hoveredTile = null;
 		private Tile _ghostTile = null;
-		private Rotation _rotation = Rotation.Zero;
 		public Tile HoveredTile
 		{
 			get { return _hoveredTile; }
@@ -68,7 +66,7 @@ namespace View
 						_hoveredTile = value;
 						if (_ghostTile != null && _hoveredTile != null)
 						{
-							_ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + _ghostTile.GetPivot() + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0));
+							_ghostTile.transform.localPosition = _hoveredTile.transform.localPosition + _ghostTile.GetPivot() + new Vector3(0, 0.001f, 0);
 							_ghostTile.TileModel.UpdateCoordinates((int)_hoveredTile.TileModel.Coordinates.x, (int)_hoveredTile.TileModel.Coordinates.y);
 							_ghostTile.Highlight(_ghostTile.TileModel.CanBuild() ? Color.green : Color.red);
 						}
@@ -98,21 +96,9 @@ namespace View
 						{
 							if (oldGhostTile != null) { Destroy(oldGhostTile.gameObject); }
 							if (_ghostTile != null) { _ghostTile.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast"); }
-							if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
+							if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, 0, 0)); }
 						});
 					}
-				}
-			}
-		}
-		public Rotation Rotation
-		{
-			get { return _rotation; }
-			set
-			{
-				lock (_ghostTileLock)
-				{
-					_rotation = value;
-					if (!(_ghostTile == null || _hoveredTile == null)) { _ghostTile.transform.SetPositionAndRotation(_hoveredTile.transform.position + new Vector3(0, 0.001f, 0), Quaternion.Euler(0, ((int)_rotation) * 90, 0)); }
 				}
 			}
 		}

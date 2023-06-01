@@ -56,7 +56,16 @@ namespace View
 			if (TileModel is Building building)
 			{
 				transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
-				building.OnRotationChanged += (object sender, EventArgs e) => transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
+				building.OnRotationChanged += (object sender, EventArgs e) =>
+				{
+					if (MainThreadDispatcher.Instance is MainThreadDispatcher mainThread)
+					{
+						mainThread.Enqueue(() =>
+						{
+							transform.localRotation = Quaternion.Euler(0, (int)building.Rotation * 90, 0);
+						});
+					}
+				};
 			}
 		}
 

@@ -51,6 +51,21 @@ namespace View.Tiles
 				return _sharedWhitelineMaterial;
 			}
 		}
+		        private static Material _grassMaterial;
+		public static Material GrassMaterial { get { if (_grassMaterial == null) _grassMaterial = LoadMaterialByName("GrassMaterial"); return _grassMaterial; } }
+		private Material _sharedGrassMaterial;
+		private Material SharedGrassMaterial
+		{
+			get
+			{
+				if (_sharedGrassMaterial == null)
+				{
+					_sharedGrassMaterial = new Material(GrassMaterial);
+					_materials.Add(_sharedGrassMaterial);
+				}
+				return _sharedGrassMaterial;
+			}
+		}
 
 		private static Material LoadMaterialByName(string name)
 		{
@@ -90,6 +105,12 @@ namespace View.Tiles
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
 		}
 
+		public override GameObject DisplayPopUp()
+        {
+            GameObject popup = Instantiate(Resources.Load<GameObject>("Tiles/RoadTile/RoadTilePopUp"), GameObject.Find("Canvas").transform);
+            popup.GetComponent<PopUpWindow>().TileModel = TileModel;
+            return popup;
+        }
 		private void Display()
 		{
 			foreach (Transform child in transform)
