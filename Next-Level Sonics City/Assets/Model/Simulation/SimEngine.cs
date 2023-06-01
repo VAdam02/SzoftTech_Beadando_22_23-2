@@ -133,41 +133,6 @@ namespace Model.Simulation
 			}
 			*/
 		}
-		
-		private bool MoveOut(Person p)
-		{
-			if(p.Happiness <= 0.5){
-				return(new System.Random().NextDouble()<0.9);//90% chance of moving out
-			}
-			else if(p.Happiness>0.5 && p.Happiness < 0.65){
-				return(new System.Random().NextDouble()<0.55);//55% chance of moving out
-
-			}
-			else if(p.Happiness >= 0.65 && p.Happiness <0.75) {
-				return(new System.Random().NextDouble()<0.25);//25% chance of moving out
-
-			}
-			else{
-				return(new System.Random().NextDouble()<0.05);//5% chance of moving out
-
-			}
-			//TODO
-		}
-
-		private void Die(Person person)
-		{
-			/*
-			Person toKill = person;
-			
-			foreach(KeyValuePair<int,Person> kvp in Personslist){
-				if(kvp.Value == toKill){
-					Personslist.Remove(kvp.Key);
-					break;
-				}
-			}
-			//TODO
-			*/
-		}
 
 		/// <summary>
 		/// Set the time speed

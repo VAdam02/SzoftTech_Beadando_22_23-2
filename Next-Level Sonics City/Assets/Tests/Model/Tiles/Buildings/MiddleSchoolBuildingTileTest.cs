@@ -51,7 +51,7 @@ namespace Model.Tiles.Buildings
 		public void Unemploy_RemovesWorkerFromMiddleSchool()
 		{
 			var worker = new Worker(residential, middleSchool, 25, Qualification.HIGH);
-			((IWorkplace)middleSchool).Unemploy(worker); //TODO illegal way to move out
+			worker.Die();
 
 			CollectionAssert.DoesNotContain(((IWorkplace)middleSchool).GetWorkers(), worker);
 		}

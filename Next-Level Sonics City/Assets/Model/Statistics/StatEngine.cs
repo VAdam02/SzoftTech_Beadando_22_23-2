@@ -598,14 +598,6 @@ namespace Model.Statistics
 			}
 
 			UpdateCurrentStatReport(false);
-
-			//TODO debug
-			string msg = City.Instance.CityHappiness + " - ";
-			foreach (KeyValuePair<ulong, Person> person in City.Instance.GetPersons())
-			{
-				msg += person.Value.Happiness + " ";
-			}
-			Debug.Log(msg);
 		}
 
 		/// <summary>

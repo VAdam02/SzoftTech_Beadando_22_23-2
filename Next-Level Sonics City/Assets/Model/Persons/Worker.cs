@@ -21,7 +21,7 @@ namespace Model.Persons
 			get
 			{
 				if (WorkPlace == null || Residential == null) return (0.0f, 0.0f);
-
+				 
 				List<(float happiness, float weight)> happinessChangers = new()
 				{
 					(1, 5f - Mathf.Atan(Mathf.Sqrt(Mathf.Pow(WorkPlace.GetTile().Coordinates.x - Residential.GetTile().Coordinates.x, 2) + Mathf.Pow(WorkPlace.GetTile().Coordinates.y - Residential.GetTile().Coordinates.y, 2))) * Mathf.PI),
@@ -169,8 +169,6 @@ namespace Model.Persons
 					multiplier *= 1.2f;
 					break;
 			}
-
-			//TODO add more parameters to calculate salary
 
 			return BASE_SALARY * multiplier;
 		}

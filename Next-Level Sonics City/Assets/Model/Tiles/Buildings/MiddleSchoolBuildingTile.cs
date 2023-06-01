@@ -49,9 +49,9 @@ namespace Model.Tiles.Buildings
 				return false;
 			}
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (City.Instance.GetTile(i, j) is not EmptyTile)
 					{
@@ -72,8 +72,7 @@ namespace Model.Tiles.Buildings
 		protected new void Finalizing()
 		{
 			base.Finalizing();
-			//TODO implement middle school workplace limit
-			WorkplaceLimit = 10;
+			WorkplaceLimit = 40;
 		}
 
 		public override void DeleteTile() => Deleting();
@@ -124,9 +123,9 @@ namespace Model.Tiles.Buildings
 			int minY = Math.Min(y1, y2);
 			int maxY = Math.Max(y1, y2);
 
-			for (int i = minX; i < maxX; ++i)
+			for (int i = minX; i <= maxX; ++i)
 			{
-				for (int j = minY; j < maxY; ++j)
+				for (int j = minY; j <= maxY; ++j)
 				{
 					if (i == (int)Coordinates.x && j == (int)Coordinates.y) { continue; }
 					ExpandCommand ec = new(i, j, this);

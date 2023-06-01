@@ -108,8 +108,7 @@ namespace Model.Tiles.Buildings
 		public void MoveOut_RemovesPersonFromResidents()
 		{
 			var person = new Pensioner(residential, 80, 30);
-			
-			residential.MoveOut(person); //TODO illegal way to move out
+			person.Die();
 
 			CollectionAssert.DoesNotContain(residential.GetResidents(), person);
 		}

@@ -56,7 +56,7 @@ namespace Model.Tiles.Buildings
 		public void Unemploy_RemovesWorkerFromBaseWorkplace()
 		{
 			var worker = new Worker(residential, workplaceSubTile, 25, Qualification.HIGH);
-			((IWorkplace)workplaceSubTile).Unemploy(worker); //TODO illegal way to move out
+			worker.Die();
 
 			CollectionAssert.DoesNotContain(baseWorkplace.GetWorkers(), worker);
 		}
