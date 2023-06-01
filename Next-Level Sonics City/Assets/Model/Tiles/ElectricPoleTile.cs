@@ -190,16 +190,17 @@ namespace Model.Tiles
 			//}
 		}
 
-		private readonly List<Person> _lockedBy = new();
-		public bool IsLocked { get => _lockedBy.Count != 0; }
-		public void LockBy(Person person) { _lockedBy.Add(person); }
-		public void UnlockBy(Person person) { _lockedBy.Remove(person); }
-		#endregion
-
 		public const uint ABOVEPOLEMASK = 1;
 		public const uint RIGHTPOLEMASK = 2;
 		public const uint BELOWPOLEMASK = 4;
 		public const uint LEFTPOLEMASK = 8;
+		
+		//private readonly List<Person> _lockedBy = new();
+		//public bool IsLocked { get => _lockedBy.Count != 0; }
+		//public void LockBy(Person person) { _lockedBy.Add(person); }
+		//public void UnlockBy(Person person) { _lockedBy.Remove(person); }
+		#endregion
+
 
 		/// <summary>
 		/// Construct a new electric pole
