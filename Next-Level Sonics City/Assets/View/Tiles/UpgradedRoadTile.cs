@@ -58,16 +58,13 @@ namespace View.Tiles.Buildings
 		// Start is called before the first frame update
 		void Start()
 		{
-			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, -TileModel.Coordinates.y) * 10 + GetPivot();
+			transform.localPosition = new Vector3(TileModel.Coordinates.x, 0, -TileModel.Coordinates.y) * 10;
 			transform.localScale = Vector3.one;
-			transform.localRotation = Quaternion.Euler(0, ((int)((Building)TileModel).Rotation) * 90, 0);
 
+			OnDesignIDChange.AddListener(Display);
+			Display();
 
 			SetSharedMaterials(gameObject.GetComponent<Renderer>());
-			foreach (Renderer renderer in gameObject.transform.GetComponentsInChildren<Renderer>())
-			{
-				SetSharedMaterials(renderer);
-			}
 		}
 		public override GameObject DisplayPopUp()
         {
@@ -108,13 +105,90 @@ namespace View.Tiles.Buildings
 			renderer.sharedMaterials = materials;
 		}
 
-		public override Vector3 GetPivot()
+		private void Display()
 		{
-			Vector3 pivot = new(5f, 0, -5f);
-			if (((Building)TileModel).Rotation == Rotation.Zero) return pivot;
-			else if (((Building)TileModel).Rotation == Rotation.Ninety) return new(pivot.z, 0, -pivot.x);
-			else if (((Building)TileModel).Rotation == Rotation.OneEighty) return new(-pivot.x, 0, pivot.z);
-			else return new(-pivot.z, 0, pivot.x);
+			foreach (Transform child in transform)
+			{
+				if (child.name == "RoadUpgrade") continue;
+				Destroy(child.gameObject);
+			}
+
+			int dirCount = 0;
+			if ((TileModel.DesignID & Model.Tiles.RoadTile.ABOVEROADMASK) != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.RoadTile.RIGHTROADMASK) != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.RoadTile.BELOWROADMASK) != 0) { dirCount++; }
+			if ((TileModel.DesignID & Model.Tiles.RoadTile.LEFTROADMASK) != 0) { dirCount++; }
+
+			GameObject road;
+			Vector3 rotation = new(0, 0, 0);
+
+			if ((TileModel.DesignID & Model.Tiles.RoadTile.ABOVEROADMASK) != 0) { rotation = new(0, 0, 0); }
+			else if ((TileModel.DesignID & Model.Tiles.RoadTile.RIGHTROADMASK) != 0) { rotation = new(0, 0, 90); }
+			else if ((TileModel.DesignID & Model.Tiles.RoadTile.BELOWROADMASK) != 0) { rotation = new(0, 0, 180); }
+			else if ((TileModel.DesignID & Model.Tiles.RoadTile.LEFTROADMASK) != 0) { rotation = new(0, 0, 270); }
+
+			if (dirCount == 0)
+			{
+				road = Instantiate(LoadModelByName("0direction"));
+			}
+			else if (dirCount == 1)
+			{
+				road = Instantiate(LoadModelByName("1direction"));
+			}
+			else if (dirCount == 2)
+			{
+				if (((TileModel.DesignID & Model.Tiles.RoadTile.ABOVEROADMASK) != 0 &&
+					(TileModel.DesignID & Model.Tiles.RoadTile.BELOWROADMASK) != 0) ||
+					((TileModel.DesignID & Model.Tiles.RoadTile.RIGHTROADMASK) != 0 &&
+					(TileModel.DesignID & Model.Tiles.RoadTile.LEFTROADMASK) != 0))
+				{
+					road = Instantiate(LoadModelByName("2direction"));
+				}
+				else
+				{
+					road = Instantiate(LoadModelByName("2directionTurn"));
+					if ((TileModel.DesignID & (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.LEFTROADMASK) & 0b1001) == 0b1001)
+					{
+						rotation = new(0, 0, 270);
+					}
+				}
+			}
+			else if (dirCount == 3)
+			{
+				road = Instantiate(LoadModelByName("3direction"));
+				if (TileModel.DesignID == (Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.BELOWROADMASK))
+				{
+					rotation = new(0, 0, 90);
+				}
+				else if (TileModel.DesignID == (Model.Tiles.RoadTile.RIGHTROADMASK | Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.LEFTROADMASK))
+				{
+					rotation = new(0, 0, 180);
+				}
+				else if (TileModel.DesignID == (Model.Tiles.RoadTile.BELOWROADMASK | Model.Tiles.RoadTile.LEFTROADMASK | Model.Tiles.RoadTile.ABOVEROADMASK))
+				{
+					rotation = new(0, 0, 270);
+				}
+				else if (TileModel.DesignID == (Model.Tiles.RoadTile.LEFTROADMASK | Model.Tiles.RoadTile.ABOVEROADMASK | Model.Tiles.RoadTile.RIGHTROADMASK))
+				{
+					rotation = new(0, 0, 0);
+				}
+			}
+			else
+			{
+				road = Instantiate(LoadModelByName("4direction"));
+			}
+
+			road.transform.parent = transform;
+			road.transform.localScale = Vector3.one * 20;
+			road.transform.SetLocalPositionAndRotation(new Vector3(0, 0, 0), Quaternion.Euler(-90, 0, 0));
+			road.transform.Rotate(rotation);
+
+			SetSharedMaterials(road.GetComponent<Renderer>());
+		}
+
+		private static GameObject LoadModelByName(string name)
+		{
+			return Resources.Load<GameObject>("Tiles/RoadTile/Model/" + name);
 		}
 	}
 }
