@@ -75,7 +75,7 @@ namespace Model.Tiles.Buildings
 			private set
 			{
 				_level = value;
-				ResidentLimit += (int)Mathf.Clamp(5 * Mathf.Pow((int)Level, 2), 1, int.MaxValue);
+				ResidentLimit = (int)Mathf.Clamp(5 * Mathf.Pow((int)Level, 2), 1, int.MaxValue);
 				DesignID = (~RESIDENTIAL_LEVEL_COUNT_MASK & DesignID) | (RESIDENTIAL_LEVEL_COUNT_MASK & (uint)Mathf.Pow((int)_level, 1.3f));
 			}
 		}

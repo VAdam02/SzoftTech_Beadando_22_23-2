@@ -64,8 +64,7 @@ namespace Model.Tiles.Buildings
 		protected new void Finalizing()
 		{
 			base.Finalizing();
-			//TODO implement power plant workplace limit
-			WorkplaceLimit = 10;
+			WorkplaceLimit = 20;
 		}
 
 		public override void DeleteTile() => Deleting();

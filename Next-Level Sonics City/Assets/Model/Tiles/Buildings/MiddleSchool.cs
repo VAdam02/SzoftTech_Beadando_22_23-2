@@ -72,8 +72,7 @@ namespace Model.Tiles.Buildings
 		protected new void Finalizing()
 		{
 			base.Finalizing();
-			//TODO implement middle school workplace limit
-			WorkplaceLimit = 10;
+			WorkplaceLimit = 40;
 		}
 
 		public override void DeleteTile() => Deleting();

@@ -64,8 +64,7 @@ namespace Model.Tiles.Buildings
 		protected new void Finalizing()
 		{
 			base.Finalizing();
-			//TODO implement stadion workplace limit
-			WorkplaceLimit = 10;
+			WorkplaceLimit = 60;
 		}
 
 		public override void DeleteTile() => Deleting();
