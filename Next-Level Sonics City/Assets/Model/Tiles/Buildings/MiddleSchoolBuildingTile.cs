@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Model.Tiles.Buildings
 {
-	public class MiddleSchool : Building, IWorkplace
+	public class MiddleSchoolBuildingTile : Building, IWorkplace
 	{
 		#region Tile implementation
 		public override TileType GetTileType() { return TileType.MiddleSchool; }
@@ -222,7 +222,7 @@ namespace Model.Tiles.Buildings
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
 		/// <param name="rotation">Rotation of the tile</param>
-		public MiddleSchool(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
+		public MiddleSchoolBuildingTile(int x, int y, uint designID, Rotation rotation) : base(x, y, designID, rotation)
 		{
 
 		}

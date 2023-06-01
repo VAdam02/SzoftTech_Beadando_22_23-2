@@ -1,6 +1,6 @@
 namespace Model.Tiles
 {
-	public class ElectricPole : Tile
+	public class ElectricPoleTile : Tile
 	{
 		#region Tile implementation
 		public override TileType GetTileType() { return TileType.ElectricPole; }
@@ -36,7 +36,7 @@ namespace Model.Tiles
 		/// <param name="x">X coordinate of the tile</param>
 		/// <param name="y">Y coordinate of the tile</param>
 		/// <param name="designID">DesignID for the tile</param>
-		public ElectricPole(int x, int y, uint designID) : base(x, y, designID)
+		public ElectricPoleTile(int x, int y, uint designID) : base(x, y, designID)
 		{
 
 		}

@@ -15,11 +15,11 @@ namespace View.GUI.Footer.BuildPanel
 			{
 				TileType.PoliceDepartment => TileManager.Instance.GenerateFromModel(new PoliceDepartmentBuildingTile(0, 0, 0, Rotation.Zero)),
 				TileType.Stadion => TileManager.Instance.GenerateFromModel(new StadionBuildingTile(0, 0, 0, Rotation.Zero)),
-				TileType.MiddleSchool => TileManager.Instance.GenerateFromModel(new MiddleSchool(0, 0, 0, Rotation.Zero)),
+				TileType.MiddleSchool => TileManager.Instance.GenerateFromModel(new MiddleSchoolBuildingTile(0, 0, 0, Rotation.Zero)),
 				TileType.HighSchool => TileManager.Instance.GenerateFromModel(new HighSchoolBuildingTile(0, 0, 0, Rotation.Zero)),
-				TileType.PowerPlant => TileManager.Instance.GenerateFromModel(new PowerPlant(0, 0, 0, Rotation.Zero)),
+				TileType.PowerPlant => TileManager.Instance.GenerateFromModel(new PowerPlantBuildingTile(0, 0, 0, Rotation.Zero)),
 				TileType.Forest => TileManager.Instance.GenerateFromModel(new ForestTile(0, 0, 0)),
-				TileType.ElectricPole => TileManager.Instance.GenerateFromModel(new ElectricPole(0, 0, 0)),
+				TileType.ElectricPole => TileManager.Instance.GenerateFromModel(new ElectricPoleTile(0, 0, 0)),
 				TileType.Road => TileManager.Instance.GenerateFromModel(new RoadTile(0, 0)),
 				_ => throw new InvalidOperationException(),
 			};
