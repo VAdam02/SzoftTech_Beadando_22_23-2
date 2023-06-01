@@ -13,6 +13,11 @@ namespace Model.Tiles
 
 		public override void FinalizeTile() => Finalizing();
 
+		public override bool CanBuild()
+		{
+			return City.Instance.GetTile(Coordinates) is EmptyTile || City.Instance.GetTile(Coordinates) is RoadTile;
+		}
+
 		/// <summary>
 		/// <para>MUST BE STARTED WITH <code>base.Finalizing()</code></para>
 		/// <para>Do the actual finalization</para>
