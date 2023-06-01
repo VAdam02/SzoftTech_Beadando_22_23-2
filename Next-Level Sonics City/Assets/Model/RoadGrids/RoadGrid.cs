@@ -114,7 +114,7 @@ namespace Model.RoadGrids
 		/// <param name="highSchool">Residential that should be added</param>
 		public void AddHighSchool(HighSchool highSchool)
 		{
-			lock (_highSchools) _middleSchools.Add(highSchool);
+			lock (_highSchools) _highSchools.Add(highSchool);
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace Model.RoadGrids
 		/// <param name="highSchool">Residential that should be added</param>
 		public void RemoveHighSchool(HighSchool highSchool)
 		{
-			lock (_highSchools) _middleSchools.Remove(highSchool);
+			lock (_highSchools) _highSchools.Remove(highSchool);
 		}
 
 

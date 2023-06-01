@@ -65,12 +65,6 @@ namespace Model
 			StatEngine.Instance.NegativeBudgetYearElapsed += NegativeBudgetYearElapsedHandler;
 			CommercialToIndustrialWorkersRatioHandler(this, new EventArgs());
 			StatEngine.Instance.CommercialToIndustrialWorkerRateChanged += CommercialToIndustrialWorkersRatioHandler;
-
-			Tile t1 = GetTile(4, 4);
-			Tile t2 = GetTile(8, 8);
-
-			BuildingManager.Instance.Build(t1, TileType.MiddleSchool, Rotation.Zero);
-			BuildingManager.Instance.Build(t2, TileType.HighSchool, Rotation.Zero);
 		}
 
 
