@@ -94,7 +94,7 @@ namespace Model.RoadGrids
 		/// Add middle school to this
 		/// </summary>
 		/// <param name="middleSchool">Residential that should be added</param>
-		public void AddMiddleSchool(MiddleSchool middleSchool)
+		public void AddMiddleSchool(MiddleSchoolBuildingTile middleSchool)
 		{
 			lock(_middleSchools) _middleSchools.Add(middleSchool);
 		}
@@ -103,7 +103,7 @@ namespace Model.RoadGrids
 		/// Remove middle school to this
 		/// </summary>
 		/// <param name="middleSchool">Residential that should be added</param>
-		public void RemoveMiddleSchool(MiddleSchool middleSchool)
+		public void RemoveMiddleSchool(MiddleSchoolBuildingTile middleSchool)
 		{
 			lock(_middleSchools) _middleSchools.Remove(middleSchool);
 		}
@@ -112,7 +112,7 @@ namespace Model.RoadGrids
 		/// Add highschool to this
 		/// </summary>
 		/// <param name="highSchool">Residential that should be added</param>
-		public void AddHighSchool(HighSchool highSchool)
+		public void AddHighSchool(HighSchoolBuildingTile highSchool)
 		{
 			lock (_highSchools) _highSchools.Add(highSchool);
 		}
@@ -121,7 +121,7 @@ namespace Model.RoadGrids
 		/// Remove highschool to this
 		/// </summary>
 		/// <param name="highSchool">Residential that should be added</param>
-		public void RemoveHighSchool(HighSchool highSchool)
+		public void RemoveHighSchool(HighSchoolBuildingTile highSchool)
 		{
 			lock (_highSchools) _highSchools.Remove(highSchool);
 		}
