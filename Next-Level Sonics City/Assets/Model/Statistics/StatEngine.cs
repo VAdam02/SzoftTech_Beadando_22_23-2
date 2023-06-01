@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Model.Statistics
 {
@@ -603,6 +604,11 @@ namespace Model.Statistics
 			}
 
 			UpdateCurrentStatReport(false);
+
+			if (City.Instance.CityHappiness < 0.2 && City.Instance.GetPopulation() > 0)
+			{
+				SceneManager.LoadScene(1);
+			}
 		}
 
 		/// <summary>
